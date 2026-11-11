@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:22:26.584+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0f-a8a8-7062-ad4d-106ef44e3deb"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.257343678007601,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424940-c8LtenLHEiMd1QggE87z\",\"object\":\"chat.completion\",\"created\":1794424940,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_twoIntsStruct_01.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_twoIntsStruct_01\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    twoIntsStruct * data;\\\\n    data = NULL;\\\\n\\\\n    data = new twoIntsStruct;\\\\n\\\\n    data->intOne = 0;\\\\n    data->intTwo = 0;\\\\n    printStructLine(data);\\\\n\\\\n    delete data;\\\\n    data = NULL;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added `delete data;` after printing to free the heap-allocated twoIntsStruct, eliminating the memory leak while preserving the printed output and function signature.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":343,\"completion_tokens\":191,\"total_tokens\":534,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0001015,\"allowance\":0.0001015,\"tokens\":{\"input\":343,\"output\":191,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:22:20.327+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_twoIntsStruct_01.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_twoIntsStruct_01\\n{\\n\\n\\nvoid bad()\\n{\\n    twoIntsStruct * data;\\n    data = NULL;\\n\\n    data = new twoIntsStruct;\\n\\n    data->intOne = 0;\\n    data->intTwo = 0;\\n    printStructLine(data);\\n\\n    delete data;\\n    data = NULL;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added `delete data;` after printing to free the heap-allocated twoIntsStruct, eliminating the memory leak while preserving the printed output and function signature.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 191,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.0001015,
+    "prompt_tokens": 343
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.257343678007601,
+  "response_meta": {
+    "content_chars": 597,
+    "created": 1794424940,
+    "finish_reason": "stop",
+    "id": "gen-1794424940-c8LtenLHEiMd1QggE87z",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0050",
+  "usage": {
+    "completion_tokens": 191,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.0001015,
+      "billing_source": "go",
+      "list_cost": 0.0001015,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 343,
+        "output": 191,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 343,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 534
+  },
+  "wall_seconds": 6.257370374005404
+}

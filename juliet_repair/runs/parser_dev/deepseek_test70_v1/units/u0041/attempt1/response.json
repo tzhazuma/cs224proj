@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:08.179+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-5866-7156-8c03-0edde7315ce6"
+      },
+      "http_status": 200,
+      "latency_seconds": 13.836466826993274,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-bdab6b4ba24f4b07b38d9b55c070d0d4\",\"object\":\"chat.completion\",\"created\":1794424854,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_wchar_t_72a.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include <vector>\\\\n\\\\n#include <wchar.h>\\\\n\\\\nusing namespace std;\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_72\\\\n{\\\\n\\\\n\\\\nvoid badSink(vector<wchar_t *> dataVector);\\\\n\\\\nvoid bad()\\\\n{\\\\n    wchar_t * data;\\\\n    vector<wchar_t *> dataVector;\\\\n    data = NULL;\\\\n\\\\n    data = new wchar_t[100];\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    badSink(dataVector);\\\\n\\\\n    delete [] data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}, {\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_wchar_t_72b.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include <vector>\\\\n\\\\n#include <wchar.h>\\\\n\\\\nusing namespace std;\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_72\\\\n{\\\\n\\\\n\\\\nvoid badSink(vector<wchar_t *> dataVector)\\\\n{\\\\n\\\\n    wchar_t * data = dataVector[2];\\\\n\\\\n    ;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The heap array allocated with new[] in bad() was never freed. Added delete [] data after badSink returns, preserving the printed output and behavior while eliminating the leak. The sink file is unchanged in behavior but included as a complete replacement (no functional change needed); only the allocation site required the fix.\\\"}\"}}],\"usage\":{\"prompt_tokens\":526,\"completion_tokens\":430,\"total_tokens\":956,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00031808,\"allowance\":0.00019085,\"tokens\":{\"input\":398,\"output\":430,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:54.343+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_array_wchar_t_72a.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include <vector>\\n\\n#include <wchar.h>\\n\\nusing namespace std;\\n\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_72\\n{\\n\\n\\nvoid badSink(vector<wchar_t *> dataVector);\\n\\nvoid bad()\\n{\\n    wchar_t * data;\\n    vector<wchar_t *> dataVector;\\n    data = NULL;\\n\\n    data = new wchar_t[100];\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n\\n    dataVector.insert(dataVector.end(), 1, data);\\n    dataVector.insert(dataVector.end(), 1, data);\\n    dataVector.insert(dataVector.end(), 1, data);\\n    badSink(dataVector);\\n\\n    delete [] data;\\n}\\n\\n\\n}\\n\"}, {\"path\": \"CWE401_Memory_Leak__new_array_wchar_t_72b.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include <vector>\\n\\n#include <wchar.h>\\n\\nusing namespace std;\\n\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_72\\n{\\n\\n\\nvoid badSink(vector<wchar_t *> dataVector)\\n{\\n\\n    wchar_t * data = dataVector[2];\\n\\n    ;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The heap array allocated with new[] in bad() was never freed. Added delete [] data after badSink returns, preserving the printed output and behavior while eliminating the leak. The sink file is unchanged in behavior but included as a complete replacement (no functional change needed); only the allocation site required the fix.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 430,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000636168,
+    "prompt_tokens": 526
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 13.836466826993274,
+  "response_meta": {
+    "content_chars": 1362,
+    "created": 1794424854,
+    "finish_reason": "stop",
+    "id": "chatcmpl-bdab6b4ba24f4b07b38d9b55c070d0d4",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0041",
+  "usage": {
+    "completion_tokens": 430,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00019085,
+      "billing_source": "go",
+      "list_cost": 0.00031808,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 398,
+        "output": 430,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 526,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 956
+  },
+  "wall_seconds": 13.836492305999855
+}

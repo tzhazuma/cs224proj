@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:18.551+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc15-f875-7c31-847f-d7d09373b955"
+      },
+      "http_status": 200,
+      "latency_seconds": 4.472900524007855,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-9d9840c0c0374a18a1b44276ddb48b7c\",\"object\":\"chat.completion\",\"created\":1794425354,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int_malloc_22b.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nextern int CWE401_Memory_Leak__int_malloc_22_badGlobal;\\\\n\\\\nvoid CWE401_Memory_Leak__int_malloc_22_badSink(int * data)\\\\n{\\\\n    if(CWE401_Memory_Leak__int_malloc_22_badGlobal)\\\\n    {\\\\n\\\\n        free(data);\\\\n    }\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The sink function received the malloc'd buffer but never freed it, leaking memory. Added free(data) inside the existing branch so the allocation is released while preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":548,\"completion_tokens\":179,\"total_tokens\":727,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00017078,\"allowance\":0.00010247,\"tokens\":{\"input\":420,\"output\":179,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:14.078+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int_malloc_22b.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nextern int CWE401_Memory_Leak__int_malloc_22_badGlobal;\\n\\nvoid CWE401_Memory_Leak__int_malloc_22_badSink(int * data)\\n{\\n    if(CWE401_Memory_Leak__int_malloc_22_badGlobal)\\n    {\\n\\n        free(data);\\n    }\\n}\\n\"}], \"explanation\": \"The sink function received the malloc'd buffer but never freed it, leaking memory. Added free(data) inside the existing branch so the allocation is released while preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 179,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000341568,
+    "prompt_tokens": 548
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 4.472900524007855,
+  "response_meta": {
+    "content_chars": 571,
+    "created": 1794425354,
+    "finish_reason": "stop",
+    "id": "chatcmpl-9d9840c0c0374a18a1b44276ddb48b7c",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0018",
+  "usage": {
+    "completion_tokens": 179,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00010247,
+      "billing_source": "go",
+      "list_cost": 0.00017078,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 420,
+        "output": 179,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 548,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 727
+  },
+  "wall_seconds": 4.472927720009466
+}

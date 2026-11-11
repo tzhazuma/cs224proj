@@ -1,0 +1,206 @@
+{
+  "api": {
+    "api_key_env": "OPENCODE_API_KEY",
+    "api_key_present": true,
+    "api_key_value_stored": false,
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "input_price_usd_per_1m": 0.14,
+    "max_attempts": 3,
+    "max_tokens": 8192,
+    "max_tokens_field": "max_completion_tokens",
+    "model": "mimo-v2.6-flash",
+    "output_price_usd_per_1m": 0.28,
+    "reasoning_effort": "none",
+    "response_format": "json_object",
+    "session": {
+      "header": "x-opencode-session",
+      "is_secret": false,
+      "note": "Random per-run identifier used only for OpenCode Go request routing and prompt-cache affinity. It is not an API key; Authorization is never written to run artifacts.",
+      "sha256": "f8caa7e2a25b71cc0bfc4ed1cd6b7571a1c87f14649127c8c9d1f6f881fcd6d0",
+      "source": "generated",
+      "value": "ses_525efc0fc6cfda01e635d22e29ee0a12"
+    },
+    "temperature": 0.0,
+    "thinking": "disabled",
+    "timeout_seconds": 300.0,
+    "user_agent": "secvul-eval-runner/1.0"
+  },
+  "completed_at": "2026-11-11T18:54:16.683+00:00",
+  "concurrency": 16,
+  "config": {
+    "api": {
+      "backoff_base_seconds": 1.5,
+      "backoff_cap_seconds": 30.0,
+      "base_url": "https://opencode.ai/zen/go/v1",
+      "cached_input_price_usd_per_1m": 0.0028,
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "input_price_usd_per_1m": 0.14,
+      "max_attempts": 3,
+      "max_tokens": 8192,
+      "max_tokens_field": "max_completion_tokens",
+      "model": "mimo-v2.6-flash",
+      "output_price_usd_per_1m": 0.28,
+      "reasoning_effort": "none",
+      "response_format": "json_object",
+      "temperature": 0.0,
+      "thinking": "disabled",
+      "timeout_seconds": 300.0,
+      "user_agent": "secvul-eval-runner/1.0"
+    },
+    "api_key_env": "OPENCODE_API_KEY",
+    "concurrency": 16,
+    "config_fingerprint": "b43f9184ca1a47280e7dec63c86572d8462f3fab1edd660f5e162f27712cdb51",
+    "dataset_path": "splits/test_detection_160.json",
+    "dataset_sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "dataset_type": "independent",
+    "dataset_units": 160,
+    "dev_examples": null,
+    "dry_run": false,
+    "expected_requests": 288,
+    "limit": 0,
+    "partial": false,
+    "prompt_version": "secvul-prompt-2026-11-11.1",
+    "refresh": false,
+    "retry_invalid": false,
+    "reuse_cached_errors": false,
+    "runner_version": "1.0.0",
+    "selected_units": 160,
+    "strategy": "context",
+    "task": "both"
+  },
+  "config_fingerprint": "b43f9184ca1a47280e7dec63c86572d8462f3fab1edd660f5e162f27712cdb51",
+  "counts": {
+    "by_status": {
+      "invalid": 8,
+      "ok": 280
+    },
+    "cache_hits": 0,
+    "detection": 160,
+    "planned_requests": 288,
+    "recorded_requests": 288,
+    "repair": 128
+  },
+  "created_at": "2026-11-11T18:50:19.009+00:00",
+  "dataset": {
+    "full_label_counts": {
+      "functions": 160,
+      "non_vulnerable": 32,
+      "units": 160,
+      "vulnerable": 128
+    },
+    "metadata": {
+      "constraints": [
+        "At most one function per (project, commit_id)",
+        "No vulnerable/fixed pair within samples",
+        "Negative samples are not the fixed_func_idx target of any vulnerable source row"
+      ],
+      "cross_dataset_isolation": "No shared source idx or (project, commit_id) group",
+      "dataset_type": "independent_functions",
+      "excluded_malformed_rows": [
+        {
+          "idx": 3510,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9418,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9578,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10195,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10196,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 16033,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 18071,
+          "reason": "changed_statements is not a valid serialized list"
+        }
+      ],
+      "field_encoding": {
+        "context": "Original workbook string, not evaluated",
+        "json_arrays": [
+          "changed_lines",
+          "changed_statements",
+          "cve_list",
+          "cwe_list"
+        ]
+      },
+      "non_vulnerable_count": 32,
+      "sample_count": 160,
+      "sampling": "Shuffle source rows with random.Random(seed); keep at most one item per project+commit. Select pairs first.",
+      "schema_version": 1,
+      "seed": 42,
+      "source_file": "SecVulEval.xlsx",
+      "source_label_counts": {
+        "False": 14442,
+        "True": 10998
+      },
+      "source_rows": 25440,
+      "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+      "source_sheet": "train",
+      "split": {
+        "manifest": "splits/split_v1.json",
+        "protocol": "research/evaluation_protocol.md#4",
+        "role": "test",
+        "seed": 42,
+        "source_dataset": "datasets/independent_200.json",
+        "source_dataset_sha256": "055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d",
+        "split_id": "secvul-split-v1",
+        "task": "detection"
+      },
+      "usable_rows": 25433,
+      "vulnerable_count": 128
+    },
+    "path": "splits/test_detection_160.json",
+    "selected_label_counts": {
+      "functions": 160,
+      "non_vulnerable": 32,
+      "units": 160,
+      "vulnerable": 128
+    },
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "type": "independent"
+  },
+  "httpx_version": "0.28.1",
+  "notes": [
+    "No API key or Authorization header is stored in run artifacts.",
+    "Metrics are null for cost when prices are not configured.",
+    "Use --resume with the same command and --out-dir to continue an interrupted run."
+  ],
+  "outputs": {
+    "cache": "cache/",
+    "config": "config.json",
+    "log": "run.log",
+    "metrics_json": "metrics.json",
+    "metrics_markdown": "metrics.md",
+    "requests": "requests.jsonl",
+    "results": "results.jsonl"
+  },
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+  "python_version": "3.14.8",
+  "resume": {
+    "count": 0,
+    "events": []
+  },
+  "run_id": "test_v1_mimo_context_independent",
+  "run_label": "split-v1-frozen-test-mimo",
+  "runner_version": "1.0.0",
+  "schema_version": 1,
+  "started_at": "2026-11-11T18:50:19.009+00:00",
+  "status": "completed",
+  "updated_at": "2026-11-11T18:54:16.708+00:00"
+}

@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:16.402+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-8e70-728e-83e0-beeef092cb14"
+      },
+      "http_status": 200,
+      "latency_seconds": 8.207143706997158,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-a0639ac5f2b04ddda63bbcf5ec96c638\",\"object\":\"chat.completion\",\"created\":1794424868,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_wchar_t_72a.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include <vector>\\\\n\\\\n#include <wchar.h>\\\\n\\\\nusing namespace std;\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_72\\\\n{\\\\n\\\\n\\\\nvoid badSink(vector<wchar_t *> dataVector);\\\\n\\\\nvoid bad()\\\\n{\\\\n    wchar_t * data;\\\\n    vector<wchar_t *> dataVector;\\\\n    data = NULL;\\\\n\\\\n    data = new wchar_t[100];\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    badSink(dataVector);\\\\n\\\\n    delete [] data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The heap array allocated with new[] in bad() was never freed. Added delete [] data after badSink returns, preserving the printed output and behavior while eliminating the leak. Only the allocation site file required the fix.\\\"}\"}}],\"usage\":{\"prompt_tokens\":1001,\"completion_tokens\":290,\"total_tokens\":1291,\"prompt_tokens_details\":{\"cached_tokens\":384},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0002677,\"allowance\":0.00016062,\"tokens\":{\"input\":617,\"output\":290,\"reasoning\":0,\"cache_read\":384,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:08.194+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_array_wchar_t_72a.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include <vector>\\n\\n#include <wchar.h>\\n\\nusing namespace std;\\n\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_72\\n{\\n\\n\\nvoid badSink(vector<wchar_t *> dataVector);\\n\\nvoid bad()\\n{\\n    wchar_t * data;\\n    vector<wchar_t *> dataVector;\\n    data = NULL;\\n\\n    data = new wchar_t[100];\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n\\n    dataVector.insert(dataVector.end(), 1, data);\\n    dataVector.insert(dataVector.end(), 1, data);\\n    dataVector.insert(dataVector.end(), 1, data);\\n    badSink(dataVector);\\n\\n    delete [] data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The heap array allocated with new[] in bad() was never freed. Added delete [] data after badSink returns, preserving the printed output and behavior while eliminating the leak. Only the allocation site file required the fix.\"}",
+  "cost": {
+    "cached_prompt_tokens": 384,
+    "completion_tokens": 290,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000535404,
+    "prompt_tokens": 1001
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 8.207143706997158,
+  "response_meta": {
+    "content_chars": 924,
+    "created": 1794424868,
+    "finish_reason": "stop",
+    "id": "chatcmpl-a0639ac5f2b04ddda63bbcf5ec96c638",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0041",
+  "usage": {
+    "completion_tokens": 290,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00016062,
+      "billing_source": "go",
+      "list_cost": 0.0002677,
+      "tokens": {
+        "cache_read": 384,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 617,
+        "output": 290,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 1001,
+    "prompt_tokens_details": {
+      "cached_tokens": 384
+    },
+    "total_tokens": 1291
+  },
+  "wall_seconds": 8.207167483997182
+}

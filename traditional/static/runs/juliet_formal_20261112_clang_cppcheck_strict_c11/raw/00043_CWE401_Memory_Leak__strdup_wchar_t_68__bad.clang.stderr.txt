@@ -1,0 +1,13 @@
+In file included from /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck/work/00043_CWE401_Memory_Leak__strdup_wchar_t_68__bad.c:1:
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__strdup_wchar_t_68a.c:38:16: error: call to undeclared function 'wcsdup'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   38 |         data = wcsdup(myString);
+      |                ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__strdup_wchar_t_68a.c:38:16: note: did you mean 'wcscmp'?
+/usr/include/wchar.h:134:12: note: 'wcscmp' declared here
+  134 | extern int wcscmp (const wchar_t *__s1, const wchar_t *__s2)
+      |            ^
+In file included from /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck/work/00043_CWE401_Memory_Leak__strdup_wchar_t_68__bad.c:1:
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__strdup_wchar_t_68a.c:38:14: error: incompatible integer to pointer conversion assigning to 'wchar_t *' (aka 'int *') from 'int' [-Wint-conversion]
+   38 |         data = wcsdup(myString);
+      |              ^ ~~~~~~~~~~~~~~~~
+2 errors generated.

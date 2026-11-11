@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:22.385+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0d-bb59-7f9e-b712-107e80899462"
+      },
+      "http_status": 200,
+      "latency_seconds": 8.922875293996185,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-b2b8a24e5a8c4dc4bb0fc08a808268b7\",\"object\":\"chat.completion\",\"created\":1794424814,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__char_malloc_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__char_malloc_01_bad()\\\\n{\\\\n    char * data;\\\\n    data = NULL;\\\\n\\\\n    data = (char *)malloc(100*sizeof(char));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    strcpy(data, \\\\\\\"A String\\\\\\\");\\\\n    printLine(data);\\\\n\\\\n    free(data);\\\\n    data = NULL;\\\\n    ;\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added free(data) after the last use of the heap buffer to eliminate the memory leak while preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":350,\"completion_tokens\":184,\"total_tokens\":534,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0001629,\"allowance\":0.00009774,\"tokens\":{\"input\":350,\"output\":184,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:13.462+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__char_malloc_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__char_malloc_01_bad()\\n{\\n    char * data;\\n    data = NULL;\\n\\n    data = (char *)malloc(100*sizeof(char));\\n    if (data == NULL) {exit(-1);}\\n\\n    strcpy(data, \\\"A String\\\");\\n    printLine(data);\\n\\n    free(data);\\n    data = NULL;\\n    ;\\n}\\n\"}], \"explanation\": \"Added free(data) after the last use of the heap buffer to eliminate the memory leak while preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 184,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00032579999999999995,
+    "prompt_tokens": 350
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 8.922875293996185,
+  "response_meta": {
+    "content_chars": 556,
+    "created": 1794424814,
+    "finish_reason": "stop",
+    "id": "chatcmpl-b2b8a24e5a8c4dc4bb0fc08a808268b7",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0003",
+  "usage": {
+    "completion_tokens": 184,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 9.774e-05,
+      "billing_source": "go",
+      "list_cost": 0.0001629,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 350,
+        "output": 184,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 350,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 534
+  },
+  "wall_seconds": 8.922898496995913
+}

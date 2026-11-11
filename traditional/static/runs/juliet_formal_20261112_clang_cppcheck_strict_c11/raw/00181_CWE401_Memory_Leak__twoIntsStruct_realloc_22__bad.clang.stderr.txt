@@ -1,0 +1,20 @@
+In file included from /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck/work/00181_CWE401_Memory_Leak__twoIntsStruct_realloc_22__bad.c:1:
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_22a.c:42:1: warning: Potential leak of memory pointed to by 'data' [unix.Malloc]
+   42 | }
+      | ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_22a.c:133:5: note: Calling 'CWE401_Memory_Leak__twoIntsStruct_realloc_22_bad'
+  133 |     CWE401_Memory_Leak__twoIntsStruct_realloc_22_bad();
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_22a.c:34:29: note: Memory is allocated
+   34 |     data = (twoIntsStruct *)realloc(data, 100*sizeof(twoIntsStruct));
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_22a.c:35:9: note: Assuming 'data' is not equal to NULL
+   35 |     if (data == NULL) {exit(-1);}
+      |         ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_22a.c:35:5: note: Taking false branch
+   35 |     if (data == NULL) {exit(-1);}
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_22a.c:42:1: note: Potential leak of memory pointed to by 'data'
+   42 | }
+      | ^
+1 warning generated.

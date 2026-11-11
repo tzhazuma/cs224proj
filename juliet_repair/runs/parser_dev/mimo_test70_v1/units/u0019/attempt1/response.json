@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:38.547+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-0016-7968-8a70-1a8ca96cc2b8"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.809494166998775,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424832-qyYld2uVvUNMjzMpJNot\",\"object\":\"chat.completion\",\"created\":1794424832,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int_malloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__int_malloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    int * data;\\\\n    int * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (int *)malloc(100*sizeof(int));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5;\\\\n    printIntLine(data[0]);\\\\n    {\\\\n        int * data = dataRef;\\\\n\\\\n        free(data);\\\\n    }\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The inner scope's copy of the pointer was never freed, leaking the malloc'd buffer. Added free(data) before the scope ends, preserving output and behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":362,\"completion_tokens\":214,\"total_tokens\":576,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0001106,\"allowance\":0.0001106,\"tokens\":{\"input\":362,\"output\":214,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:31.737+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int_malloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__int_malloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    int * data;\\n    int * &dataRef = data;\\n    data = NULL;\\n\\n    data = (int *)malloc(100*sizeof(int));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5;\\n    printIntLine(data[0]);\\n    {\\n        int * data = dataRef;\\n\\n        free(data);\\n    }\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The inner scope's copy of the pointer was never freed, leaking the malloc'd buffer. Added free(data) before the scope ends, preserving output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 214,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00011060000000000002,
+    "prompt_tokens": 362
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.809494166998775,
+  "response_meta": {
+    "content_chars": 641,
+    "created": 1794424832,
+    "finish_reason": "stop",
+    "id": "gen-1794424832-qyYld2uVvUNMjzMpJNot",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0019",
+  "usage": {
+    "completion_tokens": 214,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.0001106,
+      "billing_source": "go",
+      "list_cost": 0.0001106,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 362,
+        "output": 214,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 362,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 576
+  },
+  "wall_seconds": 6.8095186989958165
+}

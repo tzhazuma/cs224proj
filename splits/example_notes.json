@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "notes": "Curated few-shot demonstrations. Every entry must come from the frozen dev split; the build script verifies membership, ordering, family/quartile diversity, and that no forbidden dataset metadata appears in the prose.",
+  "detection": [
+    {
+      "idx": 9493,
+      "reason": "compact one-line out-of-bounds read on an empty base name; memory_buffer family",
+      "rationale": "base_name[base_len - 1] is read before the string is checked. When the caller passes an empty name, base_len is zero, the index underflows, and the function reads memory before the buffer."
+    },
+    {
+      "idx": 17182,
+      "reason": "compact and self-contained, with no unsafe memory operations; length quartile 1",
+      "rationale": "The function only unwraps a V8 handle, checks whether it is already a string or symbol, and otherwise converts it through the V8 API. It performs no raw pointer arithmetic, fixed-size writes, or unchecked indexing."
+    },
+    {
+      "idx": 11371,
+      "reason": "clear use-after-free when an IO object is copied onto itself; lifetime family",
+      "rationale": "The destination's mrb_io is freed before the source pointer is fetched. When a copy targets the same object, fptr_orig aliases the freed allocation and the following mrb_dup dereferences it."
+    },
+    {
+      "idx": 6620,
+      "reason": "compact, no allocation or buffer writes; length quartile 2",
+      "rationale": "The function maps an integer constant to a static string in a switch and returns a fixed literal for unknown values. It allocates nothing and writes to no buffer."
+    }
+  ],
+  "repair": [
+    {
+      "pair_id": "19988:19989",
+      "reason": "single-buffer-size fix in an otherwise identical function; memory_buffer family",
+      "explanation": "The vulnerable version collects the directory listing into the standard APDU buffer; the fix enlarges the files array to the extended APDU buffer size so sc_list_files() cannot overflow the stack array."
+    },
+    {
+      "pair_id": "7686:7683",
+      "reason": "single-condition short-read check in an otherwise identical function; input_validation family",
+      "explanation": "The vulnerable version treats only a return value of -1 as a read failure. A short read leaves part of the program header uninitialized, so the fix requires the full header size before the data is parsed."
+    }
+  ]
+}

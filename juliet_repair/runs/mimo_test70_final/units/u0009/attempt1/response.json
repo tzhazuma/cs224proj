@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:14.707+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc15-dafd-71a0-bee9-93293695866a"
+      },
+      "http_status": 200,
+      "latency_seconds": 8.186823384006857,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794425346-be3IUenvNyqTMoOhH9pW\",\"object\":\"chat.completion\",\"created\":1794425346,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int64_t_calloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__int64_t_calloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    int64_t * data;\\\\n    int64_t * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (int64_t *)calloc(100, sizeof(int64_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5LL;\\\\n    printLongLongLine(data[0]);\\\\n    {\\\\n        int64_t * data = dataRef;\\\\n\\\\n        free(data);\\\\n    }\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The inner block's local `data` shadows the outer pointer but never frees the allocated memory. Added `free(data)` inside the block to release the calloc'd buffer, preserving the printed output and return behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":392,\"completion_tokens\":250,\"total_tokens\":642,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":384,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0000722,\"allowance\":0.0000722,\"tokens\":{\"input\":8,\"output\":250,\"reasoning\":0,\"cache_read\":384,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:06.520+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int64_t_calloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__int64_t_calloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    int64_t * data;\\n    int64_t * &dataRef = data;\\n    data = NULL;\\n\\n    data = (int64_t *)calloc(100, sizeof(int64_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5LL;\\n    printLongLongLine(data[0]);\\n    {\\n        int64_t * data = dataRef;\\n\\n        free(data);\\n    }\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The inner block's local `data` shadows the outer pointer but never frees the allocated memory. Added `free(data)` inside the block to release the calloc'd buffer, preserving the printed output and return behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 384,
+    "completion_tokens": 250,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 7.21952e-05,
+    "prompt_tokens": 392
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 8.186823384006857,
+  "response_meta": {
+    "content_chars": 735,
+    "created": 1794425346,
+    "finish_reason": "stop",
+    "id": "gen-1794425346-be3IUenvNyqTMoOhH9pW",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0009",
+  "usage": {
+    "completion_tokens": 250,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 7.22e-05,
+      "billing_source": "go",
+      "list_cost": 7.22e-05,
+      "tokens": {
+        "cache_read": 384,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 8,
+        "output": 250,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 392,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 384
+    },
+    "total_tokens": 642
+  },
+  "wall_seconds": 8.186855475010816
+}

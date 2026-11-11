@@ -1,0 +1,37 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:47:1: warning: Potential leak of memory pointed to by 'data' [unix.Malloc]
+   47 | }
+      | ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:142:5: note: Calling 'CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09_bad'
+  142 |     CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09_bad();
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:26:8: note: Assuming 'GLOBAL_CONST_TRUE' is not equal to 0
+   26 |     if(GLOBAL_CONST_TRUE)
+      |        ^~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:26:5: note: Taking true branch
+   26 |     if(GLOBAL_CONST_TRUE)
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:29:69: note: Memory is allocated
+   29 |             struct _twoIntsStruct * data = (struct _twoIntsStruct *)malloc(100*sizeof(struct _twoIntsStruct));
+      |                                                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:30:17: note: Assuming 'data' is not equal to NULL
+   30 |             if (data == NULL) {exit(-1);}
+      |                 ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:30:13: note: Taking false branch
+   30 |             if (data == NULL) {exit(-1);}
+      |             ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:36:45: note: Attempt to reallocate memory
+   36 |             data = (struct _twoIntsStruct *)realloc(data, (130000)*sizeof(struct _twoIntsStruct));
+      |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:37:17: note: Assuming 'data' is equal to NULL
+   37 |             if (data != NULL)
+      |                 ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:37:17: note: Reallocation failed
+   37 |             if (data != NULL)
+      |                 ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:37:13: note: Taking false branch
+   37 |             if (data != NULL)
+      |             ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_09.c:47:1: note: Potential leak of memory pointed to by 'data'
+   47 | }
+      | ^
+1 warning generated.

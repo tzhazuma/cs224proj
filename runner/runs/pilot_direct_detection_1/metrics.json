@@ -1,0 +1,252 @@
+{
+  "context": null,
+  "cost": {
+    "cached_input_price_usd_per_1m": 0.006,
+    "cost_bases": [
+      "missing_usage"
+    ],
+    "currency": "USD",
+    "input_price_usd_per_1m": 0.3,
+    "known_cost_usd": null,
+    "output_price_usd_per_1m": 1.2,
+    "pricing_configured": true,
+    "total_cost_usd": null,
+    "unknown_cost_records": 1
+  },
+  "counts": {
+    "api_attempts": 3,
+    "by_status": {
+      "error": 1
+    },
+    "by_task": {
+      "detection": 1
+    },
+    "cache_hits": 0,
+    "complete_planned_requests": true,
+    "expected_requests": 1,
+    "missing_requests": 0,
+    "records": 1,
+    "retries": 2
+  },
+  "detection": {
+    "api_errors": 1,
+    "average_confidence": null,
+    "by_label": {
+      "non_vulnerable": {
+        "api_errors": 0,
+        "detection_rate": null,
+        "false_positive_rate": null,
+        "predicted_vulnerable": 0,
+        "predicted_vulnerable_rate": null,
+        "requested": 0,
+        "schema_invalid": 0,
+        "valid_predictions": 0
+      },
+      "vulnerable": {
+        "api_errors": 1,
+        "detection_rate": null,
+        "false_positive_rate": null,
+        "predicted_vulnerable": 0,
+        "predicted_vulnerable_rate": null,
+        "requested": 1,
+        "schema_invalid": 0,
+        "valid_predictions": 0
+      }
+    },
+    "by_side": {},
+    "confusion": {
+      "fn": 0,
+      "fp": 0,
+      "tn": 0,
+      "tp": 0
+    },
+    "coverage": 0.0,
+    "invalid_rate": 0.0,
+    "metrics_valid_only": {
+      "accuracy": null,
+      "balanced_accuracy": null,
+      "f1": null,
+      "mcc": null,
+      "precision": null,
+      "predicted_positive_rate": null,
+      "recall": null,
+      "specificity": null
+    },
+    "requested": 1,
+    "schema_invalid": 0,
+    "strict_accuracy_all_samples": 0.0,
+    "strict_correct_all_samples": 0,
+    "valid_predictions": 0
+  },
+  "failures": {
+    "error_types": {
+      "empty_content": 1
+    },
+    "examples": [
+      {
+        "error": {
+          "message": "API response has empty message content",
+          "retryable": true,
+          "type": "empty_content"
+        },
+        "sample_id": "idx:10568",
+        "status": "error",
+        "task": "detection"
+      }
+    ],
+    "schema_invalid_reasons": {}
+  },
+  "latency": {
+    "max_request_latency_seconds": 257.55088314301975,
+    "mean_request_latency_seconds": 257.55088314301975,
+    "p50_request_latency_seconds": 257.55088314301975,
+    "p95_request_latency_seconds": 257.55088314301975,
+    "records_with_latency": 1,
+    "total_request_latency_seconds": 257.55088314301975,
+    "total_wall_seconds": 262.05141690099845
+  },
+  "notes": [
+    "PARTIAL RUN: --limit selected only part of the dataset. Do not report these values as full-dataset experimental results.",
+    "No valid detection predictions were recorded; all detection metrics are null or zero-coverage.",
+    "Detection confusion uses only schema-valid predictions. strict_accuracy_all_samples counts schema-invalid and API-error records as incorrect.",
+    "Cost is null because at least one request lacks a complete cost record."
+  ],
+  "pair_joint": null,
+  "repair": null,
+  "run": {
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.006,
+    "completed_at": "2026-11-11T11:11:19.270+00:00",
+    "config_fingerprint": "1dd3a61b6dab4e18f8a9f72d78cda5deb1e6562f8ff519b92993f10a615e5e51",
+    "dataset_label_counts": {
+      "functions": 36,
+      "non_vulnerable": 6,
+      "units": 36,
+      "vulnerable": 30
+    },
+    "dataset_metadata": {
+      "constraints": [
+        "At most one function per (project, commit_id)",
+        "No vulnerable/fixed pair within samples",
+        "Negative samples are not the fixed_func_idx target of any vulnerable source row"
+      ],
+      "cross_dataset_isolation": "No shared source idx or (project, commit_id) group",
+      "dataset_type": "independent_functions",
+      "excluded_malformed_rows": [
+        {
+          "idx": 3510,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9418,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9578,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10195,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10196,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 16033,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 18071,
+          "reason": "changed_statements is not a valid serialized list"
+        }
+      ],
+      "field_encoding": {
+        "context": "Original workbook string, not evaluated",
+        "json_arrays": [
+          "changed_lines",
+          "changed_statements",
+          "cve_list",
+          "cwe_list"
+        ]
+      },
+      "non_vulnerable_count": 6,
+      "sample_count": 36,
+      "sampling": "Shuffle source rows with random.Random(seed); keep at most one item per project+commit. Select pairs first.",
+      "schema_version": 1,
+      "seed": 42,
+      "source_file": "SecVulEval.xlsx",
+      "source_label_counts": {
+        "False": 14442,
+        "True": 10998
+      },
+      "source_rows": 25440,
+      "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+      "source_sheet": "train",
+      "split": {
+        "manifest": "splits/split_v1.json",
+        "protocol": "research/evaluation_protocol.md#4",
+        "role": "dev",
+        "seed": 42,
+        "source_dataset": "datasets/independent_200.json",
+        "source_dataset_sha256": "055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d",
+        "split_id": "secvul-split-v1",
+        "task": "detection"
+      },
+      "usable_rows": 25433,
+      "vulnerable_count": 30
+    },
+    "dataset_path": "splits/pilot_detection_36.json",
+    "dataset_sha256": "1f4d21ada228ec1e413bda5348e0dd74cf639a512a97cf85e979430b94ccceff",
+    "dataset_type": "independent",
+    "dataset_units": 36,
+    "dev_examples": null,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "expected_by_task": {
+      "requests": 1
+    },
+    "expected_requests": 1,
+    "httpx_version": "0.28.1",
+    "input_price_usd_per_1m": 0.3,
+    "limit": 1,
+    "max_tokens": 8192,
+    "model": "deepseek-v4.1-flash",
+    "notes": [
+      "No API key or Authorization header is stored in run artifacts.",
+      "Prompts contain function source and, for context strategy, sanitised context only."
+    ],
+    "output_price_usd_per_1m": 1.2,
+    "partial": true,
+    "pricing_configured": true,
+    "prompt_version": "secvul-prompt-2026-11-11.1",
+    "python_version": "3.14.8",
+    "response_format": "json_object",
+    "run_id": "pilot_direct_detection_1",
+    "run_label": "split-v1-dev-pilot",
+    "runner_version": "1.0.0",
+    "selected_label_counts": {
+      "functions": 1,
+      "non_vulnerable": 0,
+      "units": 1,
+      "vulnerable": 1
+    },
+    "selected_units": 1,
+    "started_at": "2026-11-11T11:06:57.088+00:00",
+    "strategy": "direct",
+    "task": "detection",
+    "temperature": 0.0
+  },
+  "schema_version": 1,
+  "usage": {
+    "cached_prompt_tokens_known_sum": null,
+    "completion_tokens_known_sum": null,
+    "opencode_allowance_known_sum_usd": null,
+    "opencode_allowance_records": 0,
+    "opencode_billing_sources": {},
+    "prompt_tokens_known_sum": null,
+    "records_missing_usage": 1,
+    "records_with_opencode_usage": 0,
+    "total_tokens_known_sum": null
+  }
+}

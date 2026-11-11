@@ -1,0 +1,155 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__new_wchar_t_82_bad.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 128,
+        "completion_tokens": 354,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.000582768,
+        "prompt_tokens": 652
+      },
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.017
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "The leaked wchar_t allocation is now freed in the bad class's action() via delete, preserving output and behavior while eliminating the memory leak.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 354,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.00017483,
+          "billing_source": "go",
+          "list_cost": 0.00029138,
+          "tokens": {
+            "cache_read": 128,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 524,
+            "output": 354,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 652,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "total_tokens": 1006
+      },
+      "usage_chars": 991
+    },
+    {
+      "attempt": 2,
+      "changed_paths": [
+        "CWE401_Memory_Leak__new_wchar_t_82_bad.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 512,
+        "completion_tokens": 168,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.00036637199999999995,
+        "prompt_tokens": 1051
+      },
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.017
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "The leaked wchar_t allocation is now freed in the bad class's action() via delete, preserving output and behavior while eliminating the memory leak. Only the bad.cpp file needed changing.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 168,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.00010991,
+          "billing_source": "go",
+          "list_cost": 0.00018319,
+          "tokens": {
+            "cache_read": 512,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 539,
+            "output": 168,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 1051,
+        "prompt_tokens_details": {
+          "cached_tokens": 512
+        },
+        "total_tokens": 1219
+      },
+      "usage_chars": 521
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 640,
+  "changed_paths": [
+    "CWE401_Memory_Leak__new_wchar_t_82_bad.cpp"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 522,
+  "cost_complete": true,
+  "cost_usd_sum": 0.00094914,
+  "explanation_present": true,
+  "final_attempt": 2,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__new_wchar_t_82",
+  "language": "cpp",
+  "last_attempt": 2,
+  "leak_removed": true,
+  "model": "deepseek-v4.1-flash",
+  "model_alias": "deepseek",
+  "prompt_tokens_sum": 1703,
+  "reevaluated_at_utc": "2026-11-11T19:24:18Z",
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "selection_reason": "latest_observable_pass",
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__new_wchar_t_82__bad",
+  "unit_key": "u0054"
+}

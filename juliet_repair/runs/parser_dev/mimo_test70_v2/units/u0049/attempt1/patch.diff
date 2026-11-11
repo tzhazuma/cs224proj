@@ -1,0 +1,20 @@
+--- a/CWE401_Memory_Leak__new_int_72b.cpp
++++ b/CWE401_Memory_Leak__new_int_72b.cpp
+@@ -14,7 +14,16 @@
+ 
+     int * data = dataVector[2];
+ 
+-    ;
++    delete data;
++
++    for (size_t i = 0; i < dataVector.size(); i++)
++    {
++        if (dataVector[i] != data)
++        {
++            delete dataVector[i];
++        }
++    }
++
+ }
+ 
+ 

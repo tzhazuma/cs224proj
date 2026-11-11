@@ -1,0 +1,69 @@
+{
+  "schema_version": "benchmark-metrics-v1",
+  "run_id": "tierb_juliet_cwe401_repair_deepseek_20261112_b78292cf",
+  "protocol_version": "1.0.0",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "generated_at": "2026-11-11T21:38:24Z",
+  "settings": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "confidence": 0.95,
+    "cluster_unit": "record.cluster_id",
+    "coverage_threshold": 0.8,
+    "strict_policy": "non-ok records count as errors in strict_accuracy; valid-only metrics exclude them"
+  },
+  "tasks": {
+    "repair": {
+      "records": 70,
+      "by_status": {
+        "ok": 58,
+        "not_applicable": 12
+      },
+      "note": "Repair correctness is outside the v1 detection benchmark; use repair_eval/."
+    }
+  },
+  "cost": {
+    "currency": "USD",
+    "usd_known_sum": 0.02699044,
+    "usd_unknown_records": 0,
+    "usd_complete": true,
+    "wall_s_sum": 585.025,
+    "cpu_s_sum": null,
+    "peak_rss_mb_max": null,
+    "prompt_tokens_sum": 30405,
+    "completion_tokens_sum": 16835,
+    "cached_prompt_tokens_sum": null,
+    "latency_ms_p50": 7057.0,
+    "latency_ms_p95": 13771.25,
+    "latency_samples": 70,
+    "cost_basis_counts": {
+      "api_price": 70
+    },
+    "cost_per_100_units_usd": 0.03855777142857143,
+    "wall_s_per_100_units": 835.75,
+    "cost_per_true_positive_usd": null
+  },
+  "counts": {
+    "records": 70,
+    "planned_units": 70,
+    "by_task": {
+      "repair": 70
+    },
+    "by_status": {
+      "ok": 58,
+      "not_applicable": 12
+    },
+    "missing_units": 0
+  },
+  "provenance": {
+    "run_manifest_sha256": "84ba282e5113f77a838b66eabe280bda59cb64c4e11a21f93b755e89307b042b",
+    "predictions_sha256": "b0dc88b98baf71994f5550efcbfa4c852724dd754223af0e1b9b4d701bd931ee"
+  },
+  "notes": [
+    "Tasks and tiers are not pooled into a single score.",
+    "Detection and pair metrics use valid predictions only; strict accuracy is separate.",
+    "Leak clean predictions below the coverage threshold are inconclusive, not true negatives.",
+    "Cost is a known-sum plus unknown count, never an imputed total."
+  ]
+}

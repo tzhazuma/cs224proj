@@ -1,0 +1,12 @@
+--- a/CWE401_Memory_Leak__new_TwoIntsClass_01.cpp
++++ b/CWE401_Memory_Leak__new_TwoIntsClass_01.cpp
+@@ -18,6 +18,9 @@
+     printIntLine(data->intOne);
+     printIntLine(data->intTwo);
+ 
++    delete data;
++    data = NULL;
++
+     ;
+ }
+ 

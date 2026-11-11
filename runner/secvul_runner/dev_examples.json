@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "source": "synthetic",
+  "notes": "Hand-written examples created for this runner. They are not sampled from SecVulEval and contain no dataset indices, CVE/CWE identifiers, or ground-truth metadata. The runner rejects any example whose normalised code matches an evaluation function.",
+  "detection": [
+    {
+      "example_id": "det-unsafe-copy",
+      "label": true,
+      "code": "int copy_name(char *dst, const char *src) {\n    strcpy(dst, src);\n    return 0;\n}",
+      "rationale": "The destination buffer is written without a size or length check, so a long source can overflow it."
+    },
+    {
+      "example_id": "det-safe-copy",
+      "label": false,
+      "code": "int copy_name(char *dst, size_t dst_size, const char *src) {\n    if (dst == NULL || src == NULL || dst_size == 0) {\n        return -1;\n    }\n    size_t n = strlen(src);\n    if (n >= dst_size) {\n        return -1;\n    }\n    memcpy(dst, src, n + 1);\n    return 0;\n}",
+      "rationale": "The function validates its pointers, measures the source, and rejects inputs that do not fit the destination."
+    },
+    {
+      "example_id": "det-format-string",
+      "label": true,
+      "code": "void log_message(const char *message) {\n    printf(message);\n}",
+      "rationale": "The caller-controlled string is used as a format string, so format specifiers in it can trigger memory-safety bugs."
+    },
+    {
+      "example_id": "det-bounded-parse",
+      "label": false,
+      "code": "int parse_digit(const char *text, unsigned char *out) {\n    if (text == NULL || out == NULL) {\n        return -1;\n    }\n    if (text[0] == '\\0' || text[1] != '\\0') {\n        return -1;\n    }\n    if (text[0] < '0' || text[0] > '9') {\n        return -1;\n    }\n    *out = (unsigned char)(text[0] - '0');\n    return 0;\n}",
+      "rationale": "The function validates both pointers, requires exactly one character, and checks that it is a digit before writing one byte."
+    }
+  ],
+  "repair": [
+    {
+      "example_id": "repair-bounded-copy",
+      "vulnerable_code": "void copy_name(char *dst, size_t dst_size, const char *src) {\n    memcpy(dst, src, strlen(src) + 1);\n}",
+      "fixed_code": "void copy_name(char *dst, size_t dst_size, const char *src) {\n    if (dst == NULL || src == NULL || dst_size == 0) {\n        return;\n    }\n    size_t n = strlen(src);\n    if (n >= dst_size) {\n        return;\n    }\n    memcpy(dst, src, n + 1);\n}",
+      "explanation": "Check the destination size and source length before copying so the write cannot exceed dst_size."
+    },
+    {
+      "example_id": "repair-bounds-check",
+      "vulnerable_code": "int read_byte(const unsigned char *data, size_t length, size_t index) {\n    return data[index];\n}",
+      "fixed_code": "int read_byte(const unsigned char *data, size_t length, size_t index) {\n    if (data == NULL || index >= length) {\n        return -1;\n    }\n    return data[index];\n}",
+      "explanation": "Validate the pointer and index against the supplied length before reading."
+    }
+  ]
+}

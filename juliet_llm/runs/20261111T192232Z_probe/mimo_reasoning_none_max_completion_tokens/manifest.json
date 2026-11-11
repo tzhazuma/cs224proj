@@ -1,0 +1,157 @@
+{
+  "api": {
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "base_url": "https://api.xiaomimimo.com/v1",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "endpoint": "https://api.xiaomimimo.com/v1/chat/completions",
+    "input_price_usd_per_1m": 0.14,
+    "max_attempts": 1,
+    "max_tokens": 8192,
+    "max_tokens_field": "max_completion_tokens",
+    "model": "mimo-v2.6-flash",
+    "output_price_usd_per_1m": 0.28,
+    "reasoning_effort": "none",
+    "response_format": "json_object",
+    "temperature": 0.0,
+    "thinking": "disabled",
+    "timeout_seconds": 120,
+    "user_agent": "juliet-llm-eval/1.0"
+  },
+  "api_errors": 0,
+  "code_sha256": {
+    "cleaning.py": "ee81a14e60263694013ddc16f16ec5f5e3047b5664100ef37ed864fcc3db5a92",
+    "llm_run.py": "c5cc6ac44947820676b95460157a6a0466cbfff0eb8dbc991a3fb792ebc3a30b",
+    "metrics.py": "2c733a78982fd0584e2445c319b04cd46db62d1a949eb418e79a0c00526871d8",
+    "prompting.py": "2f54b05bc402d5b2b4a4f9f8f7629522d851233296cfd4dc9e5d38bfba4dc582"
+  },
+  "completed_at_utc": "2026-11-11T19:22:35+00:00",
+  "concurrency": 4,
+  "expected_requests": 4,
+  "inputs": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_llm/build/dev.jsonl",
+    "selected_sha256": "088f3d2b806ccf672b6653703f2b7c2de7d9bfbcaf79c8bfe8170e3ef5ecfa61",
+    "sha256": "8334908ea7ca180b2d52109d293256b2a8d5288ed6ad6cea71884a09389647cc",
+    "units": 4
+  },
+  "invalid_answers": 0,
+  "kind": "probe",
+  "model": "mimo-v2.6-flash",
+  "model_catalog": {
+    "api": {
+      "chat-completions": {
+        "base_url": "https://opencode.ai/inference/go/openai/v1",
+        "capabilities": {
+          "tools": {
+            "choice": [
+              "auto"
+            ],
+            "strict": true,
+            "updates": false
+          }
+        },
+        "compatibility": {
+          "reasoning_field": "reasoning_content"
+        },
+        "sdk": {
+          "aisdk": "@ai-sdk/openai-compatible",
+          "opencodeai": "@opencode/ai/providers/openai-compatible"
+        }
+      }
+    },
+    "canonical_id": "xiaomi/mimo-v2.6-flash",
+    "capabilities": {
+      "effort_updates": false,
+      "reasoning": {
+        "supported": true
+      },
+      "system_updates": true,
+      "temperature": true,
+      "tools": {
+        "supported": true
+      },
+      "top_k": true,
+      "top_p": true
+    },
+    "cost": {
+      "text": {
+        "input": {
+          "cache": {
+            "read": 0.0028
+          },
+          "price": 0.14
+        },
+        "output": {
+          "price": 0.28
+        }
+      }
+    },
+    "created": 1794424951,
+    "description": "MiMo Flash model for multimodal coding agents and long-context automation",
+    "family": "mimo",
+    "id": "mimo-v2.6-flash",
+    "last_updated": "2026-09-22",
+    "limit": {
+      "context": 1048576,
+      "output": 131072
+    },
+    "modalities": {
+      "input": [
+        "text",
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+        "image/bmp",
+        "audio/mpeg",
+        "audio/wav",
+        "audio/flac",
+        "audio/mp4",
+        "audio/ogg",
+        "video/mp4",
+        "video/quicktime",
+        "video/x-msvideo",
+        "video/x-ms-wmv"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "name": "MiMo-V2.6-Flash",
+    "object": "model",
+    "open_weights": true,
+    "owned_by": "opencode",
+    "release_date": "2026-09-22",
+    "type": "chat"
+  },
+  "partial": true,
+  "price_source": "https://opencode.ai/zen/go/v1/models snapshot 2026-11-11T19:22:32+00:00",
+  "prices_usd_per_1m": {
+    "cached_input": 0.0028,
+    "input": 0.14,
+    "output": 0.28
+  },
+  "probe": "mimo_reasoning_none_max_completion_tokens",
+  "prompt_version": "juliet-llm-binary-2026-11-12.1",
+  "recorded_requests": 4,
+  "request_body_sha256": {
+    "CWE401_Memory_Leak__malloc_realloc_char_01__bad": "16b99ac37fefbfdb5bee3d06bc7ef4594f067563e1c2019ab6904fafdccee19b",
+    "CWE401_Memory_Leak__malloc_realloc_char_01__good": "ce239bb00cd07c011520858675723b1dd7384bbb27051b119eced84e65081fc2",
+    "CWE401_Memory_Leak__new_array_TwoIntsClass_54__bad": "e489021b8749ee06e9b5c637bb44a5d92c8fa33972b2baf5596a957e27ff8245",
+    "CWE401_Memory_Leak__new_array_TwoIntsClass_54__good": "7ec0529dd0457937089b7825165fc0aa44acc98b2856517805d9c63d1a4a4d11"
+  },
+  "run_id": "mimo_reasoning_none_max_completion_tokens",
+  "selection": {
+    "split": "dev",
+    "unit_ids": [
+      "CWE401_Memory_Leak__new_array_TwoIntsClass_54__bad",
+      "CWE401_Memory_Leak__malloc_realloc_char_01__bad",
+      "CWE401_Memory_Leak__new_array_TwoIntsClass_54__good",
+      "CWE401_Memory_Leak__malloc_realloc_char_01__good"
+    ]
+  },
+  "session_id_sha256": "1f935696d3b5f8e316d2a15d4921c97f4c000a2548a974112baec1f28084abc9",
+  "started_at_utc": "2026-11-11T19:22:32+00:00",
+  "user_agent": "juliet-llm-eval/1.0",
+  "valid_answers": 4
+}

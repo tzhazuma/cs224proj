@@ -1,0 +1,98 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "tierb_juliet_cwe401_repair_mimo_20261112_e10a522f",
+  "created_at": "2026-11-11T21:36:58Z",
+  "protocol_version": "1.0.0",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "tasks": [
+    "repair"
+  ],
+  "dataset": {
+    "dataset_id": "juliet-cwe401-v1.3-subset-v1",
+    "split_id": "juliet-cwe401-v1.3-subset-v1",
+    "path": "juliet/subset_units.jsonl",
+    "sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "unit_manifest": {
+      "path": "juliet/manifest.json",
+      "sha256": "8df222f84a4295f3b90ae7cabe165adc04858d91def3fda19a073db6e17cafd6"
+    },
+    "unit_count": 200,
+    "group_count": 100,
+    "label_counts": {
+      "bad": 100,
+      "good": 100
+    }
+  },
+  "method": {
+    "method_id": "llm.mimo.repair",
+    "family": "llm",
+    "name": "MiMo-V2.6-Flash / repair (compile + LSan + behaviour)",
+    "strategy": "repair",
+    "prompt_version": "juliet-repair-prompt-2026-11-12.1",
+    "config_sha256": null,
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "context_window": null,
+      "tokenizer": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_completion_tokens",
+        "thinking": "disabled",
+        "reasoning_effort": "none",
+        "response_format": "json_object",
+        "timeout_seconds": 300.0
+      },
+      "pricing_usd_per_1m": {
+        "input": 0.14,
+        "output": 0.28,
+        "cached_input": 0.0028
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-12 snapshot"
+    },
+    "tool": null
+  },
+  "execution": {
+    "started_at": "2026-11-11T19:28:59Z",
+    "finished_at": "2026-11-11T19:30:20Z",
+    "status": "completed",
+    "planned_units": 70,
+    "recorded_units": 70,
+    "retries": 2,
+    "concurrency": 8,
+    "command": null,
+    "command_sha256": null,
+    "environment": {
+      "source_run": "juliet_repair/runs/mimo_test70_final",
+      "endpoint": "https://opencode.ai/zen/go/v1"
+    }
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": "metrics.json",
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "source_results_sha256": "e10a522ff35a7b2b6f8cda09bbb093f8d3fff2d31d9f1402c5045f38af499a79",
+    "source_manifest_sha256": "d88d7c5dab70a4c12ce397cdc5a67e79a0ccc1bc581b068a02e437fef8d923c7",
+    "source_summary_sha256": "d5269e1bb894222158b89d0173883ae342964cbd95d2e629008f2402aab62d71",
+    "dataset_sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "predictions_sha256": "9b4a9a2b192b7c52d3964eca686f6a44b682a0e69b886584fe13c86d3daf8bb9",
+    "source_results_jsonl_sha256": "e10a522ff35a7b2b6f8cda09bbb093f8d3fff2d31d9f1402c5045f38af499a79",
+    "source_manifest_json_sha256": "d88d7c5dab70a4c12ce397cdc5a67e79a0ccc1bc581b068a02e437fef8d923c7",
+    "source_summary_json_sha256": "d5269e1bb894222158b89d0173883ae342964cbd95d2e629008f2402aab62d71"
+  },
+  "legacy_import": null,
+  "notes": [
+    "Repair task: strict_pass = compile_pass AND leak_removed AND behavior_preserved AND baseline leak observed.",
+    "12 bad units whose baseline leak is not observable under LSan are status=not_applicable and are excluded from the 58-unit denominator.",
+    "They still compile, pass LSan and preserve behaviour; that does not prove the leak was removed.",
+    "y_pred is the strict repair-pass flag, not a vulnerability prediction."
+  ]
+}

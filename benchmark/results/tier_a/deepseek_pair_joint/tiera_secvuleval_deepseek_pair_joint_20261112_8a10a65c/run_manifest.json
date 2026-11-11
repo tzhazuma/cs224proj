@@ -1,0 +1,94 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "tiera_secvuleval_deepseek_pair_joint_20261112_8a10a65c",
+  "created_at": "2026-11-11T21:36:49Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "pair_detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1",
+    "path": "splits/test_pairs_180.json",
+    "sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "unit_manifest": null,
+    "unit_count": 360,
+    "group_count": 180,
+    "label_counts": {
+      "vulnerable": 180,
+      "fixed": 180
+    }
+  },
+  "method": {
+    "method_id": "llm.deepseek.pair_joint_forced_choice",
+    "family": "llm",
+    "name": "DeepSeek V4.1 Flash / joint A-B forced choice",
+    "strategy": "pair_joint_forced_choice",
+    "prompt_version": "pair-joint-2026-11-12.1",
+    "config_sha256": "7dfe7110798f896536455df5c5f35ee920d86f2eb2704b6f3ca673f1f3f42d24",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "deepseek",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "context_window": null,
+      "tokenizer": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_tokens",
+        "thinking": null,
+        "reasoning_effort": null,
+        "response_format": "json_object",
+        "timeout_seconds": 240.0
+      },
+      "pricing_usd_per_1m": {
+        "input": 0.3,
+        "output": 1.2,
+        "cached_input": 0.006
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-12 snapshot"
+    },
+    "tool": null
+  },
+  "execution": {
+    "started_at": "2026-11-11T19:18:14.108+00:00",
+    "finished_at": "2026-11-11T19:20:43.461+00:00",
+    "status": "completed",
+    "planned_units": 360,
+    "recorded_units": 360,
+    "retries": 0,
+    "concurrency": 8,
+    "command": null,
+    "command_sha256": null,
+    "environment": {
+      "source_run": "pair_joint/runs/test_deepseek_180",
+      "endpoint": "https://opencode.ai/zen/go/v1"
+    }
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": "metrics.json",
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "source_results_sha256": "8a10a65cbbf1f71da327a741dcc09e171908f5950da7c04ce2a24b0dfc4dca44",
+    "source_manifest_sha256": "1a34126827724612437343b9d95bb429fbc7434745a3fa4e95b7c67062261fc9",
+    "source_position_map_sha256": "51edb28ee96f4f1483b97ac42a3dd604e6030fbb4e7126957e3a0eeca172c1ab",
+    "dataset_sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "predictions_sha256": "0a83cb6efdcc2ce054ee1069f2e6584084d583c5d9446895ea849a5834d248bb",
+    "source_results_jsonl_sha256": "8a10a65cbbf1f71da327a741dcc09e171908f5950da7c04ce2a24b0dfc4dca44",
+    "source_manifest_json_sha256": "1a34126827724612437343b9d95bb429fbc7434745a3fa4e95b7c67062261fc9",
+    "source_position_map_json_sha256": "51edb28ee96f4f1483b97ac42a3dd604e6030fbb4e7126957e3a0eeca172c1ab"
+  },
+  "legacy_import": null,
+  "notes": [
+    "FORCED-CHOICE JOINT TASK: the model sees both versions once and must choose exactly one as vulnerable.",
+    "Do not pool this run with side-wise free-form pair runs; the task and output space differ.",
+    "One joint request is represented as two canonical side records; cost/wall is split 50/50 and tokens/latency are assigned once."
+  ]
+}

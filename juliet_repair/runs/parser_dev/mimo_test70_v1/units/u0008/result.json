@@ -1,0 +1,133 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "cost": {
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 202,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.00010682000000000001,
+        "prompt_tokens": 359
+      },
+      "elapsed_seconds": 11.69,
+      "error": null,
+      "evaluation": null,
+      "parse_error": "files[0] must contain exactly path and content",
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 202,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.00010682,
+          "billing_source": "go",
+          "list_cost": 0.00010682,
+          "tokens": {
+            "cache_read": 0,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 359,
+            "output": 202,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 359,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 561
+      }
+    },
+    {
+      "attempt": 2,
+      "changed_paths": [
+        "CWE401_Memory_Leak__int64_t_calloc_01.c"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 320,
+        "completion_tokens": 197,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 9.693600000000001e-05,
+        "prompt_tokens": 612
+      },
+      "elapsed_seconds": 9.253,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.022
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "parse_error": null,
+      "parsed_explanation": "Added free(data) after printing so the calloc'd buffer is released, eliminating the leak while preserving output and behavior.",
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 197,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 9.694e-05,
+          "billing_source": "go",
+          "list_cost": 9.694e-05,
+          "tokens": {
+            "cache_read": 320,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 292,
+            "output": 197,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 612,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 320
+        },
+        "total_tokens": 809
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 320,
+  "changed_paths": [
+    "CWE401_Memory_Leak__int64_t_calloc_01.c"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 399,
+  "cost_complete": true,
+  "cost_usd_sum": 0.00020376,
+  "final_attempt": 2,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__int64_t_calloc_01",
+  "language": "c",
+  "leak_removed": true,
+  "model": "mimo-v2.6-flash",
+  "model_alias": "mimo",
+  "prompt_tokens_sum": 971,
+  "schema": "juliet-repair-result-v1",
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__int64_t_calloc_01__bad",
+  "unit_key": "u0008"
+}

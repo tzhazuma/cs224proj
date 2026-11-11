@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:30:22.980+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-dd3e-7a6a-8cd1-d579462eab27"
+      },
+      "http_status": 200,
+      "latency_seconds": 10.323170837989892,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-b23601331d324112a197c94c57b168da\",\"object\":\"chat.completion\",\"created\":1794425412,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__wchar_t_malloc_68a.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nwchar_t * CWE401_Memory_Leak__wchar_t_malloc_68_badData;\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__wchar_t_malloc_68b_badSink();\\\\n\\\\nvoid CWE401_Memory_Leak__wchar_t_malloc_68_bad()\\\\n{\\\\n    wchar_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = (wchar_t *)malloc(100*sizeof(wchar_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n    CWE401_Memory_Leak__wchar_t_malloc_68_badData = data;\\\\n    CWE401_Memory_Leak__wchar_t_malloc_68b_badSink();\\\\n    free(data);\\\\n    CWE401_Memory_Leak__wchar_t_malloc_68_badData = NULL;\\\\n}\\\\n\\\"}, {\\\"path\\\": \\\"CWE401_Memory_Leak__wchar_t_malloc_68b.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nextern wchar_t * CWE401_Memory_Leak__wchar_t_malloc_68_badData;\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__wchar_t_malloc_68b_badSink()\\\\n{\\\\n    wchar_t * data = CWE401_Memory_Leak__wchar_t_malloc_68_badData;\\\\n\\\\n    ;\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The heap buffer allocated in the bad() entry point was never freed. Added free(data) after the sink call (and cleared the global pointer) so the allocation is released while preserving the printed output and return behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":575,\"completion_tokens\":468,\"total_tokens\":1043,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00034823,\"allowance\":0.00020894,\"tokens\":{\"input\":447,\"output\":468,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:30:12.657+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__wchar_t_malloc_68a.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nwchar_t * CWE401_Memory_Leak__wchar_t_malloc_68_badData;\\n\\n\\nvoid CWE401_Memory_Leak__wchar_t_malloc_68b_badSink();\\n\\nvoid CWE401_Memory_Leak__wchar_t_malloc_68_bad()\\n{\\n    wchar_t * data;\\n    data = NULL;\\n\\n    data = (wchar_t *)malloc(100*sizeof(wchar_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n    CWE401_Memory_Leak__wchar_t_malloc_68_badData = data;\\n    CWE401_Memory_Leak__wchar_t_malloc_68b_badSink();\\n    free(data);\\n    CWE401_Memory_Leak__wchar_t_malloc_68_badData = NULL;\\n}\\n\"}, {\"path\": \"CWE401_Memory_Leak__wchar_t_malloc_68b.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nextern wchar_t * CWE401_Memory_Leak__wchar_t_malloc_68_badData;\\n\\n\\nvoid CWE401_Memory_Leak__wchar_t_malloc_68b_badSink()\\n{\\n    wchar_t * data = CWE401_Memory_Leak__wchar_t_malloc_68_badData;\\n\\n    ;\\n}\\n\"}], \"explanation\": \"The heap buffer allocated in the bad() entry point was never freed. Added free(data) after the sink call (and cleared the global pointer) so the allocation is released while preserving the printed output and return behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 468,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.0006964680000000001,
+    "prompt_tokens": 575
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 10.323170837989892,
+  "response_meta": {
+    "content_chars": 1259,
+    "created": 1794425412,
+    "finish_reason": "stop",
+    "id": "chatcmpl-b23601331d324112a197c94c57b168da",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0068",
+  "usage": {
+    "completion_tokens": 468,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00020894,
+      "billing_source": "go",
+      "list_cost": 0.00034823,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 447,
+        "output": 468,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 575,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 1043
+  },
+  "wall_seconds": 10.323198681988288
+}

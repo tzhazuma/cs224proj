@@ -1,0 +1,2813 @@
+{
+  "schema_version": "benchmark-tier-a-summary-v1",
+  "generated_at": "2026-11-11T20:26:25Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "historical_view": {
+    "status": "superseded",
+    "scope": "12 legacy runs only",
+    "superseded_by": "benchmark/results/final_summary.json",
+    "note": "Round-2 evidence/pair-joint/LLM/hybrid/repair are not in this historical summary."
+  },
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "detection_sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "pairs_sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "detection_units": 160,
+    "detection_labels": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    },
+    "pairs": 180,
+    "pair_sides": 360
+  },
+  "runs": [
+    {
+      "run_id": "legacy__test_v1_direct_independent",
+      "model_family": "deepseek",
+      "model_id": "deepseek-v4.1-flash",
+      "strategy": "direct",
+      "task": "detection",
+      "scores": {
+        "n": 160,
+        "valid": 160,
+        "coverage": 1.0,
+        "precision": 0.8260869565217391,
+        "recall": 0.296875,
+        "specificity": 0.75,
+        "macro_f1": 0.38277436624153677,
+        "mcc": 0.04142761324995806,
+        "strict_accuracy": 0.3875,
+        "confusion": {
+          "tp": 38,
+          "fp": 8,
+          "tn": 24,
+          "fn": 90
+        },
+        "wilson": {
+          "precision": {
+            "successes": 38,
+            "total": 46,
+            "estimate": 0.8260869565217391,
+            "low": 0.6927664628362151,
+            "high": 0.9091420829775367,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "recall": {
+            "successes": 38,
+            "total": 128,
+            "estimate": 0.296875,
+            "low": 0.22458166083566666,
+            "high": 0.3810052276504461,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "specificity": {
+            "successes": 24,
+            "total": 32,
+            "estimate": 0.75,
+            "low": 0.5789344100575552,
+            "high": 0.8674759908149096,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "accuracy": {
+            "successes": 62,
+            "total": 160,
+            "estimate": 0.3875,
+            "low": 0.31549343843363126,
+            "high": 0.46478195547995754,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "strict_accuracy": {
+            "successes": 62,
+            "total": 160,
+            "estimate": 0.3875,
+            "low": 0.31549343843363126,
+            "high": 0.46478195547995754,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 160,
+            "total": 160,
+            "estimate": 1.0,
+            "low": 0.9765538048284949,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 40
+      },
+      "bootstrap": {
+        "macro_f1": {
+          "ci_low": 0.3046705916312326,
+          "ci_high": 0.5520888418826018,
+          "bootstrap_median": 0.3846049954050107,
+          "bootstrap_mean": 0.395688382371517,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "f1": {
+          "ci_low": 0.33620392799468035,
+          "ci_high": 0.6373860182370816,
+          "bootstrap_median": 0.44007722007722005,
+          "bootstrap_mean": 0.45276416774599665,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "mcc": {
+          "ci_low": -0.09957456297832894,
+          "ci_high": 0.24813852615514448,
+          "bootstrap_median": 0.04558863785228441,
+          "bootstrap_mean": 0.052734340438887466,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "balanced_accuracy": {
+          "ci_low": 0.4428607197886859,
+          "ci_high": 0.6401957172041443,
+          "bootstrap_median": 0.5256032761656522,
+          "bootstrap_mean": 0.5297402579394171,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "accuracy": {
+          "ci_low": 0.3076923076923077,
+          "ci_high": 0.5684210526315789,
+          "bootstrap_median": 0.39090909090909093,
+          "bootstrap_mean": 0.4031696458838915,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "strict_accuracy": {
+          "ci_low": 0.3076923076923077,
+          "ci_high": 0.5684210526315789,
+          "bootstrap_median": 0.39090909090909093,
+          "bootstrap_mean": 0.4031696458838915,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.0669882,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.2533398,
+        "full_run_requests": 288,
+        "wall_s_sum": 976.2110929359769,
+        "latency_ms_p50": 5654.158974000893,
+        "latency_ms_p95": 10825.697870550353,
+        "cost_per_100_units_usd": 0.041867625
+      },
+      "status_counts": {
+        "ok": 160
+      },
+      "latency_ms_p50_all_requests": 5654.158974000893,
+      "latency_ms_p95_all_requests": 10825.697870550353,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_few-shot_independent",
+      "model_family": "deepseek",
+      "model_id": "deepseek-v4.1-flash",
+      "strategy": "few-shot",
+      "task": "detection",
+      "scores": {
+        "n": 160,
+        "valid": 160,
+        "coverage": 1.0,
+        "precision": 0.8367346938775511,
+        "recall": 0.3203125,
+        "specificity": 0.75,
+        "macro_f1": 0.3994705859112639,
+        "mcc": 0.06101729972694637,
+        "strict_accuracy": 0.40625,
+        "confusion": {
+          "tp": 41,
+          "fp": 8,
+          "tn": 24,
+          "fn": 87
+        },
+        "wilson": {
+          "precision": {
+            "successes": 41,
+            "total": 49,
+            "estimate": 0.8367346938775511,
+            "low": 0.7096366156608318,
+            "high": 0.9148730162927117,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "recall": {
+            "successes": 41,
+            "total": 128,
+            "estimate": 0.3203125,
+            "low": 0.24573020610600926,
+            "high": 0.40536588755478287,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "specificity": {
+            "successes": 24,
+            "total": 32,
+            "estimate": 0.75,
+            "low": 0.5789344100575552,
+            "high": 0.8674759908149096,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "accuracy": {
+            "successes": 65,
+            "total": 160,
+            "estimate": 0.40625,
+            "low": 0.33321304722042155,
+            "high": 0.4836831143742356,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "strict_accuracy": {
+            "successes": 65,
+            "total": 160,
+            "estimate": 0.40625,
+            "low": 0.33321304722042155,
+            "high": 0.4836831143742356,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 160,
+            "total": 160,
+            "estimate": 1.0,
+            "low": 0.9765538048284949,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 40
+      },
+      "bootstrap": {
+        "macro_f1": {
+          "ci_low": 0.3054081696464421,
+          "ci_high": 0.5932573083327151,
+          "bootstrap_median": 0.4023545801170311,
+          "bootstrap_mean": 0.41415488435462294,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "f1": {
+          "ci_low": 0.3408055140342136,
+          "ci_high": 0.6842223802750117,
+          "bootstrap_median": 0.46808510638297873,
+          "bootstrap_mean": 0.48070861558831257,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "mcc": {
+          "ci_low": -0.08714200728879393,
+          "ci_high": 0.29394662126314347,
+          "bootstrap_median": 0.06630865472207631,
+          "bootstrap_mean": 0.07541594892379166,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "balanced_accuracy": {
+          "ci_low": 0.44937473749355666,
+          "ci_high": 0.6674983884059883,
+          "bootstrap_median": 0.5379644142575177,
+          "bootstrap_mean": 0.5432132440199986,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "accuracy": {
+          "ci_low": 0.30901180613976303,
+          "ci_high": 0.6133333333333333,
+          "bootstrap_median": 0.41081081081081083,
+          "bootstrap_mean": 0.42402526359331233,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "strict_accuracy": {
+          "ci_low": 0.30901180613976303,
+          "ci_high": 0.6133333333333333,
+          "bootstrap_median": 0.41081081081081083,
+          "bootstrap_mean": 0.42402526359331233,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.1367406,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.4299378,
+        "full_run_requests": 288,
+        "wall_s_sum": 942.2227673880698,
+        "latency_ms_p50": 5327.8260360020795,
+        "latency_ms_p95": 9691.450224994333,
+        "cost_per_100_units_usd": 0.085462875
+      },
+      "status_counts": {
+        "ok": 160
+      },
+      "latency_ms_p50_all_requests": 5327.8260360020795,
+      "latency_ms_p95_all_requests": 9691.450224994333,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_context_independent",
+      "model_family": "deepseek",
+      "model_id": "deepseek-v4.1-flash",
+      "strategy": "context",
+      "task": "detection",
+      "scores": {
+        "n": 160,
+        "valid": 160,
+        "coverage": 1.0,
+        "precision": 0.8125,
+        "recall": 0.3046875,
+        "specificity": 0.71875,
+        "macro_f1": 0.38131313131313127,
+        "mcc": 0.020457927209624287,
+        "strict_accuracy": 0.3875,
+        "confusion": {
+          "tp": 39,
+          "fp": 9,
+          "tn": 23,
+          "fn": 89
+        },
+        "wilson": {
+          "precision": {
+            "successes": 39,
+            "total": 48,
+            "estimate": 0.8125,
+            "low": 0.680601328507153,
+            "high": 0.8980860904515235,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "recall": {
+            "successes": 39,
+            "total": 128,
+            "estimate": 0.3046875,
+            "low": 0.23160561515239225,
+            "high": 0.389151008391947,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "specificity": {
+            "successes": 23,
+            "total": 32,
+            "estimate": 0.71875,
+            "low": 0.5462549057408344,
+            "high": 0.8443541950225724,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "accuracy": {
+            "successes": 62,
+            "total": 160,
+            "estimate": 0.3875,
+            "low": 0.31549343843363126,
+            "high": 0.46478195547995754,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "strict_accuracy": {
+            "successes": 62,
+            "total": 160,
+            "estimate": 0.3875,
+            "low": 0.31549343843363126,
+            "high": 0.46478195547995754,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 160,
+            "total": 160,
+            "estimate": 1.0,
+            "low": 0.9765538048284949,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 40
+      },
+      "bootstrap": {
+        "macro_f1": {
+          "ci_low": 0.28552253116011506,
+          "ci_high": 0.5596160202090663,
+          "bootstrap_median": 0.3849693055545068,
+          "bootstrap_mean": 0.39446917780685165,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "f1": {
+          "ci_low": 0.31192413929170365,
+          "ci_high": 0.6603816859961917,
+          "bootstrap_median": 0.4495253026739831,
+          "bootstrap_mean": 0.4596379935730367,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "mcc": {
+          "ci_low": -0.12711873351268219,
+          "ci_high": 0.23424406572200224,
+          "bootstrap_median": 0.02640599725524117,
+          "bootstrap_mean": 0.032486678174987564,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "balanced_accuracy": {
+          "ci_low": 0.4272897926036982,
+          "ci_high": 0.6335881171903328,
+          "bootstrap_median": 0.5148394574175824,
+          "bootstrap_mean": 0.5187202617633658,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "accuracy": {
+          "ci_low": 0.2878769401330378,
+          "ci_high": 0.5842733109587042,
+          "bootstrap_median": 0.3931034482758621,
+          "bootstrap_mean": 0.4040430474627915,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "strict_accuracy": {
+          "ci_low": 0.2878769401330378,
+          "ci_high": 0.5842733109587042,
+          "bootstrap_median": 0.3931034482758621,
+          "bootstrap_mean": 0.4040430474627915,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.070308,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.25977659999999997,
+        "full_run_requests": 288,
+        "wall_s_sum": 1017.5757359849231,
+        "latency_ms_p50": 5633.472496498143,
+        "latency_ms_p95": 10706.681216948336,
+        "cost_per_100_units_usd": 0.043942499999999995
+      },
+      "status_counts": {
+        "ok": 160
+      },
+      "latency_ms_p50_all_requests": 5633.472496498143,
+      "latency_ms_p95_all_requests": 10706.681216948336,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_direct_pairs",
+      "model_family": "deepseek",
+      "model_id": "deepseek-v4.1-flash",
+      "strategy": "direct",
+      "task": "pair",
+      "scores": {
+        "n_pairs": 180,
+        "valid_pairs": 180,
+        "coverage": 1.0,
+        "joint_accuracy_valid_pairs": 0.11666666666666667,
+        "joint_accuracy_all_pairs": 0.11666666666666667,
+        "joint_categories": {
+          "vulnerable_detected_fixed_clean": 21,
+          "both_flagged": 44,
+          "both_clean": 113,
+          "vulnerable_missed_fixed_flagged": 2
+        },
+        "consistent_rate": 0.12777777777777777,
+        "swapped_rate": 0.011111111111111112,
+        "wilson": {
+          "joint_accuracy_valid_pairs": {
+            "successes": 21,
+            "total": 180,
+            "estimate": 0.11666666666666667,
+            "low": 0.07758567104495455,
+            "high": 0.1717675440282821,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "joint_accuracy_all_pairs": {
+            "successes": 21,
+            "total": 180,
+            "estimate": 0.11666666666666667,
+            "low": 0.07758567104495455,
+            "high": 0.1717675440282821,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 180,
+            "total": 180,
+            "estimate": 1.0,
+            "low": 0.979104502078387,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "consistent_rate": {
+            "successes": 23,
+            "total": 180,
+            "estimate": 0.12777777777777777,
+            "low": 0.08667497947852412,
+            "high": 0.18443611341867663,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "swapped_rate": {
+            "successes": 2,
+            "total": 180,
+            "estimate": 0.011111111111111112,
+            "low": 0.0030523748459926232,
+            "high": 0.03960100089958457,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_vulnerable_rate": {
+            "successes": 44,
+            "total": 180,
+            "estimate": 0.24444444444444444,
+            "low": 0.18743271646074589,
+            "high": 0.31213609358807853,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_safe_rate": {
+            "successes": 113,
+            "total": 180,
+            "estimate": 0.6277777777777778,
+            "low": 0.5551804128163538,
+            "high": 0.695035182159234,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 180
+      },
+      "bootstrap": {
+        "joint_accuracy_valid_pairs": {
+          "ci_low": 0.07222222222222222,
+          "ci_high": 0.16666666666666666,
+          "bootstrap_median": 0.11666666666666667,
+          "bootstrap_mean": 0.11645166666666666,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "joint_accuracy_all_pairs": {
+          "ci_low": 0.07222222222222222,
+          "ci_high": 0.16666666666666666,
+          "bootstrap_median": 0.11666666666666667,
+          "bootstrap_mean": 0.11645166666666666,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "coverage": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.1383228,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.39224519999999996,
+        "full_run_requests": 540,
+        "wall_s_sum": 2442.559041881759,
+        "latency_ms_p50": 5724.533259497548,
+        "latency_ms_p95": 13819.276920503036,
+        "cost_per_100_units_usd": 0.076846
+      },
+      "status_counts": {
+        "ok": 360
+      },
+      "latency_ms_p50_all_requests": 5724.533259497548,
+      "latency_ms_p95_all_requests": 13819.276920503036,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_few-shot_pairs",
+      "model_family": "deepseek",
+      "model_id": "deepseek-v4.1-flash",
+      "strategy": "few-shot",
+      "task": "pair",
+      "scores": {
+        "n_pairs": 180,
+        "valid_pairs": 180,
+        "coverage": 1.0,
+        "joint_accuracy_valid_pairs": 0.08888888888888889,
+        "joint_accuracy_all_pairs": 0.08888888888888889,
+        "joint_categories": {
+          "vulnerable_detected_fixed_clean": 16,
+          "both_flagged": 49,
+          "both_clean": 113,
+          "vulnerable_missed_fixed_flagged": 2
+        },
+        "consistent_rate": 0.1,
+        "swapped_rate": 0.011111111111111112,
+        "wilson": {
+          "joint_accuracy_valid_pairs": {
+            "successes": 16,
+            "total": 180,
+            "estimate": 0.08888888888888889,
+            "low": 0.05545460269973844,
+            "high": 0.13950391781358784,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "joint_accuracy_all_pairs": {
+            "successes": 16,
+            "total": 180,
+            "estimate": 0.08888888888888889,
+            "low": 0.05545460269973844,
+            "high": 0.13950391781358784,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 180,
+            "total": 180,
+            "estimate": 1.0,
+            "low": 0.979104502078387,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "consistent_rate": {
+            "successes": 18,
+            "total": 180,
+            "estimate": 0.1,
+            "low": 0.06419425113081786,
+            "high": 0.15252214720647256,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "swapped_rate": {
+            "successes": 2,
+            "total": 180,
+            "estimate": 0.011111111111111112,
+            "low": 0.0030523748459926232,
+            "high": 0.03960100089958457,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_vulnerable_rate": {
+            "successes": 49,
+            "total": 180,
+            "estimate": 0.2722222222222222,
+            "low": 0.21246499152370985,
+            "high": 0.3414985130850248,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_safe_rate": {
+            "successes": 113,
+            "total": 180,
+            "estimate": 0.6277777777777778,
+            "low": 0.5551804128163538,
+            "high": 0.695035182159234,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 180
+      },
+      "bootstrap": {
+        "joint_accuracy_valid_pairs": {
+          "ci_low": 0.05,
+          "ci_high": 0.13333333333333333,
+          "bootstrap_median": 0.08888888888888889,
+          "bootstrap_mean": 0.08862555555555555,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "joint_accuracy_all_pairs": {
+          "ci_low": 0.05,
+          "ci_high": 0.13333333333333333,
+          "bootstrap_median": 0.08888888888888889,
+          "bootstrap_mean": 0.08862555555555555,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "coverage": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.29489519999999997,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.7014456,
+        "full_run_requests": 540,
+        "wall_s_sum": 2052.77512702308,
+        "latency_ms_p50": 5307.759636503761,
+        "latency_ms_p95": 8377.757800048857,
+        "cost_per_100_units_usd": 0.16383066666666665
+      },
+      "status_counts": {
+        "ok": 360
+      },
+      "latency_ms_p50_all_requests": 5307.759636503761,
+      "latency_ms_p95_all_requests": 8377.757800048857,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_context_pairs",
+      "model_family": "deepseek",
+      "model_id": "deepseek-v4.1-flash",
+      "strategy": "context",
+      "task": "pair",
+      "scores": {
+        "n_pairs": 180,
+        "valid_pairs": 180,
+        "coverage": 1.0,
+        "joint_accuracy_valid_pairs": 0.12222222222222222,
+        "joint_accuracy_all_pairs": 0.12222222222222222,
+        "joint_categories": {
+          "vulnerable_detected_fixed_clean": 22,
+          "both_flagged": 49,
+          "both_clean": 108,
+          "vulnerable_missed_fixed_flagged": 1
+        },
+        "consistent_rate": 0.12777777777777777,
+        "swapped_rate": 0.005555555555555556,
+        "wilson": {
+          "joint_accuracy_valid_pairs": {
+            "successes": 22,
+            "total": 180,
+            "estimate": 0.12222222222222222,
+            "low": 0.08211540501521036,
+            "high": 0.17811674897000834,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "joint_accuracy_all_pairs": {
+            "successes": 22,
+            "total": 180,
+            "estimate": 0.12222222222222222,
+            "low": 0.08211540501521036,
+            "high": 0.17811674897000834,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 180,
+            "total": 180,
+            "estimate": 1.0,
+            "low": 0.979104502078387,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "consistent_rate": {
+            "successes": 23,
+            "total": 180,
+            "estimate": 0.12777777777777777,
+            "low": 0.08667497947852412,
+            "high": 0.18443611341867663,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "swapped_rate": {
+            "successes": 1,
+            "total": 180,
+            "estimate": 0.005555555555555556,
+            "low": 0.0009813660672160131,
+            "high": 0.030793070766379105,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_vulnerable_rate": {
+            "successes": 49,
+            "total": 180,
+            "estimate": 0.2722222222222222,
+            "low": 0.21246499152370985,
+            "high": 0.3414985130850248,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_safe_rate": {
+            "successes": 108,
+            "total": 180,
+            "estimate": 0.6,
+            "low": 0.5270635327059384,
+            "high": 0.6687573677097388,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 180
+      },
+      "bootstrap": {
+        "joint_accuracy_valid_pairs": {
+          "ci_low": 0.07777777777777778,
+          "ci_high": 0.17222222222222222,
+          "bootstrap_median": 0.12222222222222222,
+          "bootstrap_mean": 0.12207666666666667,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "joint_accuracy_all_pairs": {
+          "ci_low": 0.07777777777777778,
+          "ci_high": 0.17222222222222222,
+          "bootstrap_median": 0.12222222222222222,
+          "bootstrap_mean": 0.12207666666666667,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "coverage": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.144837,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.4024743,
+        "full_run_requests": 540,
+        "wall_s_sum": 2384.9981884978915,
+        "latency_ms_p50": 5619.429243495688,
+        "latency_ms_p95": 13130.225344403158,
+        "cost_per_100_units_usd": 0.080465
+      },
+      "status_counts": {
+        "ok": 360
+      },
+      "latency_ms_p50_all_requests": 5619.429243495688,
+      "latency_ms_p95_all_requests": 13130.225344403158,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_mimo_direct_independent",
+      "model_family": "mimo",
+      "model_id": "mimo-v2.6-flash",
+      "strategy": "direct",
+      "task": "detection",
+      "scores": {
+        "n": 160,
+        "valid": 150,
+        "coverage": 0.9375,
+        "precision": 0.8055555555555556,
+        "recall": 0.24166666666666667,
+        "specificity": 0.7666666666666667,
+        "macro_f1": 0.3456196581196581,
+        "mcc": 0.007804881763180783,
+        "strict_accuracy": 0.325,
+        "confusion": {
+          "tp": 29,
+          "fp": 7,
+          "tn": 23,
+          "fn": 91
+        },
+        "wilson": {
+          "precision": {
+            "successes": 29,
+            "total": 36,
+            "estimate": 0.8055555555555556,
+            "low": 0.6497195700482262,
+            "high": 0.9024690458107126,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "recall": {
+            "successes": 29,
+            "total": 120,
+            "estimate": 0.24166666666666667,
+            "low": 0.17385841217535253,
+            "high": 0.32550149047431093,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "specificity": {
+            "successes": 23,
+            "total": 30,
+            "estimate": 0.7666666666666667,
+            "low": 0.5907167384187784,
+            "high": 0.8820761185551051,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "accuracy": {
+            "successes": 52,
+            "total": 150,
+            "estimate": 0.3466666666666667,
+            "low": 0.2751950896082086,
+            "high": 0.4257957853313349,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "strict_accuracy": {
+            "successes": 52,
+            "total": 160,
+            "estimate": 0.325,
+            "low": 0.2572675472298113,
+            "high": 0.40093862108021555,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 150,
+            "total": 160,
+            "estimate": 0.9375,
+            "low": 0.8887842459710525,
+            "high": 0.9657003332538804,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 40
+      },
+      "bootstrap": {
+        "macro_f1": {
+          "ci_low": 0.26444860319366725,
+          "ci_high": 0.5280935549108557,
+          "bootstrap_median": 0.3481474046405102,
+          "bootstrap_mean": 0.3604843389159001,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "f1": {
+          "ci_low": 0.25806451612903225,
+          "ci_high": 0.5862183908045975,
+          "bootstrap_median": 0.37681159420289856,
+          "bootstrap_mean": 0.38833168502270293,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "mcc": {
+          "ci_low": -0.11428143814231195,
+          "ci_high": 0.216936408690696,
+          "bootstrap_median": 0.01228645175579329,
+          "bootstrap_mean": 0.023122680735419045,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "balanced_accuracy": {
+          "ci_low": 0.4380472251639336,
+          "ci_high": 0.6160714285714286,
+          "bootstrap_median": 0.5065610232144506,
+          "bootstrap_mean": 0.5121174251417518,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "accuracy": {
+          "ci_low": 0.265304293760515,
+          "ci_high": 0.5373134328358209,
+          "bootstrap_median": 0.35074626865671643,
+          "bootstrap_mean": 0.3637856466439926,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "strict_accuracy": {
+          "ci_low": 0.2477456428391008,
+          "ci_high": 0.4878048780487805,
+          "bootstrap_median": 0.3289181286549708,
+          "bootstrap_mean": 0.33888093079027237,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.024397184000000002,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.07260122240000001,
+        "full_run_requests": 288,
+        "wall_s_sum": 910.6399622649915,
+        "latency_ms_p50": 4593.6458934957045,
+        "latency_ms_p95": 11995.291441893627,
+        "cost_per_100_units_usd": 0.015248240000000001
+      },
+      "status_counts": {
+        "ok": 150,
+        "schema_invalid": 10
+      },
+      "latency_ms_p50_all_requests": 4593.6458934957045,
+      "latency_ms_p95_all_requests": 11995.291441893627,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_mimo_few-shot_independent",
+      "model_family": "mimo",
+      "model_id": "mimo-v2.6-flash",
+      "strategy": "few-shot",
+      "task": "detection",
+      "scores": {
+        "n": 160,
+        "valid": 160,
+        "coverage": 1.0,
+        "precision": 0.7727272727272727,
+        "recall": 0.265625,
+        "specificity": 0.6875,
+        "macro_f1": 0.3463230672532998,
+        "mcc": -0.04199193832168908,
+        "strict_accuracy": 0.35,
+        "confusion": {
+          "tp": 34,
+          "fp": 10,
+          "tn": 22,
+          "fn": 94
+        },
+        "wilson": {
+          "precision": {
+            "successes": 34,
+            "total": 44,
+            "estimate": 0.7727272727272727,
+            "low": 0.6300764193536367,
+            "high": 0.8715805240508284,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "recall": {
+            "successes": 34,
+            "total": 128,
+            "estimate": 0.265625,
+            "low": 0.19675501016357289,
+            "high": 0.3481529380896342,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "specificity": {
+            "successes": 22,
+            "total": 32,
+            "estimate": 0.6875,
+            "low": 0.5143332169904459,
+            "high": 0.8204745836639026,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "accuracy": {
+            "successes": 56,
+            "total": 160,
+            "estimate": 0.35,
+            "low": 0.28039799743828786,
+            "high": 0.42663586111316365,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "strict_accuracy": {
+            "successes": 56,
+            "total": 160,
+            "estimate": 0.35,
+            "low": 0.28039799743828786,
+            "high": 0.42663586111316365,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 160,
+            "total": 160,
+            "estimate": 1.0,
+            "low": 0.9765538048284949,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 40
+      },
+      "bootstrap": {
+        "macro_f1": {
+          "ci_low": 0.2623254518583509,
+          "ci_high": 0.5119855269109,
+          "bootstrap_median": 0.34854548240718713,
+          "bootstrap_mean": 0.35841749768404413,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "f1": {
+          "ci_low": 0.279563885384754,
+          "ci_high": 0.6105263157894737,
+          "bootstrap_median": 0.4018264840182648,
+          "bootstrap_mean": 0.41245877590968894,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "mcc": {
+          "ci_low": -0.19906387578816578,
+          "ci_high": 0.16214746065416757,
+          "bootstrap_median": -0.0348046469509198,
+          "bootstrap_mean": -0.031204916169182497,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "balanced_accuracy": {
+          "ci_low": 0.38677264492753627,
+          "ci_high": 0.592105702339962,
+          "bootstrap_median": 0.4806851828240327,
+          "bootstrap_mean": 0.48254022233677835,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "accuracy": {
+          "ci_low": 0.26356519183947613,
+          "ci_high": 0.5326268115942027,
+          "bootstrap_median": 0.35454545454545455,
+          "bootstrap_mean": 0.36548835183183886,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "strict_accuracy": {
+          "ci_low": 0.26356519183947613,
+          "ci_high": 0.5326268115942027,
+          "bootstrap_median": 0.35454545454545455,
+          "bootstrap_mean": 0.36548835183183886,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.034011152,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.09380775040000001,
+        "full_run_requests": 288,
+        "wall_s_sum": 870.9188751030015,
+        "latency_ms_p50": 4508.267771001556,
+        "latency_ms_p95": 11033.397496844547,
+        "cost_per_100_units_usd": 0.02125697
+      },
+      "status_counts": {
+        "ok": 160
+      },
+      "latency_ms_p50_all_requests": 4508.267771001556,
+      "latency_ms_p95_all_requests": 11033.397496844547,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_mimo_context_independent",
+      "model_family": "mimo",
+      "model_id": "mimo-v2.6-flash",
+      "strategy": "context",
+      "task": "detection",
+      "scores": {
+        "n": 160,
+        "valid": 153,
+        "coverage": 0.95625,
+        "precision": 0.8611111111111112,
+        "recall": 0.25203252032520324,
+        "specificity": 0.8333333333333334,
+        "macro_f1": 0.3650365806700039,
+        "mcc": 0.07990117932401992,
+        "strict_accuracy": 0.35,
+        "confusion": {
+          "tp": 31,
+          "fp": 5,
+          "tn": 25,
+          "fn": 92
+        },
+        "wilson": {
+          "precision": {
+            "successes": 31,
+            "total": 36,
+            "estimate": 0.8611111111111112,
+            "low": 0.7134046961064381,
+            "high": 0.9391818499086716,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "recall": {
+            "successes": 31,
+            "total": 123,
+            "estimate": 0.25203252032520324,
+            "low": 0.18361089874893116,
+            "high": 0.33547378722719795,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "specificity": {
+            "successes": 25,
+            "total": 30,
+            "estimate": 0.8333333333333334,
+            "low": 0.6643564949358398,
+            "high": 0.9266345762815145,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "accuracy": {
+            "successes": 56,
+            "total": 153,
+            "estimate": 0.3660130718954248,
+            "low": 0.29383469666295287,
+            "high": 0.444754829931081,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "strict_accuracy": {
+            "successes": 56,
+            "total": 160,
+            "estimate": 0.35,
+            "low": 0.28039799743828786,
+            "high": 0.42663586111316365,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 153,
+            "total": 160,
+            "estimate": 0.95625,
+            "low": 0.9124569584575362,
+            "high": 0.9786483884484656,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 40
+      },
+      "bootstrap": {
+        "macro_f1": {
+          "ci_low": 0.27777160683855256,
+          "ci_high": 0.5711915565999514,
+          "bootstrap_median": 0.3685221651385182,
+          "bootstrap_mean": 0.384709818790879,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "f1": {
+          "ci_low": 0.2716028942850135,
+          "ci_high": 0.6436879018118058,
+          "bootstrap_median": 0.39669421487603307,
+          "bootstrap_mean": 0.41357954894049054,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "mcc": {
+          "ci_low": -0.03686217492847511,
+          "ci_high": 0.3005981423231541,
+          "bootstrap_median": 0.08753882857081571,
+          "bootstrap_mean": 0.0991175251615533,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "balanced_accuracy": {
+          "ci_low": 0.48080538326703975,
+          "ci_high": 0.666676267281106,
+          "bootstrap_median": 0.5468001775690228,
+          "bootstrap_mean": 0.5537422405348973,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "accuracy": {
+          "ci_low": 0.2783850931677019,
+          "ci_high": 0.5822819585477813,
+          "bootstrap_median": 0.3711340206185567,
+          "bootstrap_mean": 0.38843149038804864,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "strict_accuracy": {
+          "ci_low": 0.26804123711340205,
+          "ci_high": 0.547945205479452,
+          "bootstrap_median": 0.35454545454545455,
+          "bootstrap_mean": 0.3696242348549993,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.0255679816,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.0749620368,
+        "full_run_requests": 288,
+        "wall_s_sum": 792.6859237030294,
+        "latency_ms_p50": 4312.672706495505,
+        "latency_ms_p95": 8380.484274741317,
+        "cost_per_100_units_usd": 0.0159799885
+      },
+      "status_counts": {
+        "ok": 153,
+        "schema_invalid": 7
+      },
+      "latency_ms_p50_all_requests": 4312.672706495505,
+      "latency_ms_p95_all_requests": 8380.484274741317,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_mimo_direct_pairs",
+      "model_family": "mimo",
+      "model_id": "mimo-v2.6-flash",
+      "strategy": "direct",
+      "task": "pair",
+      "scores": {
+        "n_pairs": 180,
+        "valid_pairs": 154,
+        "coverage": 0.8555555555555555,
+        "joint_accuracy_valid_pairs": 0.09090909090909091,
+        "joint_accuracy_all_pairs": 0.07777777777777778,
+        "joint_categories": {
+          "vulnerable_detected_fixed_clean": 14,
+          "both_flagged": 27,
+          "both_clean": 108,
+          "vulnerable_missed_fixed_flagged": 5
+        },
+        "consistent_rate": 0.12337662337662338,
+        "swapped_rate": 0.032467532467532464,
+        "wilson": {
+          "joint_accuracy_valid_pairs": {
+            "successes": 14,
+            "total": 154,
+            "estimate": 0.09090909090909091,
+            "low": 0.05492529344925998,
+            "high": 0.14680534854173694,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "joint_accuracy_all_pairs": {
+            "successes": 14,
+            "total": 180,
+            "estimate": 0.07777777777777778,
+            "low": 0.04689342263774486,
+            "high": 0.12630722005161726,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 154,
+            "total": 180,
+            "estimate": 0.8555555555555555,
+            "low": 0.7967697562121162,
+            "high": 0.8994823341547366,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "consistent_rate": {
+            "successes": 19,
+            "total": 154,
+            "estimate": 0.12337662337662338,
+            "low": 0.08042521785381349,
+            "high": 0.18466013509027893,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "swapped_rate": {
+            "successes": 5,
+            "total": 154,
+            "estimate": 0.032467532467532464,
+            "low": 0.01394636101001754,
+            "high": 0.07374580126540747,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_vulnerable_rate": {
+            "successes": 27,
+            "total": 154,
+            "estimate": 0.17532467532467533,
+            "low": 0.12338255592825187,
+            "high": 0.2430703345407933,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_safe_rate": {
+            "successes": 108,
+            "total": 154,
+            "estimate": 0.7012987012987013,
+            "low": 0.624830182743683,
+            "high": 0.767969025165509,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 180
+      },
+      "bootstrap": {
+        "joint_accuracy_valid_pairs": {
+          "ci_low": 0.04877625338753392,
+          "ci_high": 0.1390728476821192,
+          "bootstrap_median": 0.08917197452229299,
+          "bootstrap_mean": 0.0904296722197281,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "joint_accuracy_all_pairs": {
+          "ci_low": 0.04430555555555679,
+          "ci_high": 0.11666666666666667,
+          "bootstrap_median": 0.07777777777777778,
+          "bootstrap_mean": 0.07732333333333334,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "coverage": {
+          "ci_low": 0.8,
+          "ci_high": 0.9055555555555556,
+          "bootstrap_median": 0.8555555555555555,
+          "bootstrap_mean": 0.85525,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.048289505600000004,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.11428228000000001,
+        "full_run_requests": 540,
+        "wall_s_sum": 1992.5277814901347,
+        "latency_ms_p50": 4444.0029289980885,
+        "latency_ms_p95": 10311.925713895473,
+        "cost_per_100_units_usd": 0.026827503111111112
+      },
+      "status_counts": {
+        "ok": 331,
+        "schema_invalid": 29
+      },
+      "latency_ms_p50_all_requests": 4444.0029289980885,
+      "latency_ms_p95_all_requests": 10311.925713895473,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_mimo_few-shot_pairs",
+      "model_family": "mimo",
+      "model_id": "mimo-v2.6-flash",
+      "strategy": "few-shot",
+      "task": "pair",
+      "scores": {
+        "n_pairs": 180,
+        "valid_pairs": 180,
+        "coverage": 1.0,
+        "joint_accuracy_valid_pairs": 0.09444444444444444,
+        "joint_accuracy_all_pairs": 0.09444444444444444,
+        "joint_categories": {
+          "vulnerable_detected_fixed_clean": 17,
+          "both_flagged": 40,
+          "both_clean": 117,
+          "vulnerable_missed_fixed_flagged": 6
+        },
+        "consistent_rate": 0.12777777777777777,
+        "swapped_rate": 0.03333333333333333,
+        "wilson": {
+          "joint_accuracy_valid_pairs": {
+            "successes": 17,
+            "total": 180,
+            "estimate": 0.09444444444444444,
+            "low": 0.05980383064834928,
+            "high": 0.14603362877695902,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "joint_accuracy_all_pairs": {
+            "successes": 17,
+            "total": 180,
+            "estimate": 0.09444444444444444,
+            "low": 0.05980383064834928,
+            "high": 0.14603362877695902,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 180,
+            "total": 180,
+            "estimate": 1.0,
+            "low": 0.979104502078387,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "consistent_rate": {
+            "successes": 23,
+            "total": 180,
+            "estimate": 0.12777777777777777,
+            "low": 0.08667497947852412,
+            "high": 0.18443611341867663,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "swapped_rate": {
+            "successes": 6,
+            "total": 180,
+            "estimate": 0.03333333333333333,
+            "low": 0.015364790984832816,
+            "high": 0.07080434040867269,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_vulnerable_rate": {
+            "successes": 40,
+            "total": 180,
+            "estimate": 0.2222222222222222,
+            "low": 0.16765055931348619,
+            "high": 0.2884024950874099,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_safe_rate": {
+            "successes": 117,
+            "total": 180,
+            "estimate": 0.65,
+            "low": 0.5778472012021526,
+            "high": 0.7158841494213636,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 180
+      },
+      "bootstrap": {
+        "joint_accuracy_valid_pairs": {
+          "ci_low": 0.05555555555555555,
+          "ci_high": 0.1388888888888889,
+          "bootstrap_median": 0.09444444444444444,
+          "bootstrap_mean": 0.09383666666666667,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "joint_accuracy_all_pairs": {
+          "ci_low": 0.05555555555555555,
+          "ci_high": 0.1388888888888889,
+          "bootstrap_median": 0.09444444444444444,
+          "bootstrap_mean": 0.09383666666666667,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "coverage": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.06788014240000001,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.15029769440000001,
+        "full_run_requests": 540,
+        "wall_s_sum": 1816.893917879177,
+        "latency_ms_p50": 4409.948191001604,
+        "latency_ms_p95": 8548.66793274632,
+        "cost_per_100_units_usd": 0.03771119022222223
+      },
+      "status_counts": {
+        "ok": 360
+      },
+      "latency_ms_p50_all_requests": 4409.948191001604,
+      "latency_ms_p95_all_requests": 8548.66793274632,
+      "cluster_count_all_requests": null
+    },
+    {
+      "run_id": "legacy__test_v1_mimo_context_pairs",
+      "model_family": "mimo",
+      "model_id": "mimo-v2.6-flash",
+      "strategy": "context",
+      "task": "pair",
+      "scores": {
+        "n_pairs": 180,
+        "valid_pairs": 166,
+        "coverage": 0.9222222222222223,
+        "joint_accuracy_valid_pairs": 0.1144578313253012,
+        "joint_accuracy_all_pairs": 0.10555555555555556,
+        "joint_categories": {
+          "vulnerable_detected_fixed_clean": 19,
+          "both_flagged": 38,
+          "both_clean": 106,
+          "vulnerable_missed_fixed_flagged": 3
+        },
+        "consistent_rate": 0.13253012048192772,
+        "swapped_rate": 0.018072289156626505,
+        "wilson": {
+          "joint_accuracy_valid_pairs": {
+            "successes": 19,
+            "total": 166,
+            "estimate": 0.1144578313253012,
+            "low": 0.0745104437576545,
+            "high": 0.17184553499584404,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "joint_accuracy_all_pairs": {
+            "successes": 19,
+            "total": 180,
+            "estimate": 0.10555555555555556,
+            "low": 0.06862299432957421,
+            "high": 0.1589723429196983,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 166,
+            "total": 180,
+            "estimate": 0.9222222222222223,
+            "low": 0.8736927799483827,
+            "high": 0.9531065773622551,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "consistent_rate": {
+            "successes": 22,
+            "total": 166,
+            "estimate": 0.13253012048192772,
+            "low": 0.08917559933578631,
+            "high": 0.192507442913642,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "swapped_rate": {
+            "successes": 3,
+            "total": 166,
+            "estimate": 0.018072289156626505,
+            "low": 0.006164932412804958,
+            "high": 0.05178004102906825,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_vulnerable_rate": {
+            "successes": 38,
+            "total": 166,
+            "estimate": 0.2289156626506024,
+            "low": 0.17156509637724143,
+            "high": 0.2985289511838122,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_safe_rate": {
+            "successes": 106,
+            "total": 166,
+            "estimate": 0.6385542168674698,
+            "low": 0.5631010068304794,
+            "high": 0.7077398133049819,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "cluster_count": 180
+      },
+      "bootstrap": {
+        "joint_accuracy_valid_pairs": {
+          "ci_low": 0.06707317073170732,
+          "ci_high": 0.16463414634146342,
+          "bootstrap_median": 0.1130952380952381,
+          "bootstrap_mean": 0.11403014194693585,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "joint_accuracy_all_pairs": {
+          "ci_low": 0.06111111111111111,
+          "ci_high": 0.15,
+          "bootstrap_median": 0.10555555555555556,
+          "bootstrap_mean": 0.10513499999999999,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "coverage": {
+          "ci_low": 0.8833333333333333,
+          "ci_high": 0.9611111111111111,
+          "bootstrap_median": 0.9222222222222223,
+          "bootstrap_mean": 0.921925,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cost": {
+        "task_usd": 0.0499673776,
+        "task_usd_unknown_records": 0,
+        "full_run_usd": 0.117203492,
+        "full_run_requests": 540,
+        "wall_s_sum": 1803.3487006300275,
+        "latency_ms_p50": 4287.037821006379,
+        "latency_ms_p95": 9991.300091941232,
+        "cost_per_100_units_usd": 0.02775965422222222
+      },
+      "status_counts": {
+        "ok": 345,
+        "schema_invalid": 15
+      },
+      "latency_ms_p50_all_requests": 4287.037821006379,
+      "latency_ms_p95_all_requests": 9991.300091941232,
+      "cluster_count_all_requests": null
+    }
+  ],
+  "models": {
+    "deepseek": {
+      "model_id": "deepseek-v4.1-flash",
+      "runs": 6,
+      "requests": 2484,
+      "detection": {
+        "strategies": 3,
+        "macro_f1_mean": 0.38785269448864396,
+        "macro_f1_min": 0.38131313131313127,
+        "macro_f1_max": 0.3994705859112639,
+        "coverage_mean": 1.0
+      },
+      "pair": {
+        "strategies": 3,
+        "pair_da_mean": 0.10925925925925926,
+        "pair_da_min": 0.08888888888888889,
+        "pair_da_max": 0.12222222222222222,
+        "coverage_mean": 1.0
+      },
+      "coverage_mean": 1.0,
+      "full_run_usd": 2.4392193,
+      "task_usd": 0.8520918,
+      "usd_per_100_requests": 0.09819723429951692,
+      "latency_ms_p50": 5501.078608504031,
+      "latency_ms_p95": 10552.575147647436,
+      "latency_samples": 1560
+    },
+    "mimo": {
+      "model_id": "mimo-v2.6-flash",
+      "runs": 6,
+      "requests": 2484,
+      "detection": {
+        "strategies": 3,
+        "macro_f1_mean": 0.35232643534765395,
+        "macro_f1_min": 0.3456196581196581,
+        "macro_f1_max": 0.3650365806700039,
+        "coverage_mean": 0.9645833333333333
+      },
+      "pair": {
+        "strategies": 3,
+        "pair_da_mean": 0.09993712222627885,
+        "pair_da_min": 0.09090909090909091,
+        "pair_da_max": 0.1144578313253012,
+        "coverage_mean": 0.9259259259259259
+      },
+      "coverage_mean": 0.9452546296296296,
+      "full_run_usd": 0.6231544760000001,
+      "task_usd": 0.2501133432,
+      "usd_per_100_requests": 0.025086734138486312,
+      "latency_ms_p50": 4409.948191001604,
+      "latency_ms_p95": 10131.590085407513,
+      "latency_samples": 1560
+    }
+  },
+  "comparisons": {
+    "model": {
+      "direction": "delta = model_a minus model_b; positive means model_a higher",
+      "families": {
+        "A-MODEL-DETECTION": {
+          "task": "detection",
+          "holm_m": 3
+        },
+        "A-MODEL-PAIR": {
+          "task": "pair",
+          "holm_m": 3
+        }
+      },
+      "entries": [
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_direct_detection.comparison.json",
+          "task": "detection",
+          "run_a": "legacy__test_v1_direct_independent",
+          "run_b": "legacy__test_v1_mimo_direct_independent",
+          "model_a": "deepseek",
+          "model_b": "mimo",
+          "strategy_a": "direct",
+          "strategy_b": "direct",
+          "delta": 0.031028092003224983,
+          "delta_mcc": 0.03707131849645207,
+          "delta_ci": {
+            "ci_low": -0.01776959490117668,
+            "ci_high": 0.07711700968650292,
+            "bootstrap_median": 0.031103866784921497,
+            "bootstrap_mean": 0.030824205738642065,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 11,
+            "a_wrong_b_correct": 6,
+            "discordant": 17,
+            "total": 150,
+            "p_value": 0.332305908203125,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 1.8333333333333333,
+            "risk_difference": 0.03333333333333333,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "units_a": 160,
+            "units_b": 160,
+            "common_units": 160,
+            "common_valid_units": 150,
+            "only_a": 0,
+            "only_b": 0,
+            "valid_a_on_common": 160,
+            "valid_b_on_common": 150,
+            "common_valid_coverage": 0.9375
+          },
+          "raw_p": 0.332305908203125,
+          "holm_p": 0.66461181640625,
+          "family": "A-MODEL-DETECTION"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_few-shot_detection.comparison.json",
+          "task": "detection",
+          "run_a": "legacy__test_v1_few-shot_independent",
+          "run_b": "legacy__test_v1_mimo_few-shot_independent",
+          "model_a": "deepseek",
+          "model_b": "mimo",
+          "strategy_a": "few-shot",
+          "strategy_b": "few-shot",
+          "delta": 0.05314751865796408,
+          "delta_mcc": 0.10300923804863545,
+          "delta_ci": {
+            "ci_low": 0.010132933946038968,
+            "ci_high": 0.128562513001473,
+            "bootstrap_median": 0.05125858659734811,
+            "bootstrap_mean": 0.05573738667057874,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 15,
+            "a_wrong_b_correct": 6,
+            "discordant": 21,
+            "total": 160,
+            "p_value": 0.0783538818359375,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 2.5,
+            "risk_difference": 0.05625,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "units_a": 160,
+            "units_b": 160,
+            "common_units": 160,
+            "common_valid_units": 160,
+            "only_a": 0,
+            "only_b": 0,
+            "valid_a_on_common": 160,
+            "valid_b_on_common": 160,
+            "common_valid_coverage": 1.0
+          },
+          "raw_p": 0.0783538818359375,
+          "holm_p": 0.2350616455078125,
+          "family": "A-MODEL-DETECTION"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_context_detection.comparison.json",
+          "task": "detection",
+          "run_a": "legacy__test_v1_context_independent",
+          "run_b": "legacy__test_v1_mimo_context_independent",
+          "model_a": "deepseek",
+          "model_b": "mimo",
+          "strategy_a": "context",
+          "strategy_b": "context",
+          "delta": 0.008805662900409239,
+          "delta_mcc": -0.057081031006658185,
+          "delta_ci": {
+            "ci_low": -0.06993682388640639,
+            "ci_high": 0.058448481805314194,
+            "bootstrap_median": 0.0072943329063598905,
+            "bootstrap_mean": 0.0035443818724913505,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 10,
+            "a_wrong_b_correct": 8,
+            "discordant": 18,
+            "total": 153,
+            "p_value": 0.8145294189453125,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 1.25,
+            "risk_difference": 0.013071895424836602,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "units_a": 160,
+            "units_b": 160,
+            "common_units": 160,
+            "common_valid_units": 153,
+            "only_a": 0,
+            "only_b": 0,
+            "valid_a_on_common": 160,
+            "valid_b_on_common": 153,
+            "common_valid_coverage": 0.95625
+          },
+          "raw_p": 0.8145294189453125,
+          "holm_p": 0.8145294189453125,
+          "family": "A-MODEL-DETECTION"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_direct_pair.comparison.json",
+          "task": "pair",
+          "run_a": "legacy__test_v1_direct_pairs",
+          "run_b": "legacy__test_v1_mimo_direct_pairs",
+          "model_a": "deepseek",
+          "model_b": "mimo",
+          "strategy_a": "direct",
+          "strategy_b": "direct",
+          "delta": 0.032467532467532464,
+          "delta_mcc": null,
+          "delta_ci": {
+            "ci_low": -0.012987012987012991,
+            "ci_high": 0.07792207792207792,
+            "bootstrap_median": 0.032467532467532464,
+            "bootstrap_mean": 0.03257922077922078,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 9,
+            "a_wrong_b_correct": 4,
+            "discordant": 13,
+            "total": 154,
+            "p_value": 0.266845703125,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 2.25,
+            "risk_difference": 0.032467532467532464,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "pairs_a": 180,
+            "pairs_b": 180,
+            "common_pairs": 180,
+            "common_valid_pairs": 154,
+            "only_a": 0,
+            "only_b": 0
+          },
+          "raw_p": 0.266845703125,
+          "holm_p": 0.800537109375,
+          "family": "A-MODEL-PAIR"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_few-shot_pair.comparison.json",
+          "task": "pair",
+          "run_a": "legacy__test_v1_few-shot_pairs",
+          "run_b": "legacy__test_v1_mimo_few-shot_pairs",
+          "model_a": "deepseek",
+          "model_b": "mimo",
+          "strategy_a": "few-shot",
+          "strategy_b": "few-shot",
+          "delta": -0.00555555555555555,
+          "delta_mcc": null,
+          "delta_ci": {
+            "ci_low": -0.03888888888888889,
+            "ci_high": 0.027777777777777776,
+            "bootstrap_median": -0.00555555555555555,
+            "bootstrap_mean": -0.005211111111111111,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 4,
+            "a_wrong_b_correct": 5,
+            "discordant": 9,
+            "total": 180,
+            "p_value": 1.0,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.8,
+            "risk_difference": -0.005555555555555556,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "pairs_a": 180,
+            "pairs_b": 180,
+            "common_pairs": 180,
+            "common_valid_pairs": 180,
+            "only_a": 0,
+            "only_b": 0
+          },
+          "raw_p": 1.0,
+          "holm_p": 1.0,
+          "family": "A-MODEL-PAIR"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_context_pair.comparison.json",
+          "task": "pair",
+          "run_a": "legacy__test_v1_context_pairs",
+          "run_b": "legacy__test_v1_mimo_context_pairs",
+          "model_a": "deepseek",
+          "model_b": "mimo",
+          "strategy_a": "context",
+          "strategy_b": "context",
+          "delta": 0.0,
+          "delta_mcc": null,
+          "delta_ci": {
+            "ci_low": -0.04216867469879518,
+            "ci_high": 0.04216867469879518,
+            "bootstrap_median": 0.0,
+            "bootstrap_mean": 0.0003090361445783132,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 6,
+            "a_wrong_b_correct": 6,
+            "discordant": 12,
+            "total": 166,
+            "p_value": 1.0,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 1.0,
+            "risk_difference": 0.0,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "pairs_a": 180,
+            "pairs_b": 180,
+            "common_pairs": 180,
+            "common_valid_pairs": 166,
+            "only_a": 0,
+            "only_b": 0
+          },
+          "raw_p": 1.0,
+          "holm_p": 1.0,
+          "family": "A-MODEL-PAIR"
+        }
+      ]
+    },
+    "within_model": {
+      "direction": "delta = strategy_a minus strategy_b; positive means strategy_a higher",
+      "families": {
+        "A-STRATEGY-DEEPSEEK-DETECTION": {
+          "task": "detection",
+          "model": "deepseek",
+          "holm_m": 3
+        },
+        "A-STRATEGY-DEEPSEEK-PAIR": {
+          "task": "pair",
+          "model": "deepseek",
+          "holm_m": 3
+        },
+        "A-STRATEGY-MIMO-DETECTION": {
+          "task": "detection",
+          "model": "mimo",
+          "holm_m": 3
+        },
+        "A-STRATEGY-MIMO-PAIR": {
+          "task": "pair",
+          "model": "mimo",
+          "holm_m": 3
+        }
+      },
+      "entries": [
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_direct_vs_few-shot_detection.comparison.json",
+          "task": "detection",
+          "run_a": "legacy__test_v1_direct_independent",
+          "run_b": "legacy__test_v1_few-shot_independent",
+          "model_a": "deepseek",
+          "model_b": "deepseek",
+          "strategy_a": "direct",
+          "strategy_b": "few-shot",
+          "delta": -0.01669621966972712,
+          "delta_mcc": -0.019589686476988305,
+          "delta_ci": {
+            "ci_low": -0.05807566255028466,
+            "ci_high": 0.011903533549096047,
+            "bootstrap_median": -0.016798667607803658,
+            "bootstrap_mean": -0.018466501983105905,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 4,
+            "a_wrong_b_correct": 7,
+            "discordant": 11,
+            "total": 160,
+            "p_value": 0.548828125,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.5714285714285714,
+            "risk_difference": -0.01875,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "units_a": 160,
+            "units_b": 160,
+            "common_units": 160,
+            "common_valid_units": 160,
+            "only_a": 0,
+            "only_b": 0,
+            "valid_a_on_common": 160,
+            "valid_b_on_common": 160,
+            "common_valid_coverage": 1.0
+          },
+          "raw_p": 0.548828125,
+          "holm_p": 1.0,
+          "family": "A-STRATEGY-DEEPSEEK-DETECTION"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_direct_vs_context_detection.comparison.json",
+          "task": "detection",
+          "run_a": "legacy__test_v1_direct_independent",
+          "run_b": "legacy__test_v1_context_independent",
+          "model_a": "deepseek",
+          "model_b": "deepseek",
+          "strategy_a": "direct",
+          "strategy_b": "context",
+          "delta": 0.001461234928405497,
+          "delta_mcc": 0.020969686040333776,
+          "delta_ci": {
+            "ci_low": -0.032797172952059764,
+            "ci_high": 0.03643850655302808,
+            "bootstrap_median": 0.00044947492366514963,
+            "bootstrap_mean": 0.0012192045646653095,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 4,
+            "a_wrong_b_correct": 4,
+            "discordant": 8,
+            "total": 160,
+            "p_value": 1.0,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 1.0,
+            "risk_difference": 0.0,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "units_a": 160,
+            "units_b": 160,
+            "common_units": 160,
+            "common_valid_units": 160,
+            "only_a": 0,
+            "only_b": 0,
+            "valid_a_on_common": 160,
+            "valid_b_on_common": 160,
+            "common_valid_coverage": 1.0
+          },
+          "raw_p": 1.0,
+          "holm_p": 1.0,
+          "family": "A-STRATEGY-DEEPSEEK-DETECTION"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_few-shot_vs_context_detection.comparison.json",
+          "task": "detection",
+          "run_a": "legacy__test_v1_few-shot_independent",
+          "run_b": "legacy__test_v1_context_independent",
+          "model_a": "deepseek",
+          "model_b": "deepseek",
+          "strategy_a": "few-shot",
+          "strategy_b": "context",
+          "delta": 0.018157454598132616,
+          "delta_mcc": 0.040559372517322084,
+          "delta_ci": {
+            "ci_low": -0.01022092295569921,
+            "ci_high": 0.06566578640487442,
+            "bootstrap_median": 0.017048434065686124,
+            "bootstrap_mean": 0.019685706547771215,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 6,
+            "a_wrong_b_correct": 3,
+            "discordant": 9,
+            "total": 160,
+            "p_value": 0.5078125,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 2.0,
+            "risk_difference": 0.01875,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "units_a": 160,
+            "units_b": 160,
+            "common_units": 160,
+            "common_valid_units": 160,
+            "only_a": 0,
+            "only_b": 0,
+            "valid_a_on_common": 160,
+            "valid_b_on_common": 160,
+            "common_valid_coverage": 1.0
+          },
+          "raw_p": 0.5078125,
+          "holm_p": 1.0,
+          "family": "A-STRATEGY-DEEPSEEK-DETECTION"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_direct_vs_few-shot_pair.comparison.json",
+          "task": "pair",
+          "run_a": "legacy__test_v1_direct_pairs",
+          "run_b": "legacy__test_v1_few-shot_pairs",
+          "model_a": "deepseek",
+          "model_b": "deepseek",
+          "strategy_a": "direct",
+          "strategy_b": "few-shot",
+          "delta": 0.027777777777777776,
+          "delta_mcc": null,
+          "delta_ci": {
+            "ci_low": -0.005555555555555564,
+            "ci_high": 0.06666666666666665,
+            "bootstrap_median": 0.027777777777777776,
+            "bootstrap_mean": 0.02782611111111111,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 8,
+            "a_wrong_b_correct": 3,
+            "discordant": 11,
+            "total": 180,
+            "p_value": 0.2265625,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 2.6666666666666665,
+            "risk_difference": 0.027777777777777776,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "pairs_a": 180,
+            "pairs_b": 180,
+            "common_pairs": 180,
+            "common_valid_pairs": 180,
+            "only_a": 0,
+            "only_b": 0
+          },
+          "raw_p": 0.2265625,
+          "holm_p": 0.453125,
+          "family": "A-STRATEGY-DEEPSEEK-PAIR"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_direct_vs_context_pair.comparison.json",
+          "task": "pair",
+          "run_a": "legacy__test_v1_direct_pairs",
+          "run_b": "legacy__test_v1_context_pairs",
+          "model_a": "deepseek",
+          "model_b": "deepseek",
+          "strategy_a": "direct",
+          "strategy_b": "context",
+          "delta": -0.00555555555555555,
+          "delta_mcc": null,
+          "delta_ci": {
+            "ci_low": -0.03902777777777656,
+            "ci_high": 0.02777777777777779,
+            "bootstrap_median": -0.00555555555555555,
+            "bootstrap_mean": -0.005625,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 5,
+            "a_wrong_b_correct": 6,
+            "discordant": 11,
+            "total": 180,
+            "p_value": 1.0,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.8333333333333334,
+            "risk_difference": -0.005555555555555556,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "pairs_a": 180,
+            "pairs_b": 180,
+            "common_pairs": 180,
+            "common_valid_pairs": 180,
+            "only_a": 0,
+            "only_b": 0
+          },
+          "raw_p": 1.0,
+          "holm_p": 1.0,
+          "family": "A-STRATEGY-DEEPSEEK-PAIR"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_few-shot_vs_context_pair.comparison.json",
+          "task": "pair",
+          "run_a": "legacy__test_v1_few-shot_pairs",
+          "run_b": "legacy__test_v1_context_pairs",
+          "model_a": "deepseek",
+          "model_b": "deepseek",
+          "strategy_a": "few-shot",
+          "strategy_b": "context",
+          "delta": -0.033333333333333326,
+          "delta_mcc": null,
+          "delta_ci": {
+            "ci_low": -0.07222222222222223,
+            "ci_high": 0.00555555555555555,
+            "bootstrap_median": -0.033333333333333326,
+            "bootstrap_mean": -0.03345111111111111,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 3,
+            "a_wrong_b_correct": 9,
+            "discordant": 12,
+            "total": 180,
+            "p_value": 0.14599609375,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.3333333333333333,
+            "risk_difference": -0.03333333333333333,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "pairs_a": 180,
+            "pairs_b": 180,
+            "common_pairs": 180,
+            "common_valid_pairs": 180,
+            "only_a": 0,
+            "only_b": 0
+          },
+          "raw_p": 0.14599609375,
+          "holm_p": 0.43798828125,
+          "family": "A-STRATEGY-DEEPSEEK-PAIR"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_direct_vs_few-shot_detection.comparison.json",
+          "task": "detection",
+          "run_a": "legacy__test_v1_mimo_direct_independent",
+          "run_b": "legacy__test_v1_mimo_few-shot_independent",
+          "model_a": "mimo",
+          "model_b": "mimo",
+          "strategy_a": "direct",
+          "strategy_b": "few-shot",
+          "delta": 0.008004242623873281,
+          "delta_mcc": 0.053400957021936105,
+          "delta_ci": {
+            "ci_low": -0.01647062131486478,
+            "ci_high": 0.047976218327477484,
+            "bootstrap_median": 0.007464321848472927,
+            "bootstrap_mean": 0.009764976192877903,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 5,
+            "a_wrong_b_correct": 4,
+            "discordant": 9,
+            "total": 150,
+            "p_value": 1.0,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 1.25,
+            "risk_difference": 0.006666666666666667,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "units_a": 160,
+            "units_b": 160,
+            "common_units": 160,
+            "common_valid_units": 150,
+            "only_a": 0,
+            "only_b": 0,
+            "valid_a_on_common": 150,
+            "valid_b_on_common": 160,
+            "common_valid_coverage": 0.9375
+          },
+          "raw_p": 1.0,
+          "holm_p": 1.0,
+          "family": "A-STRATEGY-MIMO-DETECTION"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_direct_vs_context_detection.comparison.json",
+          "task": "detection",
+          "run_a": "legacy__test_v1_mimo_direct_independent",
+          "run_b": "legacy__test_v1_mimo_context_independent",
+          "model_a": "mimo",
+          "model_b": "mimo",
+          "strategy_a": "direct",
+          "strategy_b": "context",
+          "delta": -0.020695797655920167,
+          "delta_mcc": -0.07194771025045898,
+          "delta_ci": {
+            "ci_low": -0.08688021606622853,
+            "ci_high": 0.01642106608223387,
+            "bootstrap_median": -0.022397431414425434,
+            "bootstrap_mean": -0.02623286579696155,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 3,
+            "a_wrong_b_correct": 6,
+            "discordant": 9,
+            "total": 147,
+            "p_value": 0.5078125,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.5,
+            "risk_difference": -0.02040816326530612,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "units_a": 160,
+            "units_b": 160,
+            "common_units": 160,
+            "common_valid_units": 147,
+            "only_a": 0,
+            "only_b": 0,
+            "valid_a_on_common": 150,
+            "valid_b_on_common": 153,
+            "common_valid_coverage": 0.91875
+          },
+          "raw_p": 0.5078125,
+          "holm_p": 1.0,
+          "family": "A-STRATEGY-MIMO-DETECTION"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_few-shot_vs_context_detection.comparison.json",
+          "task": "detection",
+          "run_a": "legacy__test_v1_mimo_few-shot_independent",
+          "run_b": "legacy__test_v1_mimo_context_independent",
+          "model_a": "mimo",
+          "model_b": "mimo",
+          "strategy_a": "few-shot",
+          "strategy_b": "context",
+          "delta": -0.027999384737102395,
+          "delta_mcc": -0.1232413748102818,
+          "delta_ci": {
+            "ci_low": -0.10823060906028861,
+            "ci_high": 0.013669030526466654,
+            "bootstrap_median": -0.030121804317668283,
+            "bootstrap_mean": -0.03461472523238814,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 5,
+            "a_wrong_b_correct": 9,
+            "discordant": 14,
+            "total": 153,
+            "p_value": 0.4239501953125,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.5555555555555556,
+            "risk_difference": -0.026143790849673203,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "units_a": 160,
+            "units_b": 160,
+            "common_units": 160,
+            "common_valid_units": 153,
+            "only_a": 0,
+            "only_b": 0,
+            "valid_a_on_common": 160,
+            "valid_b_on_common": 153,
+            "common_valid_coverage": 0.95625
+          },
+          "raw_p": 0.4239501953125,
+          "holm_p": 1.0,
+          "family": "A-STRATEGY-MIMO-DETECTION"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_direct_vs_few-shot_pair.comparison.json",
+          "task": "pair",
+          "run_a": "legacy__test_v1_mimo_direct_pairs",
+          "run_b": "legacy__test_v1_mimo_few-shot_pairs",
+          "model_a": "mimo",
+          "model_b": "mimo",
+          "strategy_a": "direct",
+          "strategy_b": "few-shot",
+          "delta": -0.012987012987012991,
+          "delta_mcc": null,
+          "delta_ci": {
+            "ci_low": -0.05194805194805194,
+            "ci_high": 0.019480519480519487,
+            "bootstrap_median": -0.012987012987012991,
+            "bootstrap_mean": -0.013003246753246753,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 3,
+            "a_wrong_b_correct": 5,
+            "discordant": 8,
+            "total": 154,
+            "p_value": 0.7265625,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.6,
+            "risk_difference": -0.012987012987012988,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "pairs_a": 180,
+            "pairs_b": 180,
+            "common_pairs": 180,
+            "common_valid_pairs": 154,
+            "only_a": 0,
+            "only_b": 0
+          },
+          "raw_p": 0.7265625,
+          "holm_p": 1.0,
+          "family": "A-STRATEGY-MIMO-PAIR"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_direct_vs_context_pair.comparison.json",
+          "task": "pair",
+          "run_a": "legacy__test_v1_mimo_direct_pairs",
+          "run_b": "legacy__test_v1_mimo_context_pairs",
+          "model_a": "mimo",
+          "model_b": "mimo",
+          "strategy_a": "direct",
+          "strategy_b": "context",
+          "delta": -0.027586206896551724,
+          "delta_mcc": null,
+          "delta_ci": {
+            "ci_low": -0.06896551724137932,
+            "ci_high": 0.013793103448275862,
+            "bootstrap_median": -0.027586206896551724,
+            "bootstrap_mean": -0.027360000000000002,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 3,
+            "a_wrong_b_correct": 7,
+            "discordant": 10,
+            "total": 145,
+            "p_value": 0.34375,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.42857142857142855,
+            "risk_difference": -0.027586206896551724,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "pairs_a": 180,
+            "pairs_b": 180,
+            "common_pairs": 180,
+            "common_valid_pairs": 145,
+            "only_a": 0,
+            "only_b": 0
+          },
+          "raw_p": 0.34375,
+          "holm_p": 1.0,
+          "family": "A-STRATEGY-MIMO-PAIR"
+        },
+        {
+          "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_few-shot_vs_context_pair.comparison.json",
+          "task": "pair",
+          "run_a": "legacy__test_v1_mimo_few-shot_pairs",
+          "run_b": "legacy__test_v1_mimo_context_pairs",
+          "model_a": "mimo",
+          "model_b": "mimo",
+          "strategy_a": "few-shot",
+          "strategy_b": "context",
+          "delta": -0.018072289156626495,
+          "delta_mcc": null,
+          "delta_ci": {
+            "ci_low": -0.04819277108433734,
+            "ci_high": 0.006024096385542174,
+            "bootstrap_median": -0.01807228915662651,
+            "bootstrap_mean": -0.018281927710843374,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcnemar": {
+            "a_correct_b_wrong": 1,
+            "a_wrong_b_correct": 4,
+            "discordant": 5,
+            "total": 166,
+            "p_value": 0.375,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.25,
+            "risk_difference": -0.018072289156626505,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "alignment": {
+            "pairs_a": 180,
+            "pairs_b": 180,
+            "common_pairs": 180,
+            "common_valid_pairs": 166,
+            "only_a": 0,
+            "only_b": 0
+          },
+          "raw_p": 0.375,
+          "holm_p": 1.0,
+          "family": "A-STRATEGY-MIMO-PAIR"
+        }
+      ]
+    }
+  },
+  "static_feasibility": {
+    "status": "pending",
+    "f1_reported": false,
+    "note": "Tier A static tools need a complete translation unit. The 160 SecVulEval functions are extracted fragments; the existing 3-snippet CWE-401 smoke is not a benchmark. A4 remains planned and no static F1 is reported."
+  },
+  "juliet_llm_hybrid": {
+    "status": "out_of_scope_for_this_historical_view",
+    "note": "This tool reproduces the 12 legacy runs only. Round-2 evidence/pair-joint/LLM/hybrid/repair are in final_summary.json and LEADERBOARD.md."
+  },
+  "settings": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "bootstrap_cohort": "common-valid units for paired comparisons; cluster by project (detection) or pair_id (pair)",
+    "mcnemar": "exact two-sided on paired correctness; secondary evidence",
+    "holm_families": [
+      "A-MODEL-DETECTION (m=3)",
+      "A-MODEL-PAIR (m=3)",
+      "A-STRATEGY-DS-DETECTION (m=3)",
+      "A-STRATEGY-DS-PAIR (m=3)",
+      "A-STRATEGY-MIMO-DETECTION (m=3)",
+      "A-STRATEGY-MIMO-PAIR (m=3)"
+    ],
+    "cost_policy": "USD from per-request usage at the prices recorded in the runner config; no separate price-snapshot date is stored for DeepSeek, MiMo prices were verified 2026-11-12; full run total includes repair requests, task cost excludes them",
+    "latency_policy": "request-level latency from the runner attempts; p50/p95 over all records in the model's six runs"
+  },
+  "limitations": [
+    "Single run per model/strategy; run-to-run variance is not estimated.",
+    "MiMo uses reasoning_effort=none with max_completion_tokens on OpenCode Go; its decoding/transport differs from DeepSeek's non-thinking max_tokens setup.",
+    "Detection negatives are source-unlabelled, not proven safe; pair fixed sides are also unlabelled.",
+    "CWE-401 has only 3 test functions; no per-CWE claim is made.",
+    "McNemar assumes independent units; project/pair clustering can make p-values anti-conservative, so cluster-bootstrap intervals are the primary evidence.",
+    "Derived runs are read-only views over runner/runs/test_v1_*; they are not new model calls.",
+    "Price snapshots are not identical: DeepSeek prices come from the runner config, MiMo prices were verified on the OpenCode Go page on 2026-11-12."
+  ],
+  "provenance": {
+    "run_manifests": {
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/deepseek_context/legacy__test_v1_context_independent": "5a0b64b1a301c69cde4d2ab698c6240fe46cf2ffbf809a60c6ad31cf15c2813b",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/deepseek_context/legacy__test_v1_context_pairs": "c755e0ce045d8baf73b52c8145a1fc17d9014a90a7da5539c863d0a0a933ec82",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/deepseek_direct/legacy__test_v1_direct_independent": "e4583f4a38e94931231950d36bde6c68957296c14d41a7251f4263564d9ae9e4",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/deepseek_direct/legacy__test_v1_direct_pairs": "02c89e32d29e5a2b73b23e71c86e1d4672845013d2e20698eec5b3db7b5f84cc",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/deepseek_few-shot/legacy__test_v1_few-shot_independent": "56933512db84b133340290d156f11cf41142ad2ece8ec87265516dad1165347e",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/deepseek_few-shot/legacy__test_v1_few-shot_pairs": "b2fa6c675dd6569af2f36efe6e9b575cea9c3b0747990f1b4aedb7e9c3e52bcb",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/mimo_context/legacy__test_v1_mimo_context_independent": "ffac5d5682732b246864022bdfe42b298807a4a627740b48842e4a25a016325e",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/mimo_context/legacy__test_v1_mimo_context_pairs": "4430bf5caae0fade0d400579a89308b5ea6c2f73cb6c656c0d08a18f9eee567e",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/mimo_direct/legacy__test_v1_mimo_direct_independent": "c87f31d50a16b7ba46e8cd56c939706a71b8dd1b0447d4a0e7be92cd5e08c383",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/mimo_direct/legacy__test_v1_mimo_direct_pairs": "7ebb3df7912c575d622d0c084ecd1089fe988e6c1e08a4d9276902055ea04786",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/mimo_few-shot/legacy__test_v1_mimo_few-shot_independent": "d306b8ce756258b466fc38b22940ec1f5cb19c45c9eddbaad342963ff0b7ca19",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/tier_a/mimo_few-shot/legacy__test_v1_mimo_few-shot_pairs": "877b1420f545fc760cdfde8b96a811ef3e9fb7731117f7dcdf3217ceb61420ad"
+    },
+    "comparison_files": {
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_direct_vs_context_detection.comparison.json": "fa057b251f1332f13c1c34c59d0d2590ff161bb7ec44c54c03f24e9ed0e252b3",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_direct_vs_context_pair.comparison.json": "942ad11ca647e79037447153a52291893e54604960ef829e2f33bfc0a48ddc95",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_direct_vs_few-shot_detection.comparison.json": "0dc94f1e6800c92ef0bdde099d50ad1e44fa59e253a46cab5994509888037eda",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_direct_vs_few-shot_pair.comparison.json": "d953044d22dd4bbf5ca5308bf74ac629433ea454e7703eaf02665a9ebf523cab",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_few-shot_vs_context_detection.comparison.json": "6ac8b710cd795127cef196e992b78ec369d1dd20f1603095635fa37a3b7d94c2",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/deepseek_strategy/deepseek_few-shot_vs_context_pair.comparison.json": "9fa2d7eb941b42d2dbf62f23a01964e3a80174036ceb34473ecfd366b9944092",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_direct_vs_context_detection.comparison.json": "a7ad7cb63f867ac7ef3fa7b505adfd85191d3b8d7874effd11e31d007d413232",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_direct_vs_context_pair.comparison.json": "76a7be93223839d905ec6c25454f20e89f857db6135784941be3ce6419a40c2f",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_direct_vs_few-shot_detection.comparison.json": "96c3df31212eada4259a327ce42bf39bae37d8a82ae98e095c920e273cb43e0b",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_direct_vs_few-shot_pair.comparison.json": "35d35b48581af591d53b91e210553cbcbf4e7bcf4a0f807436553f254f9087bf",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_few-shot_vs_context_detection.comparison.json": "dd91854e6d7598eda8760b6d0837c5fcbde9ee3f4f33bb19f080092b05e0996b",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/mimo_strategy/mimo_few-shot_vs_context_pair.comparison.json": "e947f1d1aa632f8a6a5a53c4d0241b195e65f382b6b32852c7b5410004673d80",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_context_detection.comparison.json": "719117557e50902c277aa81a0102bb5ee12c4fe4b49f3c3cbc91cf16ccc44b3e",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_context_pair.comparison.json": "680509e3e85b283dd6b5bd59ba5f765453b90d9009bc6624252bdf9c67247675",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_direct_detection.comparison.json": "5420b1857acac9c5f5d0c686b6a387a4c5228b4075f5e2bcf423428ce095d978",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_direct_pair.comparison.json": "814f62cac01efd0bf5551cc0477a3f14602fa90cd55f91b5c8a9a02438423c97",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_few-shot_detection.comparison.json": "b29de1acede37bc0a06af4a42b0236dc2cf75873f43511c86bc6ec0aa59b198d",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/results/comparisons/tier_a/model/deepseek_vs_mimo_few-shot_pair.comparison.json": "cee9275b1b12965db84bf63f69b88bf94189b34d9fb6a862d01b099246c1b832"
+    },
+    "builder": "bench_tier_a_summary.py"
+  }
+}

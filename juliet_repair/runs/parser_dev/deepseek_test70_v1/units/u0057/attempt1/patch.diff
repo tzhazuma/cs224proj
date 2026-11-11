@@ -1,0 +1,10 @@
+--- a/CWE401_Memory_Leak__twoIntsStruct_malloc_01.c
++++ b/CWE401_Memory_Leak__twoIntsStruct_malloc_01.c
+@@ -15,5 +15,6 @@
+     data[0].intTwo = 0;
+     printStructLine(&data[0]);
+ 
+-    ;
++    free(data);
++    data = NULL;
+ }

@@ -1,0 +1,25 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp:40:25: warning: Value stored to 'data' during its initialization is never read [deadcode.DeadStores]
+   40 |         twoIntsStruct * data = dataRef;
+      |                         ^~~~   ~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp:40:25: note: Value stored to 'data' during its initialization is never read
+   40 |         twoIntsStruct * data = dataRef;
+      |                         ^~~~   ~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp:44:1: warning: Potential leak of memory pointed to by 'data' [unix.Malloc]
+   44 | }
+      | ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp:118:5: note: Calling 'bad'
+  118 |     bad();
+      |     ^~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp:33:29: note: Memory is allocated
+   33 |     data = (twoIntsStruct *)realloc(data, 100*sizeof(twoIntsStruct));
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp:34:9: note: Assuming 'data' is not equal to NULL
+   34 |     if (data == NULL) {exit(-1);}
+      |         ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp:34:5: note: Taking false branch
+   34 |     if (data == NULL) {exit(-1);}
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp:44:1: note: Potential leak of memory pointed to by 'data'
+   44 | }
+      | ^
+2 warnings generated.

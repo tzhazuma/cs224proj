@@ -1,0 +1,62 @@
+{
+  "baseline_behavior_lines": [
+    "A String"
+  ],
+  "behavior_matches_good_subsequence": true,
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "compile": {
+    "command": [
+      "gcc",
+      "-std=gnu11",
+      "-O0",
+      "-g",
+      "-fsanitize=address",
+      "-fno-omit-frame-pointer",
+      "-w",
+      "-DOMITGOOD",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0003/attempt1/eval/src",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+      "-o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0003/attempt1/eval/fixed",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0003/attempt1/eval/src/CWE401_Memory_Leak__char_malloc_01.c",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0003/attempt1/eval/src/__repair_probe_main.c",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/io.o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/std_thread.o",
+      "-lpthread",
+      "-lm"
+    ],
+    "ok": true,
+    "returncode": 0,
+    "source_files": [
+      "CWE401_Memory_Leak__char_malloc_01.c",
+      "__repair_probe_main.c"
+    ],
+    "stderr_tail": "",
+    "stdout_tail": "",
+    "timed_out": false
+  },
+  "compile_pass": true,
+  "fixed_behavior_lines": [
+    "A String"
+  ],
+  "fixed_stdout_sha256": "4f14464dec3e7c98da4ec7e58d7d9b110b1d3e632b03a2c6fb300404c58838e0",
+  "good_behavior_lines": [
+    "A String",
+    "A String"
+  ],
+  "leak_removed": true,
+  "parsed_explanation": "Added free(data) after the last use of the heap buffer to eliminate the memory leak while preserving the printed output and behavior.",
+  "run": {
+    "leak_detected": false,
+    "other_asan_error": false,
+    "returncode": 0,
+    "summary": null,
+    "timed_out": false,
+    "wall_seconds": 0.015
+  },
+  "strict_evaluable": true,
+  "strict_pass": true
+}

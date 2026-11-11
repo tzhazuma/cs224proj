@@ -1,0 +1,82 @@
+candidate_id	case_id	VR	SP	MIN	COM	CQ	EF	NS	compile_status	notes
+PATCH-FE129E81D2	CASE-DCC9474352	0	2	2	2	2	0	2	NOT_RUN	Patch is byte-identical to the vulnerable function; explanation falsely claims it is already correct, so CWE-428 is untouched.
+PATCH-EB4937E567	CASE-DCC9474352	0	2	2	2	2	0	2	NOT_RUN	Only swaps dlopen(path) for dlopen(ret->path), which is the same string; no CWE-428 mitigation and the TOCTOU rationale is wrong.
+PATCH-3D47E33C97	CASE-DCC9474352	1	1	2	2	2	2	2	NOT_RUN	Adds an absolute-path requirement and RTLD_LOCAL, blocking relative-path hijacking but not verifying the provider is a FIDO library; rejects formerly valid relative paths.
+PATCH-391BAFB826	CASE-6D28703FF0	0	2	2	2	2	0	2	NOT_RUN	Unchanged function; explanation describes a bounds check that is not present in the patch.
+PATCH-5F02230667	CASE-6D28703FF0	2	2	2	2	2	2	2	NOT_RUN	Adds minimum-header and negative-length checks and verifies each extended bitmap word fits before reading; correct OOB-read fix.
+PATCH-C85981AE4F	CASE-DBC60DB589	0	2	2	2	2	0	2	NOT_RUN	Unchanged function; explanation claims a fix that the patch does not contain, leaving the double-free/UAF path intact.
+PATCH-7794135619	CASE-DBC60DB589	0	1	1	2	1	1	0	NOT_RUN	Frees the placeholder at every switch branch while refs still points at it, then frees it again via ref_idx->data: introduces a double-free/UAF instead of fixing the root cause.
+PATCH-1A82BDA674	CASE-DBC60DB589	0	1	1	2	1	1	0	NOT_RUN	Same repeated free_object(ret) pattern as the other candidate; placeholder remains referenced in refs and is freed again later, a new double-free path.
+PATCH-7DA054A251	CASE-F6966509D4	0	2	2	2	2	1	1	NOT_RUN	Computes strlen separately and casts to u32, but leaves the 51/1 size constants that upstream corrects, so the box-size defect remains; the narrowing cast can itself truncate.
+PATCH-40B2004FB6	CASE-F6966509D4	0	1	2	2	2	1	1	NOT_RUN	Adds a SIZE_MAX overflow check and then truncates the length to u32; does not fix the size-constant miscalculation and introduces a new GF_ISOM_INVALID_FILE return path.
+PATCH-A0AF41B949	CASE-1F1920B09F	0	2	2	2	2	0	2	NOT_RUN	Function text is unchanged; the explanation claims a props initialization that does not exist in the patch, and the what==3 mishandling remains.
+PATCH-3310A63B3C	CASE-1F1920B09F	0	1	1	2	2	1	2	NOT_RUN	Adds a depth bounds guard unrelated to CWE-200; the fallback branch still treats what==3 values as section_type, so private sections are still exposed.
+PATCH-2FF31C56FE	CASE-1F1920B09F	0	1	1	2	2	1	2	NOT_RUN	Identical depth-guard change; no handling for what==3/setPrivate, so the information-exposure root cause is untouched.
+PATCH-2D166BA126	CASE-4371674E6C	0	2	1	2	2	1	2	NOT_RUN	Adds a bin==NULL guard but leaves the signed int len parameter that upstream changes to size_t, so the CWE-190 root cause is untouched.
+PATCH-1EE6B09BA4	CASE-4371674E6C	0	2	2	2	2	0	2	NOT_RUN	Unchanged function; explanation asserts no defect, contradicting the annotated integer-overflow issue.
+PATCH-C725C09C12	CASE-4371674E6C	0	2	1	2	2	1	2	NOT_RUN	Same unrelated NULL check as the other candidate; length type remains int and the integer issue is not addressed.
+PATCH-3146A6C06E	CASE-60CD69697A	0	2	2	2	2	0	2	NOT_RUN	No-op patch (byte-identical to the vulnerable wrapper); explanation denies any defect, so CWE-200 is unaddressed.
+PATCH-FFEE536229	CASE-60CD69697A	0	2	2	2	2	0	2	NOT_RUN	Only reindented; still delegates with NULL blinding parameters and the explanation claims no defect.
+PATCH-BFF28A58BB	CASE-60CD69697A	0	2	2	2	2	0	2	NOT_RUN	Same unchanged wrapper with cosmetic indentation; no mitigation for the missing deterministic-signing blinding.
+PATCH-E84E688503	CASE-6249AF121D	2	2	2	2	2	2	2	NOT_RUN	Adds st != NULL before dereferencing st->state, which is the unchecked-allocation NULL-dereference root cause; surrounding behavior is preserved, with only formatting tidies.
+PATCH-194EA06453	CASE-6249AF121D	2	2	2	2	2	2	2	NOT_RUN	Same st != NULL guard in the fencing branch; no other semantic change, so callers see the same behavior apart from the avoided crash.
+PATCH-3E5561DBB8	CASE-6249AF121D	2	2	2	2	2	2	2	NOT_RUN	Identical NULL guard and formatting cleanup; correctly prevents dereferencing a failed stonith_api_new() result.
+PATCH-BB902FCE1B	CASE-AA3F1B2863	2	2	2	2	2	2	2	NOT_RUN	Bounds the unbounded %s conversions to the actual buffer sizes (%9s device, %4095s file), directly fixing the stack overflow with no other logic change.
+PATCH-9330389209	CASE-AA3F1B2863	2	1	1	2	2	2	2	NOT_RUN	Bounds both %s fields and also adds a strlcat return-value early-out, which introduces a new truncation failure path beyond the overflow fix.
+PATCH-52B4C1A4B5	CASE-AA3F1B2863	2	1	1	2	2	2	2	NOT_RUN	Same bounded conversions plus the extra strlcat truncation check; overflow is fixed but an additional control-flow exit is added.
+PATCH-DD0982794F	CASE-27AD9A5170	1	2	2	2	2	2	2	NOT_RUN	Replaces a NULL salt with an empty string and guards a NULL crypt result, avoiding the crash but still permitting the weak empty-salt hash; upstream instead asserts non-NULL salt.
+PATCH-49045B6993	CASE-27AD9A5170	2	1	2	2	2	2	2	NOT_RUN	Rejects NULL or empty salt and checks the crypt result, removing the NULL dereference; however empty salt now returns an empty String instead of a hash, a caller-visible behavior change.
+PATCH-852390361D	CASE-27AD9A5170	2	1	2	2	2	2	2	NOT_RUN	Rejects NULL/empty salt before calling crypt, eliminating the dereference, but also changes the documented empty-salt behavior and omits the crypt result check.
+PATCH-B11C1914E1	CASE-0796C40D2C	0	2	1	2	2	1	2	NOT_RUN	Changes zsocket_set_sndbuf to zsocket_set_rcvbuf for rcvBuf, an unrelated config bug; the CWE-134 format-string sink zsocket_bind(description) is untouched.
+PATCH-5735D11F53	CASE-0796C40D2C	0	2	1	2	2	1	2	NOT_RUN	Same unrelated rcvBuf setter fix plus a zctx_new NULL check; the uncontrolled format string passed to zsocket_bind/connect is still present.
+PATCH-02216D9E2C	CASE-0796C40D2C	0	2	1	2	2	1	2	NOT_RUN	Fixes the rcvBuf setter and adds a context NULL check, neither of which addresses the CWE-134 format-string vulnerability in the bind/connect calls.
+PATCH-E6743C4B4E	CASE-CC0F135324	0	2	2	2	2	0	2	NOT_RUN	Patch is byte-identical to the vulnerable function; keeping ASSERT(header->checkHeader()) means the header validation still disappears in release builds.
+PATCH-629714F815	CASE-CC0F135324	2	2	1	2	2	2	2	NOT_RUN	Replaces the unchecked advance with a bounded while loop that rejects zero or oversized headers relative to payloadEnd, a valid alternative fix for the out-of-bounds read.
+PATCH-B3416E2825	CASE-6936A42C95	0	2	1	2	2	1	2	NOT_RUN	Adds only a size==0 guard; decoded bytes are still written unsanitized, so CR/LF header injection through %0d%0a remains.
+PATCH-99150A9E5F	CASE-6936A42C95	0	2	1	2	2	1	2	NOT_RUN	Same size==0 guard with no filtering of decoded control characters; the CWE-113/116 root cause is untouched.
+PATCH-8054537CEA	CASE-6936A42C95	0	2	1	2	2	1	2	NOT_RUN	Adds the size guard and validates hex digits, but valid %0d%0a still decodes to CRLF and is stored, so header injection is not mitigated.
+PATCH-F730906101	CASE-B7A06F125E	0	2	1	2	2	1	2	NOT_RUN	Fixes the missing strchr NULL check and the one-byte terminator overflow in the [ branch, but leaves recursion unbounded, so CWE-674 stack exhaustion is untouched.
+PATCH-6AB8DE21CD	CASE-B7A06F125E	0	2	1	2	2	1	2	NOT_RUN	Same NULL/off-by-one corrections to the format-specifier branch; no recursion depth limit, so the annotated uncontrolled-recursion defect remains.
+PATCH-8A2CE34B49	CASE-B7A06F125E	0	2	1	2	2	1	2	NOT_RUN	Adds the strchr NULL check and requires p-fmt < sizeof(s), fixing a different overflow, but never caps smb_fdata recursion depth.
+PATCH-0912454AD0	CASE-39E946DC7B	0	2	2	2	2	0	2	NOT_RUN	Patch is identical to the vulnerable inclusive-bound comparison; the explanation denies any defect, so the off-by-one frame boundary remains.
+PATCH-91CCAD2D29	CASE-39E946DC7B	0	2	2	2	2	0	2	NOT_RUN	Unchanged inclusive comparison of frameRight/frameBottom; explanation claims no security defect despite the annotated access-control boundary error.
+PATCH-61D619B2CB	CASE-39E946DC7B	0	2	2	2	2	0	2	NOT_RUN	No-op patch; the <= boundaries that upstream changes to < are preserved, so the boundary miscalculation is not fixed.
+PATCH-2B0DDBC187	CASE-DE2EC9E149	2	2	2	2	2	2	2	NOT_RUN	Replaces pointer-addition overflow check with cbStatsMsgIn > remaining bytes and casts the sizeof comparison; the stats-blob bounds check is now overflow-safe.
+PATCH-7A8A85918C	CASE-DE2EC9E149	2	2	2	2	2	2	2	NOT_RUN	Same subtraction-based stats-size check matching the upstream repair; no other semantic change.
+PATCH-F24E67EE58	CASE-DE2EC9E149	2	2	2	2	2	2	2	NOT_RUN	Adds the (int)sizeof cast and the non-overflowing remaining-bytes comparison; correctly fixes the oversized-stats path.
+PATCH-CA2AAD4606	CASE-8F4CEBDDB4	0	2	2	2	2	0	2	NOT_RUN	Function is unchanged; the explanation claims a 255-byte scan bound that the patch does not add, so the NULL password dereference remains.
+PATCH-B5D725561F	CASE-8F4CEBDDB4	2	2	2	2	2	2	2	NOT_RUN	Adds a NULL check and rewrites the scan as a bounded 0..254 loop plus terminator check, fixing the out-of-bounds read while preserving dummy-password detection.
+PATCH-8C9E20C078	CASE-BF50803A62	0	2	1	2	2	1	2	NOT_RUN	Adds a NULL check after createDummyConnection, a null-dereference hardening; the 65535-byte dummy allocation that upstream replaces with sendBufferSize (CWE-770) is unchanged.
+PATCH-9750DF1AEC	CASE-BF50803A62	0	2	1	2	2	1	2	NOT_RUN	Same NULL guard only; the hard-coded 65535 buffer size remains, so the resource-consumption root cause is not addressed.
+PATCH-3443318B63	CASE-BF50803A62	0	1	1	2	2	1	2	NOT_RUN	Adds the NULL guard and also changes the implicit-int return type to void, a signature change; the oversized dummy allocation is untouched.
+PATCH-ABDF7A46AC	CASE-533FB0E13C	0	2	2	2	2	0	2	NOT_RUN	Unchanged function; the explanation describes overflow guards that are not present, and the 32-bit width*channels overflow remains.
+PATCH-E6BE5F831E	CASE-533FB0E13C	2	2	2	2	2	2	2	NOT_RUN	Casts the row-factor multiplication to png_alloc_size_t and adds explicit overflow checks before multiplication, addition and division, matching the upstream fix intent.
+PATCH-33824DD89C	CASE-533FB0E13C	2	2	2	2	2	2	2	NOT_RUN	Same alloc-size casts with overflow checks plus a row_factor==0 guard; the IDAT limit computation no longer wraps and stays clamped to PNG_UINT_31_MAX.
+PATCH-55E94F78A9	CASE-CABD0EA8AE	0	2	2	2	2	1	2	NOT_RUN	Adds only a (void) cast on touch_file; the mode argument that upstream changes to MODE_INVALID (CWE-264) is untouched, so no access-control defect is fixed.
+PATCH-A778E07106	CASE-CABD0EA8AE	0	2	2	2	2	1	2	NOT_RUN	Same no-op (void) cast, leaving the insecure touch_file mode and the rest of the function unchanged.
+PATCH-14BAA31E5B	CASE-CABD0EA8AE	0	2	2	2	2	1	2	NOT_RUN	Explicitly discards the touch_file return value but keeps the 0 mode argument; the access-control root cause is not addressed.
+PATCH-701CC5A91F	CASE-94465F15EE	0	2	2	2	2	0	2	NOT_RUN	Function is byte-identical to the vulnerable version; the missing read-only shadow-table check remains and the explanation denies any defect.
+PATCH-1B8B915631	CASE-94465F15EE	0	2	2	2	2	0	2	NOT_RUN	Unchanged function; explanation claims it is already safe, contradicting the upstream addition of the shadow-table reservation check.
+PATCH-BDC447DFBD	CASE-7D5DA88F1F	0	2	1	2	2	1	2	NOT_RUN	Only adds an empty-string fallback when both column text and nullvalue are NULL; the nbuf[200] number buffer that upstream enlarges to JSI_MAX_NUMBER_STRING is unchanged.
+PATCH-72D0C61343	CASE-7D5DA88F1F	0	2	1	2	2	1	2	NOT_RUN	Same NULL-text fallback, unrelated to the CWE-120 buffer-size issue; no change to nbuf sizing or Jsi_NumberToString usage.
+PATCH-0C619DD9AF	CASE-5F170A3E90	0	2	2	2	2	0	2	NOT_RUN	Patch is byte-identical to the vulnerable function; the explanation claims the narrowing conversions are already safe, so the CWE-20 validation gap remains.
+PATCH-31B2C9FAF4	CASE-5F170A3E90	1	2	2	2	2	2	2	NOT_RUN	Adds an overflow check to the PyLong path before assigning to T, but leaves the PyInt_AS_LONG cast (and the NumPy integer recursion) unguarded, so the fix is partial.
+PATCH-355C14DB59	CASE-A40AB3FCF8	0	1	1	2	2	1	1	NOT_RUN	Adds NULL checks and skips streams, but keeps hda_link_dma_cleanup before ops->post_trigger, which is the ordering defect upstream fixes; skipping cleanup can also leave DMA running.
+PATCH-5B27C7CC59	CASE-A40AB3FCF8	0	1	1	2	2	1	1	NOT_RUN	Adds checks for rtd/cpu_dai/sdev/w/swidget/sdai/ops yet leaves the post_trigger-after-cleanup order unchanged, so the annotated use-after-cleanup path remains.
+PATCH-034C803CD1	CASE-2D5DAFD31C	0	1	1	2	2	1	2	NOT_RUN	Adds negative and overflow guards to the accumulators; the bool-to-DataReductionRequestType signature/type correction that upstream makes is not addressed.
+PATCH-B4C73BEAD4	CASE-2D5DAFD31C	0	1	1	2	2	1	2	NOT_RUN	Saturates both counters at INT64_MAX instead of fixing the parameter type; this is unrelated hardening and changes accumulation semantics at the boundary.
+PATCH-ED0F4EA977	CASE-2D5DAFD31C	0	1	1	2	2	1	2	NOT_RUN	Replaces DCHECKs with runtime negative/overflow returns, but the CWE-416-relevant parameter type change (bool to DataReductionRequestType) is missing.
+PATCH-6D9A8C108C	CASE-D4027977C7	0	2	2	2	2	0	2	NOT_RUN	Function is unchanged; the sanitize_string calls on name/var that upstream adds are absent, and the explanation asserts no defect.
+PATCH-E3E9BAF8FE	CASE-D4027977C7	0	2	2	2	2	0	2	NOT_RUN	Byte-identical to the vulnerable version; unsanitized name/var still reach Metadata::setString, so the annotated injection risk is unaddressed.
+PATCH-A9D55487A6	CASE-D4027977C7	0	2	2	2	2	0	2	NOT_RUN	No-op patch with an explanation denying any defect; no sanitization of the metadata key or value.
+PATCH-206040C475	CASE-E2E930B67A	0	2	2	2	2	1	2	NOT_RUN	Moves Len/MaxLen/BufferOffset resets outside the Buffer check, a benign consistency cleanup, but the upstream static-linkage change and CWE-125 concern are untouched.
+PATCH-60058FE734	CASE-E2E930B67A	0	2	2	2	2	1	2	NOT_RUN	Always clears the metadata fields after an optional free; unrelated to the CWE-125 issue and does not add the upstream static qualifier.
+PATCH-1A01F0553C	CASE-E2E930B67A	0	2	2	2	2	0	2	NOT_RUN	Function is byte-identical to the vulnerable version; explanation claims it already prevents use-after-free, which does not address the annotated out-of-bounds read.
+PATCH-285FFB3AC0	CASE-DF17D126E1	0	2	2	2	2	0	2	NOT_RUN	Only comments were removed; the pps-- that moves the pointer before ps remains, and the explanation falsely claims the bounds checks already make the function safe.
+PATCH-D7EA782FC5	CASE-DF17D126E1	0	2	2	2	2	0	2	NOT_RUN	Splits p=*(pps=ps) into pps=ps; p=*pps, which is semantically identical, but keeps the pps-- before the array start, so the upstream fix is not achieved.
+PATCH-7F81886DBB	CASE-DF17D126E1	0	2	2	2	2	0	2	NOT_RUN	Function is unchanged and still performs pps-- on a pointer at the array start; explanation asserts the existing checks are sufficient.
+PATCH-F9513018E2	CASE-7D7B2DAC54	0	2	2	2	2	0	2	NOT_RUN	Byte-identical wrapper; the rc out-parameter that upstream adds for status propagation is absent, so the information/return-contract issue remains.
+PATCH-B453900405	CASE-7D7B2DAC54	0	1	1	2	2	1	2	NOT_RUN	Adds an addr==NULL early return of -1 but does not add the rc out-parameter; a new failure path is introduced without addressing the annotated issue.
+PATCH-CADC01A189	CASE-7D7B2DAC54	0	0	1	2	1	1	0	NOT_RUN	Returns NULL from a function with implicit int return type, breaking the return convention; the addr guard does not add the upstream rc parameter.
+PATCH-B08638DA65	CASE-CDF116D7FD	2	2	2	2	2	2	2	NOT_RUN	Adds numcmpts validation and guards every width*height*(prec+7) and rawsize addition against uint_fast32 overflow, aborting cleanly instead of wrapping; a valid alternative to the upstream safe-multiply rewrite.
+PATCH-483849BD4A	CASE-CDF116D7FD	0	1	1	2	2	1	2	NOT_RUN	Only rejects numcmpts <= 0; the rawsize multiplication loop is unchanged, so the CWE-190 overflow remains.

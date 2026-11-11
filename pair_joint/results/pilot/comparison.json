@@ -1,0 +1,521 @@
+{
+  "comparisons": [],
+  "cross_model": {
+    "accuracy_a_all": 0.75,
+    "accuracy_a_valid_intersection": 0.75,
+    "accuracy_b_all": 0.625,
+    "accuracy_b_valid_intersection": 0.625,
+    "bootstrap": {
+      "primary_project_cluster": {
+        "cluster_count": 8,
+        "cluster_size_summary": {
+          "max": 1,
+          "median": 1.0,
+          "min": 1,
+          "total_units": 8
+        },
+        "enabled": true,
+        "metrics": {
+          "da_a": {
+            "bootstrap_mean": 0.74625,
+            "bootstrap_median": 0.75,
+            "ci_high": 1.0,
+            "ci_low": 0.5,
+            "resamples": 1000,
+            "unstable": false,
+            "valid_resamples": 1000
+          },
+          "da_b": {
+            "bootstrap_mean": 0.62825,
+            "bootstrap_median": 0.625,
+            "ci_high": 1.0,
+            "ci_low": 0.25,
+            "resamples": 1000,
+            "unstable": false,
+            "valid_resamples": 1000
+          },
+          "difference": {
+            "bootstrap_mean": 0.118,
+            "bootstrap_median": 0.125,
+            "ci_high": 0.375,
+            "ci_low": 0.0,
+            "resamples": 1000,
+            "unstable": false,
+            "valid_resamples": 1000
+          }
+        },
+        "settings": {
+          "alpha": 0.025,
+          "cluster_unit": null,
+          "confidence": 0.95,
+          "method": "cluster percentile bootstrap",
+          "paired_metrics": "same resample used for all metric functions",
+          "percentile_method": "linear",
+          "resamples": 1000,
+          "resampling": "clusters with replacement; all units within a selected cluster",
+          "seed": 42
+        }
+      },
+      "sensitivity_pair_cluster": {
+        "cluster_count": 8,
+        "cluster_size_summary": {
+          "max": 1,
+          "median": 1.0,
+          "min": 1,
+          "total_units": 8
+        },
+        "enabled": true,
+        "metrics": {
+          "da_a": {
+            "bootstrap_mean": 0.752,
+            "bootstrap_median": 0.75,
+            "ci_high": 1.0,
+            "ci_low": 0.5,
+            "resamples": 1000,
+            "unstable": false,
+            "valid_resamples": 1000
+          },
+          "da_b": {
+            "bootstrap_mean": 0.623,
+            "bootstrap_median": 0.625,
+            "ci_high": 1.0,
+            "ci_low": 0.25,
+            "resamples": 1000,
+            "unstable": false,
+            "valid_resamples": 1000
+          },
+          "difference": {
+            "bootstrap_mean": 0.129,
+            "bootstrap_median": 0.125,
+            "ci_high": 0.375,
+            "ci_low": 0.0,
+            "resamples": 1000,
+            "unstable": false,
+            "valid_resamples": 1000
+          }
+        },
+        "settings": {
+          "alpha": 0.025,
+          "cluster_unit": null,
+          "confidence": 0.95,
+          "method": "cluster percentile bootstrap",
+          "paired_metrics": "same resample used for all metric functions",
+          "percentile_method": "linear",
+          "resamples": 1000,
+          "resampling": "clusters with replacement; all units within a selected cluster",
+          "seed": 42
+        }
+      },
+      "settings": {
+        "confidence": 0.95,
+        "resamples": 1000,
+        "seed": 42
+      }
+    },
+    "intersection": {
+      "a_correct": 6,
+      "a_only": 1,
+      "b_correct": 5,
+      "b_only": 0,
+      "mcnemar": {
+        "a_correct_b_wrong": 1,
+        "a_wrong_b_correct": 0,
+        "alpha": 0.05,
+        "discordant": 1,
+        "odds_ratio": null,
+        "p_value": 1.0,
+        "p_value_method": "exact two-sided binomial",
+        "risk_difference": 0.125,
+        "significant_unadjusted_0_05": false,
+        "total": 8
+      },
+      "n_pairs": 8
+    },
+    "joint_correct_a": 6,
+    "joint_correct_b": 5,
+    "label_a": "deepseek-v4.1-flash",
+    "label_b": "mimo-v2.6-flash",
+    "mcnemar_all": {
+      "a_correct_b_wrong": 1,
+      "a_wrong_b_correct": 0,
+      "alpha": 0.05,
+      "discordant": 1,
+      "odds_ratio": null,
+      "p_value": 1.0,
+      "p_value_method": "exact two-sided binomial",
+      "risk_difference": 0.125,
+      "significant_unadjusted_0_05": false,
+      "total": 8
+    },
+    "n_pairs": 8,
+    "table": {
+      "a_correct_b_wrong": 1,
+      "a_wrong_b_correct": 0,
+      "both_correct": 5,
+      "both_wrong": 2
+    },
+    "wilson_a_all": {
+      "estimate": 0.75,
+      "high": 0.928521,
+      "low": 0.409275,
+      "method": "wilson_95",
+      "successes": 6,
+      "total": 8
+    },
+    "wilson_b_all": {
+      "estimate": 0.625,
+      "high": 0.863156,
+      "low": 0.305742,
+      "method": "wilson_95",
+      "successes": 5,
+      "total": 8
+    }
+  },
+  "dataset_sha256": "e237137718a973af0a1c9cde1fc7ecf594b51feb6ce5600f5a47894f29e54747",
+  "runs": [
+    {
+      "categories": {
+        "both_safe": 0,
+        "both_vulnerable": 0,
+        "correct": 6,
+        "invalid": 0,
+        "swapped": 2
+      },
+      "cost": {
+        "total_cost_usd": 0.009343
+      },
+      "evidence": {
+        "compliant_correct": 6,
+        "compliant_correct_rate_all": 0.75,
+        "compliant_correct_rate_parsed": 0.75,
+        "decisions_with_evidence": 8,
+        "evidence_compliance_rate": 1.0,
+        "evidence_compliant": 8,
+        "evidence_items_total": 13,
+        "evidence_present_rate": 1.0,
+        "evidence_text_match_rate": 1.0,
+        "evidence_text_matches": 13,
+        "joint_correct_and_localization": 5,
+        "joint_correct_and_localization_rate_all": 0.625,
+        "joint_correct_and_localization_rate_parsed": 0.625,
+        "localization_hit_correct": 5,
+        "localization_hit_rate_correct": 0.833333,
+        "localization_scored_correct": 6,
+        "schema_exact": 8,
+        "schema_exact_rate": 1.0
+      },
+      "joint_accuracy_all": 0.75,
+      "joint_accuracy_parsed": 0.75,
+      "latency": {
+        "max": 6.837164,
+        "mean": 3.381621,
+        "n": 8,
+        "p50": 3.007371,
+        "p95": 5.805252
+      },
+      "length_confound": {
+        "definition": "Post-hoc diagnostic, not a pre-registered baseline. Compares character length of the vulnerable and fixed bodies; 'pick shorter' chooses the shorter slot and A on ties.",
+        "mcnemar_joint_vs_shorter_characters": {
+          "a_correct_b_wrong": 0,
+          "a_wrong_b_correct": 1,
+          "alpha": 0.05,
+          "discordant": 1,
+          "odds_ratio": 0.0,
+          "p_value": 1.0,
+          "p_value_method": "exact two-sided binomial",
+          "risk_difference": -0.125,
+          "significant_unadjusted_0_05": false,
+          "total": 8
+        },
+        "shorter_body_heuristic": {
+          "characters_correct": 7,
+          "characters_tie_A": 0.875,
+          "lines_correct": 6,
+          "lines_tie_A": 0.75,
+          "n": 8
+        },
+        "strata": {
+          "tie": {
+            "accuracy": null,
+            "correct": 0,
+            "n": 0
+          },
+          "vulnerable_longer": {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 1
+          },
+          "vulnerable_shorter": {
+            "accuracy": 0.857143,
+            "correct": 6,
+            "n": 7
+          }
+        }
+      },
+      "model": "deepseek-v4.1-flash",
+      "position": {
+        "binomial_p_select_A_vs_B": 0.289062,
+        "by_vulnerable_slot": {
+          "A": {
+            "accuracy_all": 1.0,
+            "accuracy_parsed": 1.0,
+            "categories": {
+              "both_safe": 0,
+              "both_vulnerable": 0,
+              "correct": 4,
+              "invalid": 0,
+              "swapped": 0
+            },
+            "n": 4,
+            "wilson_all": {
+              "estimate": 1.0,
+              "high": 1.0,
+              "low": 0.510109,
+              "method": "wilson_95",
+              "successes": 4,
+              "total": 4
+            },
+            "wilson_parsed": {
+              "estimate": 1.0,
+              "high": 1.0,
+              "low": 0.510109,
+              "method": "wilson_95",
+              "successes": 4,
+              "total": 4
+            }
+          },
+          "B": {
+            "accuracy_all": 0.5,
+            "accuracy_parsed": 0.5,
+            "categories": {
+              "both_safe": 0,
+              "both_vulnerable": 0,
+              "correct": 2,
+              "invalid": 0,
+              "swapped": 2
+            },
+            "n": 4,
+            "wilson_all": {
+              "estimate": 0.5,
+              "high": 0.849961,
+              "low": 0.150039,
+              "method": "wilson_95",
+              "successes": 2,
+              "total": 4
+            },
+            "wilson_parsed": {
+              "estimate": 0.5,
+              "high": 0.849961,
+              "low": 0.150039,
+              "method": "wilson_95",
+              "successes": 2,
+              "total": 4
+            }
+          }
+        },
+        "difference_da_A_minus_da_B_all": 0.5,
+        "difference_da_A_minus_da_B_parsed": 0.5,
+        "fisher_exact_p_all": 0.428571,
+        "fisher_exact_p_parsed": 0.428571,
+        "selected_slot_counts": {
+          "A": 6,
+          "B": 2
+        },
+        "selection_by_vulnerable_slot": {
+          "A": {
+            "A": 4
+          },
+          "B": {
+            "A": 2,
+            "B": 2
+          }
+        },
+        "slot_a_share_of_ab_selections": 0.75
+      },
+      "run_id": "pilot_deepseek_8",
+      "usage": {
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 1222,
+        "completion_tokens_per_pair": 152.75,
+        "prompt_tokens": 26256,
+        "prompt_tokens_per_pair": 3282.0,
+        "reasoning_tokens": 0,
+        "records": 8,
+        "records_with_usage": 8
+      }
+    },
+    {
+      "categories": {
+        "both_safe": 0,
+        "both_vulnerable": 0,
+        "correct": 5,
+        "invalid": 0,
+        "swapped": 3
+      },
+      "cost": {
+        "total_cost_usd": 0.004282
+      },
+      "evidence": {
+        "compliant_correct": 4,
+        "compliant_correct_rate_all": 0.5,
+        "compliant_correct_rate_parsed": 0.5,
+        "decisions_with_evidence": 8,
+        "evidence_compliance_rate": 0.875,
+        "evidence_compliant": 7,
+        "evidence_items_total": 15,
+        "evidence_present_rate": 1.0,
+        "evidence_text_match_rate": 0.933333,
+        "evidence_text_matches": 14,
+        "joint_correct_and_localization": 5,
+        "joint_correct_and_localization_rate_all": 0.625,
+        "joint_correct_and_localization_rate_parsed": 0.625,
+        "localization_hit_correct": 5,
+        "localization_hit_rate_correct": 1.0,
+        "localization_scored_correct": 5,
+        "schema_exact": 8,
+        "schema_exact_rate": 1.0
+      },
+      "joint_accuracy_all": 0.625,
+      "joint_accuracy_parsed": 0.625,
+      "latency": {
+        "max": 9.006506,
+        "mean": 6.917684,
+        "n": 8,
+        "p50": 6.962686,
+        "p95": 8.571798
+      },
+      "length_confound": {
+        "definition": "Post-hoc diagnostic, not a pre-registered baseline. Compares character length of the vulnerable and fixed bodies; 'pick shorter' chooses the shorter slot and A on ties.",
+        "mcnemar_joint_vs_shorter_characters": {
+          "a_correct_b_wrong": 0,
+          "a_wrong_b_correct": 2,
+          "alpha": 0.05,
+          "discordant": 2,
+          "odds_ratio": 0.0,
+          "p_value": 0.5,
+          "p_value_method": "exact two-sided binomial",
+          "risk_difference": -0.25,
+          "significant_unadjusted_0_05": false,
+          "total": 8
+        },
+        "shorter_body_heuristic": {
+          "characters_correct": 7,
+          "characters_tie_A": 0.875,
+          "lines_correct": 6,
+          "lines_tie_A": 0.75,
+          "n": 8
+        },
+        "strata": {
+          "tie": {
+            "accuracy": null,
+            "correct": 0,
+            "n": 0
+          },
+          "vulnerable_longer": {
+            "accuracy": 0.0,
+            "correct": 0,
+            "n": 1
+          },
+          "vulnerable_shorter": {
+            "accuracy": 0.714286,
+            "correct": 5,
+            "n": 7
+          }
+        }
+      },
+      "model": "mimo-v2.6-flash",
+      "position": {
+        "binomial_p_select_A_vs_B": 0.726562,
+        "by_vulnerable_slot": {
+          "A": {
+            "accuracy_all": 0.75,
+            "accuracy_parsed": 0.75,
+            "categories": {
+              "both_safe": 0,
+              "both_vulnerable": 0,
+              "correct": 3,
+              "invalid": 0,
+              "swapped": 1
+            },
+            "n": 4,
+            "wilson_all": {
+              "estimate": 0.75,
+              "high": 0.954413,
+              "low": 0.300642,
+              "method": "wilson_95",
+              "successes": 3,
+              "total": 4
+            },
+            "wilson_parsed": {
+              "estimate": 0.75,
+              "high": 0.954413,
+              "low": 0.300642,
+              "method": "wilson_95",
+              "successes": 3,
+              "total": 4
+            }
+          },
+          "B": {
+            "accuracy_all": 0.5,
+            "accuracy_parsed": 0.5,
+            "categories": {
+              "both_safe": 0,
+              "both_vulnerable": 0,
+              "correct": 2,
+              "invalid": 0,
+              "swapped": 2
+            },
+            "n": 4,
+            "wilson_all": {
+              "estimate": 0.5,
+              "high": 0.849961,
+              "low": 0.150039,
+              "method": "wilson_95",
+              "successes": 2,
+              "total": 4
+            },
+            "wilson_parsed": {
+              "estimate": 0.5,
+              "high": 0.849961,
+              "low": 0.150039,
+              "method": "wilson_95",
+              "successes": 2,
+              "total": 4
+            }
+          }
+        },
+        "difference_da_A_minus_da_B_all": 0.25,
+        "difference_da_A_minus_da_B_parsed": 0.25,
+        "fisher_exact_p_all": 1.0,
+        "fisher_exact_p_parsed": 1.0,
+        "selected_slot_counts": {
+          "A": 5,
+          "B": 3
+        },
+        "selection_by_vulnerable_slot": {
+          "A": {
+            "A": 3,
+            "B": 1
+          },
+          "B": {
+            "A": 2,
+            "B": 2
+          }
+        },
+        "slot_a_share_of_ab_selections": 0.625
+      },
+      "run_id": "pilot_mimo_8",
+      "usage": {
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 1293,
+        "completion_tokens_per_pair": 161.625,
+        "prompt_tokens": 28002,
+        "prompt_tokens_per_pair": 3500.25,
+        "reasoning_tokens": 0,
+        "records": 8,
+        "records_with_usage": 8
+      }
+    }
+  ],
+  "schema_version": 1
+}

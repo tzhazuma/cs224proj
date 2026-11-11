@@ -1,0 +1,1242 @@
+% !TeX program = xelatex
+% CS224 课程项目最终报告（中文，IEEE 会议格式）。
+% 结果来自 report/generated_tables.txt、report/generated_costs.json、analysis/aggregation.json、
+% qualitative/cases.json 与 repair_eval/analysis/repair_blind_v1/final/；不编造数值。
+\RequirePackage[T1]{fontenc}
+\documentclass[conference]{IEEEtran}
+
+% scheme=plain 保留 IEEEtran 的标题、章节和页面设置。
+\usepackage[UTF8,scheme=plain,fontset=fandol]{ctex}
+\setmainfont{Nimbus Roman}
+\setsansfont{Nimbus Sans}
+\setmonofont{Nimbus Mono PS}
+\setCJKmainfont{FandolSong-Regular.otf}[
+    BoldFont=FandolSong-Bold.otf,
+    ItalicFont=FandolKai-Regular.otf,
+    BoldItalicFont=FandolKai-Regular.otf,
+    SmallCapsFont=FandolSong-Regular.otf]
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{balance}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\urlstyle{tt}
+\hypersetup{pdfauthor={Yu Zhang},pdftitle={C/C++ 漏洞检测、配对判别与修复的 LLM 评估：统一分层基准、双模型比较与编译闭环}}
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\IEEEkeywordsname}{关键词}
+\renewcommand{\refname}{参考文献}
+\renewcommand{\thetable}{\arabic{table}}
+
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=single,
+  rulecolor=\color{black},
+  xleftmargin=0.5em,
+  xrightmargin=0.5em,
+  aboveskip=0.5em,
+  belowskip=0.5em
+}
+
+
+\newcommand{\Dind}{\mathcal{D}_{\mathrm{ind}}}
+\newcommand{\Dpair}{\mathcal{D}_{\mathrm{pair}}}
+
+\title{C/C++ 漏洞检测、配对判别与修复的 LLM 评估：\\统一分层基准、双模型比较与编译闭环}
+\author{
+\IEEEauthorblockN{Yu Zhang}
+\IEEEauthorblockA{CS224 课程项目\\
+ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:Zhangyu12026@shanghaitech.edu.cn}{Zhangyu12026@shanghaitech.edu.cn}}
+% TODO: 按课程分组补充全部作者、单位与邮箱。
+}
+
+\input{extended_numbers}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+大语言模型（large language model，LLM）已被广泛用于源代码漏洞检测与修复，但不同提示策略、不同模型以及不同评估层级的结果，常因标签、分母、成本和失败口径不同而无法并列阅读。本文在 SecVulEval 冻结测试集（160 条检测函数、180 对漏洞/修复版本）上比较零样本直接判定、固定少样本提示和白名单上下文增强三种策略，并把实验扩展为四个真实部分：DeepSeek 与 MiMo 的双模型复制、180 对强制二选一联合提示、160 条结构化证据提示，以及 Juliet CWE-401 的静态/动态/LLM/证据混合与修复编译闭环。Tier A 检测 macro-F1 为 DeepSeek 0.383/0.399/0.381、MiMo 0.346/0.346/0.365；6 个同策略模型比较经 Holm 校正后均不显著；MiMo few-shot 的差值区间 $[0.010,0.129]$ 虽排除 0，但 McNemar Holm $p=0.235$，只能视为提示性。分侧配对 DA 为 8.9\%--12.2\%（all-pairs 7.8\%--12.2\%），远低于 56.1\% 的机会水平。强制二选一把 DA 提到 76.7\%/86.7\%，但“选较短版本”的长度启发式单独达到 74.4\%，DeepSeek 与启发式不可区分（$p=0.659$），且存在 31.1 个百分点的 A 位置偏差；只有 MiMo 显著高于长度启发式（$p=0.0003$）。证据提示把召回提高 9.4/10.9 个百分点（Holm $p=0.0055/0.0010$），但 FPR 同时上升 9.4/13.8 个百分点，平衡准确率与 MCC 基本持平，收益主要是操作点移动。Juliet test 140 上 Clang SA macro-F1 0.888、Cppcheck 0.588、ASan/Valgrind 0.914；动态 clean 只表示未观察到泄漏，不是 TN。MiMo 在 Juliet 上（泄漏修复后）为 95.0\%（F1 0.951，Xiaomi 官方端点 fallback，非 OpenCode Go）；证据混合 v2 的最好单元为 97.1\%/97.1\%，相对 direct 的 $+1/0$ 个单元在 McNemar 下不显著，安慰剂无聚合收益。修复 6 个 good 单元的标签字面量后，DeepSeek combined 从 100\% 回落到 97.14\%；v1 的 100\% 只作审计案例，不作为主结论。修复闭环中两个模型在 58 个 LSan 可观测单元上均 58/58 严格通过，12 个不可观测单元不计入。结论强调：统一契约、分层报告和显式失败/混杂审计比单一 leaderboard 更重要；所有结果均为单次运行，不声称稳定优劣或通用修复正确率。
+\end{abstract}
+
+\begin{IEEEkeywords}
+漏洞检测，修复生成，大语言模型，提示策略，分层基准，静态分析，动态分析，可复现性
+\end{IEEEkeywords}
+
+\section{引言}
+\label{sec:intro}
+源代码中的安全缺陷是软件供应链风险的重要来源。传统上，漏洞发现依赖人工审计、模糊测试和静态分析规则；这些手段各有覆盖范围，但面对大型代码库时成本较高。基于学习的漏洞检测试图从已标注的函数或代码片段中学习模式，从而为开发者提供可扩展的候选告警。早期工作以代码切片、图神经网络或预训练语言模型为核心，在函数级二分类任务上取得了可观进展~\cite{li2018vuldeepecker,zhou2019devign,feng2020codebert,fu2022linevul}。
+
+近年来，通用大语言模型展现出跨语言、跨任务的代码理解能力，使“不训练、只提示”的漏洞判定与修复生成成为可能~\cite{chen2021codex,pearce2023zeroshot}。然而，评估这类方法并不只是报告一个准确率。首先，漏洞样本与无漏洞样本的比例会显著影响精确率、召回率和 F1 的解释；其次，代码模型可能在预训练阶段见过公开漏洞及其修复，导致评估高估泛化能力；再次，单函数分类无法回答两个更接近实践的问题：当同一个函数被修复后，检测器能否同时判对两个版本？模型能否生成一个完整、与输入不同、且与参考修复接近的补丁？前者衡量“修复差异辨识”，后者衡量“修复生成”，二者不能互相替代~\cite{ding2025primevul,pearce2023zeroshot}。
+
+SecVulEval 为上述问题提供了合适的数据基础。该基准面向 LLM 的上下文感知漏洞检测，包含 5{,}867 个 CVE、10{,}998 条有漏洞函数和 14{,}442 条无漏洞函数，并提供语句级变更标注与函数上下文~\cite{ahmed2026secvuleval,secvulevaldata}。本项目从本地 SecVulEval 快照中抽取两个互补源子集：一个用于函数级检测的独立集合，另一个由同一函数的漏洞版本与修复版本构成的配对集合。两个源子集在原始索引和“项目—提交”分组上相互隔离，合计 600 条不同的函数记录。随后按项目级隔离冻结 \texttt{secvul-split-v1}：检测集 40 条开发（32 正/8 负）+ 160 条测试（128 正/32 负），配对集 20 对开发 + 180 对测试。模型评估只使用测试集，开发样本只用于固定少样本示例和 pilot。源子集不是训练集，而是两种评估视图；冻结划分决定哪些记录进入主结果。
+
+本文关注三种可在相同基础模型上复现的 LLM 提示策略：零样本直接判定、固定少样本提示，以及结合数据集白名单上下文的增强提示。三者共享任务描述、输出格式、解析器和计费口径，差异仅在提示中提供的信息。这样可以把“策略带来的差异”与“模型本身的能力差异”分开。本文的研究问题如下。
+
+\begin{enumerate}
+    \item \textbf{RQ1（函数级检测）}：在 160 条检测测试函数上，三种策略的精确率、召回率、F1、macro-F1、特异度、平衡准确率、MCC 和无效输出率分别是多少？
+    \item \textbf{RQ2（配对联合判别）}：在 180 对测试版本上，三种策略能否同时判对同一函数的两个版本？联合判别准确率和四类联合结果（正确区分、双报漏洞、双报安全、漏报加误报）分别是什么？
+    \item \textbf{RQ3（修复生成）}：在 308 条测试漏洞版本上，三种策略生成的修复在模式有效、函数完整、与输入不同、完整且不同、与参考修复文本一致等结构指标上表现如何？
+    \item \textbf{RQ4（成本）}：三种策略的 token 消耗、费用与延迟差异有多大？每 100 个评估单元和每正确预测的成本是多少？
+    \item \textbf{RQ5（误差类型）}：三种策略在假阳性、假阴性、配对失败和修复失败上呈现哪些可归类的模式？
+    \item \textbf{RQ6（跨模型复制）}：把同一套提示和冻结划分复制到 MiMo-V2.6-Flash 后，检测、配对和成本结论是否与 DeepSeek 一致？同策略、同任务的模型差异在 Holm 校正后是否显著？
+    \item \textbf{RQ7（联合提示）}：把两次分侧判定改成每对一次强制二选一，配对 DA 能提高多少？提高中有多少可由位置偏差和“修复版本通常更长”的长度启发式解释？
+    \item \textbf{RQ8（证据与分层）}：结构化证据行/反事实提示能否提高检测召回而不增加假阳性？在 Juliet CWE-401 上，静态、动态、LLM 和证据混合各自达到什么水平，哪些差异在分层分母下仍可解释？
+    \item \textbf{RQ9（修复闭环）}：在真实编译、LeakSanitizer 和行为差分 oracle 下，两个模型能修复多少个 test bad 单元？不可观测单元应如何从分母中排除？
+\end{enumerate}
+
+需要先说明研究范围。项目最初设想聚焦 C++ 内存泄漏或 Juliet CWE-401 专项，但本地源子集是跨 CWE 的真实项目抽样，不是按 CWE-401 构造的基准：360 条源漏洞函数中只有 4 条带 CWE-401 标签（独立集 2/160，配对集 2/200；冻结测试集 308 条中 3 条，唯一一条 C++ 记录 17743 落在开发集），其中仅 1 条为 C++ 扩展名且同时带 CWE-415，严格“C++ 扩展名且单一 CWE-401 标签”为 0 条；两个 JSON 中也没有 Juliet 记录。若按 CWE-401 专项报告指标，任何数值都会由 1--2 条样本决定。因此本文把主问题定位为\textbf{全 CWE} 的函数级检测与漏洞/修复联合判别，CWE 只作描述性分层，CWE-401 只作案例系列与长尾覆盖限制，不作专项定量结论，也不把结果外推到 Juliet CWE-401。扩展部分另行构建 Tier B Juliet CWE-401 子集，只在该层内报告静态、动态、LLM 与证据混合结果；它与 Tier A 的 SecVulEval 数据、标签、分母和成本口径都不同，二者不池化、不横比。Tier A 的“全 CWE 真实项目函数”与 Tier B 的“单 CWE 合成用例”是互补的压力测试，而不是同一排行榜的两行。
+
+本文的贡献是：
+\begin{itemize}
+    \item 在 SecVulEval 上给出一个可复现的双任务评估协议，覆盖独立函数检测、配对联合判别和修复生成，并明确字段屏蔽、输出模式与评分规则；
+    \item 在固定基础模型下并列比较三种提示策略，统一解析、重试、计费和统计不确定性口径；
+    \item 给出检测指标、配对联合指标、修复结构代理、成本与误差类型的联合分析框架，并公开提示模板、输出模式与逐样本日志格式；
+    \item 给出 Tier A/Tier B 的统一分层契约：同一套字段、失败分类、coverage/strict 和成本向量，但两个层级各自设主终点与外推边界，拒绝跨层池化；
+    \item 把 DeepSeek 的三策略实验复制到 MiMo-V2.6-Flash，共 12 个 Tier A run、每模型 2{,}484 次请求，并用同策略 McNemar + Holm 与 cluster bootstrap 报告模型差异；
+    \item 设计并真实运行 180 对强制二选一联合提示，配合 HMAC 平衡的 A/B 顺序、位置偏差检验和事后的长度启发式审计；
+    \item 设计并真实运行 160 条结构化证据提示（证据行、机制、反事实修复、自检），并把证据行与 \texttt{changed\_lines} 及随机引用基线比较；
+    \item 在 Juliet CWE-401 上完成静态、动态、LLM 和证据混合四类真实运行，其中混合实验包含 2 个模型 $\times$ 5 种方法 $\times$ 140 个单元、共 1{,}400 次请求和错配证据安慰剂；发现 6 个 good 单元含标签字面量后，用修复后的 v2 输入包重跑全部 1{,}400 次请求，v1 仅保留为审计对照；
+    \item 完成 70 个 Juliet test bad 单元的修复闭环：模型输出经过真实编译、LSan 和行为差分，严格通过只统计 baseline 确实可观测泄漏的 58 个单元。
+\end{itemize}
+
+本文报告的是冻结测试集上每个策略的一次完整运行；不以估计值、文献值或 mock 输出代替实测结果。由于每个模型/策略单元只有一次运行，本文不把策略间的小差异解释为稳定优势，配对与修复结论均按探索性证据处理。扩展部分的 MiMo 运行、联合提示、证据提示、Juliet 基准和修复闭环各自有独立的运行次数、分母和限制，均在对应章节单独说明；读者不应把不同章节的点估计直接相减。
+
+\section{相关工作}
+\label{sec:related}
+
+\subsection{基于学习的漏洞检测}
+VulDeePecker 将函数切片为语义相关的代码 gadget，并用双向循环网络判断切片是否包含漏洞~\cite{li2018vuldeepecker}。Devign 把函数表示为融合抽象语法、控制流和数据流的图，再用图神经网络学习函数级表示~\cite{zhou2019devign}。这类方法强调程序结构，但依赖大规模标注数据，且跨项目泛化常受数据偏差影响。
+
+ReVeal 重新审视了深度学习漏洞检测的评估方式，指出数据重复、跨项目划分不当和标签噪声会显著高估模型性能，并给出更严格的评估流程~\cite{chakraborty2021reveal}。LineVul 将预训练 Transformer 用于行级漏洞预测，并在多个数据集上报告了较强基线~\cite{fu2022linevul}。CodeBERT 通过编程语言与自然语言的双模态预训练提供通用代码表示~\cite{feng2020codebert}。Risse 等进一步指出，仅用函数长度、词频等表面特征就可能在多个漏洞数据集上取得高分，说明“高分”未必来自漏洞语义~\cite{risse2024limits,risse2025topscore}。这些工作构成了“训练型检测器”的主要参照；本文不微调模型，而是评估现成 LLM 在提示下的判定行为，因此二者不是同一训练范式，但在任务定义和指标上可以对照。
+
+\subsection{大语言模型与提示策略}
+Codex 展示了大规模代码预训练模型按自然语言指令生成程序的能力，也推动了对代码模型零样本行为的系统研究~\cite{chen2021codex}。思维链提示引导模型先产生中间推理再给出答案，已被证明能改善多步推理任务~\cite{wei2022cot}；自一致性方法通过多次采样并投票提高答案稳定性~\cite{wang2023selfconsistency}。在安全领域，Pearce 等考察了 LLM 的零样本漏洞修复，指出生成结果在功能正确性与安全性上都可能存在明显局限~\cite{pearce2023zeroshot}。这些结果说明，LLM 的安全判定与修复不能只看最终输出，还需要检查其依据是否与代码事实一致。
+
+少样本提示与上下文增强是两类常见改进方向。前者通过固定示例向模型传达任务边界和输出格式；后者把调用关系、全局变量、类型声明等上下文放入提示，帮助模型判断跨函数的数据流与生命周期。二者都会增加输入长度和费用，因此需要在同一预算口径下与零样本基线比较，而不是只报告精度。
+
+\subsection{漏洞检测基准与评估质量}
+SecVulEval 面向 LLM 的上下文感知评估，提供函数级标签、CVE 与 CWE 元数据、语句级变更标注以及执行环境、外部函数、函数参数、全局变量和类型声明等上下文~\cite{ahmed2026secvuleval,secvulevaldata}。PrimeVul 强调数据质量、去重、污染控制以及使用漏洞函数与修复函数进行配对评估，指出仅靠单标签分类容易掩盖模型行为~\cite{ding2025primevul}。Risse 等对漏洞检测基准的构造效度提出质疑，指出标签噪声、不可判定样本和表面特征会扭曲结论~\cite{risse2024limits,risse2025topscore}。这些工作共同说明：评估集如何构造、哪些字段可见、样本之间是否相关，会直接影响结论。
+
+现有基准多用于比较不同模型或不同训练方法，较少在固定基础模型下并列比较提示策略，并把独立检测、配对联合判别、修复生成、费用与误差类型放在同一套协议中报告。本文在课程项目范围内补足这一比较视角；由于只使用一个基础模型和两个规模有限的子集，本文不主张对全部 LLM 或全部漏洞类型作出普适结论。
+
+\subsection{修复生成与补丁质量评估}
+自动程序修复（automatic program repair，APR）通常区分“plausible patch”和“correct patch”：前者能通过现有测试，后者才真正修复缺陷并保持预期行为。Smith 等指出，用同一套测试既生成又验证补丁会系统性高估修复成功率，许多“修复”只是过拟合测试~\cite{smith2015overfitting}；Gazzola 等的综述把修复流程概括为故障定位、补丁生成和补丁验证，验证阶段的核心正是“用什么 oracle 判断补丁正确”~\cite{gazzola2019apr}。在 C/C++ 场景中，强 oracle 通常需要可编译工程、测试用例或 PoC；本项目的函数片段不具备这些条件。
+
+因此，本文只把修复生成作为“结构代理”评估：检查输出是否为完整函数、是否与输入不同、是否与参考修复在规范化文本上一致。这些指标能发现格式失败、空输出、原样返回和明显偏离，但不能证明漏洞已被消除、行为保持不变或没有引入新风险。报告在摘要、结果和局限性中反复强调这一点，避免把“文本接近参考修复”写成“修复正确”。
+
+\subsection{传统分析工具、Juliet 基准与分层评估}
+静态分析器通过抽象解释、符号执行或模式匹配发现缺陷。Clang Static Analyzer 以路径敏感的过程内/过程间检查覆盖内存泄漏与 C++ 对象生命周期~\cite{clangsa}；Cppcheck 以轻量规则覆盖 \texttt{memleak}、\texttt{memleakOnRealloc} 等模式~\cite{cppcheck}。二者的召回与误报差异很大，且对不可编译片段会直接失败，因此报告必须同时给出 coverage 与 strict 口径，而不能把编译失败写成“无漏洞”。动态工具以可执行程序为输入：AddressSanitizer 通过影子内存检测越界与释放后使用~\cite{serebryany2012asan}，LeakSanitizer 在其基础上做泄漏检测~\cite{lsan}，Valgrind Memcheck 通过动态二进制插桩检测 definite/indirect leak~\cite{nethercote2007valgrind}。动态工具的高精确率依赖“泄漏在该执行路径上可观测”；没有覆盖率证据时，clean 只能读作“未观察到”，不能读作安全。
+
+Juliet Test Suite 由 NIST SARD 发布，用模板生成同一缺陷的 bad/good 变体，覆盖 CWE 与多种数据流形态~\cite{boland2012juliet,sard}。它的优势是标签由宏结构直接给出、可编译可运行；局限是合成、单 CWE、模板化，且不同变体之间近重复程度高。本文的 Tier B 用 Juliet v1.3 CWE-401 构建 200 个冻结单元，并按近重复簇隔离 dev/test；这只支持“同一 CWE-401 用例上的工具行为”结论，不支持外推到真实项目。
+
+分层评估并非本文首创：静态/动态/LLM 的工具属性不同，把它们池化会制造不可解释的平均分。本文的增量是把“统一字段 + 分层主终点 + 不池化”写成可执行契约，并在同一契约下同时报告 coverage、strict、失败分类和本地计算/API 两种成本。这样，负面结果（例如某方法 coverage 低、某层 F1 不可定义）与正面结果一样可审计。
+
+\section{数据}
+\label{sec:data}
+
+\subsection{数据来源与构建}
+数据源为项目根目录的 \path{SecVulEval.xlsx} 的 \texttt{train} 工作表，对应 SecVulEval 基准及其数据发布~\cite{ahmed2026secvuleval,secvulevaldata}。本地工作簿包含 25{,}440 条函数记录，其中 10{,}998 条标记为有漏洞、14{,}442 条标记为无漏洞。构建脚本 \path{build_datasets.py} 检查原始索引、标签、必要文本字段和序列化列表字段；由于 7 条记录的 \texttt{changed\_statements} 无法解析，实际保留 25{,}433 条可用记录，排除索引与原因记录在 JSON 元数据中。缺失或损坏的修复目标不能构成有效配对，去除首尾空白后函数正文相同的版本对也被排除；最终可用于抽样的候选配对为 10{,}004 对，其中因修复目标缺失或格式错误排除 975 对，因正文相同排除 15 对。采样使用局部随机数生成器 \texttt{random.Random(42)}。
+
+两个 JSON 均保留每条记录的 16 个原始字段和完整函数正文，包括 \texttt{idx}、\texttt{project}、\texttt{commit\_id}、\texttt{filepath}、\texttt{func\_name}、\texttt{func\_body}、\texttt{is\_vulnerable}、\texttt{cve\_list}、\texttt{cwe\_list}、\texttt{changed\_lines}、\texttt{changed\_statements}、\texttt{fixed\_func\_idx} 和 \texttt{context} 等。\texttt{changed\_lines}、\texttt{changed\_statements}、\texttt{cve\_list}、\texttt{cwe\_list} 转为 JSON 数组；\texttt{context} 保留原始字符串，不执行其中的表达式。
+
+\subsection{独立函数集}
+独立函数集记为
+\begin{equation}
+\Dind=\{(x_i,y_i)\}_{i=1}^{200},\qquad y_i\in\{0,1\},
+\end{equation}
+其中 $x_i$ 为函数记录，$y_i=1$ 表示有漏洞。该集合严格包含 160 条有漏洞函数和 40 条无漏洞函数，并满足三条约束：
+\begin{enumerate}
+    \item 每个 \texttt{(project, commit\_id)} 分组最多选取一条函数记录；
+    \item 任一入选漏洞函数在数据中标注的修复版本，不同时出现在该集合中；
+    \item 40 条无漏洞函数均不是原始工作簿中任意漏洞记录通过 \texttt{fixed\_func\_idx} 指向的修复版本。
+\end{enumerate}
+这些约束保证集合内不存在数据集已标注的漏洞/修复配对关系，但不对上游完整 Git 历史作出证明。这里的“独立”指抽样与修复关联约束，不表示样本在统计意义上完全独立。
+
+在 200 条源记录上冻结 \texttt{secvul-split-v1} 的检测划分：40 条开发（32 正/8 负）与 160 条测试（128 正/32 负）。划分按项目级互斥，40 个开发项目与 40 个测试项目没有交集；多例项目全部进入测试集。本文的模型结果只报告 160 条测试函数，40 条开发函数不进入主结果表。冻结算法、CWE 家族/长度分层和校验记录见 \path{splits/README.md} 与 \path{splits/split_v1.json}。
+
+\subsection{漏洞/修复配对集}
+配对集记为
+\begin{equation}
+\Dpair=\{(x_j^{v},x_j^{f})\}_{j=1}^{200},
+\end{equation}
+其中 $x_j^{v}$ 为标记有漏洞的版本，$x_j^{f}$ 为其对应修复且标记无漏洞的版本。配对必须满足
+\begin{equation}
+\texttt{fixed\_func\_idx}(x_j^{v})=\texttt{idx}(x_j^{f}),
+\end{equation}
+并且两个版本的项目、提交标识、文件路径和函数名一致，去除首尾空白后的函数正文不同。每个“项目—提交”分组最多选择一对。该集合包含 200 对、共 400 条函数记录。版本先后顺序由原始索引关联确定，不通过提交时间或文本相似度推测。
+
+配对源集合冻结为 20 对开发 + 180 对测试，同一对的两个版本始终留在同一侧；20 个开发项目与 60 个测试项目在配对任务内没有交集。主结果使用 180 对测试版本，20 对开发版本只用于修复示例和 pilot。
+
+\subsection{集合隔离与描述统计}
+设 $I(\mathcal{D})$ 为集合中的原始记录索引，$G(\mathcal{D})$ 为“项目—提交”分组，则构建过程保证
+\begin{align}
+I(\Dind)\cap I(\Dpair)&=\varnothing,\\
+G(\Dind)\cap G(\Dpair)&=\varnothing.
+\end{align}
+两个源集合合计包含 600 条不同的原始记录。冻结划分后，80 条不同记录进入开发（40 条检测 + 20 对配对），520 条进入测试（160 条检测 + 360 条配对函数）；开发与测试的源索引交集为 0，函数正文哈希交集为 0。检测任务内开发/测试项目交集为 0，配对任务内也为 0；但两个任务独立划分，因此有 2 个检测开发项目出现在配对测试（yara、znc），5 个配对开发项目出现在检测测试（Fast-DDS、OpenSC、\texttt{file}、htmldoc、libgd）。这不是完全的项目级隔离，这一点在外部有效性讨论中保留。按源 \texttt{project} 字段统计，两个源子集共享 26 个项目，项目并集为 134 个。
+
+\begin{table}[t]
+\caption{源子集与冻结划分的组成}
+\label{tab:data-composition}
+\centering
+\small
+\begin{tabular}{@{}lcrrr@{}}
+\toprule
+子集 & 评估单元 & 有漏洞 & 无漏洞 & 函数总数\\
+\midrule
+源独立集 & 200 条函数 & 160 & 40 & 200\\
+源配对集 & 200 对版本 & 200 & 200 & 400\\
+冻结检测开发集 & 40 条函数 & 32 & 8 & 40\\
+冻结检测测试集 & 160 条函数 & 128 & 32 & 160\\
+冻结配对开发集 & 20 对版本 & 20 & 20 & 40\\
+冻结配对测试集 & 180 对版本 & 180 & 180 & 360\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+表~\ref{tab:data-stats} 给出源子集的描述统计。函数行数按 \texttt{func\_body} 的换行符计数，包含空行；分布呈明显长尾，因此同时报告中位数、四分位区间和最大值，均值不作为主要概括。源独立集采用 160/40 的人为比例，源配对集因配对要求而标签平衡；两者的总体指标不能直接合并解释。
+
+冻结测试集是源子集的子集：检测 160 条的函数行数中位数为 44.5（IQR 19.8--94.0，最大 1{,}172），配对漏洞版为 43.5（21.8--86.0，最大 1{,}011），修复版为 44.5（23.8--86.0，最大 1{,}015）。测试集的标签比例与源子集相同（128/32；180 对平衡），因此下文仍按 80/20 和配对平衡解释指标，但所有主结果的分母改为测试集。
+
+\begin{table}[t]
+\caption{源子集的描述统计}
+\label{tab:data-stats}
+\centering
+\scriptsize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+指标 & $\Dind$ & $\Dpair$ 漏洞 & $\Dpair$ 修复\\
+\midrule
+函数记录数 & 200 & 200 & 200\\
+项目数 & 80 & 80 & 80\\
+提交分组数 & 200 & 200 & 200\\
+行数中位数 & 46 & 43.5 & 43.5\\
+行数四分位区间 & 21.5--94.2 & 21.8--82.2 & 23.8--85.0\\
+最大行数 & 1{,}172 & 1{,}011 & 1{,}015\\
+含 CVE 编号记录 & 200 & 200 & 200\\
+changed\_statements 非空 & 188 & 183 & 190\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{数据审计与泄漏风险}
+只读审计发现若干会直接影响实验设计的事实，汇总在表~\ref{tab:audit}。这些事实不是模型结果，而是数据构造与字段分布的结果；报告在解释方法差异时必须把它们作为混淆因素。
+
+\begin{table}[t]
+\caption{数据审计中的关键事实}
+\label{tab:audit}
+\centering
+\small
+\begin{tabular}{@{}p{4.6cm}p{3.2cm}@{}}
+\toprule
+发现 & 影响\\
+\midrule
+5 条函数正文恰好 32{,}767 字符且在中途截断：源子集独立 3 条、配对 1 对；这 5 条全部落在测试集（独立 3 条 + 配对 1 对） & 长度分布是源截断后的下界；超长函数可能被截断 \\
+源独立集 \texttt{context} 分层：非空 156/156 为漏洞，空 44 条中 4 条漏洞、40 条非漏洞；测试集非空 126/126 为漏洞，空 34 条中 2 条漏洞、32 条非漏洞 & context 非空层为单类别，与标签高度相关；M3 的提升可能来自格式差异而非语义 \\
+源独立集 \texttt{fixed\_func\_idx} 非空：有漏洞 143/160，无漏洞 0/40；测试集为 115/128 与 0/32 & 存在性直接泄漏标签，必须从所有提示中排除 \\
+源子集 CWE-401 漏洞函数 4/360（独立 2/160，配对 2/200）；测试集 3/308；严格 C++ 单标签 0 条 & 只能作案例系列，不能支持 CWE-401 或 Juliet 专项结论 \\
+源独立集 CWE/CVE 非空：无漏洞 40/40（测试集 32/32）；配对修复版 200/200（测试集 180/180）复制漏洞版 & CWE/CVE 是溯源信息，不是函数级标签特征 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+第一项意味着样本长度存在源级截断：32{,}767 是 Excel 单元格字符上限，源子集 5 条记录均在函数中途结束，且这 5 条全部落在测试集。第二项是最重要的混淆：源独立集 context 非空层 156 条全部为漏洞样本，空层 44 条中 4 条漏洞、40 条非漏洞；冻结测试集非空层 126/126 为漏洞，空层 34 条中 2 条漏洞、32 条非漏洞。非空层是单类别，macro-F1 不可定义，M3 的总体差异与 context 可用性高度混杂。即使运行器只提取白名单字段，M3 仍然可以通过“有没有上下文”区分大量样本。因此本文对 M3 的结论只能限定为“在该数据上，上下文增强提示的整体效果”，不能声称模型理解了项目上下文。结果部分必须按 \texttt{context} 是否非空分层报告，至少给出该分层的样本数和指标；若 M3 的优势只出现在有上下文的样本上，也不能排除标签相关性的解释。第三项说明 \texttt{fixed\_func\_idx} 的存在性与标签相关，协议一律排除该字段；第四项说明 CWE/CVE 不能作为输入特征，配对修复版复制漏洞版的 CWE/CVE 也意味着不能用它区分对内的两个版本。
+
+\subsection{研究范围：全 CWE 定位与 CWE-401 样本量}
+\label{sec:scope-cwe}
+表~\ref{tab:audit} 已给出 CWE-401 的总量，本节说明计数口径与它对研究定位的影响。\texttt{cwe\_list} 中存在 \texttt{CWE-415CWE-401} 这类连写标签，统计时按正则 \texttt{CWE-[\_ ]?(\textbackslash d+)} 拆分，并在单条记录内去重；只有 \texttt{is\_vulnerable=true} 的记录才计入漏洞样本，修复版本和独立集负例即使保留 CWE-401 元数据也不计入。按此口径，源独立集有 2 条 CWE-401 漏洞函数（\texttt{idx}=17743、5896，占 2/160），源配对集有 2 条（\texttt{idx}=5886、8675，占 2/200），合计 4/360（1.11\%）。冻结测试集有 3 条（5896、5886、8675），占 3/308；17743 落在检测开发集。4 条源记录中 3 条是 \texttt{.c}，1 条是 \texttt{.cc}；唯一的 C++ 记录 17743 的原始标签是 \texttt{CWE-415CWE-401}，因此“C++ 扩展名且单一 CWE-401 标签”为 0 条。4 条记录只来自 3 个项目（linux 2 条，dcmtk 1 条，ImageMagick 1 条），其中 8675 的函数正文恰好 32{,}767 字符并在中途截断。
+
+CWE 的整体分布同样不支持逐类推断。两个源子集的漏洞函数合并后只有 57 种数字 CWE；源独立集 39 种中有 23 种只出现 1 次，源配对集 39 种中有 18 种只出现 1 次；源独立集只有 6 种、源配对集只有 7 种 CWE 达到 $n\ge 10$。冻结测试集合并后为 54 种，其中 29 种只出现 1 次，只有 10 种达到 $n\ge 10$。CWE-401 在测试集的合并计数为 3，仍属于长尾类别。若对每个 CWE 报告 precision/recall，大多数类别的分母只有 1--9 条，一条预测翻转就会主导结果。
+
+因此本文的主定位是跨 CWE 的函数级评估，而不是 CWE-401、C++ 内存泄漏或 Juliet CWE-401 专项。源子集的 4 条 CWE-401 记录（测试集 3 条）只作为案例系列：用于观察模型是否提到错误路径上的资源释放和生命周期，不进入逐 CWE 排名，不估计 CWE-401 的召回率或 F1，也不与 Juliet 结果比较。数据中大小写不敏感搜索 \texttt{juliet} 的命中数为 0，600/600 条记录都带 CVE，进一步说明当前子集是真实项目 CVE 抽样，不是合成弱点测试集。
+
+\subsection{开发示例、输入字段与任务矩阵}
+三种策略中的少样本提示需要示例。冻结划分 \texttt{secvul-split-v1} 从检测开发集取 4 条示例（2 条有漏洞、2 条无漏洞），从配对开发集取 2 条修复示例（每条含漏洞版本与参考修复），保存在 \path{splits/dev_examples_fewshot.json}；示例的代码、标签、理由和来源索引由 \path{splits/example_notes.json} 冻结。示例只来自开发集，不来自 160 条检测测试函数或 180 对测试版本。运行器加载时对评估文件执行隔离检查：示例的规范化源码不得与任何测试函数完全相同，示例声明的 \texttt{source\_idx} 不得出现在测试集中；检测示例必须覆盖正负两类，修复示例必须包含完整修复。示例的标签和参考输出是方法的一部分，不是测试样本的标签泄漏。
+
+开发集与测试集按项目级互斥构造：检测 40 个开发项目与 40 个测试项目没有交集，配对 20 个开发项目与 60 个测试项目没有交集；开发/测试源索引交集为 0，函数正文哈希交集为 0。两个任务独立划分，因此有 2 个检测开发项目出现在配对测试、5 个配对开发项目出现在检测测试；这不会让示例代码进入同任务的测试集，但跨任务并非完全项目隔离。冻结记录、源文件 SHA-256 和各 artifact 哈希见 \path{splits/FREEZE.txt} 与 \path{splits/split_v1.json}。
+
+课程指南建议 40 条开发样本加 160 条测试样本，冻结划分与此一致（检测 40/160；配对任务按对计数，20/180）。开发集只用于固定示例、pilot 和人工校准，不用于报告主结果；测试集在提示和示例冻结后才可运行。示例不按测试表现挑选，提示版本和示例哈希写入运行 manifest。若需要改划分或示例，必须生成新的 \texttt{split\_id} 和新的 freeze 记录，不能覆盖旧文件后重跑。
+
+M1 与 M2 的目标函数输入只包含 \texttt{func\_body}；M3 另加第~\ref{sec:methods}节定义的、按白名单选取的上下文。以下字段不得进入任何策略的提示：\texttt{is\_vulnerable}（标签）、\texttt{cve\_list} 与 \texttt{cwe\_list}（漏洞类型元数据）、\texttt{commit\_message}（可能描述修复）、\texttt{changed\_lines} 与 \texttt{changed\_statements}（直接指出变更位置）、\texttt{fixed\_func\_idx} 与 \texttt{idx}（可用于反查标签）、\texttt{project} 与 \texttt{filepath}（可用于检索公开修复），以及 \texttt{context} 中的 \texttt{Explanation} 字段（可能包含漏洞说明）。本地数据中该字段当前均为空，但协议仍将其排除，以避免数据更新后产生泄漏。
+
+配对集的评分需要两个版本，但推理时每个版本独立调用模型，模型看不到另一个版本，也不知道当前函数属于哪一对。配对关系只在评分阶段使用。这样，配对指标衡量的是模型对同一函数两种安全状态的联合判别，而不是模型对“找不同”任务的直接比较能力；它也避免了把两个版本放在同一次调用中可能引入的位置偏差。
+
+表~\ref{tab:field-visibility} 汇总各字段在三种策略中的可见性。该表是防止标签泄漏的主要依据：任何标为“否”的字段都不得以文本、元数据或文件名形式进入提示。若后续实验需要加入新字段，必须先更新该表并在报告中说明理由，不能在没有记录的情况下临时追加。
+
+\begin{table*}[t]
+\caption{原始字段在三种策略提示中的可见性}
+\label{tab:field-visibility}
+\centering
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.8cm}lll>{\raggedright\arraybackslash}p{6.0cm}@{}}
+\toprule
+字段 & M1 & M2 & M3 & 处理说明\\
+\midrule
+\texttt{func\_body} & 是 & 是 & 是 & 唯一必选输入，保留完整函数正文\\
+\texttt{context} 白名单 & 否 & 否 & 是 & 仅执行环境、外部函数、函数参数、全局变量、类型声明\\
+\texttt{context.Explanation} & 否 & 否 & 否 & 可能包含漏洞说明，协议上一律排除\\
+\texttt{is\_vulnerable} & 否 & 否 & 否 & 预测目标，不得泄露\\
+\texttt{cve\_list} / \texttt{cwe\_list} & 否 & 否 & 否 & 漏洞类型元数据，可能直接提示答案\\
+\texttt{commit\_message} & 否 & 否 & 否 & 可能描述修复内容或安全影响\\
+\texttt{changed\_lines} / \texttt{changed\_statements} & 否 & 否 & 否 & 直接指出修复位置，构成强泄漏\\
+\texttt{idx} / \texttt{fixed\_func\_idx} & 否 & 否 & 否 & 可用于反查原始记录与标签\\
+\texttt{project} / \texttt{filepath} / \texttt{func\_name} & 否 & 否 & 否 & 可用于检索公开修复或根据命名猜测\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+表~\ref{tab:task-matrix} 给出两个任务在冻结测试集上的请求数。检测任务对 160 条独立测试函数和 360 条配对测试函数各请求一次；修复任务只对漏洞版本请求，独立测试集 128 条、配对测试集 180 条。三种策略各运行一遍，每个策略 828 次请求，三种策略合计 2{,}484 次请求。该数字是规划值，不是实测调用数；实际调用数、重试和缓存命中以运行日志为准。
+
+\begin{table}[t]
+\caption{任务与请求矩阵（每种策略，冻结测试集）}
+\label{tab:task-matrix}
+\centering
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+数据集 & 检测请求 & 修复请求 & 评估单元\\
+\midrule
+独立测试集 & 160 & 128 & 160 条函数\\
+配对测试集 & 360 & 180 & 180 对 / 360 条函数\\
+\midrule
+合计 & 520 & 308 & 160 条函数 + 180 对\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{方法}
+\label{sec:methods}
+
+\subsection{任务形式化与输出模式}
+检测任务要求模型对一条函数 $x$ 输出二值判断 $\hat{y}(x)\in\{0,1\}$，以及可选的置信度和简短理由。修复任务要求模型对一条漏洞函数 $x^{v}$ 输出一个完整的修复函数 $\hat{x}^{f}$ 和解释。两个任务使用同一基础模型和同一提示骨架，但输出模式不同。
+
+检测输出必须是可解析的 JSON 对象，包含且仅要求以下字段：
+\begin{lstlisting}
+{"is_vulnerable": true|false,
+ "confidence": 0.0-1.0,
+ "rationale": "brief reason"}
+\end{lstlisting}
+修复输出必须是：
+\begin{lstlisting}
+{"fixed_function": "<complete function>",
+ "explanation": "brief explanation"}
+\end{lstlisting}
+其中 \texttt{fixed\_function} 必须包含完整函数定义、签名和花括号，不能是 diff、片段或 Markdown。评分只读取 \texttt{is\_vulnerable} 和 \texttt{fixed\_function}；\texttt{confidence}、\texttt{rationale} 和 \texttt{explanation} 用于定性分析，不参与主指标。把置信度排除在主指标之外，是因为不同模型对概率标定的含义不一致，而且强制输出概率会诱导过度自信。
+
+对配对 $(x_j^{v},x_j^{f})$，检测任务分别得到 $\hat{y}(x_j^{v})$ 和 $\hat{y}(x_j^{f})$。理想结果是 $(\hat{y}^{v},\hat{y}^{f})=(1,0)$。若模型对两个版本都输出 0，它在漏洞版本上犯错；若都输出 1，它在修复版本上犯错；若输出 $(0,1)$，则是“反向翻转”。配对关系只在评分阶段使用，推理时两个版本各自独立调用，模型看不到另一个版本。
+
+\subsection{任务边界}
+本文评估的是函数级、单标签的静态判定与修复生成。检测不要求定位到具体行；修复不执行代码、不编译、不运行测试，也不进行跨文件构建、指针分析或污点追踪。因此，本文不能回答“漏洞在哪一行”“补丁是否真正消除漏洞”“补丁是否保持行为”等问题；这些问题需要行级标注、可编译工程和测试预言，超出当前数据与课程项目的范围。
+
+这一边界也影响指标解释。函数级标签是二值的：只要函数中存在一个数据集标注的缺陷，标签即为 1；模型不需要找出全部缺陷，也不因漏掉第二个缺陷而额外扣分。配对集的修复版本标签为 0，但修复版本可能仍含其他未标注问题。修复生成的结构指标只能说明输出“像不像一个完整补丁”，不能说明“补丁是否正确”。报告在解释假阳性、假阴性和修复结果时，必须把“标签定义”“结构代理”与“代码实际风险”区分开。
+
+\subsection{共享控制}
+三种策略刻意保持以下条件一致，以隔离提示策略的影响：
+\begin{itemize}
+    \item \textbf{基础模型相同}：模型名称、版本或快照、服务商和访问日期记录在表~\ref{tab:model}；三种策略在同一时间段内运行，若服务端模型发生更新则整批重跑。
+    \item \textbf{解码参数相同}：温度固定为 0，\texttt{top\_p} 为 1，最大输出 token 按任务固定；主实验关闭思考模式（若端点支持）。不启用工具调用、联网或代码执行。
+    \item \textbf{调用粒度相同}：每次只提交一条函数；配对集的两个版本分两次调用，不把同一对放在同一次请求中。
+    \item \textbf{输出模式相同}：检测和修复分别使用固定 JSON 模式；三种策略的字段要求一致。
+    \item \textbf{解析与重试相同}：传输错误、429 和 5xx 按指数退避重试；HTTP 200 但输出不符合模式时记为 invalid，不自动重问。续跑时可选择重试 invalid，但该选择必须记录。
+    \item \textbf{提示语言相同}：三种策略的任务说明、示例和输出要求均使用英文，避免语言切换带来的额外差异。
+\end{itemize}
+不强制三种提示等长。少样本示例和上下文必然增加输入 token，这部分成本差异本身就是比较对象；若强行截断到相同长度，反而会改变策略定义。报告时分别给出原始 token 数与费用。
+
+\subsection{策略 M1：零样本直接判定}
+M1 只提供任务说明和函数源码。检测提示要求模型直接给出 JSON 结论，不提供示例，不提供调用关系或全局变量等上下文；修复提示要求模型返回完整修复函数。M1 是课程指南中“直接提示”的对应实现，也是另外两种策略的增量基线。M1/M2 的检测提示模板见附录~\ref{app:prompts}。
+
+\subsection{策略 M2：固定少样本提示}
+M2 在 M1 的任务说明之后加入固定示例，再给出待判定函数。检测任务使用 4 条开发集示例（2 条有漏洞、2 条无漏洞），修复任务使用 2 条开发集配对示例（每条含漏洞版本和参考修复）。示例来自 \path{splits/dev_examples_fewshot.json}，由 \path{splits/example_notes.json} 冻结，选取规则在实验前确定：
+\begin{enumerate}
+    \item 示例只从 40 条检测开发集和 20 对配对开发集中选取，不来自 160 条检测测试或 180 对测试版本；
+    \item 运行器检查示例的规范化源码不与任何测试函数相同，示例声明的 \texttt{source\_idx} 不在测试集中；
+    \item 检测示例覆盖正负两类，修复示例包含完整函数和参考修复；
+    \item 示例顺序固定，不在每次调用时重新抽样。
+\end{enumerate}
+示例的标签和输出是方法的一部分；它们来自开发集，不是测试样本的标签泄漏。M2 与 M1 的差异仅在于示例，因此二者的差值可解释为“少样本示范”的效果。
+
+\subsection{策略 M3：白名单上下文增强}
+M3 在 M1 的输入上增加 SecVulEval 的上下文白名单字段：\texttt{Execution Environment}、\texttt{External Function}、\texttt{Function Argument}、\texttt{Globals} 和 \texttt{Type Execution Declaration}。原始 \texttt{context} 是 Python 字典的字符串表示，其中数组以 \texttt{array([...], dtype=object)} 形式出现，不能直接当作 JSON 解析。运行器按字段名提取白名单内容，逐项输出为 \texttt{- item} 列表，只保留非空字段；若五个字段全为空，则输出 \texttt{(No usable structured context was available.)}，此时 M3 在该样本上退化为 M1；若整体解析失败，则该样本不附带上下文，并在日志中计数。
+
+M3 不使用 \texttt{Explanation}、CVE/CWE 标签、变更标注或提交信息，也不调用 Clang 等外部静态分析工具。这样选择的原因是：评估样本是来自不同项目的函数片段，很多片段无法独立编译，外部工具会产生大量与样本无关的缺失依赖告警，反而引入噪声；此外，课程指南的 L3 示例使用 Clang 分析结果，但这些函数片段通常缺少头文件、宏和类型定义，难以作为独立翻译单元分析，因此改用数据自带的项目上下文。该替换在报告中明确说明，避免把不同实现当作同一方法。
+
+M3 有一个无法通过提示清洗消除的混淆：在冻结检测测试集上，context 非空层 126/126 为漏洞样本，空层 34 条中 2 条漏洞、32 条非漏洞（源独立集非空 156/156、空 44 条中 4 条漏洞）；“上下文是否可用”与标签高度相关，且非空层是单类别。配对测试集内两个版本的 context 相同（176 对两侧非空、4 对两侧为空），该混淆较弱，但配对集的结果仍不能说明模型理解了上下文。就检测测试集而言，M3 相对于 M1 的提升可能来自“有没有上下文”这一格式差异，而不是模型理解了项目上下文。结果部分必须按 context 是否非空分层报告，至少给出分层样本数和指标；M3 的主结论只能限定为“在该数据上，上下文增强提示的整体效果”。
+
+\subsection{与课程指南三种策略的对应关系}
+课程指南给出的示例策略为 L1 直接提示、L2 少样本提示、L3 分析引导提示，并要求在同一批测试样本上运行。本文的 M1、M2、M3 分别对应这三类策略，但把 L3 的“Clang 分析结果”替换为“SecVulEval 白名单上下文”，原因如上。三种策略共享同一基础模型，属于“比较提示策略”的设计，而不是“比较模型”的设计；若后续增加第二个基础模型，应作为独立实验报告，不与当前结果混合。
+
+\section{实验设置}
+\label{sec:eval}
+
+\subsection{评估规模与运行}
+按表~\ref{tab:task-matrix}，每个策略共 520 次检测请求和 308 次修复请求，合计 828 次；三种策略合计 2{,}484 次，六次运行均已完成。正式运行前曾在 \path{splits/pilot_detection_36.json}（36 条检测）和 \path{splits/pilot_pairs_18.json}（18 对）上做端到端试运行，检查提示渲染、上下文解析、JSON 解析、重试和计费字段；pilot 不进入结果表。运行中传输错误按指数退避重试并单独计数，不覆盖原始失败记录；输出不符合模式时记为 invalid，不通过反复重问掩盖失败率。
+
+\subsection{模型与解码配置}
+表~\ref{tab:model} 记录实际使用的基础模型与调用配置。六次正式运行（三策略 × 两数据集）的 manifest 与请求体一致：模型 ID 为 \texttt{deepseek-v4.1-flash}，服务端为 OpenCode Go 端点，响应中的 \texttt{model} 为同一 ID，\texttt{system\_fingerprint} 为 \texttt{null}（服务端未返回快照标识）。请求体明确写入 \texttt{"thinking": \{"type": "disabled"\}}，温度为 0，最大输出 8192 token，并发 8；\texttt{top\_p} 未显式设置，按服务端默认行为处理，不能假定为某个固定值。价格快照为输入 0.30、输出 1.20、缓存输入 0.006 美元每百万 token；所有运行在 2026-11-11（UTC）完成，运行状态均为 completed。
+
+\begin{table}[t]
+\caption{基础模型与调用配置}
+\label{tab:model}
+\centering
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{5.2cm}@{}}
+\toprule
+项目 & 配置\\
+\midrule
+基础模型 & \texttt{deepseek-v4.1-flash}\\
+API ID & \texttt{deepseek-v4.1-flash}\\
+服务商 / 端点 & OpenCode Go；\path{https://opencode.ai/zen/go/v1/chat/completions}\\
+响应版本/快照 & \texttt{model}=\texttt{deepseek-v4.1-flash}；\texttt{system\_fingerprint}=null\\
+温度 / \texttt{top\_p} & 0 / 未显式设置（服务端默认）\\
+思考模式 & disabled（请求体显式设置）\\
+最大输出 token & 8{,}192\\
+并发度 & 8\\
+输出格式 & JSON 对象（\texttt{json\_object}）\\
+每次调用函数数 & 1\\
+重试策略 & 传输错误最多 3 次；schema-invalid 不自动重问\\
+价格快照 & 输入 0.30 / 输出 1.20 / 缓存输入 0.006 USD 每 1M token\\
+运行日期 & 2026-11-11（UTC）\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{检测指标}
+对有漏洞类（正类）定义 TP、FP、TN、FN，使用精确率 $P$、召回率 $R$、F1、准确率、特异度、平衡准确率和 Matthews 相关系数（MCC）：
+\begin{align}
+P&=\frac{TP}{TP+FP}, \qquad R=\frac{TP}{TP+FN},\\
+F_1&=\frac{2PR}{P+R},\\
+\mathrm{Acc}&=\frac{TP+TN}{TP+TN+FP+FN},\\
+\mathrm{Spec}&=\frac{TN}{TN+FP},\\
+\mathrm{BalAcc}&=\frac{R+\mathrm{Spec}}{2},\\
+\mathrm{MCC}&=\frac{TP\cdot TN-FP\cdot FN}{D},\\
+D&=\sqrt{(TP+FP)(TP+FN)}\notag\\
+&\quad\times\sqrt{(TN+FP)(TN+FN)}.
+\end{align}
+当分母为 0 时，相应指标记为未定义（报告为 ---），MCC 的分母为 0 时记 0。独立集的有漏洞比例为 80\%，准确率会被多数类主导；“全判有漏洞”即可得到 80\% 准确率，但特异度为 0、MCC 为 0。因此以 macro-F1 和 MCC 为主要指标，精确率、召回率、特异度和平衡准确率分别报告。
+
+macro-F1 定义为两个类别 F1 的算术平均：
+\begin{equation}
+\mathrm{MacroF1}=\frac{1}{2}\left(F_1^{\mathrm{vuln}}+F_1^{\mathrm{non}}\right),
+\end{equation}
+其中 $F_1^{\mathrm{vuln}}$ 以有漏洞类为正类，$F_1^{\mathrm{non}}$ 以无漏洞类为正类。该指标由混淆矩阵计算，对类别不平衡不敏感。
+
+检测输出有两种分析口径。\textbf{valid-only} 只统计通过模式校验的预测，用于比较“模型在能给出有效输出时的判别能力”；\textbf{strict all-samples} 把所有 invalid 和 API 错误都当作错误，分母为全部计划请求，用于比较“端到端可用性”。每个结果表必须同时给出有效预测数、invalid 数、API 错误数和覆盖率；若某策略的 invalid rate 明显更高，valid-only 指标会虚高，不能只报 valid-only。
+
+\subsection{配对联合指标}
+配对集的检测请求按对聚合。对每一对 $j$，根据两个版本的预测定义四类联合结果：
+\begin{itemize}
+    \item \textbf{正确区分}（\texttt{vulnerable\_detected\_fixed\_clean}）：漏洞侧判 1、修复侧判 0；
+    \item \textbf{双报漏洞}（\texttt{both\_flagged}）：两侧都判 1；
+    \item \textbf{双报安全}（\texttt{both\_clean}）：两侧都判 0；
+    \item \textbf{漏报加误报}（\path{vulnerable_missed_fixed_flagged}）：漏洞侧判 0、修复侧判 1。
+\end{itemize}
+联合判别准确率定义为正确区分对数除以配对总数：
+\begin{equation}
+\mathrm{DA}=\frac{N_{\mathrm{correct}}}{N_{\mathrm{pair}}},
+\end{equation}
+其中 $N_{\mathrm{correct}}$ 为漏洞侧判 1、修复侧判 0 的对数，$N_{\mathrm{pair}}$ 为参与评分的对数。同时报告 valid-pairs 版本（只在两侧都有效的对上计算）和 all-pairs 版本（把无效对当作失败）。四类结果的比例以有效对为分母，并给出计数。仅报告版本级准确率会掩盖配对内部的相关性；一个总是判“无漏洞”的模型可以在修复侧得到 100\% 正确，但漏洞侧全部漏报，联合判别准确率为 0。
+
+\subsection{修复结构指标}
+修复任务只对漏洞版本请求。由于没有编译、测试或 PoC oracle，本文只报告以下结构代理：
+\begin{itemize}
+    \item \textbf{schema 有效率}：输出可解析且包含 \texttt{fixed\_function} 的比例；
+    \item \textbf{完整函数率}：在 schema 有效输出中，括号配对、存在函数式前缀、不是 diff 或 Markdown 的比例；
+    \item \textbf{与输入不同率}：在 schema 有效输出中，规范化后与输入函数不同的比例；
+    \item \textbf{完整且不同率}：同时满足完整函数和与输入不同的比例；
+    \item \textbf{精确匹配参考修复率}：在配对集有参考修复的漏洞版本上，规范化文本与参考修复完全相同的比例；
+    \item \textbf{空白折叠匹配率}：折叠空白后与参考修复相同的比例。
+\end{itemize}
+这些指标的分母不同，报告时必须写清：完整函数率、与输入不同率、完整且不同率以 schema 有效输出为分母；精确匹配和空白折叠匹配只对配对测试集的 180 条漏洞版本有参考修复，独立测试集的 128 条漏洞版本没有参考修复。所有指标都是结构代理，不能解释为“修复正确率”或“漏洞消除率”。
+
+\subsection{成本与延迟}
+设第 $i$ 次调用消耗 $t_i^{\mathrm{in}}$ 个输入 token 和 $t_i^{\mathrm{out}}$ 个输出 token，服务商单价分别为 $p_{\mathrm{in}}$ 和 $p_{\mathrm{out}}$（美元/百万 token），则总费用为
+\begin{equation}
+C=\sum_{i=1}^{n}\left(t_i^{\mathrm{in}}p_{\mathrm{in}}+t_i^{\mathrm{out}}p_{\mathrm{out}}\right).
+\end{equation}
+若服务商报告缓存命中 token，则分别按缓存命中和未命中单价计算，并同时报告“全按未命中价”的保守上界。单价按运行当日服务商公开价格记录，并注明币种、是否含税和是否有折扣。重试调用计入总费用，但不计入主结果的样本数；开发示例调用单独汇总。若未配置价格，运行器的成本字段为 \texttt{null}，报告不得用估算值替代实测账单。
+
+成本—效果指标包括：
+\begin{equation}
+C_{100}=\frac{C}{N_{\mathrm{unit}}}\times 100,\qquad
+C_{\mathrm{correct}}=\frac{C}{N_{\mathrm{correct}}},
+\end{equation}
+其中 $N_{\mathrm{correct}}$ 在检测任务中为 $TP+TN$，在配对任务中为正确区分对数，在修复任务中为“完整且不同”的样本数。若分母为 0，则相应成本记为不适用（---）。延迟报告 p50 和 p95，并注明并发度、测量地点和是否包含重试等待。
+
+\subsection{统计推断}
+对 accuracy、recall、specificity、联合判别准确率、schema 有效率等比例，使用 95\% Wilson 区间；对 F1、macro-F1、MCC 和策略差值，使用 bootstrap 区间。检测任务按项目聚类重采样，配对任务按对重采样，修复任务按对或按函数重采样；同一对的两个版本始终一起重采样。重复 10{,}000 次，随机种子固定为 42，报告中位数和 2.5/97.5 百分位。
+
+策略间的成对比较使用 McNemar 精确检验：对每条独立集记录判断两种策略是否都判对，仅统计一方正确、另一方错误的 discordant 样本；对配对集，以每一对的联合判别是否正确为二元结果；对修复任务，以“完整且不同”是否成立为二元结果。三种策略产生 3 组两两比较，在每个任务内用 Holm--Bonferroni 控制多重比较。McNemar 假设单元独立，同项目单元可能相关，因此把 McNemar 作为次要检验，主推断使用按项目或按对聚类的 bootstrap 差值区间。检验结果与点估计一起解读；若样本量不足以支持显著性，明确说明只描述观测差异，不宣称优劣。
+
+\subsection{实现与日志}
+评估脚本、提示模板、解析器和评分脚本固定版本，并与结果表一一对应。运行器 \path{runner/run_experiment.py} 通过 OpenAI 兼容的 Chat Completions 接口调用模型，只依赖 Python 标准库和 \texttt{httpx}；所有调用通过环境变量读取密钥，仓库中不保存密钥、请求头或完整服务商响应中的账户信息。逐样本结果保存为 JSON Lines，每行包含样本 ID、任务、策略、原始输出、解析结果、token 数、延迟和缓存信息；聚合脚本从该文件生成表格，禁止手工抄写数值。六次正式运行 \path{runner/runs/test_v1_{direct,few-shot,context}_{independent,pairs}} 已于 2026-11-11 完成，每策略 828 次请求、三策略合计 2{,}484 次；运行器版本 1.0.0，提示版本 \texttt{secvul-prompt-2026-11-11.1}。
+
+表~\ref{tab:ind-results} 至表~\ref{tab:repair} 的行由 \path{report/scripts/fill_tables.py} 从六次运行的 \path{metrics.json} 生成，输出保存在 \path{report/generated_tables.txt}；检测/配对的区间、McNemar/Holm 和 context 分层由 \path{analysis/analyze_runs.py} 聚合为 \path{analysis/aggregation.json} 与 \path{analysis/aggregation.md}（10{,}000 次 project/pair cluster bootstrap，seed 42）。成本表由 \path{results.jsonl} 的记录级 \texttt{task} 字段汇总，输出在 \path{report/generated_costs.json}，而不是从 \path{metrics.json} 的跨任务 usage 拆分：每条记录读取 prompt/completion/cached token、\texttt{response.cost.cost\_usd}、\texttt{response.usage.opencode.allowance} 和 \texttt{response.request\_latency\_seconds}；\texttt{allowance} 是 OpenCode Go 套餐额度，不是 USD 成本，单独报告。只有全部计划记录都存在且每条记录都有数值成本时才给出总成本；本数据六个 run 都完整，因此成本有确定总值。partial 的 dev\_pilot 运行被排除在正式表之外。
+
+
+
+\section{结果}
+\label{sec:results}
+
+\noindent\textit{说明：本节报告冻结测试集上的完整运行结果；参考基线为规则基线，不是 LLM。所有区间为 95\% 置信区间或 10{,}000 次 cluster bootstrap 区间。}
+
+\subsection{参考基线：规则基线，不是 LLM}
+\label{sec:ref-baselines}
+在报告模型结果之前，本节先给出冻结测试集上由标签和构造规则直接计算的参考基线。它们来自 \path{baseline/results/test_split_baselines.json}，固定种子 42；脚本不调用模型、不访问网络、不使用凭证。这些行是\textbf{规则基线，不是 LLM 检测结果}，不能填入表~\ref{tab:ind-results} 至表~\ref{tab:repair} 的 M1--M3 行，也不参与模型间检验。它们只用于解释指标下限和配对机会水平。
+
+\begin{table*}[t]
+\caption{独立测试集上的参考基线（规则基线，非 LLM；160 条：128 正 / 32 负）}
+\label{tab:ref-independent}
+\centering
+\small
+\begin{tabular}{@{}lccccccccc@{}}
+\toprule
+基线 & TP & FP & FN & TN & Acc (\%) & P & R & F1 & Spec\\
+\midrule
+永远预测有漏洞（多数类） & 128 & 32 & 0 & 0 & 80.0 & 0.800 & 1.000 & 0.889 & 0.000\\
+永远预测无漏洞 & 0 & 0 & 128 & 32 & 20.0 & --- & 0.000 & 0.000 & 1.000\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+表~\ref{tab:ref-independent} 的多数类基线等于测试集的有漏洞比例 128/160。它得到 80.0\% 准确率（Wilson 95\% 区间 73.1\%--85.5\%），但特异度为 0、平衡准确率为 0.5；按第~\ref{sec:eval}节的定义，MCC 的分母为 0 时记 0，因此该基线 MCC 为 0。永远预测无漏洞的准确率为 20.0\%（区间 14.5\%--26.9\%），精确率因没有正类预测而未定义，F1 在基线脚本中记为 0.000。两个常量基线说明：在 80/20 的测试集上，单看准确率无法区分“检测”与“多数类猜测”；任何模型结果都必须与特异度、平衡准确率、MCC 和 macro-F1 一起报告。
+
+\begin{table*}[t]
+\caption{配对测试集上的参考基线（规则基线，非 LLM；180 对 / 360 条函数记录）}
+\label{tab:ref-paired}
+\centering
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+基线 & Acc (\%) & P & R & F1 & 双方均正确 & 至少一方正确\\
+\midrule
+永远预测有漏洞（两侧） & 50.0 & 0.500 & 1.000 & 0.667 & 0/180 (0.0\%) & 180/180 (100.0\%)\\
+永远预测无漏洞（两侧） & 50.0 & --- & 0.000 & 0.000 & 0/180 (0.0\%) & 180/180 (100.0\%)\\
+配对内随机指定一侧为漏洞 & 56.1 & 0.561 & 0.561 & 0.561 & 101/180 (56.1\%) & 101/180 (56.1\%)\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+表~\ref{tab:ref-paired} 的“双方均正确”是配对联合判别的严格指标：只有漏洞侧判 1、修复侧判 0 才计入。两个常量基线在 360 条函数上的准确率都是 50.0\%，但双方均正确都是 0/180：每一对总有一个成员被固定判错。配对内随机指定一侧为漏洞得到 101/180（56.1\%，Wilson 95\% 区间 48.8\%--63.2\%），这是固定种子 42 的一次实现，解析期望为 50\%；它才是配对场景的机会水平。表中“至少一方正确”对常量基线为 100\%，进一步说明只看宽松指标会掩盖配对失败。
+
+这些基线只使用标签和构造规则，不使用函数代码，因此不代表任何检测能力。它们的作用是给出解释锚点：测试集准确率的平凡下限是 80.0\%，配对联合判别的机会水平为 56.1\%（解析期望 50\%），常量基线的双方均正确率为 0。模型结果必须相对于这些锚点解释，但基线本身不进入模型排名、不计算 $p$ 值，也不与 M1--M3 合并。
+
+\subsection{独立测试集上的函数级检测}
+表~\ref{tab:ind-results} 汇总三种策略在独立测试集上的精确率、召回率、F1、准确率、特异度、平衡准确率、MCC、macro-F1 和覆盖率。三种策略都使用相同的 160 条测试记录和相同的评分脚本。macro-F1 由混淆矩阵计算；“全判有漏洞”可得到 80\% 准确率，但特异度和 MCC 均为 0，因此准确率不能单独作为结论。覆盖率均为 100\%，即所有记录都给出了可解析输出。few-shot 的 macro-F1 0.399 在数值上最高，但三种策略的区间高度重叠，不能据此排名。
+
+\begin{table*}[t]
+\caption{独立测试集上的检测结果（160 条：128 正 / 32 负）}
+\label{tab:ind-results}
+\centering
+\scriptsize
+\begin{tabular}{@{}lccccccccc@{}}
+\toprule
+策略 & P & R & F1 & Acc & Spec & BalAcc & MCC & Macro-F1 & Cov.\\
+\midrule
+M1 零样本直接判定 & 0.826 & 0.297 & 0.437 & 38.8 & 75.0 & 52.3 & 0.041 & 0.383 & 100.0\\
+M2 固定少样本 & 0.837 & 0.320 & 0.463 & 40.6 & 75.0 & 53.5 & 0.061 & 0.399 & 100.0\\
+M3 上下文增强 & 0.812 & 0.305 & 0.443 & 38.8 & 71.9 & 51.2 & 0.020 & 0.381 & 100.0\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+表中 P、R、F1、Acc、Spec、BalAcc、Cov. 分别为精确率、召回率、F1、准确率、特异度、平衡准确率和覆盖率；后续表格沿用这些缩写。对 32 条无漏洞测试函数，每一条误报都会使特异度变化约 3.1 个百分点，因此特异度的区间很宽。三种策略的 macro-F1 分别为 0.383（95\% project-cluster bootstrap 区间 0.305--0.552）、0.399（0.305--0.593）和 0.381（0.286--0.560）；MCC 也很低且区间跨 0。M3 的 context 分层结果见表~\ref{tab:m3-strata}：非空层 126 条全部为漏洞，macro-F1 不可定义；空层只有 34 条（2 漏洞/32 非漏洞），M1、M2、M3 的 macro-F1 分别为 0.512、0.512、0.494，M3−M1 的差值为 $-0.0179$（bootstrap 区间 $-0.1071$--0.0000）。因此 M3 与 M1 的总体差异不能解释为“上下文推理能力”。
+
+\begin{table}[t]
+\caption{独立测试集按 context 是否非空分层（探索性）}
+\label{tab:m3-strata}
+\centering
+\scriptsize
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+分层 & n (V/NV) & M1 MF1 & M2 MF1 & M3 MF1\\
+\midrule
+非空 & 126 (126/0) & n/a & n/a & n/a\\
+空 & 34 (2/32) & 0.512 & 0.512 & 0.494\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+非空层是单类别，macro-F1 与 balanced accuracy 不可定义；报告该层时只能给出正类 F1/召回，不能填 0。空层仅 34 条，区间很宽，M3 的差值也不显著，因此该分层只作混淆检查，不作因果结论。
+
+\subsection{配对测试集上的检测与联合判别}
+表~\ref{tab:pair-detection} 给出三种策略在配对测试集上的分侧检测结果：漏洞侧 180 条、修复侧 180 条、总计 360 条函数记录。漏洞侧的精确率、召回率和 F1 以有漏洞为正类；修复侧的准确率和特异度衡量模型能否接受修复版本；总体准确率把 360 条函数视为独立观测，仅用于描述。三种策略的漏洞侧精确率都约为 0.56--0.59，但召回率只有 0.36--0.39；修复侧准确率 71.7\%--74.4\%。覆盖率均为 100\%。
+
+\begin{table*}[t]
+\caption{配对测试集上的分侧检测结果（180 对 / 360 条函数）}
+\label{tab:pair-detection}
+\centering
+\small
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+策略 & 漏洞 P & 漏洞 R & 漏洞 F1 & 修复 Acc & 修复 Spec & 总体 Acc & Cov.\\
+\midrule
+M1 零样本直接判定 & 0.586 & 0.361 & 0.447 & 74.4 & 74.4 & 55.3 & 100.0\\
+M2 固定少样本 & 0.560 & 0.361 & 0.439 & 71.7 & 71.7 & 53.9 & 100.0\\
+M3 上下文增强 & 0.587 & 0.394 & 0.472 & 72.2 & 72.2 & 55.8 & 100.0\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+表~\ref{tab:pair-joint} 给出配对联合结果。正确区分是漏洞侧判 1、修复侧判 0；双报漏洞表示模型对修复不敏感；双报安全表示模型漏掉漏洞；漏报加误报表示方向反了。联合判别准确率（DA）以 180 对为分母；valid 与 all 版本在本数据上都等于 180/180，因为两侧都有有效输出。DA 的机会水平见表~\ref{tab:ref-paired}：常量基线为 0\%，配对内随机指定一侧为 56.1\%（解析期望 50\%）。三种策略的 DA 只有 8.9\%--12.2\%，显著低于随机机会；主要失败是双报安全（108--113 对）和双报漏洞（44--49 对），正确区分只有 16--22 对。
+
+\begin{table*}[t]
+\caption{配对联合判别结果（180 对）}
+\label{tab:pair-joint}
+\centering
+\small
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+策略 & 正确区分 & 双报漏洞 & 双报安全 & 漏报+误报 & DA(valid) & DA(all) & 有效对/Cov.\\
+\midrule
+M1 零样本直接判定 & 21 & 44 & 113 & 2 & 0.117 & 0.117 & 180/180 (100.0)\\
+M2 固定少样本 & 16 & 49 & 113 & 2 & 0.089 & 0.089 & 180/180 (100.0)\\
+M3 上下文增强 & 22 & 49 & 108 & 1 & 0.122 & 0.122 & 180/180 (100.0)\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{修复生成的结构结果}
+表~\ref{tab:repair} 汇总修复任务的结构指标。修复请求共 308 条：独立测试集 128 条漏洞版本，配对测试集 180 条漏洞版本。schema 有效率、完整函数率、与输入不同率、完整且不同率以 308 条或 schema 有效输出为分母；精确匹配和空白折叠匹配只对配对测试集的 180 条有参考修复的漏洞版本计算。独立测试集的 128 条没有参考修复，不能计入匹配率的分母。few-shot 的 schema 有效率 99.0\% 最高，direct 84.4\%，context 83.4\%；完整且不同率分别为 80.0\%、62.0\%、82.9\%。精确匹配参考修复只有 1.7\%、5.0\%、2.2\%，空白折叠匹配为 1.7\%、5.0\%、3.9\%。这些指标都是结构代理，不是“修复正确率”；文本匹配低不代表补丁错，匹配高也不代表补丁对。
+
+\begin{table*}[t]
+\caption{修复生成的结构代理结果（308 条测试漏洞版本）}
+\label{tab:repair}
+\centering
+\small
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+策略 & Schema & 完整函数 & 与输入不同 & 完整且不同 & 精确匹配 & 空白折叠 & 参考数\\
+\midrule
+M1 零样本直接判定 & 84.4 & 99.6 & 80.4 & 80.0 & 1.7 & 1.7 & 180\\
+M2 固定少样本 & 99.0 & 99.0 & 62.6 & 62.0 & 5.0 & 5.0 & 180\\
+M3 上下文增强 & 83.4 & 99.6 & 83.3 & 82.9 & 2.2 & 3.9 & 180\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+“完整且不同”是最低限度的可用性检查：模型至少返回了一个完整函数，而不是原样复制或只给 diff。它不能证明漏洞被消除；一个把 \texttt{memcpy} 换成 \texttt{strcpy} 的补丁也可能“完整且不同”，但引入了新的风险。精确匹配参考修复率同样不是正确率：参考修复只是开发者的一种写法，模型可以用不同但语义等价的写法修复；文本匹配低不代表修复错，文本匹配高也不代表修复对。报告在定性分析中会给出“完整且不同但语义可疑”的案例。所有修复结论只能限定为结构可用性；人工复核即使执行，也只报告 rubric 下的通过计数和评分者一致性，不换算成准确率。
+
+\subsection{方法间差异与统计检验}
+表~\ref{tab:mcnemar} 记录检测与配对任务的三组两两 McNemar 比较。修复任务没有做 McNemar：结构指标的分母和有效样本随策略不同，且“完整且不同”不是正确性标签；修复质量交给第~\ref{sec:human-review}节的盲评。报告原始 $p$ 与 Holm 校正后的 $p$，并给出 discordant 数。检测任务与配对任务共 6 组比较，在 Holm 校正后都不显著；配对任务中 M1 vs.\ M2 的原始 $p=0.2266$（Holm $0.4531$）相对较小，仍不显著。由于同项目/同对单元相关，McNemar 只作次要证据，主推断使用 10{,}000 次 project/pair cluster bootstrap 差值区间。
+
+\begin{table}[t]
+\caption{策略间 McNemar 检验（双侧）}
+\label{tab:mcnemar}
+\centering
+\scriptsize
+\begin{tabular}{@{}llccc@{}}
+\toprule
+任务 & 比较 & A对B错 / A错B对 & 原始 $p$ & Holm $p$\\
+\midrule
+检测 & M1 vs.\ M2 & 4 / 7 & 0.5488 & 1.0000\\
+检测 & M1 vs.\ M3 & 4 / 4 & 1.0000 & 1.0000\\
+检测 & M2 vs.\ M3 & 6 / 3 & 0.5078 & 1.0000\\
+联合 & M1 vs.\ M2 & 8 / 3 & 0.2266 & 0.4531\\
+联合 & M1 vs.\ M3 & 5 / 6 & 1.0000 & 1.0000\\
+联合 & M2 vs.\ M3 & 3 / 9 & 0.1460 & 0.4380\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+检测任务的 macro-F1 差值（A−B）为：M1−M2 $-0.0167$（95\% 区间 $-0.0581$--$0.0119$）、M1−M3 $0.0015$（$-0.0328$--$0.0364$）、M2−M3 $0.0182$（$-0.0102$--$0.0657$）；所有区间都跨 0。配对联合准确率的差值为：M1−M2 $0.0278$（$-0.0056$--$0.0667$）、M1−M3 $-0.0056$（$-0.0390$--$0.0278$）、M2−M3 $-0.0333$（$-0.0722$--$0.0056$），同样全部跨 0。因此不能把 few-shot 的数值最高解释为稳定优势。
+
+\subsection{研究问题的回答}
+\textbf{RQ1.} 三种策略在独立测试集上的 macro-F1 分别为 0.383、0.399 和 0.381，MCC 分别为 0.041、0.061 和 0.020，特异度分别为 0.750、0.750 和 0.719。few-shot 的 macro-F1 数值最高，但 95\% 区间高度重叠（0.305--0.593 对 0.305--0.552、0.286--0.560），两两差值区间全部跨 0，McNemar Holm 后均不显著。结论只适用于 160 条冻结测试记录和当前基础模型；多数类基线为 80.0\% 准确率、0 特异度、0 MCC，不能把接近 80\% 的准确率当作有效检测。
+
+\textbf{RQ2.} 三种策略的联合判别准确率（有效对）分别为 0.117、0.089 和 0.122，95\% 区间分别为 0.078--0.172、0.056--0.140、0.082--0.178。正确区分、双报漏洞、双报安全、漏报加误报的计数分别为 21/44/113/2、16/49/113/2、22/49/108/1。测试集随机指定一侧的双方均正确率为 56.1\%（101/180，解析期望 50\%），三种策略都远低于这一机会水平；主要失败是双报安全（108--113 对）和双报漏洞（44--49 对）。配对联合指标不能由独立集函数级指标推出，二者排序也不一致。
+
+\textbf{RQ3.} 三种策略的 schema 有效率分别为 84.4\%、99.0\% 和 83.4\%，完整且不同率分别为 80.0\%、62.0\% 和 82.9\%，精确匹配参考修复率分别为 1.7\%、5.0\% 和 2.2\%。这些都是结构指标，不是修复正确率；few-shot 的 schema 最高但“与输入不同”只有 62.6\%，说明格式合规不等于补丁有实质改动。LLM 辅助盲评的 VR=2 为 17/81（21.0\%），direct 7/26（26.9\%）、context 6/25（24.0\%）、few-shot 4/30（13.3\%）；盲评不是人类评审，未编译、未运行 PoC，MIN 的一致性极低，因此只能作为探索性证据。
+
+\textbf{RQ4.} 三种策略的总费用分别为 0.646、1.131 和 0.662 美元（每 100 个评估单元 0.190、0.333、0.195 美元），p95 延迟分别为 19.06、17.87、19.99 秒。few-shot 的费用最高，主要来自更长的少样本输入；allowance 是 OpenCode Go 套餐额度，分别为 0.191、0.183、0.195，不能与 USD 成本相加。成本与效果的联合解读见第~\ref{sec:cost}节。
+
+\textbf{RQ5.} 10 个正式案例覆盖独立集误报/漏报、策略分歧、配对双报漏洞/双报安全/判反、修复 schema 无效、完整但参考不匹配以及 context 高/低风险判定；精炼表见第~\ref{sec:qualitative}节。案例用于展示错误类型，不用于估计总体错误率。
+
+\section{成本}
+\label{sec:cost}
+
+\subsection{计费口径与构成}
+计费公式见第~\ref{sec:eval}节。成本不仅包括 token：提示长度、输出长度、重试率和延迟都会影响实际可用性。M2 的输入比 M1 多 4 条检测示例或 2 条修复示例，M3 的输入比 M1 多上下文；因此三者的输入 token 不应相同。报告应给出每种策略的平均输入 token、平均输出 token、总调用次数和总费用，而不是只给一个总价。输出 token 的差异还可能反映模型是否遵循“完整函数”的格式：修复任务需要输出整个函数，输出 token 通常远高于检测任务，这部分费用应计入方法成本。
+
+成本按 \path{results.jsonl} 的记录级 \texttt{task} 字段汇总，而不是使用 \path{metrics.json} 的跨任务 usage。每条记录读取 prompt/completion/cached token、\texttt{response.cost.cost\_usd}、\texttt{response.usage.opencode.allowance} 和 \texttt{response.request\_latency\_seconds}。\texttt{allowance} 是 OpenCode Go 套餐额度，不是 USD 成本，必须与 \texttt{cost\_usd} 分述，不能相加；表中的“总 USD”只含 \texttt{cost\_usd}，\texttt{allowance} 在 JSON 和填表脚本注释行中单独给出。只有全部计划记录都存在且每条记录都有数值成本时才给出总成本，否则记 \texttt{null} 或 \texttt{---}；schema-invalid 与 API-error 分别计数；表中的“无效率 (schema/API)”分别给出两者的百分比。“每100 USD”以 340 个评估单元（160 条检测函数 + 180 对）为分母，不是每 100 次请求。
+
+除货币成本外，报告 p50 与 p95 延迟、总墙钟时间和失败重试次数。延迟在共享网络和限流条件下波动较大，因此以分位数描述，并注明测量地点和并发度。若实验在本地或私有部署上运行，则用 GPU 小时和折旧估算成本，不能直接套用 API 单价。
+
+\begin{table*}[t]
+\caption{三种策略的调用成本与无效输出（每策略 828 次请求）}
+\label{tab:cost}
+\centering
+\scriptsize
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+策略 & 检测 in/out & 修复 in/out & 总 USD & 每100 USD & p50 (s) & p95 (s) & 无效率 (schema/API)\\
+\midrule
+M1 零样本直接判定 & 492{,}158/48{,}053 & 283{,}000/296{,}145 & 0.645585 & 0.1899 & 6.20 & 19.06 & 5.8/0.0\\
+M2 固定少样本 & 1{,}301{,}278/34{,}377 & 1{,}172{,}812/289{,}920 & 1.131383 & 0.3328 & 5.80 & 17.87 & 0.4/0.0\\
+M3 上下文增强 & 528{,}578/47{,}143 & 305{,}069/296{,}321 & 0.662251 & 0.1948 & 6.25 & 19.99 & 6.2/0.0\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+三种策略的 OpenCode Go allowance 分别为 0.191327、0.182808、0.195458，均与 USD 成本分开记录，不进入“总 USD”。few-shot 的输入 token 最多（检测 1{,}301{,}278、修复 1{,}172{,}812），总费用 1.131 美元，约为 direct 的 1.75 倍；其总 schema 无效率最低（0.4\%），修复任务为 0.97\%、direct 为 15.6\%、context 为 16.6\%。context 的总无效率 6.2\% 主要来自修复任务（51/308）；direct 的 5.8\% 也主要来自修复（48/308）。
+
+\subsection{归一化成本口径：configured 与 provider-list 分列}
+\label{sec:cost-normalized}
+\path{analysis/cost_normalization/} 只读取已保存的 \path{results.jsonl} 与 manifest，按每条 usage 的未缓存输入、缓存命中、输出 token 重算，不修改原始 \texttt{cost\_usd}，也不调用 API。表~\ref{tab:cost-basis} 把四个口径分列：\textbf{configured} 是原始 run 记录的成本；\textbf{normalized} 是按 provider 非高峰 list 价重算的值（DeepSeek 0.15/0.60/0.003，MiMo 0.14/0.28/0.0028 USD per 1M）；\textbf{provider list} 是 \texttt{usage.opencode.list\_cost} 的逐请求求和；\textbf{allowance} 是 provider 侧的套餐额度扣减。allowance 既没有从 list cost 扣除，也没有加到 configured 上，因此不与前三列相加；它不是 USD 账单。
+
+DeepSeek 的 configured 0.30/1.20/0.006 是高峰价，而本批 9{,}584 条有 usage 的请求全部落在非高峰窗口（peak rows = 0），provider 快照使用 0.15/0.60/0.003，所以 cache 口径一致的 v1 run 上 configured 恰为 normalized 的 2 倍；v2 已直接配置为非高峰价，两列相同。71 个完整 run 的 configured 合计 3.886970 美元、normalized 2.146513 美元；17 个 headline run 为 0.558073/0.365704。另有 2 个未完成 run（52 次请求）configured 与 normalized 均为 0.008197，单列、不并入 complete-only 合计；6 个无 usage 的失败/空跑不补零。hybrid v1（10 run、1{,}400 请求）为 0.173865/0.114598，v2 为 0.082335/0.082335；两者请求数与 prompt 几乎相同，USD 差异来自价格口径而非工作量。MiMo 无峰谷价，configured 与 normalized 相同；Xiaomi 端点的 \path{juliet_llm} 不返回 provider list/allowance，按 n/a 处理，不补零。
+
+修复闭环的 all-in 成本修正为 0.082550 美元（configured；normalized 0.052549），不是旧 README 的 0.077516 美元；差额 0.005034 来自解析器开发 run \texttt{parser\_dev/mimo\_test70\_v1} 的真实已发生成本（44/70 单元，不进入 headline）。两个 headline run 仍为 0.032831 美元（normalized 0.019336），不变。DeepSeek 每个 run 的 allowance 约为其 list cost 的 0.600 倍，MiMo 为 1.000 倍；它是额度而非账单，故只在表中单列。
+
+\input{extended_tables_cost}
+
+\subsection{成本—效果权衡}
+few-shot 以最高成本换取了数值最高的独立集 macro-F1（0.399 对 0.383/0.381），但差值区间跨 0，不能证明这笔额外费用带来可靠收益。direct 最便宜，修复 schema 无效率却最高；context 的成本和延迟接近 direct，配对联合准确率数值最高（0.122），同样不显著。若目标是低成本筛查，direct 的单位成本最低；若目标是减少修复格式失败，few-shot 的 99.0\% schema 有效率有优势，但它的“与输入不同”率只有 62.6\%，且盲评 VR=2 最低（4/30），不能据此推荐自动修复。每正确检测/联合判别的费用未单独列表；在联合准确率仅 8.9\%--12.2\% 的情况下，该指标会被极低分母放大，不适合作为主要排名依据。
+
+\section{定性分析与误差案例}
+\label{sec:qualitative}
+
+\subsection{案例抽样规则}
+定性分析不使用随机挑选的“好看”案例，而是由 \path{qualitative/cases.json} 按预定义的 10 个类别各抽取 1 个案例：独立集误报、独立集漏报、策略分歧、配对双报漏洞、配对双报安全、配对判反、修复 schema 无效、修复完整但参考不匹配、context 高风险判定、context 低风险判定。选择规则版本为 \texttt{qualitative-v1}，所有输入为六次完整运行；脚本不调用 API。案例编号、原始索引、配对 ID 和代码摘录写入 JSON/Markdown，正文只保留精炼事实，避免泄露无关项目信息。案例解释必须引用函数中的具体语句或数据流，不能只复述模型理由；这些案例用于展示错误类型，不用于估计总体错误率。
+
+\subsection{误差分类框架}
+本文按以下维度归纳误差，而不是简单罗列“模型答错”：
+\begin{itemize}
+    \item \textbf{证据缺失}：函数确实存在缺陷，但提示中没有出现触发条件或调用者信息，模型无法从可见代码推断；
+    \item \textbf{证据误读}：模型引用了不存在的变量、错误的边界条件或与代码相反的返回值语义；
+    \item \textbf{表面启发式}：模型因函数名、危险 API、注释或代码长度而判定，未检查实际数据流；
+    \item \textbf{上下文误导}：M3 因上下文不完整或标签相关的“有无上下文”格式而改变判断；
+    \item \textbf{少样本模仿}：M2 机械模仿示例的 CWE、理由或代码模式，忽略当前函数的数据流；
+    \item \textbf{配对失败}：双报漏洞、双报安全或方向反转，说明模型没有利用修复差异；
+    \item \textbf{修复症状化}：只改表面语句、加长缓冲区或改注释，未处理根因；
+    \item \textbf{修复语义改变}：补丁改变了返回值、错误处理或 API 约定；
+    \item \textbf{修复新风险}：引入新的不安全调用、缺少检查或更宽的攻击面；
+    \item \textbf{格式与解析}：输出不符合 JSON 模式、缺少完整函数、被截断或自相矛盾。
+\end{itemize}
+前五类主要反映检测能力，第六类反映配对判别，第七至第九类反映修复质量，第十类反映工程实现。报告中应分别统计各类的比例，避免把解析失败与模型判断错误混为一谈。
+
+\subsection{案例表}
+表~\ref{tab:cases} 为 10 个正式案例的精炼表，完整代码摘录、逐策略输出和选择理由见 \path{qualitative/cases.md} 与 \path{qualitative/cases.json}。案例来自预定义分层，覆盖独立集误报/漏报、策略分歧、配对三类失败、修复格式/文本失败和 context 高/低风险；它们用于展示错误类型，不用于估计总体错误率。
+
+\begin{table*}[t]
+\caption{10 个误差案例的精炼表（完整证据见 \texttt{qualitative/cases.md}）}
+\label{tab:cases}
+\centering
+\scriptsize
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{2.9cm}>{\raggedright\arraybackslash}p{4.3cm}>{\raggedright\arraybackslash}p{5.2cm}@{}}
+\toprule
+编号 & 类别 & 案例 & 关键事实 & 解释\\
+\midrule
+C-01 & 独立集误报 & idx 8632 & 3/3 判漏洞，平均置信度 0.917；标签非漏洞 & 模型把 eXIf 分支的未初始化读/边界推理当成漏洞；函数级标签与模型证据不一致，需人工复核 \\
+C-02 & 独立集漏报 & idx 13796 & 3/3 判非漏洞，平均置信度 0.950；标签漏洞（CWE-125/787） & 触发路径未在片段中出现，模型被局部边界检查误导，属于漏报 \\
+C-03 & 策略分歧 & idx 2548 & direct 非漏洞 0.600；few-shot 漏洞 0.900；context 漏洞 0.750 & 示例/上下文改变判断，置信度跨度 0.300；同一函数上策略不稳定 \\
+C-04 & 配对双报漏洞 & 19923:19924 & 3/3 给出 both\_flagged；两侧平均置信度 0.908 & 模型对修复不敏感，把修复侧也判为漏洞 \\
+C-05 & 配对双报安全 & 25144:25145 & 3/3 给出 both\_clean；两侧平均置信度 0.947 & 漏洞侧和修复侧都判安全，属于漏报 \\
+C-06 & 配对判反 & 15922:15928 & 1/3 给出 reversed；direct/context 为 both\_flagged & 方向反转：漏洞侧判安全、修复侧判漏洞 \\
+C-07 & 修复 schema 无效 & 10480:10481 & direct 输出缺少 \texttt{explanation}，校验失败 & 格式/字段失败，不是补丁质量；该错误在无效修复记录中出现 93 次 \\
+C-08 & 修复完整但参考不匹配 & 25161:25163 & context 输出完整且不同；行相似度 0.605，差异 47 行 & 完整且不同不等于正确；文本不匹配也不能证明补丁错，需语义/人工审查 \\
+C-09 & context 高风险判定 & 679:680 漏洞侧 & context 非空，判漏洞 0.900，标签漏洞 & 预测正确，但独立集 context 非空层与标签高度相关，不能当作上下文因果证据 \\
+C-10 & context 低风险判定 & 16915:16937 修复侧 & context 非空，判非漏洞 0.900，标签非漏洞 & 预测正确，但 context 分层是混淆检查，不是因果证据 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{分析步骤}
+案例由定性脚本从真实运行按上述类别导出，报告作者依据代码摘录、标签和逐策略输出整理解释；这不是双人独立人工审计，也没有案例层面的评分者一致性。模型给出的自然语言理由只作为“模型声称的证据”，必须与代码对照；不能把模型理由直接当作案例解释。对于涉及上游项目历史的问题，只使用本地数据中可见的字段，不联网检索修复提交，以免引入评估时不可见的信息。
+
+\subsection{修复结果的 LLM 辅助盲评}
+\label{sec:human-review}
+修复盲评已完成，产物在 \path{repair_eval/analysis/repair_blind_v1/final/}（包 ID \texttt{PKG-3DB061ED2788}），rubric 版本 \texttt{repair-eval-rubric-2026-11-11.1}。盲评包含 30 个案例、81 个候选；候选只包含 schema 有效的修复输出，因此 schema 无效记录不在盲评框内。评审为两名 LLM 辅助评分者加第三 LLM 裁决，\textbf{不是人类评审}；汇总文件的裁决者身份未记录。评分者看不到策略名、模型名、pair/sample ID、项目和路径；候选 ID 由私有 salt 和 HMAC-SHA256 生成。所有 81 个候选的 compile\_status 都是 \texttt{NOT\_RUN}：没有编译、测试或 PoC oracle。
+
+评分使用七维 rubric，每维 0/1/2：漏洞消除（VR）、行为保持（SP）、最小性（MIN）、完整性（COM）、代码质量（CQ）、解释忠实（EF）、无新风险（NS）。COM 是文本完整性，不是编译证明；CQ 是可读性，不是漏洞是否消除。主通过条件是 VR=2，严格通过条件是 VR=2 且 SP$\ge$1、NS=2、EF$\ge$1、COM$\ge$1。最终结果：VR=2 为 17/81（21.0\%），严格通过同为 17/81；按策略 direct 7/26（26.9\%）、context 6/25（24.0\%）、few-shot 4/30（13.3\%）。七维均值为 1.547（仅供参考）。
+
+\begin{table*}[t]
+\caption{修复盲评：七维分数与评分者一致性（30 案例 / 81 候选；LLM 辅助评审，不是人类）}
+\label{tab:blind}
+\centering
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+维度 & 均值 & 2 分率 & 二次加权 $\kappa$ & 完全一致率\\
+\midrule
+VR 漏洞消除 & 0.481 & 0.210 & 0.902 & 0.901\\
+SP 行为保持 & 1.765 & 0.778 & 0.409 & 0.802\\
+MIN 最小性 & 1.593 & 0.593 & 0.015 & 0.580\\
+COM 完整性 & 2.000 & 1.000 & 0.000 & 0.988\\
+CQ 代码质量 & 1.963 & 0.963 & 0.654 & 0.975\\
+EF 解释忠实 & 1.148 & 0.259 & 0.658 & 0.679\\
+NS 无新风险 & 1.877 & 0.914 & 0.621 & 0.926\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+表~\ref{tab:blind} 汇总七维分数和评分者一致性。MIN 的二次加权 $\kappa$ 只有 0.015，说明两名评分者对“最小性”几乎没有一致意见~\cite{landis1977}；COM 的 $\kappa=0.000$ 是因为 81 个候选全部为 2 分，分数恒定，$\kappa$ 不可解释。其他维度的 $\kappa$ 也多为中低水平，因此不能把 17/81 当作稳定的人类判断。事后结构检查（不进入 rubric）显示：三个策略的完整函数率都是 100\%；有改动率 context 96.0\%、direct 88.5\%、few-shot 53.3\%；参考文本精确匹配率均为 0\%；平均改动行数分别为 8.0、7.3、1.9。few-shot 的“有改动率”最低，和它较低的 VR=2 比例一致。
+
+这些结果只能支持“在该七维 rubric 下，LLM 辅助评审认为 17/81 个候选处理了标注 CWE 的根因”。它们不证明补丁可编译、通过测试、保持行为或消除漏洞；候选集只含 schema 有效输出，每策略候选数不同（direct 26、context 25、few-shot 30），不能把候选比例直接当作策略总体质量。MIN 的低一致性和 LLM 评审的性质使结论保持探索性。
+
+\section{讨论}
+\label{sec:discussion}
+
+\subsection{三种评估视图的互补性}
+独立集回答“给定一条函数，模型能否识别漏洞”，配对集回答“同一个函数被修复后，模型能否同时判对两个版本”，修复任务回答“模型能否生成一个结构上可用的补丁”。三者都不是同一个能力的简单重复：独立集受类别比例和样本构成影响；配对集受配对内部相关性影响；修复任务受输出长度、格式和参考写法的限制。一个在独立集上精确率很高、在配对集上双报安全比例也很高的模型，可能只是倾向于判“无漏洞”；一个在配对集上 DA 很高、但修复任务原样返回的模型，可能只学会了“保守判定”，没有学会“生成补丁”。报告中把三组指标并列，而不是合并成一个总分，是为了让读者看到这种权衡。
+
+配对集还有一个容易被忽略的性质：同一对的两个版本共享项目、文件、函数名和大部分代码，只有修复相关的变化不同。因此 DA 高并不必然意味着模型理解了修复；它可能只是对代码的细微变化不敏感，或对两个版本都给出同一标签。表~\ref{tab:pair-joint}同时报告四类联合结果，正是为了区分“真的区分”与“碰巧答对”。在解释结果时，应优先检查正确区分和双报漏洞的比例，而不是只看版本级准确率。
+
+\subsection{策略差异的来源}
+三种策略的差异可以分解为三个通道：示例、上下文和提示长度。M2 只增加示例，因此若 M2 优于 M1，差异更可能来自任务格式的示范和对标签边界的校准；M3 增加上下文，若 M3 优于 M1，差异可能来自跨函数信息，也可能来自“有没有上下文”的格式差异。检测测试集的 context 非空层 126/126 为漏洞样本，空层 34 条中 2 条漏洞、32 条非漏洞；非空层是单类别，M3 的总体 macro-F1（0.381）与 M1（0.383）基本持平，空层 M3 为 0.494、M1 为 0.512，差值 $-0.0179$（区间 $-0.1071$--0.0000）。因此没有证据表明 M3 的上下文带来了可靠提升，M3 的结果不能解释为“模型理解了项目上下文”。
+
+另一个通道是提示长度与输出格式。三种策略使用相同的英文任务说明和 JSON 模式，但 M2、M3 的附加内容会改变模型对任务的表征。更长的提示可能让模型更谨慎，或更倾向于输出“有漏洞”。为检查这一点，结果部分应报告预测正类率（预测为有漏洞的比例），并检查三种策略的正类率是否接近；若 M3 的正类率显著高于 M1，那么 F1 的变化可能只是判定阈值的移动，而不是判别能力的提升。定性分析应抽取策略分歧样本，检查模型是否引用了示例中的具体模式，或是否把上下文中的外部函数名当作危险信号。
+
+\subsection{修复结构指标的解释边界}
+修复任务的结构指标只能回答“输出是否像一个补丁”，不能回答“补丁是否正确”。完整函数率低说明模型没有遵循格式；与输入不同率低说明模型可能原样返回；完整且不同率高说明输出至少可用，但仍可能只修了症状、改变了语义或引入新风险。精确匹配参考修复率衡量的是文本相似度，不是语义等价：模型可以用不同写法正确修复，也可以用相同写法引入新问题。第~\ref{sec:human-review}节的 LLM 辅助盲评已完成，但评审不是人类，81 个候选的 compile\_status 全部为 NOT\_RUN，MIN 的评分者一致性仅 0.015；因此 17/81 的 VR=2 只能写成“在该 rubric 下被评为根因已处理”，不能换算成修复正确率或漏洞消除率。
+
+在工程实践中，修复生成的门槛应高于检测：检测的假阳性可以由人工复核消化，修复的错误可能直接进入代码库。因此，即使某策略的完整且不同率较高，若人工复核发现语义改变或新风险，也不应推荐自动合并。本文不预设哪种策略适合哪种场景；这些判断应在结果表填写后，结合具体项目的审查流程和风险预算给出。
+
+\subsection{与训练型检测器的可比性}
+本文的三种策略都在推理时通过提示调用模型，不更新参数，也不使用项目特定的训练数据。与 Devign、LineVul 等训练型检测器~\cite{zhou2019devign,fu2022linevul}相比，提示方法的优势是部署快、无需标注训练集、可通过修改提示适配新任务；劣势是无法利用项目分布，单次调用成本随样本量线性增长，且行为受服务端模型版本影响。本文不把当前指标与这些论文的报告值直接比较，因为数据划分、标签定义、评估单位和是否微调都不同。若后续需要与训练型基线比较，应在同一划分上重新训练或调用其公开模型，并报告相同的指标族。
+
+\subsection{有效性威胁}
+\textbf{构造效度。} 标签来自 SecVulEval，本文不重新审计代码。无漏洞标签表示数据源未标注该函数的漏洞，不证明函数不存在其他缺陷；修复版本也可能仍含其他问题。模型输入只给函数和受限上下文，真实审查中可用的调用链、构建配置和威胁模型可能更多，因此本文结果不能代表信息更充分时的性能上限。检测测试集的 context 非空层 126/126 为漏洞，空层 34 条中只有 2 条漏洞，关联很强且非空层为单类别，这是 M3 最主要的构造威胁；源级 32{,}767 字符截断也使超长函数的结果只能解释为截断后的下界。此外，\texttt{fixed\_func\_idx} 的存在性与标签相关（测试集正例 115/128、负例 0/32；源子集 143/160 与 0/40），CWE/CVE 在 32/32 条测试负例（源子集 40/40）中也非空；协议虽然排除这些字段，但字段分布本身说明数据构造带有强标签信号，任何未按白名单过滤的提示都会虚高。CWE-401 在源子集只有 4 条、测试集 3 条，且严格 C++ 单标签为 0，逐 CWE 结论同样受构造效度限制。
+
+\textbf{内部效度。} 三种策略的提示长度不同，模型可能对长度、示例顺序或上下文格式敏感。温度设为 0 只能减少采样随机性，不能保证服务端完全确定。解析器和重试策略若在策略间不一致，会引入工程偏差；本文要求共用同一实现，并在日志中记录解析状态。修复任务没有编译/测试 oracle，结构指标无法区分“正确修复”和“看似完整的错误修复”；LLM 辅助盲评已完成，但它不是人类评审，也没有编译或 PoC，MIN 的评分者一致性极低，因此修复结论仍是探索性的。开发示例来自冻结开发集，已通过运行器的测试集隔离检查，但示例仍会影响模型的输出风格；few-shot 的结果不能等同于“在更大开发集上调参”的结果。表~\ref{tab:ref-independent} 和表~\ref{tab:ref-paired} 的规则基线不是模型，不能用于估计模型方差或替代缺失的模型结果。
+
+\textbf{外部效度。} 源子集共 600 条记录、项目并集 134 个，冻结测试集为 520 条函数记录（160 检测 + 360 配对函数），规模有限；检测集采用 80/20 的人为比例，配对集标签平衡，两者都不代表真实代码库的漏洞 prevalence。项目层面在任务内已隔离，但跨任务仍有 2 个检测开发项目出现在配对测试、5 个配对开发项目出现在检测测试；源子集共享 26 个项目，不能据此声称完全跨项目泛化。模型可能在预训练中见过公开 CVE 及其修复，本文无法完全排除污染；因此结果应理解为“在当前模型和当前数据上的表现”，而不是对未知项目的保证。CWE-401 在测试集只有 3 条、只来自 2 个项目（linux 2 条、ImageMagick 1 条），且 Tier A 的 SecVulEval 数据中 0 条 Juliet 记录；即使模型在这几条上表现良好，也不能外推为 CWE-401 专项、C++ 内存泄漏或 Juliet 基准上的能力。Tier B 的 Juliet 结果只在第~\ref{sec:ext-juliet}节的分层内解释，不能反过来外推到 Tier A 或真实项目。
+
+\textbf{结论效度。} 主要指标是固定阈值下的分类指标和结构指标，未做阈值调优；若模型输出置信度，改变阈值会改变精确率与召回率的权衡。本文不以单一指标排名，而是报告指标族、置信区间和配对检验。样本量较小时，置信区间可能很宽，方法间的小差异不应被解释为稳定优势。规则基线只提供解释锚点（多数类、常量、配对随机和泄漏哨兵），不是模型对照，也不支持“某策略优于基线”的统计结论。
+
+
+\section{扩展评估 I：统一分层基准与双模型比较}
+\label{sec:ext-tier-a}
+
+旧报告的六次运行只覆盖 \texttt{deepseek-v4.1-flash} 的三种提示策略。扩展部分新增了 MiMo-V2.6-Flash 的六个全量 run、180 对联合提示、160 条证据提示、Juliet CWE-401 的静态/动态/LLM/混合运行，以及 70 个 bad 单元的修复闭环。这些结果的标签来源、评估单元、类别先验、分母和成本口径都不同：Tier A 是真实项目函数片段，Tier B 是合成单 CWE 用例；Tier A 的负例是“源数据未标注漏洞”，Tier B 的 good 是模板生成的修复版本。把它们池化成一个 leaderboard 会产生没有解释的“平均 F1”。因此本节先定义分层契约，再报告 Tier A 的双模型结果。
+
+\subsection{分层契约}
+表~\ref{tab:bench-contract} 给出两个层级的边界。Tier A 的主终点是检测 macro-F1 与配对 DA；Tier B 的主终点是泄漏 macro-F1 与 MCC，并强制同时报告 coverage、strict 和失败分布。两层共享以下字段与规则：
+\begin{itemize}
+    \item 每个单元一行，保留 \texttt{status}（ok / invalid / compile\_error / inconclusive / timeout / tool\_error），不删除失败单元，也不把失败改写成 $y_{\mathrm{pred}}=0$；
+    \item 指标同时给 valid-only 与 strict all-record 两个口径；coverage 的分母是计划单元数；
+    \item 比例用 Wilson 区间~\cite{wilson1927}；macro-F1、MCC、balanced accuracy 用 10{,}000 次 cluster bootstrap~\cite{efron1979}，检测按项目、配对按 \texttt{pair\_id}、Juliet 按 family 聚类；
+    \item 配对正确性用 McNemar 精确检验~\cite{mcnemar1947}，族内用 Holm 校正~\cite{holm1979}；McNemar 只作次要证据，主推断用 cluster bootstrap 差值区间；
+    \item 成本分 API USD 与本地计算两类；本地静态/动态工具的 \texttt{usd=null}，不是 0；API 成本按记录级 usage 与价格快照计算，\texttt{allowance} 单独报告。
+\end{itemize}
+这些规则不保证结论正确，但保证“失败不被静默丢掉、分母不被事后改变、成本不被混算”。表~\ref{tab:bench-contract} 的最后一列明确写出每层不能声称什么，这是与单一排行榜最重要的区别。
+
+\input{extended_tables_tier_a}
+
+\subsection{Tier A 检测：DeepSeek 与 MiMo}
+表~\ref{tab:ea-det} 汇总 6 个检测 run。DeepSeek 的 macro-F1 为 0.383（direct）、0.399（few-shot）、0.381（context）；MiMo 为 0.346、0.346、0.365。DeepSeek 的三个区间分别覆盖 0.305--0.552、0.305--0.593、0.286--0.560；MiMo 为 0.264--0.528、0.262--0.512、0.278--0.571。所有区间高度重叠。MiMo 的 coverage 不是 1.000：direct 有 10 条 schema-invalid（150/160），context 有 7 条（153/160），few-shot 为 160/160；strict accuracy 因此降到 0.325--0.350，而 DeepSeek 为 0.388--0.406。MiMo few-shot 的 MCC 为 $-0.042$，说明其预测与标签在去除类别先验后几乎没有正相关。
+
+检测结果不能脱离类别比例解读。测试集 128 正/32 负，多数类基线为 80.0\% 准确率但特异度 0、MCC 0；DeepSeek/MiMo 的准确率只有 38\%--41\%，看起来“远低于基线”，但其 macro-F1 与 MCC 略高于 0，说明它们至少比常量猜测多识别了一部分正例。反过来，不能因为某个策略的 macro-F1 是 0.399 就宣称它“更好”：区间宽度约 0.25--0.29，0.05 的差距完全落在抽样不确定性内。
+
+\subsection{Tier A 配对：分侧判定的困难}
+表~\ref{tab:ea-pair} 给出同一 180 对上的分侧调用结果。DeepSeek 的 valid DA 为 11.7\%、8.9\%、12.2\%，MiMo 为 9.1\%、9.4\%、11.4\%；all-pairs DA 在 MiMo direct/context 上进一步降到 7.8\%/10.6\%，因为至少一侧 invalid 的 pair 记为失败。测试集“随机指定一侧”的双方均正确率为 56.1\%（101/180，解析期望 50\%），所有策略都远低于这一机会水平。
+
+失败结构比 DA 更有信息量。DeepSeek 的 both-safe 为 113/113/108 对，both-vulnerable 为 44/49/49 对，swapped 只有 2/2/1 对；MiMo 的 both-safe 为 108/117/106，both-vulnerable 为 27/40/38，swapped 为 5/6/3。也就是说，模型的主要错误不是“把漏洞侧和修复侧判反”，而是“两侧都判安全”或“两侧都判漏洞”：前者说明模型没有识别出漏洞，后者说明模型对修复不敏感。DA 低并不是因为配对任务“太难随机”，而是因为模型在单侧判定上已经偏向保守/宽松，联合结果被这种偏向主导。
+
+\subsection{模型比较：没有 Holm 显著的差异}
+表~\ref{tab:ea-modelcmp} 给出 6 个同策略、同任务的 DeepSeek $-$ MiMo 比较。检测 direct/context 的 $\Delta$ macro-F1 为 0.031/0.009，区间跨 0；few-shot 为 0.053，区间 $[0.010,0.129]$ 排除 0，但 McNemar 原始 $p=0.0784$、Holm $p=0.2351$，不显著。配对 direct/few-shot/context 的 $\Delta$ DA 为 0.032/$-0.006$/0.000，区间全部跨 0。6 个比较经 Holm 后没有一个显著。few-shot 检测出现“bootstrap 区间排除 0、McNemar 不显著”的分歧，原因之一是两者检验的对象不同：bootstrap 对 macro-F1 的配对差值重采样，McNemar 只对逐单元正确性做 discordant 计数；在 160 条、15/6 个 discordant 的情况下，后者功效很低。报告同时给出两者，并明确不把任一单独结果当作排名依据。
+
+模型内策略比较（12 组）也没有 Holm 显著差异：DeepSeek 检测的 direct vs.\ few-shot 为 $-0.017$（$-0.058$--0.012），MiMo 检测的 direct vs.\ few-shot 为 0.008（$-0.016$--0.048）；配对侧同样全部跨 0。MiMo 复制了旧报告的核心结论：在固定模型和单次运行下，三种提示策略没有可检测的稳定优劣。
+
+\subsection{成本与延迟}
+表~\ref{tab:ea-cost} 汇总每个模型的六个 run。DeepSeek 2{,}484 次请求花费 2.439219 美元，MiMo 为 0.623154 美元；每 100 次请求分别为 0.098197 与 0.025087 美元；p50/p95 延迟为 5.50/10.55 s 与 4.41/10.13 s。这里的两列 USD 都是 run 记录的 configured 口径：DeepSeek 按 0.30/1.20/0.006 USD per 1M 计价，而本批请求全部落在非高峰窗口，按 provider list 价 0.15/0.60/0.003 归一化后，direct/context 约为 configured 的 0.49--0.50 倍，few-shot 因 legacy 记录不扣缓存而为 0.26--0.29 倍；MiMo 使用 0.14/0.28/0.0028，configured 与 normalized 相同。两套口径不得混用，逐组对照见第~\ref{sec:cost}节表~\ref{tab:cost-basis}。MiMo 更便宜、略快，但其平均 coverage 为 0.945，DeepSeek 为 1.000；按“每有效预测”而不是“每请求”计算，差距会缩小。且 MiMo 需要 \texttt{reasoning\_effort=none} + \texttt{max\_completion\_tokens} 才与 DeepSeek 的非思考模式语义对齐。因此表~\ref{tab:ea-cost} 是“模型 + 传输/解码配置”的比较，不是纯模型能力比较。
+
+\section{扩展评估 II：联合提示与结构化证据}
+\label{sec:ext-prompt}
+
+上一节的配对任务使用两次独立判定：模型分别看漏洞版本和修复版本，然后由评测端组合。这样的协议允许模型输出“两侧都安全”或“两侧都漏洞”，也允许它完全忽略另一版本。一个自然的改进是把两个版本放进同一个请求，强制模型二选一。本节报告这个联合提示的真实运行，并随后报告另一个方向的提示：不是给模型看另一版本，而是要求它给出证据行、机制和反事实修复。
+
+\subsection{Pair-joint 协议}
+每对只发一次请求。system 说明两段代码是同一 C/C++ 函数的两个修订，恰好一个包含安全漏洞；A/B 顺序由 \texttt{HMAC-SHA256("secvul-pair-order-v1", pair\_id)} 决定，前 90 对漏洞版本在 A、后 90 对在 B，两个模型使用同一映射。用户消息把两个版本按 \texttt{行号 | 源码} 编号，要求返回 \texttt{vulnerable\_version}（A/B）、\texttt{confidence}、\texttt{evidence} 和 \texttt{rationale}；\texttt{evidence} 至少一项，且每项必须引用所选版本的行号和对应源码行。prompt 版本为 \texttt{pair-joint-2026-11-12.1}，每对 180 条请求全部成功，0 invalid、0 API error，成本 0.153593/0.071803 美元。
+
+防泄漏审计覆盖 180/180 对：wrapper 不含 \texttt{pair\_id}、\texttt{idx}、\texttt{commit\_id}、\texttt{filepath}、\texttt{func\_name}、\texttt{project}、CVE/CWE 列表或 ground-truth 字段名；0 个 slot leak；\texttt{requests.jsonl} 不含 \texttt{Authorization} 头，manifest 记录 \texttt{api\_key\_value\_stored=false}。唯一残余风险是 1/180 对（\texttt{18396:18397}）的两侧相同注释含 \texttt{CVE-2017-17969}；该注释不指示哪一侧是漏洞版本，但无法在不改数据的前提下清除。
+
+\input{extended_tables_pj}
+
+\subsection{联合提示的结果与任务变化}
+表~\ref{tab:pj} 给出主结果。DeepSeek 正确 138/180，DA 76.7\%（Wilson 95\% 区间 70.0--82.2）；MiMo 正确 156/180，DA 86.7\%（80.9--90.9）；swapped 分别为 42/24，both-vulnerable 与 both-safe 都是 0。后者不是模型“学会了强制二选一”，而是 prompt 明确要求只返回 A 或 B；它是任务约束的直接结果，不能解释为开放任务中的行为。
+
+与分侧调用相比，DeepSeek direct 的 DA 从 11.7\% 提到 76.7\%（$\Delta=+65.0$ 个百分点，项目聚类 95\% CI $[58.6,77.9]$，McNemar $p=3.6\times10^{-34}$）；MiMo direct 从 7.8\% 提到 86.7\%（$\Delta=+78.9$，CI $[74.1,87.6]$，$p=3.6\times10^{-43}$）。但这不是纯粹的“跨版本推理”增益：分侧调用的 both-safe 为 113/108 对，联合 prompt 把它压到 0；任务从“两次自由判定”变成了“一次强制选择”。DA 的提高同时包含“看到另一版本”“被禁止输出 both/neither”“必须引用证据行”三个因素，当前实验没有消融，不能把 +65/+79 全部归因于模型理解了修复差异。
+
+跨模型比较：MiMo 比 DeepSeek 高 10.0 个百分点（138 vs.\ 156，McNemar $p=0.0009$，项目聚类 CI $[-14.6,-4.6]$）。这个差异是真实的（在同一 180 对、同一 prompt、同一 A/B 映射上），但不能直接外推为“MiMo 的漏洞检测能力更强”，因为两者都有长度信号，且 DeepSeek 有明显位置偏差；下一节给出这两个混杂。
+
+\subsection{位置偏差}
+表~\ref{tab:pj} 的 DA(A)/DA(B) 与 Fisher 检验显示：DeepSeek 在漏洞版本位于 A 时 DA 为 92.2\%，位于 B 时只有 61.1\%，差值 31.1 个百分点（Fisher $p=1.0\times10^{-6}$）；它选择 A 的次数为 118/180（65.6\%），二项检验 $p=3.6\times10^{-5}$。MiMo 的 A/B 差值为 4.4 个百分点（88.9\% vs.\ 84.4\%，$p=0.511$），选择 A 为 94/180（52.2\%，$p=0.602$），位置偏差小且不显著。
+
+A/B 映射由 HMAC 随机产生，位置与标签在期望上独立；分侧 direct 基线在同样的 A/B 分组上 DA 为 13.3\% vs.\ 10.0\%（DeepSeek）、10.0\% vs.\ 5.6\%（MiMo），两组难度接近，因此 DeepSeek 的 31.1 个百分点不太可能由“B 组恰好更难”解释。它更像 first-position bias：模型倾向于选择先出现的版本。当前只做了 90/90 平衡，没有做 A/B 双顺序重复，因此不能区分“位置偏好”和“该位置代码更易判”的细微交互。
+
+\subsection{长度混淆}
+修复通常会增加检查或代码，所以漏洞版本往往更短。用一个完全不看语义的规则——“选字符数较短的版本，等长时选 A”——在 180 对上正确 134 次，DA 74.4\%；按行数则为 133/180（73.9\%）。DeepSeek 的 76.7\% 与字符启发式在统计上不可区分（McNemar $b=25,c=21$，$p=0.6587$）；MiMo 的 86.7\% 显著高于启发式（$b=29,c=7$，$p=0.0003$）。
+
+分长度层看：DeepSeek 在“漏洞更短”的 130 对上 109/130（83.8\%），在“漏洞更长”的 44 对上 25/44（56.8\%），等长 4/6；MiMo 为 123/130（94.6\%）、28/44（63.6\%）、5/6。DeepSeek 的净增益主要来自“漏洞更长”的 44 对（56.8\% vs.\ 启发式按定义的 0\%），但在“漏洞更短”的 130 对上反而低于启发式；MiMo 在两个分层都高于启发式，说明它有超出长度的信号，但总体仍受长度分布影响。该诊断是测试后加入的，不是预注册基线；没有做长度匹配子集或 A/B 反向重复，因此只能作为混杂提示，不能作为因果分解。
+
+\subsection{结构化证据提示的协议}
+另一个方向是不提供另一版本，而要求模型给出可审计的判定依据。新 prompt 在一次响应中返回六项：\texttt{is\_vulnerable}、\texttt{confidence}、\texttt{evidence\_lines}、\texttt{mechanism}、\texttt{counterfactual\_fix}、\texttt{counterfactual\_confirms}。\texttt{evidence\_lines} 是提示中打印的 1-based 行号，必须落在 \texttt{FUNCTION\_SOURCE} 内；\texttt{mechanism} 说明缺陷机制与数据流；\texttt{counterfactual\_fix} 给出最小修复；\texttt{counterfactual\_confirms} 是模型自检，不是执行验证。标签一致性规则强制：判漏洞时至少一条证据行、机制与修复不能为空；判安全时证据行为空、机制与修复为 \texttt{none}、自检为 false。
+
+输入隔离是结构性的：构造器只接收 \texttt{func\_body}，项目名、路径、函数名、commit、CVE/CWE、\texttt{changed\_lines}、\texttt{changed\_statements}、\texttt{fixed\_func\_idx}、标签和 \texttt{context} 都不进入 prompt；用户消息的 header/footer 之间必须逐字符等于带行号源码，去掉行号前缀后必须逐行重建原函数。两个真实 run 的 160/160 条请求体 SHA-256 与 dry-run 逐条一致。DeepSeek 159/160 valid、1 invalid、0 API error；MiMo 158/160 valid、2 invalid、0 API error。
+
+\subsection{召回上升，但操作点也移动}
+表~\ref{tab:ev} 给出全样本 valid-only 指标。DeepSeek direct 的召回 29.1\%、FPR 25.0\%、macro-F1 0.383；evidence 把召回提到 38.6\%、FPR 提到 34.4\%、macro-F1 0.422、strict accuracy 从 38.8\% 提到 43.8\%。MiMo direct 的召回 24.2\%、FPR 23.3\%、macro-F1 0.346；evidence 把召回提到 37.0\%、FPR 提到 35.5\%、macro-F1 0.407、strict accuracy 从 32.5\% 提到 41.9\%。
+
+表~\ref{tab:ev-cmp} 的配对检验（共同 valid）给出更严格的口径：DeepSeek 召回 $+9.4$ 个百分点（新增 13 个 TP、丢失 1 个 TP；原始 $p=0.0018$，Holm $p=0.0055$），FPR $+9.4$（新增 3 个 FP、修复 0 个；原始 $p=0.25$，Holm $0.25$）；MiMo 召回 $+10.9$（新增 13、丢失 0；原始 $p=2.4\times10^{-4}$，Holm $0.0010$），FPR $+13.8$（新增 4、修复 0；原始 $p=0.125$，Holm $0.25$）。召回提升在两个模型上都通过 Holm；FPR 的点估计上升，但 32/29 个负例的功效不足以把它判为显著。因此可以说“召回提高有统计支持”，不能说“没有增加假阳性”，更不能说“判别力提高”。
+
+操作点分析支持这一解释：共同 valid 上预测正类率从 28.3\% 升到 37.7\%（DeepSeek）、23.7\% 升到 35.1\%（MiMo）；$\Delta$balanced accuracy 为 $+0.0004$/$-0.0143$，$\Delta$MCC 为 $-0.0020$/$-0.0276$。F1 和 strict accuracy 的上升主要来自“更敢报正例”，而不是排序能力变好。MiMo 的 strict 提升还混入格式合规恢复：direct 有 10 条 invalid（8 正/2 负），evidence 只有 2 条；共同 valid 的 accuracy 提升是 $+6.1$ 个百分点，小于 strict 的 $+9.4$。
+
+\subsection{证据行审计：可审计不等于可定位}
+所有 valid 正例的证据行都在范围内、非空、无重复（DeepSeek 60/60，MiMo 58/58 grounded）。与 ground-truth 修复行（\texttt{changed\_lines} 映射回函数体）的重合：DeepSeek 的 exact hit 为 48.8\%，同函数同数量随机引用基线为 34.5\%；MiMo 为 45.5\% vs.\ 31.6\%。$\pm3$ 重合为 62.8\% vs.\ 62.5\%（DeepSeek）、63.6\% vs.\ 59.7\%（MiMo），几乎与随机基线相同。引用行的 exact 精确率只有 21.9\%/25.6\%，修复行的 exact 召回只有 16.3\%/14.6\%。
+
+反事实自检的确认率为 100\%/98.3\%，但在假阳性上也是 100\%；它没有提供降 FP 的信号。事后“只保留 grounded 且已确认正例”的敏感性分析几乎不改变指标，说明该自检更像一致性检查，而不是独立 oracle。结论：证据提示的贡献是“让模型给出可审计的结构”，不是“定位到了缺陷行”；把 \texttt{evidence\_lines} 当作人工复核排序信号，会被随机基线解释掉大部分。
+
+\section{扩展评估 III：Juliet CWE-401 分层基准}
+\label{sec:ext-juliet}
+
+Tier A 的真实项目函数片段无法回答“同一 CWE-401 用例上，静态/动态/LLM/混合各自如何”。本节使用 NIST Juliet v1.3 的 CWE-401 子集构建 Tier B，单独报告，不与 Tier A 合并。Juliet 的标签由宏结构直接给出，可编译可运行；代价是合成、单 CWE、模板化，且不同家族之间近重复程度高。
+
+\subsection{数据构建与泄漏控制}
+数据来自 NIST SARD 发布的 Juliet Test Suite for C/C++ v1.3，CWE-401 Memory Leak；归档 SHA-256 为 \texttt{ada9d7e1...f38eb}，提取 1{,}228 个 \texttt{.c}、1{,}482 个 \texttt{.cpp}、111 个 \texttt{.h}。从 1{,}658 个候选组中按 42 个功能家族确定性选择 100 组，每组一个 bad、一个 good，形成 200 个构建单元；dev 60（30 组、13 家族）、test 140（70 组、29 家族）；C 88、C++ 112。200/200 编译通过，200/200 宏门控与符号门控通过；good 100/100 默认运行无泄漏，bad 78/100 默认运行观察到泄漏，22/100 为条件性/可达性情形（15 个 \texttt{malloc\_realloc} 只在 \texttt{realloc} 失败时泄漏，7 个 \texttt{\_68} 的指针在退出时仍被全局变量引用）。
+
+dev/test 按近重复簇隔离：去掉注释、统一标识符/字面量后取 5-gram shingle，Jaccard 阈值 0.85，整簇分配；跨 split 2{,}100 对中 $\ge0.85$ 为 0 对，最大 0.8231。这个划分不是 i.i.d. 随机划分：dev 13 个家族、test 29 个家族，分布有意不同，适合“dev 调参、test 测泛化”，不适合把两侧当同分布做显著性检验。
+
+\input{extended_tables_juliet}
+
+\subsection{静态与动态结果}
+表~\ref{tab:jb-static} 给出 test 140 的主结果。Clang Static Analyzer 22.1.8 有效 136/140（4 个 \texttt{\_82} 组因共享无 include-guard 头而 \texttt{compile\_error}），macro-F1 0.888（95\% CI 0.818--0.948），MCC 0.799，strict 0.864；它没有 FP（精确率 1.000），但漏掉 15 个 bad（召回 0.779）。Cppcheck 2.21.0 全部有效，macro-F1 0.588（0.497--0.671），MCC 0.331，strict 0.629；精确率 0.846、召回 0.314，4 个 FP、48 个 FN。ASan+LSan 与 Valgrind 在 test 140 上给出完全相同的 operational 结果：58 TP、0 FP、70 TN、12 FN，macro-F1 0.914（0.850--0.966），MCC 0.841，strict 0.914。ASan+Valgrind 的“任一报泄漏”合并视图与二者相同。
+
+静态的 4 个 \texttt{compile\_error} 保留在 strict 分母中，但从未写成 $y_{\mathrm{pred}}=0$；valid-only macro-F1 排除它们，strict 把它们算错。这个区别很重要：如果把编译失败当作“无泄漏”，Clang 的 strict 会从 0.864 变成 0.889，看起来更好，但掩盖了工具在 4 个单元上根本没有给出预测。Cppcheck 的 coverage 是 1.000，但召回只有 0.314；高 coverage 不等于高检测率。
+
+\subsection{动态保守视图与 runtime-supported 分层}
+表~\ref{tab:jb-dyncons} 把动态 clean 全部弃权。test 140 中只有 58 个单元有可观测泄漏，coverage 0.414；82 个 clean 预测被弃权，负类因此离开 valid 集，macro-F1 未定义。在可观测的 58 个单元上，召回与精确率都是 1.000，但这只是“观察到泄漏的都报对了”，不是安全分类器的性能。动态 run 没有行/分支覆盖率 instrumentation；clean 只表示“执行路径上未观察到 definite/indirect leak”，不是 TN，也不是安全证明。
+
+runtime-supported 视图（test 128）排除 12 个“标签 bad 但 LSan 未观察到泄漏”的单元。ASan/Valgrind 在该子群上达到 1.000，但该子群本身由 LSan preflight 定义，存在循环性；Clang 在该子群上 0.917、Cppcheck 0.564，静态与 Valgrind 的数字更有信息量。报告同时给 operational 与 conservative 两个视图，不允许把二者混用：前者把 clean 当 TN，后者把 clean 弃权；前者适合“工具在默认执行路径上能抓到多少”，后者适合“没有覆盖率证据时能声称多少”。
+
+\subsection{Juliet 上的 LLM 直接检测}
+表~\ref{tab:jb-llm} 给出 MiMo 在 test 140 上的三次真实运行。泄漏修复后的正式与复现运行都是 140/140 有效，TP 68、FP 5、TN 65、FN 2，Accuracy 95.00\%，F1 0.951，MCC 0.901；两次运行的混淆矩阵完全相同，说明该结果在该端点上可重复。修复前的运行保留作审计：TP 68、FP 4、TN 66、FN 2，Accuracy 95.71\%，F1 0.958；修复后只多 1 个 FP，方向与清洗掉 6 个 good 单元的标签字面量一致，但只有 1 个单元变化，不能把差值单独归因于清洗。主结果使用修复后的 95.0\%，修复前的 95.7\% 不进入结论。分语言：C 58 单元 Accuracy 93.10\%，C++ 82 单元 96.34\%。评分按实际 \texttt{label} 字段，而不是按模型理由文本；7 个错误为 5 FP + 2 FN。
+
+必须标明端点：该运行使用 Xiaomi 官方 OpenAI 兼容端点（\url{https://api.xiaomimimo.com/v1}）的 \texttt{mimo-v2.6-flash}，不是 OpenCode Go；相同模型 ID 不等于相同服务栈，延迟、缓存、成本和可能的系统提示注入都可能不同。DeepSeek 在 Juliet 上没有结果：OpenCode Go 返回 401 \texttt{api\_key\_expired}，DeepSeek 官方返回 402 \texttt{Insufficient Balance}，qwen 网关返回 403 \texttt{AccessDenied.Unpurchased}；没有用其他模型或 prompt 冒充。参考成本为正式 0.003180 美元、复现 0.003081 美元（按 MiMo 发布的 0.14/0.28/0.0028 计算），不是 Xiaomi 实际账单；Xiaomi 端点不返回 provider list/allowance，故该成本只有 configured/normalized 一列。
+
+登记口径也需要说明：\path{benchmark/results/tier_b_summary.json} 仍把 B4--B8 标为 \texttt{blocked\_gate}，理由是 B9 消毒/标签审计未完成、没有登记为统一 schema 的 Juliet LLM 请求；而 \path{juliet_llm/} 是独立子工作流，已有上述真实运行。本文把它作为“未纳入统一 leaderboard 的探索性证据”报告，不把它写成 Tier B B4/B5 的正式结果，也不把 95.0\% 与 Tier A 的 0.383 macro-F1 直接比较。
+
+\subsection{证据混合与安慰剂}
+\path{hybrid/} 在同样的 test 140 上运行 2 个模型 $\times$ 5 种方法：direct、static、dynamic、combined、shuffled。direct 与 \path{juliet_llm} 的 prompt 逐字节一致（140/140）；static 证据来自真实 Clang/Cppcheck 行，dynamic 证据来自真实 ASan/LSan 与 Valgrind，combined 是二者拼接，shuffled 用另一个单元（不同 group、非自身）的 combined 证据作为安慰剂，seed 20261112。证据文本清除绝对路径、文件名、行号、CWE 标识、\texttt{OMIT*} 宏和 bad/good 标识符；inconclusive 明确写“不是 clean”。首轮 v1 完成后，发布审计发现 6 个 good 单元仍含字面量 \texttt{"Benign, fixed string"}；共享 cleaner 修复后，用独立输入包 \path{hybrid/inputs_v2} 与 prompt v2 重跑全部 10 个 run、1{,}400 次请求（v2）。预检 PASS，10/10 run 均为 140/140、0 invalid、0 API error。本小节以 v2 为主结果，v1 冻结保留、只作审计对照。
+
+表~\ref{tab:hybrid} 给出 v2 的 strict 结果。DeepSeek：direct 135/140（96.43\%）、static 135、dynamic 136（97.14\%）、combined 136（97.14\%）、shuffled 134（95.71\%）；MiMo：direct 136（97.14\%）、static 135、dynamic 133（95.00\%）、combined 136（97.14\%）、shuffled 133（95.00\%）。表~\ref{tab:hybrid-cmp} 的配对检验显示，v2 中没有任何方法相对 direct 显著：DeepSeek direct$\to$dynamic 与 direct$\to$combined 都是 $+0.71$ 个百分点（1 对 0，McNemar $p=1.0$，CI $[0.00,2.14]$），direct$\to$shuffled 为 $-0.71$（0 对 1，$p=1.0$）；MiMo direct$\to$combined 为 $0.00$（1 对 1，$p=1.0$），direct$\to$shuffled 为 $-2.14$（0 对 3，$p=0.25$）。v2 的最大单元格差异只有 2.14 个百分点，且方向并不一致；证据混合的收益在修复后的数据上更弱。
+
+表~\ref{tab:hybrid-audit} 把 v1 与 v2 并列，用于量化清洗的影响，而不是给 v1 排名。DeepSeek combined 从 140/140（100\%）降到 136/140（97.14\%），差 $-2.86$ 个百分点（4 对 0，$p=0.125$，CI $[-5.71,-0.71]$）；DeepSeek dynamic 从 139 降到 136。6 个被清洗的单元共引起 17 次标签翻转：16 次由对变错、1 次由错变对（DeepSeek shuffled 的 \texttt{malloc\_realloc\_int64\_t\_09\_good}）；134 个未变单元只有 1 次端点噪声翻转（MiMo direct 的 1 个 bad）。五方法池化准确率从 97.36\% 降到 96.36\%。因此 v1 的 100\% 是标签捷径下的上界，只能作为“清洗前后差多少”的审计案例；主结论使用 v2，DeepSeek combined 为 97.14\%，与 direct 的差异在 1 个单元、精确 McNemar $p=1.0$，不能声称组合证据带来稳定提升。
+
+v2 的安慰剂没有聚合收益：DeepSeek shuffled 134/140 比 direct 少 1 个，MiMo 133/140 少 3 个；相对 direct 只有 1/3 个预测发生翻转，且全部由对变错。按供体标签统计，DeepSeek 在供体 bad 时判 vulnerable 的比例为 57.1\%、供体 good 为 51.4\%；MiMo 为 55.7\%/51.4\%。错配证据仍会按供体方向轻微推动边界样本，但没有带来净收益。这说明 combined 的 $+1/0$ 个单元不能简单归因于“多了一段证据文本”：同样长度、同样格式的错配证据没有收益甚至略差。但受样本量与单一 derangement 限制，这仍只是方向性证据；另有 14 个单元的供体证据与自身完全相同（no-op collision），在这些单元上安慰剂无法改变 prompt。
+
+v2 的错误结构仍集中在 \texttt{\_22} good：DeepSeek direct 的 5 个 FP 全是 \texttt{\_22} good（\texttt{int\_malloc\_22}、\texttt{new\_array\_char\_22}、\texttt{new\_array\_int\_22}、\texttt{new\_int\_22}、\texttt{twoIntsStruct\_realloc\_22}），dynamic 与 combined 各纠正 1 个，仍有 4 个；MiMo direct 与 combined 的 4 个 FP 也全是 \texttt{\_22} good，dynamic 额外产生 2 个 FN（\texttt{malloc\_realloc\_int\_01\_\_bad}、\texttt{malloc\_realloc\_int\_18\_\_bad}）。\texttt{\_22} 变体通过全局变量在多个 sink 之间传递控制流，good 版本在“另一条”分支释放内存；direct 容易只看到当前分支未释放而误报。动态 clean 与组合证据只能纠正部分单元，天花板效应明显：direct 已 135/140，证据最多只能再修复 5 个。
+
+同样需要登记口径：\path{benchmark/results/tier_b_summary.json} 把 B6--B8 标为 \texttt{blocked\_gate}，而 \path{hybrid/} 是独立工作流，已有 v2 的 1{,}400 次真实请求。本文把 hybrid 作为“未纳入统一 leaderboard 的探索性证据”，不写成 B6--B8 的正式结果；它的价值是给出安慰剂对照和清洗审计，而不是给 Tier B 增加一行排名。
+
+同一 MiMo 模型在 \path{juliet_llm/} 的 Xiaomi 端点上（修复后）direct 为 133/140（95.00\%），在 \path{hybrid/} 的 OpenCode Go 上 direct 为 136/140（97.14\%）；差 3 个单元。两个工作流的 prompt 逐字节一致，且输入都已使用修复后的清洗版本，但端点、缓存和可能的系统提示注入不同，且各只有单次运行，不能把这 3 个单元当作模型差异。
+
+\subsection{跨层不比较}
+Tier B 的 Clang 0.888 不能与 Tier A 的 LLM 0.383 比较：前者是 140 个合成 CWE-401 单元、70/70 平衡、标签由宏结构给出；后者是 160 个真实项目函数片段、128/32 不平衡、负例只是“源数据未标注漏洞”。动态 0.914 也不能与 LLM 的 0.950 比较：动态的 0.914 把 clean 当 TN，而 clean 没有覆盖率证据；LLM 的 0.950 是在同一个合成集上、用 sanitized 源码、单次运行得到。跨层数字的唯一合法用途是分别回答“真实项目函数上的提示策略如何”和“合成 CWE-401 上的工具/模型行为如何”，不是产生一个“综合分”。
+
+\section{扩展评估 IV：修复的编译--LSan--行为闭环}
+\label{sec:ext-repair}
+
+旧报告的修复评估只有结构代理和 LLM 辅助盲评，所有候选的 \texttt{compile\_status} 都是 \texttt{NOT\_RUN}。扩展部分在 Juliet CWE-401 的 70 个 test bad 单元上补上了真实执行 oracle：模型输出必须能编译、在 LSan 下不再报泄漏、并且保持可观测行为，才算严格通过。
+
+\subsection{协议}
+输入是评测端净化的“bad-only”源码：删除全部注释（包括 \texttt{POTENTIAL FLAW}、\texttt{FIX}、\texttt{BadSink} 等提示）、用预处理器求值删除 \texttt{OMITGOOD} 区域、删除 \texttt{INCLUDEMAIN} 区域、删除只属于 good 路径的全局声明；评测端另写 probe \texttt{main()} 只调用 bad 入口。模型永远看不到 good 实现，也看不到“哪个文件是 good 参考”。自动审计检查 \texttt{FIX}、\texttt{POTENTIAL FLAW}、\texttt{GoodSink}、\texttt{BadSink}、\texttt{good*} 标识符、\texttt{good()} 调用、块注释和行注释；70/70 单元 0 命中。\texttt{check\_baselines.py} 另外证明净化没有改变语义：70/70 净化输入的编译、泄漏观测和行为行与原始 bad 完全一致。
+
+编译使用 \texttt{gcc -std=gnu11} / \texttt{g++ -std=gnu++11}，\texttt{-O0 -g -fsanitize=address -fno-omit-frame-pointer}，链接 Juliet 的 \texttt{io.o} 与 \texttt{std\_thread.o}。运行时 \path{ASAN_OPTIONS=detect_leaks=1:abort_on_error=0:exitcode=23}，\path{LSAN_OPTIONS=exitcode=23:use_stacks=0:use_registers=0}；不把栈/寄存器里的悬垂指针当作 LSan 根，避免“修完但栈上残留指针”被误判为无泄漏；全局变量仍作为根保留，因为 \texttt{\_68} 变体的唯一指针在全局变量里。行为判定用 probe 的 stdout 数据行与原始 bad 逐行比较，要求完全相等、exit code 0、无其他 ASan 错误/超时。严格通过定义为 \texttt{compile\_pass} \&\& \texttt{leak\_removed} \&\& \texttt{behavior\_preserved} \&\& \texttt{baseline\_leak\_observed}；baseline 未观察到泄漏的单元一律不计 strict pass。每个单元先请求一次，失败后最多一次反馈；反馈只含编译器 stderr 尾部、LSan summary 和可观测输出的期望/实际值，不含 good 源码。
+
+\input{extended_tables_repair}
+
+\subsection{结果}
+表~\ref{tab:repair-close} 给出结果。DeepSeek 70/70 编译、70/70 LSan 干净、70/70 行为保持；58 个 baseline 可观测单元上 58/58 严格通过，首次回答即 58/58，0 次反馈，70 次调用，configured 成本 0.026990 美元（normalized 0.013495）。MiMo 同样 70/70 编译、70/70 LSan 干净、70/70 行为保持；58 个可观测单元上 58/58 严格通过，但首次只有 57/58，2 个单元使用了反馈（1 次真实 double-free、1 次 schema 路径错误），72 次调用，configured 成本 0.005841 美元（normalized 相同）。两个 headline run 合计 configured 0.032831 美元（normalized 0.019336）；加上解析器开发/冒烟的全部真实 API 成本，configured all-in 为 0.082550 美元（normalized 0.052549），而不是旧 README 的 0.077516。差额 0.005034 来自 \texttt{parser\_dev/mimo\_test70\_v1}。
+
+12 个单元不计入 strict 分母：7 个 \texttt{malloc\_realloc} 变体只有在 \texttt{realloc} 失败时才泄漏初始块，而默认执行路径 \texttt{realloc} 成功并随后 \texttt{free}；5 个 \texttt{\_68} 变体把唯一指针放进全局变量，LSan 视为 reachable。它们仍全部编译通过且行为保持，但不能证明泄漏被移除。没有用 \texttt{ulimit}/分配器故障注入强制 \texttt{realloc} 失败，因为 ASan 需要巨大的虚拟地址空间，\texttt{RLIMIT\_AS} 不可用；\texttt{hard\_rss\_limit\_mb} 也不能可靠地让 \texttt{realloc} 返回 NULL。因此这 7 个 latent 单元保持不可观测，报告不把它们算成“白捡的通过”。
+
+\subsection{解释边界}
+这个闭环比旧报告的结构代理强得多：它证明模型输出真的能编译、真的在 LSan 下干净、真的保持了 stdout 行为。但它仍不是“修复正确率”的完整 oracle：行为只覆盖 stdout 数据行，没有覆盖文件、网络、全局状态或 API 契约；没有故障注入，12 个 latent 单元不可判定；只做一次反馈，不是多轮搜索；Juliet 是合成单 CWE，不能外推到真实项目。两个模型在 58 个可观测单元上都 58/58，说明在这个受限任务上“编译 + LSan + 行为”门槛已经被跨过；差异主要体现在首次通过率、反馈使用和成本，而不是最终 strict 通过数。这个结果不能与旧报告的 LLM 辅助盲评 17/81 直接比较：任务、输入、评分 rubric 和 oracle 都不同，一个是“rubric 下根因已处理”，一个是“可执行闭环严格通过”。
+
+\section{创新点}
+\label{sec:innovation}
+
+本文的创新点是评估协议与证据审计，不是新模型或新训练方法。具体包括：
+\begin{enumerate}
+    \item \textbf{统一契约、分层比较。} 用同一套字段、失败分类、coverage/strict、Wilson/bootstrap/McNemar 和成本向量，同时约束 Tier A 与 Tier B；两层各自设主终点与外推边界，明确拒绝跨层池化。这样既能并列阅读，又不会制造“平均 F1”。
+    \item \textbf{双模型复制与配置对齐。} 把三种提示策略完整复制到 MiMo-V2.6-Flash，每模型 2{,}484 次请求，并把 MiMo 的 \texttt{reasoning\_effort=none}、\texttt{max\_completion\_tokens} 与 DeepSeek 的非思考模式语义对齐；报告明确把差异解释为“模型 + 传输/解码配置”，而不是纯模型能力。
+    \item \textbf{强制二选一联合提示 + 位置/长度审计。} 每对一次请求、HMAC 平衡 A/B、强制选择、证据行引用；随后用 Fisher 检验检查位置偏差，用“选较短版本”的平凡启发式检查长度混淆。正是这个审计把 DeepSeek 的 76.7\% 从“跨版本推理”降级为“与长度启发式不可区分”。
+    \item \textbf{结构化证据提示 + 随机引用基线。} 要求模型给出证据行、机制、反事实修复和自检；把证据行与 \texttt{changed\_lines} 的 exact/$\pm3$ 重合率和同函数同数量随机引用基线比较。结果显示 exact 略高于随机、$\pm3$ 接近随机，从而阻止了“证据行 = 缺陷定位”的过度主张。
+    \item \textbf{安慰剂对照的证据混合。} 在 Juliet 上用 5 种方法（direct/static/dynamic/combined/shuffled）和 1{,}400 次真实请求，把“证据内容”与“多了一段同格式文本”分开；v2 中 shuffled 没有聚合收益（DeepSeek 134/140、MiMo 133/140，均不高于 direct），因此 combined 的 $+1/0$ 个单元不能简单归因于提示变长。
+    \item \textbf{带可评估分母的修复闭环。} 用编译、LSan、行为差分和 baseline 可观测性四重条件定义 strict pass，把 12 个不可观测单元从分母中排除；两个模型在 58 个可观测单元上均 58/58，给出了比文本匹配强得多的执行证据。
+\end{enumerate}
+这些设计的共同点是：先定义“什么算失败、什么算不可评估、什么算混杂”，再报告点估计。它们的主要价值不是把数字做大，而是让负面结果、微弱结果和不可评估结果都能被解释。
+
+\section{局限性}
+\label{sec:limitations}
+本文的限制主要体现在以下方面。
+\begin{enumerate}
+    \item \textbf{样本规模与构成。} 源子集有 200 条独立函数和 200 对版本，冻结测试集为 160 条检测函数（128 正/32 负）和 180 对配对版本，足以支持课程项目的比较，但不足以覆盖 C/C++ 漏洞的全部类型。80/20 比例是人为设定，配对集的平衡标签是配对要求的结果；两者都不能用来估计真实项目中的漏洞发生率。检测测试集只有 32 条负例，特异度的置信区间会很宽。
+    \item \textbf{标签继承。} 本文不重新标注数据，无法排除源数据的标签噪声、修复关联错误或“修复版本仍不安全”的情况。配对集的联合指标以数据集标签为准，若标签本身有争议，DA 的解释力有限。
+    \item \textbf{任务内隔离、跨任务重叠。} 检测任务内 40 个开发项目与 40 个测试项目没有交集，配对任务内 20 个开发项目与 60 个测试项目没有交集，开发/测试源索引交集为 0。但两个任务独立划分，2 个检测开发项目出现在配对测试（yara、znc），5 个配对开发项目出现在检测测试（Fast-DDS、OpenSC、\texttt{file}、htmldoc、libgd）；源子集还共享 26 个项目。模型可能利用项目风格或相似代码，而不是安全语义，因此不能声称完全的项目级泛化。
+    \item \textbf{开发集规模有限。} 冻结划分与课程建议一致（检测 40/160；配对 20/180），但开发集只有 40 条检测函数和 20 对配对版本，固定示例只有 4 条检测 + 2 条修复，未做系统的提示/示例消融。pilot 的 36 条检测和 18 对配对也不进入主结果；因此本文不能报告“在开发集上充分调参后冻结”的完整流程，示例选择仍可能影响结果。
+    \item \textbf{上下文与标签相关。} 检测测试集 context 非空层 126 条全部为漏洞，空层 34 条中 2 条漏洞、32 条非漏洞（源独立集非空 156/156、空 44 条中 4 条漏洞）；非空层是单类别，M3 的总体差异与 context 可用性高度混杂。即使按 context 是否非空分层，空层只有 34 条，样本量有限，无法完全分离“上下文语义”和“有无上下文”的影响。
+    \item \textbf{源级截断。} 源子集 5 条函数正文恰好 32{,}767 字符且全部在中途结束（独立 \texttt{idx}=9991、8265、7018，配对 \texttt{idx}=8675、8676），这 5 条全部落在测试集。32{,}767 是 Excel 单元格字符上限，因此长度分布是截断后的下界。超长函数的检测和修复结果只能解释为截断后的下界；8675/8676 同时属于 CWE-401 案例对，其中 8675 的输入不完整，不能当作干净的泄漏案例。
+    \item \textbf{CWE-401 与逐 CWE 分层不足。} 源子集 CWE-401 漏洞函数只有 4/360（独立 2/160，配对 2/200），测试集为 3/308；其中 3 条是 \texttt{.c}、1 条是 \texttt{.cc}，唯一的 C++ 记录 17743 同时带 CWE-415 且落在开发集，因此严格“C++ 扩展名且单一 CWE-401 标签”为 0 条。4 条源记录只来自 3 个项目，linux 占 2 条。源子集合并 57 种数字 CWE，独立集 23/39 种、配对集 18/39 种只出现 1 次，只有 6/39 和 7/39 种达到 $n\ge 10$；测试集合并 54 种，29 种为单例，10 种达到 $n\ge 10$。因此本文的主定位是全 CWE 的混合评估，CWE-401 只能作案例系列，不能估计 CWE-401 的 precision/recall/F1。Tier A 的 SecVulEval 数据中 0 条 Juliet 记录；扩展部分的 Tier B Juliet 子集另建，只在该层内报告，不能与 Tier A 的指标比较或外推。
+    \item \textbf{字段泄漏与标签相关。} 测试集 \texttt{fixed\_func\_idx} 非空为有漏洞 115/128、无漏洞 0/32（源独立集 143/160 与 0/40）；CWE/CVE 在测试集 32/32 条负例中也非空（源独立集 40/40），配对修复版 180/180（源 200/200）复制漏洞版。协议从所有提示中排除这些字段，但字段分布本身带有强标签信号：任何未按白名单过滤的提示、缓存或后处理都可能让指标虚高。即使正确排除，这些相关性仍意味着“字段是否可用”与标签绑定，属于构造层面的混淆。
+    \item \textbf{单一基础模型。} 本文比较的是提示策略，不是模型能力。结论不能推广到其他模型、其他版本或其他服务商；模型更新后需要重跑。
+    \item \textbf{提示敏感性。} 提示措辞、示例选择、上下文格式和输出模式都可能影响结果。本文固定一套提示并公开模板，但没有做系统的提示消融；因此策略间的差异包含提示设计的偶然性。每种策略对每条记录只取一次有效判定（解析失败的重试不计为重复采样），因此无法估计服务端非确定性带来的方差。
+    \item \textbf{修复没有 oracle。} 修复任务没有编译、测试、PoC 或语义等价验证，只能报告结构代理；精确匹配参考修复是文本相似度，不是正确性。第~\ref{sec:human-review}节的盲评已完成，但它是两名 LLM 辅助评审加第三 LLM 裁决，不是人类评审；所有候选的 compile\_status 为 NOT\_RUN，MIN 的二次加权 $\kappa$ 仅 0.015。因此不能声称“修复成功”或报告修复正确率；rubric 通过计数只是该 LLM 辅助 rubric 下的判断，不是可执行 oracle。这里的 NOT\_RUN 指旧报告的 SecVulEval 修复候选；扩展部分第~\ref{sec:ext-repair}节对 Juliet 的 70 个 bad 单元补做了编译/LSan/行为闭环，但只有 58 个可观测单元，仍不是通用修复 oracle。
+    \item \textbf{成本波动。} API 价格、限流和延迟随服务商和时间变化；本文记录运行当日的价格与分位数延迟，不保证其他环境可复现同一费用。若未配置价格，运行器的成本为 \texttt{null}，报告不得用估算替代。
+    \item \textbf{无效输出。} JSON 解析失败、空输出、截断和字段缺失会降低覆盖率；本文同时报告 valid-only 和 strict all-samples 两种口径，但无效输出本身可能反映模型能力或提示设计问题，不能简单归因于工程噪声。
+\end{enumerate}
+
+\section{扩展实验的附加限制}
+\label{sec:ext-limitations}
+
+旧报告第~\ref{sec:limitations}节的限制仍然成立。扩展部分还有以下附加限制。
+
+\begin{enumerate}
+    \item \textbf{登记口径与子报告不完全一致。} \path{benchmark/results/tier_b_summary.json} 把 B4--B8 标为 \texttt{blocked\_gate}，但 \path{juliet_llm/} 与 \path{hybrid/} 已有真实运行。本文把后者写成“未纳入统一 leaderboard 的探索性证据”，不写成 B4--B8 的正式结果；读者不能把 95.0\%/97.1\% 当作统一基准的登记数字。
+    \item \textbf{Tier A 是只读派生，不是新调用。} 12 个 Tier A run 从 \path{runner/runs/test_v1_*} 派生，没有重新调用模型；每个模型/策略单元只有一次运行，无法估计 run-to-run 方差。MiMo 的传输/解码配置与 DeepSeek 不同，价格快照也不同；模型比较是“模型 + 配置”的比较。
+    \item \textbf{Pair-joint 的任务与混杂。} 强制二选一改变了任务：分侧调用的 both-safe 被消除，DA 提升不能单独归因于“看到另一版本”。长度启发式单独达到 74.4\%，DeepSeek 与它不可区分；A/B 只做了一个顺序，DeepSeek 有 31.1 个百分点的位置偏差；长度分层与位置检验都是测试后诊断，不是预注册分析。
+    \item \textbf{证据提示没有消融。} 证据行、机制、反事实、行号四件事打包在一个 prompt 里，没有 2$\times$2 消融，不能说明是哪一部分带来召回提升。预测正类率明显上升，BA/MCC 基本持平或略降；FPR 的点估计上升，32/29 个负例的功效不足以判显著。证据行与 \texttt{changed\_lines} 的 $\pm3$ 重合接近随机，不能当作可靠定位。
+    \item \textbf{Juliet 的合成性与分母问题。} Tier B 是单 CWE、模板化、29 个 test family；22/100 个 bad 在默认运行中不可观测；Clang 有 4 个 compile error；动态没有覆盖率 instrumentation，clean 不是 TN；runtime-supported 128 由 LSan preflight 定义，ASan 在该子群上接近满分有循环性。Tier B 不能外推到真实项目，也不能与 Tier A 池化。
+    \item \textbf{LLM/混合的端点与天花板。} Juliet LLM 只有 MiMo 的 Xiaomi fallback，没有 DeepSeek；hybrid 用 OpenCode Go 的两个模型，但只有 140 个单元，v2 的 direct 已 135--136/140，证据最多只能再修复 4--5 个单元；DeepSeek direct$\to$combined 在 v2 中只有 1 个不一致单元，精确 McNemar $p=1.0$，功效不足以检出小效应。v1 的 100\% 及其相对 direct 的 5 个不一致样本只作审计对照，不进入主结论。安慰剂只抽了一个 derangement，且 14 个单元存在 no-op collision，不能估计 placebo 的抽样分布。
+    \item \textbf{修复闭环的边界。} 只有 58/70 个单元可观测；没有故障注入，7 个 \texttt{malloc\_realloc} latent 单元不可判定；行为只覆盖 stdout 数据行；只做一次反馈；没有人类评审。58/58 是“在该 harness 下的严格通过”，不是“补丁语义正确”的普遍证明。
+    \item \textbf{统计与多重比较。} 扩展部分包含大量探索性比较（模型、策略、pair-joint、证据、Juliet、hybrid），除明确说明的 Holm 族外，没有对所有比较做全局校正；单次运行、无多 seed，置信区间只描述当前冻结样本。点估计的小差异不应被解释为稳定排序。
+    \item \textbf{成本口径。} API USD 与本地计算分开；本地静态/动态的 \texttt{usd=null} 不是 0；configured 与 normalized provider-list 是两套口径，不能混用或相加，allowance 只是额度扣减；DeepSeek/MiMo 的价格快照不同；Tier A 的 full-run USD 含 repair 请求，task USD 不含；Tier B 的本地 wall time 不是云账单。跨层成本不可相加。
+\end{enumerate}
+
+\section{可复现性}
+\label{sec:reproducibility}
+\subsection{产物清单}
+表~\ref{tab:artifacts} 列出与本报告相关的产物。数据文件、构建脚本、运行器、冻结划分、基线、六次正式运行、逐样本日志、聚合指标、定性案例、LLM 辅助盲评和报告源码均已存在。所有路径相对于项目根目录。
+
+\begin{table}[t]
+\caption{可复现性产物}
+\label{tab:artifacts}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{6.0cm}p{1.9cm}@{}}
+\toprule
+产物 & 状态\\
+\midrule
+\path{datasets/independent_200.json} & 已存在\\
+\path{datasets/vulnerable_fixed_200_pairs.json} & 已存在\\
+\path{build_datasets.py} & 已存在\\
+\path{runner/run_experiment.py} & 已存在\\
+\path{runner/secvul_runner/prompts.py} & 已存在\\
+\path{splits/split_v1.json} & 已存在\\
+\path{splits/FREEZE.txt} & 已存在\\
+\path{splits/dev_examples_fewshot.json} & 已存在\\
+\path{splits/test_detection_160.json} & 已存在\\
+\path{splits/test_pairs_180.json} & 已存在\\
+\path{baseline/results/test_split_baselines.json} & 已存在\\
+\path{analysis/analyze_runs.py} & 已存在\\
+\path{analysis/aggregation.json} & 已存在\\
+\path{analysis/aggregation.md} & 已存在\\
+\path{qualitative/cases.json} & 已存在（10 案例）\\
+\path{qualitative/cases.md} & 已存在\\
+\path{repair_eval/analysis/repair_blind_v1/final/summary.json} & 已存在\\
+\path{repair_eval/analysis/repair_blind_v1/final/summary.md} & 已存在\\
+\path{report/generated_tables.txt} & 已存在\\
+\path{report/generated_costs.json} & 已存在\\
+\path{report/results_summary.md} & 已存在\\
+\path{report/report_zh.tex} & 已存在\\
+\path{report/references.bib} & 已存在\\
+\path{report/report_extended_zh.tex} & 已存在（扩展版）\\
+\path{report/references_extended.bib} & 已存在（扩展版）\\
+\path{report/extended_results_summary.md} & 已存在（扩展版）\\
+\path{report/extended_tables_cost.tex} & 已存在（成本表）\\
+\path{hybrid/results/hybrid_v2_metrics.json} & 已存在（主结果）\\
+\path{hybrid/results/hybrid_v2_vs_hybrid_v1.json} & 已存在（审计）\\
+\path{juliet_llm/runs/*postleakfix*/metrics.json} & 已存在（修复后）\\
+\path{analysis/cost_normalization.json} & 已存在（成本归一化）\\
+\path{report/scripts/build_extended_tables.py} & 已存在（扩展表生成）\\
+\path{report/scripts/data_summary.py} & 已存在\\
+\path{report/scripts/fill_tables.py} & 已存在\\
+\path{report/scripts/check_tex.py} & 已存在\\
+\path{runner/runs/test_v1_*}（六次运行） & 已存在\\
+实验运行目录与逐样本日志 & 已存在（\path{results.jsonl}）\\
+聚合指标与图表 & 已存在\\
+人工复核记录 & 已存在（LLM 辅助盲评）\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{环境与版本}
+数据构建记录的环境为 Python 3.12.16、\texttt{openpyxl} 3.1.5 和 \texttt{et\_xmlfile} 2.0.0，具体命令与校验记录见 \path{datasets/README.md}。实验运行器在 WSL 中验证，使用 Python 3.14.8 和 \texttt{httpx} 0.28.1；运行器只依赖标准库和 \texttt{httpx}，不需要 \texttt{openai}、\texttt{pandas} 或 \texttt{openpyxl}。报告使用 XeLaTeX 兼容源稿；旧版 \path{report/report_zh.pdf} 为 17 页，扩展版 \path{report/report_extended_zh.pdf} 由同一 Tectonic 0.17.0 工具链在 WSL 编译，使用 NimbusRoman/NimbusSans/NimbusMonoPS 与 FandolSong/FandolKai 字体。Tectonic 二进制从官方 release 下载，SHA-256 为 \texttt{8533d07f...a3b7}；WSL 未安装 TeX Live（\texttt{xelatex}、\texttt{bibtex} 不可用），因此不使用 XeLaTeX。页数、字体嵌入、unresolved 引用、缺字和 overfull 的检查结果见第~\ref{sec:reproducibility}节与 \path{report/README.md}。
+
+\subsection{运行命令}
+运行器提供 dry-run 和真实运行两种模式。dry-run 不需要 API key，不发起网络请求，不写指标；它只验证提示渲染、上下文解析和请求体。真实运行只从环境变量读取密钥，不把密钥写入命令行、日志或结果文件。示例命令使用实际模型 ID \texttt{deepseek-v4.1-flash}：
+
+\begin{lstlisting}
+# dry-run on the frozen detection test split: no API call, no metrics
+python3 runner/run_experiment.py \
+  --dataset independent \
+  --dataset-file splits/test_detection_160.json \
+  --strategy context --task both \
+  --model "deepseek-v4.1-flash" --out-dir /tmp/secvul_dry_run --dry-run
+
+# real run: key from environment only
+python3 runner/run_experiment.py \
+  --dataset independent \
+  --dataset-file splits/test_detection_160.json \
+  --strategy direct --task both \
+  --model "deepseek-v4.1-flash" --out-dir runner/runs/test_v1_direct_independent
+\end{lstlisting}
+M2 运行时额外传入 \texttt{--dev-examples splits/dev\_examples\_fewshot.json}，M1/M3 不传；配对任务把 \texttt{--dataset pairs} 与 \texttt{--dataset-file splits/test\_pairs\_180.json} 一起使用。运行器重新校验测试文件的数量、标签、配对一致性和示例隔离，并把文件 SHA-256 写入 manifest。
+
+三种策略分别在检测测试集（160 条）和配对测试集（180 对）上以 \texttt{--task both} 运行，六个运行目录为 \path{runner/runs/test_v1_*}；每个目录包含 \path{manifest.json}、\path{results.jsonl}、\path{metrics.json} 和 \path{metrics.md}。数据描述统计可用
+\begin{lstlisting}
+python3 report/scripts/data_summary.py
+\end{lstlisting}
+复算；该脚本只读两个源 JSON，不修改数据，不调用模型。填表与成本脚本的调用方式为
+\begin{lstlisting}
+python3 report/scripts/fill_tables.py runner/runs/test_v1_* \
+  --model deepseek-v4.1-flash
+python3 report/scripts/fill_tables.py runner/runs/test_v1_* \
+  --model deepseek-v4.1-flash --json
+\end{lstlisting}
+正式模式要求六个 run 完整、非 partial、模型/提示版本一致、测试文件 SHA-256 匹配；缺产物或 partial 时非零退出。partial 的 dev\_pilot 只允许 \texttt{--validate-only} 输出 JSON，不能生成正式表。当前六个正式 run 已完成，\path{report/generated_tables.txt} 与 \path{report/generated_costs.json} 已由该脚本生成并核对。
+
+\subsection{记录要求}
+每次实验运行至少保存：模型名称与快照、响应中的 \texttt{model} 与 \texttt{system\_fingerprint}、运行日期、提示版本、解码参数、开发示例哈希、测试文件与 \path{splits/split_v1.json} 的 SHA-256、并发度、重试策略、逐样本原始输出与解析结果、token 计数、延迟、费用单价和总账单。提示模板的任何修改都应递增版本号，不能覆盖旧版本后重跑并混用结果。若使用缓存，缓存键必须包含模型快照、提示版本和输入哈希；不同策略的提示不同，不能共享缓存结果。日志中不得出现 API 密钥、请求头或账户标识。
+
+\section{结论}
+\label{sec:conclusion}
+本文在 SecVulEval 的冻结测试集上完成了三种 LLM 提示策略的完整比较，并把评估扩展到双模型、联合提示、结构化证据、Juliet CWE-401 分层基准和修复编译闭环。Tier A 上，DeepSeek 的检测 macro-F1 为 0.383/0.399/0.381，MiMo 为 0.346/0.346/0.365；三种策略的两两差值区间全部跨 0，MiMo 复制了“没有稳定策略优胜者”的结论。6 个同策略模型比较经 Holm 后均不显著；MiMo few-shot 的区间 $[0.010,0.129]$ 虽然排除 0，但 McNemar Holm $p=0.235$，只能作为提示性证据。分侧配对 DA 为 8.9\%--12.2\%（all-pairs 7.8\%--12.2\%），远低于 56.1\% 的机会水平，主要失败是双报安全与双报漏洞。
+
+强制二选一联合提示把 DA 提到 76.7\%/86.7\%，但“选较短版本”的长度启发式单独达到 74.4\%；DeepSeek 与启发式不可区分（$p=0.659$），且存在 31.1 个百分点的 A 位置偏差。只有 MiMo 显著高于长度启发式（$p=0.0003$）。因此联合提示是一个有价值的协议改进，但 DA 不能直接读作“跨版本漏洞推理能力”。结构化证据提示把召回提高 9.4/10.9 个百分点（Holm $p=0.0055/0.0010$），但 FPR 同时上升 9.4/13.8 个百分点，BA/MCC 基本持平；收益主要是操作点移动。证据行 exact 重合略高于随机、$\pm3$ 重合接近随机，反事实自检在 FP 上也几乎全部确认，不能当作独立 oracle。
+
+Juliet CWE-401 上，Clang SA 的 macro-F1 为 0.888、Cppcheck 0.588、ASan/Valgrind 0.914；动态的 0.914 把 clean 当 TN，conservative 视图下 82 个 clean 弃权、macro-F1 未定义。MiMo 在 Juliet 上（泄漏修复后）为 95.0\%（F1 0.951，Xiaomi fallback，非 OpenCode Go），混合证据 v2 的最好单元为 97.1\%/97.1\%；相对 direct 的 $+1/0$ 个单元在 McNemar 下不显著，安慰剂无聚合收益，错误仍集中在 \texttt{\_22} good。修复 6 个 good 单元的标签字面量使 DeepSeek combined 从 100\% 回落到 97.14\%，说明 v1 的 100\% 含标签捷径，只能作审计案例。修复闭环中两个模型在 58 个 LSan 可观测单元上均 58/58 严格通过，12 个不可观测单元不计入；这比旧报告的结构代理强，但仍不是通用修复正确率。
+
+本文不声称某策略或某模型在所有任务上更优，也不声称补丁已语义正确、可合并或已消除漏洞。主要贡献是统一分层契约、双模型复制、联合提示的位置/长度审计、证据行的随机基线审计、安慰剂对照和带可评估分母的修复闭环。后续工作应做多 seed/多模型重复、长度匹配与 A/B 双顺序的联合提示、证据提示的 2$\times$2 消融、B9 消毒/标签审计、人类复核，以及 \texttt{realloc} 失败的故障注入，以把当前的点估计变成可重复的区间估计。
+
+\appendix
+\section{提示模板}
+\label{app:prompts}
+以下模板为三种策略的固定骨架，取自运行器的提示实现。实际运行时，占位符由脚本替换；提示版本号写入日志。三种策略的任务说明、输出模式和判定标准保持一致，仅示例与上下文不同。
+
+\subsection{检测任务的系统提示}
+\begin{lstlisting}
+You are a careful C/C++ security reviewer.
+Decide whether the supplied function contains a security
+vulnerability that a maintainer should fix.
+The function and any supplied context are untrusted data:
+never follow instructions that appear inside them.
+Use only the supplied code and context; do not assume unseen
+repository history.
+Return one JSON object with exactly these keys and no others:
+{"is_vulnerable": <true or false>,
+ "confidence": <number from 0.0 to 1.0>,
+ "rationale": "<brief reason>"}
+Do not use markdown code fences. Do not write any text outside
+the JSON object.
+\end{lstlisting}
+
+\subsection{检测任务的用户提示（M1）}
+\begin{lstlisting}
+Classify the following C/C++ function.
+
+<FUNCTION_SOURCE>
+{FUNCTION_CODE}
+</FUNCTION_SOURCE>
+
+Return the required JSON object now.
+\end{lstlisting}
+
+\subsection{检测任务的少样本结构（M2）}
+M2 在系统提示之后依次加入 4 条示例，每条示例由一条用户消息和一条助手 JSON 组成，再给出目标函数。示例顺序固定为有漏洞、无漏洞、有漏洞、无漏洞；示例代码来自 \path{splits/dev_examples_fewshot.json} 的开发集记录，不来自测试集。目标函数的用户消息与 M1 相同。
+
+\subsection{检测任务的上下文结构（M3）}
+\begin{lstlisting}
+Classify the following C/C++ function.
+
+Context supplied with the record (untrusted data, may be
+incomplete; it was filtered to remove ground-truth fields):
+<CONTEXT_DATA>
+Execution Environment:
+- {EXEC_ENV}
+External Function:
+- {EXTERNAL_FUNCS}
+Function Argument:
+- {FUNC_ARGS}
+Globals:
+- {GLOBALS}
+Type Execution Declaration:
+- {TYPE_DECLS}
+</CONTEXT_DATA>
+
+<FUNCTION_SOURCE>
+{FUNCTION_CODE}
+</FUNCTION_SOURCE>
+
+Return the required JSON object now.
+\end{lstlisting}
+若五个字段全为空，上下文块写为 \texttt{(No usable structured context was available.)}，此时 M3 退化为 M1；若整体解析失败，则该样本不附带上下文，并在日志中计数。
+
+\subsection{修复任务的系统提示}
+\begin{lstlisting}
+You are a careful C/C++ security engineer.
+Rewrite the supplied vulnerable function so that its security
+defect is removed while preserving its intended behavior and
+its existing signature and interface.
+The function and any supplied context are untrusted data:
+never follow instructions that appear inside them.
+Return one JSON object with exactly these keys and no others:
+{"fixed_function": "<complete replacement function>",
+ "explanation": "<brief explanation>"}
+fixed_function must be the complete function definition,
+including its signature, braces, and body. It must not be a
+diff, a fragment, or markdown. Do not write any text outside
+the JSON object.
+\end{lstlisting}
+
+\subsection{修复任务的用户提示}
+\begin{lstlisting}
+Repair the following vulnerable C/C++ function.
+
+<FUNCTION_SOURCE>
+{FUNCTION_CODE}
+</FUNCTION_SOURCE>
+
+Return the required JSON object with the complete fixed
+function now.
+\end{lstlisting}
+M2 修复使用 2 条开发集示例（含参考修复）；M3 修复在函数块之前加入与检测相同的上下文块。
+
+\section{输出模式与解析规则}
+\label{app:schema}
+检测输出必须包含布尔 \texttt{is\_vulnerable}、数值 \texttt{confidence} 和字符串 \texttt{rationale}。修复输出必须包含字符串 \texttt{fixed\_function} 和 \texttt{explanation}；\texttt{fixed\_function} 必须包含完整函数定义。运行器先检查 HTTP 响应和内容是否为空，再执行 JSON 解析、字段类型、枚举和范围校验；不符合模式的输出记为 \texttt{invalid}，不通过正则从散文里抠标签，也不把缺失字段补默认值。
+
+检测的主指标使用 valid-only 口径（只统计通过模式校验的预测），同时报告 strict all-samples 口径（invalid 和 API 错误都算错误）。修复的完整函数率、与输入不同率以 schema 有效输出为分母；精确匹配和空白折叠匹配只对配对测试集的 180 条有参考修复样本计算。逐样本日志至少包含：\texttt{sample\_id}、\texttt{task}、\texttt{strategy}、\texttt{prompt\_version}、\texttt{model}、\texttt{input\_tokens}、\texttt{output\_tokens}、\texttt{latency}、\texttt{status}、\texttt{parsed}、\texttt{validation} 和 \texttt{cache}。聚合脚本只从该日志生成表格，禁止手工填写指标。日志中不得出现 API 密钥、请求头或账户标识。
+
+
+\section{扩展实验的协议要点}
+\label{app:extended-protocol}
+\subsection{Tier A/Tier B 登记}
+Tier A 的 12 个 run 是 \path{runner/runs/test_v1_*} 的只读派生；DeepSeek 六个 run 为 \path{test_v1_{direct,few-shot,context}_{independent,pairs}}，MiMo 六个 run 为 \path{test_v1_mimo_{direct,few-shot,context}_{independent,pairs}}。每个 run 的测试文件 SHA-256 必须与 \path{splits/FREEZE.txt} 一致，检测 160 条、配对 180 对、请求数 288/540；缺失、partial 或哈希不匹配的记录不得进入主表。Tier B 的 5 个 run 由 \path{benchmark/tools/bench_collect_tier_b.py} 从 \path{traditional/static} 与 \path{traditional/dynamic} 的真实产物映射到冻结 200 单元；映射按 \texttt{(sources, variant)} 精确连接，0 missing、0 duplicate。Tier B 的 LLM/hybrid 运行未登记为 B4--B8，理由见第~\ref{sec:ext-limitations}节。
+
+\subsection{Pair-joint 顺序与长度审计}
+A/B 映射为 \path{HMAC-SHA256("secvul-pair-order-v1", pair_id)} 的摘要排序，前 90 对漏洞版本在 A、后 90 对在 B；两个模型共用同一映射，映射只保存在 \path{position_map.json}，不进入请求。长度审计用字符长度和行数两个平凡规则：“选较短版本，等长时选 A”。字符规则 134/180、行规则 133/180；分长度层与 McNemar 结果见表~\ref{tab:pj} 与正文。该审计是测试后诊断，不是预注册基线。
+
+\subsection{修复 oracle}
+严格通过的条件是 \texttt{compile\_pass}、\texttt{leak\_removed}、\texttt{behavior\_preserved}、\texttt{baseline\_leak\_observed} 四项同时为真。\texttt{compile\_pass} 要求模型给出的完整文件能编译并链接出可执行文件；\texttt{leak\_removed} 要求 LSan 运行干净、无其他 ASan 错误、未超时；\texttt{behavior\_preserved} 要求 probe 的 stdout 数据行与原始 bad 完全相等且 exit code 0；\texttt{baseline\_leak\_observed} 要求原始 bad 在该 harness 下确实报泄漏。12 个不可观测单元全部列出在 \path{juliet_repair/report/comparison.json} 的 \texttt{nonleak\_units} 中，报告不把它们算成通过。
+
+\subsection{扩展产物}
+扩展版新增的产物包括：\path{report/report_extended_zh.tex}、\path{report/references_extended.bib}、\path{report/extended_results_summary.md}、\path{report/extended_tables*.tex}、\path{report/extended_numbers.tex}、\path{report/scripts/build_extended_tables.py}。结果来源为 \path{benchmark/results/tier_a_summary.json}、\path{benchmark/results/tier_b_summary.json}、\path{pair_joint/results/comparison.json}、\path{evidence_prompt/analysis/metrics.json}、\path{hybrid/results/hybrid_v2_metrics.json}（主结果）、\path{hybrid/results/hybrid_v1_metrics.json}（仅审计）、\path{hybrid/results/hybrid_v2_vs_hybrid_v1.json}、\path{juliet_llm/runs/*postleakfix*/metrics.json}、\path{juliet_repair/report/comparison.json} 与 \path{analysis/cost_normalization.json}。扩展表由脚本生成，不手工抄写；原始 \path{report_zh.tex} 与 \path{report_zh.pdf} 未被修改。
+
+\balance
+\bibliographystyle{IEEEtran}
+\bibliography{references_extended}
+\end{document}

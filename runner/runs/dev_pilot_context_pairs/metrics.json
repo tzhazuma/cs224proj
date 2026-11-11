@@ -1,0 +1,326 @@
+{
+  "context": {
+    "empty_requests": 0,
+    "nonempty_requests": 9,
+    "parse_failures": 0,
+    "requests": 9,
+    "section_item_totals": {
+      "External Function": 6,
+      "Globals": 3,
+      "Type Execution Declaration": 6
+    },
+    "warning": "Context availability itself may be correlated with the label in this dataset; report non-empty/empty subgroups rather than treating L3 as a pure prompt effect."
+  },
+  "cost": {
+    "cached_input_price_usd_per_1m": 0.006,
+    "cost_bases": [
+      "input_output_prices"
+    ],
+    "currency": "USD",
+    "input_price_usd_per_1m": 0.3,
+    "known_cost_usd": 0.007827599999999999,
+    "output_price_usd_per_1m": 1.2,
+    "pricing_configured": true,
+    "total_cost_usd": 0.007827599999999999,
+    "unknown_cost_records": 0
+  },
+  "counts": {
+    "api_attempts": 9,
+    "by_status": {
+      "ok": 9
+    },
+    "by_task": {
+      "detection": 6,
+      "repair": 3
+    },
+    "cache_hits": 0,
+    "complete_planned_requests": true,
+    "expected_requests": 9,
+    "missing_requests": 0,
+    "records": 9,
+    "retries": 0
+  },
+  "detection": {
+    "api_errors": 0,
+    "average_confidence": 0.666666666667,
+    "by_label": {
+      "non_vulnerable": {
+        "api_errors": 0,
+        "detection_rate": null,
+        "false_positive_rate": 0.3333333333333333,
+        "predicted_vulnerable": 1,
+        "predicted_vulnerable_rate": 0.3333333333333333,
+        "requested": 3,
+        "schema_invalid": 0,
+        "valid_predictions": 3
+      },
+      "vulnerable": {
+        "api_errors": 0,
+        "detection_rate": 0.3333333333333333,
+        "false_positive_rate": null,
+        "predicted_vulnerable": 1,
+        "predicted_vulnerable_rate": 0.3333333333333333,
+        "requested": 3,
+        "schema_invalid": 0,
+        "valid_predictions": 3
+      }
+    },
+    "by_side": {
+      "fixed": {
+        "api_errors": 0,
+        "predicted_vulnerable": 1,
+        "predicted_vulnerable_rate": 0.3333333333333333,
+        "requested": 3,
+        "schema_invalid": 0,
+        "valid_predictions": 3
+      },
+      "vulnerable": {
+        "api_errors": 0,
+        "predicted_vulnerable": 1,
+        "predicted_vulnerable_rate": 0.3333333333333333,
+        "requested": 3,
+        "schema_invalid": 0,
+        "valid_predictions": 3
+      }
+    },
+    "confusion": {
+      "fn": 2,
+      "fp": 1,
+      "tn": 2,
+      "tp": 1
+    },
+    "coverage": 1.0,
+    "invalid_rate": 0.0,
+    "metrics_valid_only": {
+      "accuracy": 0.5,
+      "balanced_accuracy": 0.5,
+      "f1": 0.4,
+      "mcc": 0.0,
+      "precision": 0.5,
+      "predicted_positive_rate": 0.3333333333333333,
+      "recall": 0.3333333333333333,
+      "specificity": 0.6666666666666666
+    },
+    "requested": 6,
+    "schema_invalid": 0,
+    "strict_accuracy_all_samples": 0.5,
+    "strict_correct_all_samples": 3,
+    "valid_predictions": 6
+  },
+  "failures": {
+    "error_types": {},
+    "examples": [],
+    "schema_invalid_reasons": {}
+  },
+  "latency": {
+    "max_request_latency_seconds": 20.59795936199953,
+    "mean_request_latency_seconds": 7.905181268221996,
+    "p50_request_latency_seconds": 5.976935402999516,
+    "p95_request_latency_seconds": 16.696695500402708,
+    "records_with_latency": 9,
+    "total_request_latency_seconds": 71.14663141399797,
+    "total_wall_seconds": 71.14688699196267
+  },
+  "notes": [
+    "PARTIAL RUN: --limit selected only part of the dataset. Do not report these values as full-dataset experimental results.",
+    "Detection confusion uses only schema-valid predictions. strict_accuracy_all_samples counts schema-invalid and API-error records as incorrect.",
+    "Repair scores are structural proxies (complete function and changed text); they do not prove that a vulnerability was removed or that behaviour was preserved.",
+    "usage.opencode from the provider is preserved in each record's usage. opencode.allowance is Go-plan usage in USD and is summed separately; it is never used as cost_usd. cost_usd still comes only from explicit price arguments."
+  ],
+  "pair_joint": {
+    "coverage": 1.0,
+    "definition": "A pair is handled correctly only when the vulnerable side is predicted vulnerable and its fixed side is predicted non-vulnerable.",
+    "discrimination_accuracy_all_pairs": 0.0,
+    "discrimination_accuracy_valid_pairs": 0.0,
+    "invalid_pairs": 0,
+    "joint_categories": {
+      "both_clean": 2,
+      "both_flagged": 1,
+      "vulnerable_detected_fixed_clean": 0,
+      "vulnerable_missed_fixed_flagged": 0
+    },
+    "joint_rates_valid_pairs": {
+      "both_clean": 0.6666666666666666,
+      "both_flagged": 0.3333333333333333,
+      "vulnerable_detected_fixed_clean": 0.0,
+      "vulnerable_missed_fixed_flagged": 0.0
+    },
+    "matrix": {
+      "vulnerable_side_predicted_clean": {
+        "fixed_side_predicted_clean": 2,
+        "fixed_side_predicted_vulnerable": 0
+      },
+      "vulnerable_side_predicted_vulnerable": {
+        "fixed_side_predicted_clean": 0,
+        "fixed_side_predicted_vulnerable": 1
+      }
+    },
+    "pairs_requested": 3,
+    "valid_pairs": 3
+  },
+  "repair": {
+    "api_errors": 0,
+    "changed_from_input": 3,
+    "changed_from_input_rate_of_schema_valid": 1.0,
+    "complete_and_changed": 3,
+    "complete_and_changed_rate_of_schema_valid": 1.0,
+    "complete_function": 3,
+    "complete_function_rate_of_all": 1.0,
+    "complete_function_rate_of_schema_valid": 1.0,
+    "definition": "complete_function and changed_from_input are structural proxies only. Reference matches use normalised text equality and are not a correctness or security-equivalence oracle.",
+    "exact_match_reference_fixed": 0,
+    "exact_match_reference_fixed_rate": 0.0,
+    "reference_fixed_available": 3,
+    "requested": 3,
+    "schema_invalid": 0,
+    "schema_valid": 3,
+    "schema_valid_rate": 1.0,
+    "whitespace_collapsed_match_reference_fixed": 0,
+    "whitespace_collapsed_match_reference_fixed_rate": 0.0
+  },
+  "run": {
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.006,
+    "completed_at": "2026-11-11T11:16:28.683+00:00",
+    "config_fingerprint": "93d4380ed2efe07f764a92c0d666ca99016470468ed2cd2672f1eae5cf8f7adc",
+    "dataset_label_counts": {
+      "functions": 36,
+      "non_vulnerable": 18,
+      "units": 18,
+      "vulnerable": 18
+    },
+    "dataset_metadata": {
+      "constraints": [
+        "vulnerable.fixed_func_idx == fixed.idx",
+        "Same project, commit_id, filepath and func_name within each pair",
+        "Vulnerable label true, fixed label false, different function bodies",
+        "At most one pair per (project, commit_id)"
+      ],
+      "cross_dataset_isolation": "No shared source idx or (project, commit_id) group",
+      "dataset_type": "vulnerable_fixed_pairs",
+      "eligible_pair_count": 10004,
+      "excluded_malformed_rows": [
+        {
+          "idx": 3510,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9418,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9578,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10195,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10196,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 16033,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 18071,
+          "reason": "changed_statements is not a valid serialized list"
+        }
+      ],
+      "field_encoding": {
+        "context": "Original workbook string, not evaluated",
+        "json_arrays": [
+          "changed_lines",
+          "changed_statements",
+          "cve_list",
+          "cwe_list"
+        ]
+      },
+      "function_count": 36,
+      "pair_count": 18,
+      "rejected_pair_counts": {
+        "missing_or_malformed_fixed_version": 975,
+        "unchanged_function_body": 15
+      },
+      "sampling": "Shuffle source rows with random.Random(seed); keep at most one item per project+commit. Select pairs first.",
+      "schema_version": 1,
+      "seed": 42,
+      "source_file": "SecVulEval.xlsx",
+      "source_label_counts": {
+        "False": 14442,
+        "True": 10998
+      },
+      "source_rows": 25440,
+      "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+      "source_sheet": "train",
+      "split": {
+        "manifest": "splits/split_v1.json",
+        "protocol": "research/evaluation_protocol.md#4",
+        "role": "dev",
+        "seed": 42,
+        "source_dataset": "datasets/vulnerable_fixed_200_pairs.json",
+        "source_dataset_sha256": "7028b98d6f2c13b960bd08dd2e737e2ba61732b89dba03e3f173fe44c27214d5",
+        "split_id": "secvul-split-v1",
+        "task": "pairs"
+      },
+      "usable_rows": 25433
+    },
+    "dataset_path": "splits/pilot_pairs_18.json",
+    "dataset_sha256": "e237137718a973af0a1c9cde1fc7ecf594b51feb6ce5600f5a47894f29e54747",
+    "dataset_type": "pairs",
+    "dataset_units": 18,
+    "dev_examples": null,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "expected_by_task": {
+      "detection": 6,
+      "repair": 3,
+      "requests": 9
+    },
+    "expected_requests": 9,
+    "httpx_version": "0.28.1",
+    "input_price_usd_per_1m": 0.3,
+    "limit": 3,
+    "max_tokens": 8192,
+    "model": "deepseek-v4.1-flash",
+    "notes": [
+      "No API key or Authorization header is stored in run artifacts.",
+      "Prompts contain function source and, for context strategy, sanitised context only."
+    ],
+    "output_price_usd_per_1m": 1.2,
+    "partial": true,
+    "pricing_configured": true,
+    "prompt_version": "secvul-prompt-2026-11-11.1",
+    "python_version": "3.14.8",
+    "response_format": "json_object",
+    "run_id": "dev_pilot_context_pairs",
+    "run_label": "split-v1-dev-pilot-nonthinking",
+    "runner_version": "1.0.0",
+    "selected_label_counts": {
+      "functions": 6,
+      "non_vulnerable": 3,
+      "units": 3,
+      "vulnerable": 3
+    },
+    "selected_units": 3,
+    "started_at": "2026-11-11T11:15:57.118+00:00",
+    "strategy": "context",
+    "task": "both",
+    "temperature": 0.0
+  },
+  "schema_version": 1,
+  "usage": {
+    "cached_prompt_tokens_known_sum": null,
+    "completion_tokens_known_sum": 3930,
+    "opencode_allowance_known_sum_usd": 0.0023257,
+    "opencode_allowance_records": 9,
+    "opencode_billing_sources": {
+      "go": 9
+    },
+    "prompt_tokens_known_sum": 10372,
+    "records_missing_usage": 0,
+    "records_with_opencode_usage": 9,
+    "total_tokens_known_sum": 14302
+  }
+}

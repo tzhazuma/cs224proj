@@ -1,0 +1,19 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_01.c:33:5: warning: Potential leak of memory pointed to by 'data' [unix.Malloc]
+   33 |     printLongLongLine(data[0]);
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_01.c:97:5: note: Calling 'CWE401_Memory_Leak__int64_t_malloc_01_bad'
+   97 |     CWE401_Memory_Leak__int64_t_malloc_01_bad();
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_01.c:29:23: note: Memory is allocated
+   29 |     data = (int64_t *)malloc(100*sizeof(int64_t));
+      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_01.c:30:9: note: Assuming 'data' is not equal to NULL
+   30 |     if (data == NULL) {exit(-1);}
+      |         ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_01.c:30:5: note: Taking false branch
+   30 |     if (data == NULL) {exit(-1);}
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_01.c:33:5: note: Potential leak of memory pointed to by 'data'
+   33 |     printLongLongLine(data[0]);
+      |     ^
+1 warning generated.

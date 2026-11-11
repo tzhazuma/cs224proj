@@ -1,0 +1,63 @@
+{
+  "schema_version": "static-cwe401-v1",
+  "generated_at": "2026-11-11T18:22:54.171+00:00",
+  "command": "/usr/bin/python3 /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/static_adapter.py --input datasets/independent_200.json --out traditional/static/runs/secvuleval_cwe401_snippets_both --tool both --cppcheck-bin /tmp/cppcheck_probe/cppcheck --filter-cwe CWE-401 --jobs 2",
+  "adapter": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/static_adapter.py",
+    "sha256": "8cf96ee2e2adc6bb1d50e6aa6f04d13d949482afa6afe6aa52a679a3cf5acd4c"
+  },
+  "input": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/datasets/independent_200.json",
+    "sha256": "055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d",
+    "bytes": 1106950
+  },
+  "outputs": {
+    "predictions.jsonl": {
+      "sha256": "f626994732ce006e01f5f8d19ebc89d4482ad32863812200d128cc3d7025ca3b",
+      "bytes": 23955
+    },
+    "metrics.json": {
+      "sha256": "4109e281b480ad0143be5bea4a37f90225c5e98e0a9c5f138228122c789a5c2b",
+      "bytes": 12059
+    },
+    "metrics.md": {
+      "sha256": "7fce22fc7c57c206196589afce8c6019fb4b2576a60b068ef16270a65cd13896",
+      "bytes": 4626
+    }
+  },
+  "tools": {
+    "clang": {
+      "available": true,
+      "binary": "/usr/bin/clang",
+      "version": "Ubuntu clang version 22.1.8 (1ubuntu1)",
+      "environment_errors": []
+    },
+    "cppcheck": {
+      "available": true,
+      "binary": "/tmp/cppcheck_probe/cppcheck",
+      "version": "Cppcheck 2.21.0",
+      "environment_errors": []
+    }
+  },
+  "settings": {
+    "tools": [
+      "clang",
+      "cppcheck"
+    ],
+    "missing_tools": [],
+    "std_c": "c11",
+    "std_cxx": "c++17",
+    "timeout_seconds": 120.0,
+    "jobs": 2,
+    "include_dirs": [],
+    "defines": [],
+    "clang_args": [],
+    "cppcheck_args": [],
+    "cppcheck_force": false,
+    "include_external": false,
+    "filter_cwe": "CWE-401",
+    "assume_cwe": null,
+    "only_label": null,
+    "limit": null
+  }
+}

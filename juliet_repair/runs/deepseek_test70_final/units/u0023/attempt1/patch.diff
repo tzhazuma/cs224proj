@@ -1,0 +1,24 @@
+--- a/CWE401_Memory_Leak__malloc_realloc_int64_t_09.c
++++ b/CWE401_Memory_Leak__malloc_realloc_int64_t_09.c
+@@ -14,14 +14,19 @@
+             data[0] = 5LL;
+             printLongLongLine(data[0]);
+ 
+-            data = (int64_t *)realloc(data, (130000)*sizeof(int64_t));
+-            if (data != NULL)
++            int64_t * new_data = (int64_t *)realloc(data, (130000)*sizeof(int64_t));
++            if (new_data != NULL)
+             {
++                data = new_data;
+ 
+                 data[0] = 10LL;
+                 printLongLongLine(data[0]);
+                 free(data);
+             }
++            else
++            {
++                free(data);
++            }
+         }
+     }
+ }

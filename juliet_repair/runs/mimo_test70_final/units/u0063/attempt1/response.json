@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:30:13.559+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-c1fa-71f7-9d6d-404a9b648b67"
+      },
+      "http_status": 200,
+      "latency_seconds": 7.884809495997615,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794425406-xBND9Sq8OClw66qHjK27\",\"object\":\"chat.completion\",\"created\":1794425406,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__wchar_t_calloc_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__wchar_t_calloc_01_bad()\\\\n{\\\\n    wchar_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = (wchar_t *)calloc(100, sizeof(wchar_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n\\\\n    free(data);\\\\n    data = NULL;\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added free(data) after printing to release the heap memory allocated by calloc, eliminating the memory leak while preserving the printed output and function signature.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":345,\"completion_tokens\":192,\"total_tokens\":537,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":320,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00005816,\"allowance\":0.00005816,\"tokens\":{\"input\":25,\"output\":192,\"reasoning\":0,\"cache_read\":320,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:30:05.675+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__wchar_t_calloc_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__wchar_t_calloc_01_bad()\\n{\\n    wchar_t * data;\\n    data = NULL;\\n\\n    data = (wchar_t *)calloc(100, sizeof(wchar_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n\\n    free(data);\\n    data = NULL;\\n}\\n\"}], \"explanation\": \"Added free(data) after printing to release the heap memory allocated by calloc, eliminating the memory leak while preserving the printed output and function signature.\"}",
+  "cost": {
+    "cached_prompt_tokens": 320,
+    "completion_tokens": 192,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 5.8156000000000004e-05,
+    "prompt_tokens": 345
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 7.884809495997615,
+  "response_meta": {
+    "content_chars": 601,
+    "created": 1794425406,
+    "finish_reason": "stop",
+    "id": "gen-1794425406-xBND9Sq8OClw66qHjK27",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0063",
+  "usage": {
+    "completion_tokens": 192,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 5.816e-05,
+      "billing_source": "go",
+      "list_cost": 5.816e-05,
+      "tokens": {
+        "cache_read": 320,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 25,
+        "output": 192,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 345,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 320
+    },
+    "total_tokens": 537
+  },
+  "wall_seconds": 7.8848407859914005
+}

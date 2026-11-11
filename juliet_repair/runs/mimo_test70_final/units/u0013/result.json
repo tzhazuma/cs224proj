@@ -1,0 +1,94 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__int64_t_realloc_33.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 384,
+        "completion_tokens": 258,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 7.457520000000001e-05,
+        "prompt_tokens": 393
+      },
+      "elapsed_seconds": 6.996,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.016
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "The inner scope shadows the outer `data` pointer with a copy of the allocated pointer but never frees it, leaking the realloc'd buffer. Added `free(data)` inside the scope to release the memory while preserving the printed output and return behavior.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 258,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 7.458e-05,
+          "billing_source": "go",
+          "list_cost": 7.458e-05,
+          "tokens": {
+            "cache_read": 384,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 9,
+            "output": 258,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 393,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 384
+        },
+        "total_tokens": 651
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 384,
+  "changed_paths": [
+    "CWE401_Memory_Leak__int64_t_realloc_33.cpp"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 258,
+  "cost_complete": true,
+  "cost_usd_sum": 7.458e-05,
+  "explanation_present": true,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__int64_t_realloc_33",
+  "language": "cpp",
+  "leak_removed": true,
+  "model": "mimo-v2.6-flash",
+  "model_alias": "mimo",
+  "prompt_tokens_sum": 393,
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__int64_t_realloc_33__bad",
+  "unit_key": "u0013"
+}

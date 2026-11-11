@@ -1,0 +1,28 @@
+In file included from /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck/work/00054_CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68__good.c:1:
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68a.c:66:5: warning: Address of stack memory allocated by call to alloca() on line 60 is still referred to by the global variable 'CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68_goodG2BData' upon returning to the caller.  This will be a dangling reference [core.StackAddressEscape]
+   66 |     CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68b_goodG2BSink();
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68a.c:106:5: note: Calling 'CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68_good'
+  106 |     CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68_good();
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68a.c:87:5: note: Calling 'goodG2B'
+   87 |     goodG2B();
+      |     ^~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68a.c:66:5: note: Address of stack memory allocated by call to alloca() on line 60 is still referred to by the global variable 'CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68_goodG2BData' upon returning to the caller.  This will be a dangling reference
+   60 |     data = (struct _twoIntsStruct *)ALLOCA(100*sizeof(struct _twoIntsStruct));
+      |                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   61 |     /* Initialize and make use of data */
+   62 |     data[0].intOne = 0;
+   63 |     data[0].intTwo = 0;
+   64 |     printStructLine((twoIntsStruct *)&data[0]);
+   65 |     CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68_goodG2BData = data;
+   66 |     CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68b_goodG2BSink();
+      |     ^
+In file included from /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck/work/00054_CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68__good.c:2:
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68b.c:42:29: warning: Value stored to 'data' during its initialization is never read [deadcode.DeadStores]
+   42 |     struct _twoIntsStruct * data = CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68_goodG2BData;
+      |                             ^~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68b.c:42:29: note: Value stored to 'data' during its initialization is never read
+   42 |     struct _twoIntsStruct * data = CWE401_Memory_Leak__struct_twoIntsStruct_malloc_68_goodG2BData;
+      |                             ^~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 warnings generated.

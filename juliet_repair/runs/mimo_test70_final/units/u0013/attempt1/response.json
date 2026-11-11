@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:15.224+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc15-e19c-7401-b642-47080dfcbaef"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.986508097004844,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794425348-vT1RcEA8kTZfc4SNWlbS\",\"object\":\"chat.completion\",\"created\":1794425348,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int64_t_realloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__int64_t_realloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    int64_t * data;\\\\n    int64_t * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (int64_t *)realloc(data, 100*sizeof(int64_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5LL;\\\\n    printLongLongLine(data[0]);\\\\n    {\\\\n        int64_t * data = dataRef;\\\\n\\\\n        free(data);\\\\n    }\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The inner scope shadows the outer `data` pointer with a copy of the allocated pointer but never frees it, leaking the realloc'd buffer. Added `free(data)` inside the scope to release the memory while preserving the printed output and return behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":393,\"completion_tokens\":258,\"total_tokens\":651,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":384,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00007458,\"allowance\":0.00007458,\"tokens\":{\"input\":9,\"output\":258,\"reasoning\":0,\"cache_read\":384,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:08.238+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int64_t_realloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__int64_t_realloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    int64_t * data;\\n    int64_t * &dataRef = data;\\n    data = NULL;\\n\\n    data = (int64_t *)realloc(data, 100*sizeof(int64_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5LL;\\n    printLongLongLine(data[0]);\\n    {\\n        int64_t * data = dataRef;\\n\\n        free(data);\\n    }\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The inner scope shadows the outer `data` pointer with a copy of the allocated pointer but never frees it, leaking the realloc'd buffer. Added `free(data)` inside the scope to release the memory while preserving the printed output and return behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 384,
+    "completion_tokens": 258,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 7.457520000000001e-05,
+    "prompt_tokens": 393
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.986508097004844,
+  "response_meta": {
+    "content_chars": 780,
+    "created": 1794425348,
+    "finish_reason": "stop",
+    "id": "gen-1794425348-vT1RcEA8kTZfc4SNWlbS",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0013",
+  "usage": {
+    "completion_tokens": 258,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 7.458e-05,
+      "billing_source": "go",
+      "list_cost": 7.458e-05,
+      "tokens": {
+        "cache_read": 384,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 9,
+        "output": 258,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 393,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 384
+    },
+    "total_tokens": 651
+  },
+  "wall_seconds": 6.986544130006223
+}

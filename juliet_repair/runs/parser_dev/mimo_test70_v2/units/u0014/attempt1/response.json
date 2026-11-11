@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:34.448+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-e202-73ef-aa72-8105899709cf"
+      },
+      "http_status": 200,
+      "latency_seconds": 4.8974452069960535,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424890-uqwRo4HEzI5L47WIPMpz\",\"object\":\"chat.completion\",\"created\":1794424890,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int_calloc_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__int_calloc_01_bad()\\\\n{\\\\n    int * data;\\\\n    data = NULL;\\\\n\\\\n    data = (int *)calloc(100, sizeof(int));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5;\\\\n    printIntLine(data[0]);\\\\n\\\\n    free(data);\\\\n    data = NULL;\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The allocated buffer is freed after use, eliminating the memory leak while preserving the printed output and function signature.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":339,\"completion_tokens\":178,\"total_tokens\":517,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":320,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0000534,\"allowance\":0.0000534,\"tokens\":{\"input\":19,\"output\":178,\"reasoning\":0,\"cache_read\":320,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:29.551+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int_calloc_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__int_calloc_01_bad()\\n{\\n    int * data;\\n    data = NULL;\\n\\n    data = (int *)calloc(100, sizeof(int));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5;\\n    printIntLine(data[0]);\\n\\n    free(data);\\n    data = NULL;\\n}\\n\"}], \"explanation\": \"The allocated buffer is freed after use, eliminating the memory leak while preserving the printed output and function signature.\"}",
+  "cost": {
+    "cached_prompt_tokens": 320,
+    "completion_tokens": 178,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 5.3396e-05,
+    "prompt_tokens": 339
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 4.8974452069960535,
+  "response_meta": {
+    "content_chars": 531,
+    "created": 1794424890,
+    "finish_reason": "stop",
+    "id": "gen-1794424890-uqwRo4HEzI5L47WIPMpz",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0014",
+  "usage": {
+    "completion_tokens": 178,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 5.34e-05,
+      "billing_source": "go",
+      "list_cost": 5.34e-05,
+      "tokens": {
+        "cache_read": 320,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 19,
+        "output": 178,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 339,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 320
+    },
+    "total_tokens": 517
+  },
+  "wall_seconds": 4.897469842995633
+}

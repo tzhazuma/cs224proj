@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:22:42.039+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0f-f56b-72fc-b986-291bc9bcd930"
+      },
+      "http_status": 200,
+      "latency_seconds": 1.9506531299994094,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424960-0HDF6YwiKC7n9ceC4gEI\",\"object\":\"chat.completion\",\"created\":1794424960,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__twoIntsStruct_realloc_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__twoIntsStruct_realloc_01_bad()\\\\n{\\\\n    twoIntsStruct * data;\\\\n    data = NULL;\\\\n\\\\n    data = (twoIntsStruct *)realloc(data, 100*sizeof(twoIntsStruct));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0].intOne = 0;\\\\n    data[0].intTwo = 0;\\\\n    printStructLine(&data[0]);\\\\n\\\\n    free(data);\\\\n    data = NULL;\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added free(data) after printing to release the heap memory allocated by realloc, eliminating the leak while preserving output and behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":637,\"completion_tokens\":217,\"total_tokens\":854,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":128,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00013238,\"allowance\":0.00013238,\"tokens\":{\"input\":509,\"output\":217,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:22:40.089+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__twoIntsStruct_realloc_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__twoIntsStruct_realloc_01_bad()\\n{\\n    twoIntsStruct * data;\\n    data = NULL;\\n\\n    data = (twoIntsStruct *)realloc(data, 100*sizeof(twoIntsStruct));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0].intOne = 0;\\n    data[0].intTwo = 0;\\n    printStructLine(&data[0]);\\n\\n    free(data);\\n    data = NULL;\\n}\\n\"}], \"explanation\": \"Added free(data) after printing to release the heap memory allocated by realloc, eliminating the leak while preserving output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 217,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.0001323784,
+    "prompt_tokens": 637
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 1.9506531299994094,
+  "response_meta": {
+    "content_chars": 636,
+    "created": 1794424960,
+    "finish_reason": "stop",
+    "id": "gen-1794424960-0HDF6YwiKC7n9ceC4gEI",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0060",
+  "usage": {
+    "completion_tokens": 217,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00013238,
+      "billing_source": "go",
+      "list_cost": 0.00013238,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 509,
+        "output": 217,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 637,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 128
+    },
+    "total_tokens": 854
+  },
+  "wall_seconds": 1.9506774940091418
+}

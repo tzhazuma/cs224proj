@@ -1,0 +1,94 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__new_array_wchar_t_72b.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 448,
+        "completion_tokens": 157,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 5.30544e-05,
+        "prompt_tokens": 504
+      },
+      "elapsed_seconds": 10.774,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.017
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "The allocated array is now freed in badSink after use, eliminating the leak while preserving printed output and entry points.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 157,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 5.305e-05,
+          "billing_source": "go",
+          "list_cost": 5.305e-05,
+          "tokens": {
+            "cache_read": 448,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 56,
+            "output": 157,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 504,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 448
+        },
+        "total_tokens": 661
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 448,
+  "changed_paths": [
+    "CWE401_Memory_Leak__new_array_wchar_t_72b.cpp"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 157,
+  "cost_complete": true,
+  "cost_usd_sum": 5.305e-05,
+  "explanation_present": true,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__new_array_wchar_t_72",
+  "language": "cpp",
+  "leak_removed": true,
+  "model": "mimo-v2.6-flash",
+  "model_alias": "mimo",
+  "prompt_tokens_sum": 504,
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__new_array_wchar_t_72__bad",
+  "unit_key": "u0041"
+}

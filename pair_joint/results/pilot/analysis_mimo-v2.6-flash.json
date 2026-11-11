@@ -1,0 +1,368 @@
+{
+  "analysis": {
+    "bootstrap_primary_cluster": "project",
+    "bootstrap_resamples": 1000,
+    "bootstrap_seed": 42,
+    "bootstrap_sensitivity_cluster": "pair",
+    "dataset_sha256": "e237137718a973af0a1c9cde1fc7ecf594b51feb6ce5600f5a47894f29e54747",
+    "mcnemar_unit": "pair",
+    "source_run_dir": "pair_joint/runs/pilot_mimo_8"
+  },
+  "confidence": {
+    "mean_all": 0.76875,
+    "mean_by_category": {
+      "correct": 0.83,
+      "swapped": 0.666667
+    }
+  },
+  "cost": {
+    "cost_basis": "provider usage x configured per-1M prices",
+    "cost_per_pair_usd": 0.000535,
+    "prices": {
+      "backoff_base_seconds": 1.5,
+      "backoff_cap_seconds": 30.0,
+      "base_url": "https://opencode.ai/zen/go/v1",
+      "cached_input_price_usd_per_1m": 0.0028,
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "input_price_usd_per_1m": 0.14,
+      "max_attempts": 3,
+      "max_tokens": 8192,
+      "max_tokens_field": "max_completion_tokens",
+      "model": "mimo-v2.6-flash",
+      "output_price_usd_per_1m": 0.28,
+      "reasoning_effort": "none",
+      "response_format": "json_object",
+      "temperature": 0.0,
+      "thinking": "disabled",
+      "timeout_seconds": 300.0,
+      "user_agent": "secvul-pair-joint/1.0"
+    },
+    "records_missing_cost": 0,
+    "records_with_cost": 8,
+    "total_cost_usd": 0.004282
+  },
+  "counts": {
+    "by_vulnerable_slot": {
+      "A": {
+        "both_safe": 0,
+        "both_vulnerable": 0,
+        "correct": 3,
+        "invalid": 0,
+        "swapped": 1
+      },
+      "B": {
+        "both_safe": 0,
+        "both_vulnerable": 0,
+        "correct": 2,
+        "invalid": 0,
+        "swapped": 2
+      }
+    },
+    "categories": {
+      "both_safe": 0,
+      "both_vulnerable": 0,
+      "correct": 5,
+      "invalid": 0,
+      "swapped": 3
+    },
+    "forced_choice_outputs": 8,
+    "invalid_reasons": {},
+    "pairs": 8,
+    "parsed_outputs": 8,
+    "status": {
+      "ok": 8
+    }
+  },
+  "evidence": {
+    "compliant_correct": 4,
+    "compliant_correct_rate_all": 0.5,
+    "compliant_correct_rate_parsed": 0.5,
+    "decisions_with_evidence": 8,
+    "evidence_compliance_rate": 0.875,
+    "evidence_compliant": 7,
+    "evidence_items_total": 15,
+    "evidence_present_rate": 1.0,
+    "evidence_text_match_rate": 0.933333,
+    "evidence_text_matches": 14,
+    "joint_correct_and_localization": 5,
+    "joint_correct_and_localization_rate_all": 0.625,
+    "joint_correct_and_localization_rate_parsed": 0.625,
+    "localization_hit_correct": 5,
+    "localization_hit_rate_correct": 1.0,
+    "localization_scored_correct": 5,
+    "schema_exact": 8,
+    "schema_exact_rate": 1.0
+  },
+  "joint_accuracy": {
+    "all_pairs": 0.625,
+    "forced_choice_outputs": 0.625,
+    "parsed_outputs": 0.625,
+    "wilson_all_pairs": {
+      "estimate": 0.625,
+      "high": 0.863156,
+      "low": 0.305742,
+      "method": "wilson_95",
+      "successes": 5,
+      "total": 8
+    },
+    "wilson_forced_choice": {
+      "estimate": 0.625,
+      "high": 0.863156,
+      "low": 0.305742,
+      "method": "wilson_95",
+      "successes": 5,
+      "total": 8
+    },
+    "wilson_parsed": {
+      "estimate": 0.625,
+      "high": 0.863156,
+      "low": 0.305742,
+      "method": "wilson_95",
+      "successes": 5,
+      "total": 8
+    }
+  },
+  "latency_seconds": {
+    "max": 9.006506,
+    "mean": 6.917684,
+    "n": 8,
+    "p50": 6.962686,
+    "p95": 8.571798
+  },
+  "length_confound": {
+    "definition": "Post-hoc diagnostic, not a pre-registered baseline. Compares character length of the vulnerable and fixed bodies; 'pick shorter' chooses the shorter slot and A on ties.",
+    "mcnemar_joint_vs_shorter_characters": {
+      "a_correct_b_wrong": 0,
+      "a_wrong_b_correct": 2,
+      "alpha": 0.05,
+      "discordant": 2,
+      "odds_ratio": 0.0,
+      "p_value": 0.5,
+      "p_value_method": "exact two-sided binomial",
+      "risk_difference": -0.25,
+      "significant_unadjusted_0_05": false,
+      "total": 8
+    },
+    "shorter_body_heuristic": {
+      "characters_correct": 7,
+      "characters_tie_A": 0.875,
+      "lines_correct": 6,
+      "lines_tie_A": 0.75,
+      "n": 8
+    },
+    "strata": {
+      "tie": {
+        "accuracy": null,
+        "correct": 0,
+        "n": 0
+      },
+      "vulnerable_longer": {
+        "accuracy": 0.0,
+        "correct": 0,
+        "n": 1
+      },
+      "vulnerable_shorter": {
+        "accuracy": 0.714286,
+        "correct": 5,
+        "n": 7
+      }
+    }
+  },
+  "per_pair": [
+    {
+      "category": "correct",
+      "decision": "A",
+      "pair_id": "7734:7735",
+      "project": "libgd",
+      "status": "ok",
+      "vulnerable_slot": "A"
+    },
+    {
+      "category": "correct",
+      "decision": "B",
+      "pair_id": "17637:17645",
+      "project": "diplib",
+      "status": "ok",
+      "vulnerable_slot": "B"
+    },
+    {
+      "category": "correct",
+      "decision": "B",
+      "pair_id": "10167:10168",
+      "project": "wireshark",
+      "status": "ok",
+      "vulnerable_slot": "B"
+    },
+    {
+      "category": "correct",
+      "decision": "A",
+      "pair_id": "11482:11481",
+      "project": "lftp",
+      "status": "ok",
+      "vulnerable_slot": "A"
+    },
+    {
+      "category": "swapped",
+      "decision": "B",
+      "pair_id": "10832:10826",
+      "project": "Phoenixcoin",
+      "status": "ok",
+      "vulnerable_slot": "A"
+    },
+    {
+      "category": "swapped",
+      "decision": "A",
+      "pair_id": "18310:18311",
+      "project": "sudo",
+      "status": "ok",
+      "vulnerable_slot": "B"
+    },
+    {
+      "category": "swapped",
+      "decision": "A",
+      "pair_id": "14109:14113",
+      "project": "flatpak",
+      "status": "ok",
+      "vulnerable_slot": "B"
+    },
+    {
+      "category": "correct",
+      "decision": "A",
+      "pair_id": "17457:17458",
+      "project": "samurai",
+      "status": "ok",
+      "vulnerable_slot": "A"
+    }
+  ],
+  "position_bias": {
+    "binomial_p_select_A_vs_B": 0.726562,
+    "by_vulnerable_slot": {
+      "A": {
+        "accuracy_all": 0.75,
+        "accuracy_parsed": 0.75,
+        "categories": {
+          "both_safe": 0,
+          "both_vulnerable": 0,
+          "correct": 3,
+          "invalid": 0,
+          "swapped": 1
+        },
+        "n": 4,
+        "wilson_all": {
+          "estimate": 0.75,
+          "high": 0.954413,
+          "low": 0.300642,
+          "method": "wilson_95",
+          "successes": 3,
+          "total": 4
+        },
+        "wilson_parsed": {
+          "estimate": 0.75,
+          "high": 0.954413,
+          "low": 0.300642,
+          "method": "wilson_95",
+          "successes": 3,
+          "total": 4
+        }
+      },
+      "B": {
+        "accuracy_all": 0.5,
+        "accuracy_parsed": 0.5,
+        "categories": {
+          "both_safe": 0,
+          "both_vulnerable": 0,
+          "correct": 2,
+          "invalid": 0,
+          "swapped": 2
+        },
+        "n": 4,
+        "wilson_all": {
+          "estimate": 0.5,
+          "high": 0.849961,
+          "low": 0.150039,
+          "method": "wilson_95",
+          "successes": 2,
+          "total": 4
+        },
+        "wilson_parsed": {
+          "estimate": 0.5,
+          "high": 0.849961,
+          "low": 0.150039,
+          "method": "wilson_95",
+          "successes": 2,
+          "total": 4
+        }
+      }
+    },
+    "difference_da_A_minus_da_B_all": 0.25,
+    "difference_da_A_minus_da_B_parsed": 0.25,
+    "fisher_exact_p_all": 1.0,
+    "fisher_exact_p_parsed": 1.0,
+    "selected_slot_counts": {
+      "A": 5,
+      "B": 3
+    },
+    "selection_by_vulnerable_slot": {
+      "A": {
+        "A": 3,
+        "B": 1
+      },
+      "B": {
+        "A": 2,
+        "B": 2
+      }
+    },
+    "slot_a_share_of_ab_selections": 0.625
+  },
+  "rates": {
+    "consistency_identity_residual": 0.0,
+    "over_all_pairs": {
+      "both_safe": 0.0,
+      "both_vulnerable": 0.0,
+      "correct": 0.625,
+      "invalid": 0.0,
+      "swapped": 0.375
+    },
+    "over_forced_choice_outputs": {
+      "correct": 0.625,
+      "swapped": 0.375
+    },
+    "over_parsed_outputs": {
+      "both_safe": 0.0,
+      "both_vulnerable": 0.0,
+      "correct": 0.625,
+      "invalid": 0.0,
+      "swapped": 0.375
+    }
+  },
+  "run": {
+    "completed_at": "2026-11-11T19:17:19.174+00:00",
+    "dataset_path": "splits/pilot_pairs_18.json",
+    "dataset_sha256": "e237137718a973af0a1c9cde1fc7ecf594b51feb6ce5600f5a47894f29e54747",
+    "limit": 8,
+    "model": "mimo-v2.6-flash",
+    "partial": true,
+    "position_map_sha256": "512c9a9b350b923ed307501d196bb8bc78c8367146d6ad5b8a877437f6aee285",
+    "prompt_version": "pair-joint-2026-11-12.1",
+    "run_id": "pilot_mimo_8",
+    "run_label": "pair-joint-pilot-mimo",
+    "selected_units": 8,
+    "started_at": "2026-11-11T19:17:10.043+00:00",
+    "vulnerable_slot_counts": {
+      "A": 4,
+      "B": 4
+    }
+  },
+  "run_wall_seconds": 9.131,
+  "schema_version": 1,
+  "usage": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 1293,
+    "completion_tokens_per_pair": 161.625,
+    "prompt_tokens": 28002,
+    "prompt_tokens_per_pair": 3500.25,
+    "reasoning_tokens": 0,
+    "records": 8,
+    "records_with_usage": 8
+  }
+}

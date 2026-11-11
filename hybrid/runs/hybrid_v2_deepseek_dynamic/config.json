@@ -1,0 +1,42 @@
+{
+  "schema_version": "hybrid-run-v1",
+  "run_id": "hybrid_v2_deepseek_dynamic",
+  "model_key": "deepseek",
+  "model_display_name": "DeepSeek-V4.1-Flash",
+  "method": "dynamic",
+  "prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+  "api": {
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "model": "deepseek-v4.1-flash",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "timeout_seconds": 180.0,
+    "max_attempts": 3,
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "response_format": "json_object",
+    "thinking": null,
+    "reasoning_effort": null,
+    "max_tokens_field": "max_tokens",
+    "user_agent": "secvul-eval-runner/1.0",
+    "input_price_usd_per_1m": 0.15,
+    "output_price_usd_per_1m": 0.6,
+    "cached_input_price_usd_per_1m": 0.003
+  },
+  "dataset": {
+    "path": "hybrid/inputs_v2/units.jsonl",
+    "sha256": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6",
+    "units": 140,
+    "partial": false
+  },
+  "concurrency": 12,
+  "config_fingerprint": "2fd4a84534649813ddb668728a7d7ee7b18768f5449e44d3f7ee73ddc12bd4a1",
+  "preflight": {
+    "path": "hybrid/results/hybrid_v2_preflight.json",
+    "sha256": "4ef92bb52829a7d866bec4c398b594d50fecb9de7c213d1a4c8167be15fa8a5b",
+    "ok": true,
+    "noop_collisions": 14
+  },
+  "credentials": "read from local Kimi Code config into process memory; never logged"
+}

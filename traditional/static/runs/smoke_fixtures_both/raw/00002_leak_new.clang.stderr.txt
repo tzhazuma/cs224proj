@@ -1,0 +1,19 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_new.cpp:6:9: warning: Potential leak of memory pointed to by 'values' [cplusplus.NewDeleteLeaks]
+    6 |         return values[0];
+      |         ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_new.cpp:15:12: note: Calling 'may_leak_new'
+   15 |     return may_leak_new(argc);
+      |            ^~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_new.cpp:3:19: note: Memory is allocated
+    3 |     int *values = new int[8];
+      |                   ^~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_new.cpp:5:9: note: 'argc' is > 0
+    5 |     if (argc > 0) {
+      |         ^~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_new.cpp:5:5: note: Taking true branch
+    5 |     if (argc > 0) {
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_new.cpp:6:9: note: Potential leak of memory pointed to by 'values'
+    6 |         return values[0];
+      |         ^
+1 warning generated.

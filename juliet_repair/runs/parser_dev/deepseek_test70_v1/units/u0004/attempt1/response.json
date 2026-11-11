@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:22.091+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0d-bb06-77d9-a751-30888d034167"
+      },
+      "http_status": 200,
+      "latency_seconds": 8.63071863600635,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-0aa1a06f9f3148c997ed3808ac9b65de\",\"object\":\"chat.completion\",\"created\":1794424814,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__char_malloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__char_malloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    char * data;\\\\n    char * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (char *)malloc(100*sizeof(char));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    strcpy(data, \\\\\\\"A String\\\\\\\");\\\\n    printLine(data);\\\\n    {\\\\n        char * data = dataRef;\\\\n\\\\n        ;\\\\n    }\\\\n    free(data);\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The allocated buffer was never freed. Added free(data) after the inner block so the heap allocation is released while preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":376,\"completion_tokens\":215,\"total_tokens\":591,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0001854,\"allowance\":0.00011124,\"tokens\":{\"input\":376,\"output\":215,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:13.461+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__char_malloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__char_malloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    char * data;\\n    char * &dataRef = data;\\n    data = NULL;\\n\\n    data = (char *)malloc(100*sizeof(char));\\n    if (data == NULL) {exit(-1);}\\n\\n    strcpy(data, \\\"A String\\\");\\n    printLine(data);\\n    {\\n        char * data = dataRef;\\n\\n        ;\\n    }\\n    free(data);\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The allocated buffer was never freed. Added free(data) after the inner block so the heap allocation is released while preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 215,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.0003708,
+    "prompt_tokens": 376
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 8.63071863600635,
+  "response_meta": {
+    "content_chars": 670,
+    "created": 1794424814,
+    "finish_reason": "stop",
+    "id": "chatcmpl-0aa1a06f9f3148c997ed3808ac9b65de",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0004",
+  "usage": {
+    "completion_tokens": 215,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00011124,
+      "billing_source": "go",
+      "list_cost": 0.0001854,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 376,
+        "output": 215,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 376,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 591
+  },
+  "wall_seconds": 8.630751917997259
+}

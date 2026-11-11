@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:48.386+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-583b-71b9-8493-a4187ca613b8"
+      },
+      "http_status": 200,
+      "latency_seconds": 9.787385709001683,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-13ec1953bfc24f73b4475ad8f02a9135\",\"object\":\"chat.completion\",\"created\":1794425378,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_int64_t_54e.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int64_t_54\\\\n{\\\\n\\\\n\\\\nvoid badSink_e(int64_t * data)\\\\n{\\\\n    delete data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The allocated int64_t is passed down the sink chain and never freed. Adding delete in the final sink (badSink_e) releases the memory after all printing has occurred, preserving output and behavior while eliminating the leak.\\\"}\"}}],\"usage\":{\"prompt_tokens\":701,\"completion_tokens\":148,\"total_tokens\":849,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00017513,\"allowance\":0.00010508,\"tokens\":{\"input\":573,\"output\":148,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:38.599+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_int64_t_54e.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_int64_t_54\\n{\\n\\n\\nvoid badSink_e(int64_t * data)\\n{\\n    delete data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The allocated int64_t is passed down the sink chain and never freed. Adding delete in the final sink (badSink_e) releases the memory after all printing has occurred, preserving output and behavior while eliminating the leak.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 148,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00035026800000000004,
+    "prompt_tokens": 701
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 9.787385709001683,
+  "response_meta": {
+    "content_chars": 491,
+    "created": 1794425378,
+    "finish_reason": "stop",
+    "id": "chatcmpl-13ec1953bfc24f73b4475ad8f02a9135",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0046",
+  "usage": {
+    "completion_tokens": 148,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00010508,
+      "billing_source": "go",
+      "list_cost": 0.00017513,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 573,
+        "output": 148,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 701,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 849
+  },
+  "wall_seconds": 9.7874207989953
+}

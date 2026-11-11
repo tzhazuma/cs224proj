@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:49.074+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0f-0721-73cc-9a37-8b8bd02ca457"
+      },
+      "http_status": 200,
+      "latency_seconds": 10.007016489005764,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-bb0a3d571a2345d496f2f233f6e1f1d5\",\"object\":\"chat.completion\",\"created\":1794424899,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__wchar_t_malloc_68a.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nwchar_t * CWE401_Memory_Leak__wchar_t_malloc_68_badData;\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__wchar_t_malloc_68b_badSink();\\\\n\\\\nvoid CWE401_Memory_Leak__wchar_t_malloc_68_bad()\\\\n{\\\\n    wchar_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = (wchar_t *)malloc(100*sizeof(wchar_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n    CWE401_Memory_Leak__wchar_t_malloc_68_badData = data;\\\\n    CWE401_Memory_Leak__wchar_t_malloc_68b_badSink();\\\\n    free(data);\\\\n    CWE401_Memory_Leak__wchar_t_malloc_68_badData = NULL;\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The heap buffer allocated in CWE401_Memory_Leak__wchar_t_malloc_68_bad() was never freed. Added free(data) after the sink call and cleared the global pointer, preserving the printed output and return behavior. Only the file containing the allocation was changed.\\\"}\"}}],\"usage\":{\"prompt_tokens\":1088,\"completion_tokens\":347,\"total_tokens\":1435,\"prompt_tokens_details\":{\"cached_tokens\":384},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00031495,\"allowance\":0.00018897,\"tokens\":{\"input\":704,\"output\":347,\"reasoning\":0,\"cache_read\":384,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:39.067+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__wchar_t_malloc_68a.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nwchar_t * CWE401_Memory_Leak__wchar_t_malloc_68_badData;\\n\\n\\nvoid CWE401_Memory_Leak__wchar_t_malloc_68b_badSink();\\n\\nvoid CWE401_Memory_Leak__wchar_t_malloc_68_bad()\\n{\\n    wchar_t * data;\\n    data = NULL;\\n\\n    data = (wchar_t *)malloc(100*sizeof(wchar_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n    CWE401_Memory_Leak__wchar_t_malloc_68_badData = data;\\n    CWE401_Memory_Leak__wchar_t_malloc_68b_badSink();\\n    free(data);\\n    CWE401_Memory_Leak__wchar_t_malloc_68_badData = NULL;\\n}\\n\"}], \"explanation\": \"The heap buffer allocated in CWE401_Memory_Leak__wchar_t_malloc_68_bad() was never freed. Added free(data) after the sink call and cleared the global pointer, preserving the printed output and return behavior. Only the file containing the allocation was changed.\"}",
+  "cost": {
+    "cached_prompt_tokens": 384,
+    "completion_tokens": 347,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000629904,
+    "prompt_tokens": 1088
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 10.007016489005764,
+  "response_meta": {
+    "content_chars": 967,
+    "created": 1794424899,
+    "finish_reason": "stop",
+    "id": "chatcmpl-bb0a3d571a2345d496f2f233f6e1f1d5",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0068",
+  "usage": {
+    "completion_tokens": 347,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00018897,
+      "billing_source": "go",
+      "list_cost": 0.00031495,
+      "tokens": {
+        "cache_read": 384,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 704,
+        "output": 347,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 1088,
+    "prompt_tokens_details": {
+      "cached_tokens": 384
+    },
+    "total_tokens": 1435
+  },
+  "wall_seconds": 10.0070500849979
+}

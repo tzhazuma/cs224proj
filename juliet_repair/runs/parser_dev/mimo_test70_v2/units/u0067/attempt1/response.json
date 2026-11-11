@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:22:53.672+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc10-0c6c-7af3-add3-0cd8d7d53746"
+      },
+      "http_status": 200,
+      "latency_seconds": 8.070322604995454,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424966-gs8ruVvphgLRxjUEiMiN\",\"object\":\"chat.completion\",\"created\":1794424966,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__wchar_t_malloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n#include <stdlib.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__wchar_t_malloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    wchar_t * data;\\\\n    wchar_t * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (wchar_t *)malloc(100*sizeof(wchar_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n    {\\\\n        wchar_t * data = dataRef;\\\\n\\\\n        free(data);\\\\n        data = NULL;\\\\n    }\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The inner block copies the pointer from dataRef but never frees it, leaking the 100*sizeof(wchar_t) allocation. Added free(data) (and NULL assignment) inside the block, plus stdlib.h for free/exit declarations, preserving printed output and return behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":370,\"completion_tokens\":260,\"total_tokens\":630,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0001246,\"allowance\":0.0001246,\"tokens\":{\"input\":370,\"output\":260,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:22:45.602+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__wchar_t_malloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n#include <stdlib.h>\\n\\nnamespace CWE401_Memory_Leak__wchar_t_malloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    wchar_t * data;\\n    wchar_t * &dataRef = data;\\n    data = NULL;\\n\\n    data = (wchar_t *)malloc(100*sizeof(wchar_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n    {\\n        wchar_t * data = dataRef;\\n\\n        free(data);\\n        data = NULL;\\n    }\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The inner block copies the pointer from dataRef but never frees it, leaking the 100*sizeof(wchar_t) allocation. Added free(data) (and NULL assignment) inside the block, plus stdlib.h for free/exit declarations, preserving printed output and return behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 260,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00012460000000000002,
+    "prompt_tokens": 370
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 8.070322604995454,
+  "response_meta": {
+    "content_chars": 825,
+    "created": 1794424966,
+    "finish_reason": "stop",
+    "id": "gen-1794424966-gs8ruVvphgLRxjUEiMiN",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0067",
+  "usage": {
+    "completion_tokens": 260,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.0001246,
+      "billing_source": "go",
+      "list_cost": 0.0001246,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 370,
+        "output": 260,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 370,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 630
+  },
+  "wall_seconds": 8.070381999001256
+}

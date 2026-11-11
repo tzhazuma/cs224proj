@@ -1,0 +1,91 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__int64_t_realloc_01.c"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 128,
+        "completion_tokens": 194,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.000306168,
+        "prompt_tokens": 370
+      },
+      "elapsed_seconds": 6.316,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.021
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "Added free(data) before the function returns to release the heap block allocated by realloc, preserving the printed output and behavior.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 194,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 9.185e-05,
+          "billing_source": "go",
+          "list_cost": 0.00015308,
+          "tokens": {
+            "cache_read": 128,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 242,
+            "output": 194,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 370,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "total_tokens": 564
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 128,
+  "changed_paths": [
+    "CWE401_Memory_Leak__int64_t_realloc_01.c"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 194,
+  "cost_complete": true,
+  "cost_usd_sum": 0.00030617,
+  "explanation_present": true,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__int64_t_realloc_01",
+  "language": "c",
+  "leak_removed": true,
+  "model": "deepseek-v4.1-flash",
+  "model_alias": "deepseek",
+  "prompt_tokens_sum": 370,
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__int64_t_realloc_01__bad",
+  "unit_key": "u0012"
+}

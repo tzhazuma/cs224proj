@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:56.353+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-8869-7407-b965-f03f9c36c24c"
+      },
+      "http_status": 200,
+      "latency_seconds": 5.429795649004518,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794425391-RnRMZaN9DaO1SmI8bdBQ\",\"object\":\"chat.completion\",\"created\":1794425391,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_int_22b.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int_22\\\\n{\\\\n\\\\n\\\\nextern int badGlobal;\\\\n\\\\nvoid badSink(int * data)\\\\n{\\\\n    if(badGlobal)\\\\n    {\\\\n        delete data;\\\\n    }\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The sink never frees the allocated int, causing a leak. Added `delete data;` in badSink so the memory allocated in bad() is released after printing, preserving output and behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":426,\"completion_tokens\":155,\"total_tokens\":581,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":384,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00005036,\"allowance\":0.00005036,\"tokens\":{\"input\":42,\"output\":155,\"reasoning\":0,\"cache_read\":384,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:50.923+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_int_22b.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_int_22\\n{\\n\\n\\nextern int badGlobal;\\n\\nvoid badSink(int * data)\\n{\\n    if(badGlobal)\\n    {\\n        delete data;\\n    }\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The sink never frees the allocated int, causing a leak. Added `delete data;` in badSink so the memory allocated in bad() is released after printing, preserving output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 384,
+    "completion_tokens": 155,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 5.03552e-05,
+    "prompt_tokens": 426
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 5.429795649004518,
+  "response_meta": {
+    "content_chars": 495,
+    "created": 1794425391,
+    "finish_reason": "stop",
+    "id": "gen-1794425391-RnRMZaN9DaO1SmI8bdBQ",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0048",
+  "usage": {
+    "completion_tokens": 155,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 5.036e-05,
+      "billing_source": "go",
+      "list_cost": 5.036e-05,
+      "tokens": {
+        "cache_read": 384,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 42,
+        "output": 155,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 426,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 384
+    },
+    "total_tokens": 581
+  },
+  "wall_seconds": 5.429818961987621
+}

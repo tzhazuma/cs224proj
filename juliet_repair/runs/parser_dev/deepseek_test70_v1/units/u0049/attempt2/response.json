@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:23.107+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-ae4a-7deb-bca9-7c0878268e39"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.754347390990006,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-06d98d3c83144930bcb1bfde2772ba91\",\"object\":\"chat.completion\",\"created\":1794424876,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_int_72a.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include <vector>\\\\n\\\\n#include <wchar.h>\\\\n\\\\nusing namespace std;\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int_72\\\\n{\\\\n\\\\n\\\\nvoid badSink(vector<int *> dataVector);\\\\n\\\\nvoid bad()\\\\n{\\\\n    int * data;\\\\n    vector<int *> dataVector;\\\\n    data = NULL;\\\\n\\\\n    data = new int;\\\\n\\\\n    *data = 5;\\\\n    printIntLine(*data);\\\\n\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    badSink(dataVector);\\\\n\\\\n    delete data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}, {\\\"path\\\": \\\"CWE401_Memory_Leak__new_int_72b.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include <vector>\\\\n\\\\n#include <wchar.h>\\\\n\\\\nusing namespace std;\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int_72\\\\n{\\\\n\\\\n\\\\nvoid badSink(vector<int *> dataVector)\\\\n{\\\\n\\\\n    int * data = dataVector[2];\\\\n\\\\n    ;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The heap allocation in bad() was never freed. Added delete data after badSink returns, which preserves the printed output and success status while eliminating the memory leak. The sink file is unchanged in behavior but included for completeness.\\\"}\"}}],\"usage\":{\"prompt_tokens\":857,\"completion_tokens\":376,\"total_tokens\":1233,\"prompt_tokens_details\":{\"cached_tokens\":256},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00031652,\"allowance\":0.00018991,\"tokens\":{\"input\":601,\"output\":376,\"reasoning\":0,\"cache_read\":256,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:16.353+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_int_72a.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include <vector>\\n\\n#include <wchar.h>\\n\\nusing namespace std;\\n\\nnamespace CWE401_Memory_Leak__new_int_72\\n{\\n\\n\\nvoid badSink(vector<int *> dataVector);\\n\\nvoid bad()\\n{\\n    int * data;\\n    vector<int *> dataVector;\\n    data = NULL;\\n\\n    data = new int;\\n\\n    *data = 5;\\n    printIntLine(*data);\\n\\n    dataVector.insert(dataVector.end(), 1, data);\\n    dataVector.insert(dataVector.end(), 1, data);\\n    dataVector.insert(dataVector.end(), 1, data);\\n    badSink(dataVector);\\n\\n    delete data;\\n}\\n\\n\\n}\\n\"}, {\"path\": \"CWE401_Memory_Leak__new_int_72b.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include <vector>\\n\\n#include <wchar.h>\\n\\nusing namespace std;\\n\\nnamespace CWE401_Memory_Leak__new_int_72\\n{\\n\\n\\nvoid badSink(vector<int *> dataVector)\\n{\\n\\n    int * data = dataVector[2];\\n\\n    ;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The heap allocation in bad() was never freed. Added delete data after badSink returns, which preserves the printed output and success status while eliminating the memory leak. The sink file is unchanged in behavior but included for completeness.\"}",
+  "cost": {
+    "cached_prompt_tokens": 256,
+    "completion_tokens": 376,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.0006330359999999999,
+    "prompt_tokens": 857
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.754347390990006,
+  "response_meta": {
+    "content_chars": 1192,
+    "created": 1794424876,
+    "finish_reason": "stop",
+    "id": "chatcmpl-06d98d3c83144930bcb1bfde2772ba91",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0049",
+  "usage": {
+    "completion_tokens": 376,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00018991,
+      "billing_source": "go",
+      "list_cost": 0.00031652,
+      "tokens": {
+        "cache_read": 256,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 601,
+        "output": 376,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 857,
+    "prompt_tokens_details": {
+      "cached_tokens": 256
+    },
+    "total_tokens": 1233
+  },
+  "wall_seconds": 6.754381956998259
+}

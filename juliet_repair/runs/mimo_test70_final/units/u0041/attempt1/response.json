@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:49.576+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-5917-76ee-b19a-14faa56a2ce3"
+      },
+      "http_status": 200,
+      "latency_seconds": 10.76474353201047,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794425379-aZCP70CU6EadNPgkSIEH\",\"object\":\"chat.completion\",\"created\":1794425379,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_wchar_t_72b.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include <vector>\\\\n\\\\n#include <wchar.h>\\\\n\\\\nusing namespace std;\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_72\\\\n{\\\\n\\\\n\\\\nvoid badSink(vector<wchar_t *> dataVector)\\\\n{\\\\n\\\\n    wchar_t * data = dataVector[2];\\\\n\\\\n    delete [] data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The allocated array is now freed in badSink after use, eliminating the leak while preserving printed output and entry points.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":504,\"completion_tokens\":157,\"total_tokens\":661,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":448,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00005305,\"allowance\":0.00005305,\"tokens\":{\"input\":56,\"output\":157,\"reasoning\":0,\"cache_read\":448,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:38.812+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_array_wchar_t_72b.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include <vector>\\n\\n#include <wchar.h>\\n\\nusing namespace std;\\n\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_72\\n{\\n\\n\\nvoid badSink(vector<wchar_t *> dataVector)\\n{\\n\\n    wchar_t * data = dataVector[2];\\n\\n    delete [] data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The allocated array is now freed in badSink after use, eliminating the leak while preserving printed output and entry points.\"}",
+  "cost": {
+    "cached_prompt_tokens": 448,
+    "completion_tokens": 157,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 5.30544e-05,
+    "prompt_tokens": 504
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 10.76474353201047,
+  "response_meta": {
+    "content_chars": 503,
+    "created": 1794425379,
+    "finish_reason": "stop",
+    "id": "gen-1794425379-aZCP70CU6EadNPgkSIEH",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0041",
+  "usage": {
+    "completion_tokens": 157,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 5.305e-05,
+      "billing_source": "go",
+      "list_cost": 5.305e-05,
+      "tokens": {
+        "cache_read": 448,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 56,
+        "output": 157,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 504,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 448
+    },
+    "total_tokens": 661
+  },
+  "wall_seconds": 10.76477331299975
+}

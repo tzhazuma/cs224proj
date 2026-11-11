@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:37.448+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-e7a6-7137-b039-6151e8483765"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.543082338990644,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-f279194e3eab44efaf60e56c68ddfc34\",\"object\":\"chat.completion\",\"created\":1794424891,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__twoIntsStruct_malloc_68a.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\ntwoIntsStruct * CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink();\\\\n\\\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68_bad()\\\\n{\\\\n    twoIntsStruct * data;\\\\n    data = NULL;\\\\n\\\\n    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0].intOne = 0;\\\\n    data[0].intTwo = 0;\\\\n    printStructLine(&data[0]);\\\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData = data;\\\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink();\\\\n    free(data);\\\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData = NULL;\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The malloc'd buffer stored in the global was never freed. Added free(data) after the sink call in bad() and cleared the global, preserving the printed output and behavior. Only the file containing the allocation is changed.\\\"}\"}}],\"usage\":{\"prompt_tokens\":1153,\"completion_tokens\":357,\"total_tokens\":1510,\"prompt_tokens_details\":{\"cached_tokens\":384},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0003307,\"allowance\":0.00019842,\"tokens\":{\"input\":769,\"output\":357,\"reasoning\":0,\"cache_read\":384,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:30.905+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__twoIntsStruct_malloc_68a.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\ntwoIntsStruct * CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\n\\n\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink();\\n\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68_bad()\\n{\\n    twoIntsStruct * data;\\n    data = NULL;\\n\\n    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0].intOne = 0;\\n    data[0].intTwo = 0;\\n    printStructLine(&data[0]);\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData = data;\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink();\\n    free(data);\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData = NULL;\\n}\\n\"}], \"explanation\": \"The malloc'd buffer stored in the global was never freed. Added free(data) after the sink call in bad() and cleared the global, preserving the printed output and behavior. Only the file containing the allocation is changed.\"}",
+  "cost": {
+    "cached_prompt_tokens": 384,
+    "completion_tokens": 357,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000661404,
+    "prompt_tokens": 1153
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.543082338990644,
+  "response_meta": {
+    "content_chars": 1019,
+    "created": 1794424891,
+    "finish_reason": "stop",
+    "id": "chatcmpl-f279194e3eab44efaf60e56c68ddfc34",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0059",
+  "usage": {
+    "completion_tokens": 357,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00019842,
+      "billing_source": "go",
+      "list_cost": 0.0003307,
+      "tokens": {
+        "cache_read": 384,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 769,
+        "output": 357,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 1153,
+    "prompt_tokens_details": {
+      "cached_tokens": 384
+    },
+    "total_tokens": 1510
+  },
+  "wall_seconds": 6.543115089996718
+}

@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:25.093+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-b9aa-717c-82a2-99dd93bc5b1a"
+      },
+      "http_status": 200,
+      "latency_seconds": 5.827327781007625,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-a038eff99dc7437290a86e8a9fd116c0\",\"object\":\"chat.completion\",\"created\":1794424879,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_twoIntsStruct_82_bad.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include \\\\\\\"CWE401_Memory_Leak__new_twoIntsStruct_82.h\\\\\\\"\\\\n\\\\nnamespace CWE401_Memory_Leak__new_twoIntsStruct_82\\\\n{\\\\n\\\\nvoid CWE401_Memory_Leak__new_twoIntsStruct_82_bad::action(twoIntsStruct * data)\\\\n{\\\\n\\\\n    delete data;\\\\n}\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The leaked twoIntsStruct allocated in bad() is now freed by the bad::action implementation via delete, preserving the printed output and entry points while eliminating the memory leak. Only the bad.cpp file needed changing.\\\"}\"}}],\"usage\":{\"prompt_tokens\":1107,\"completion_tokens\":180,\"total_tokens\":1287,\"prompt_tokens_details\":{\"cached_tokens\":512},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00019879,\"allowance\":0.00011927,\"tokens\":{\"input\":595,\"output\":180,\"reasoning\":0,\"cache_read\":512,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:19.265+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_twoIntsStruct_82_bad.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include \\\"CWE401_Memory_Leak__new_twoIntsStruct_82.h\\\"\\n\\nnamespace CWE401_Memory_Leak__new_twoIntsStruct_82\\n{\\n\\nvoid CWE401_Memory_Leak__new_twoIntsStruct_82_bad::action(twoIntsStruct * data)\\n{\\n\\n    delete data;\\n}\\n\\n}\\n\"}], \"explanation\": \"The leaked twoIntsStruct allocated in bad() is now freed by the bad::action implementation via delete, preserving the printed output and entry points while eliminating the memory leak. Only the bad.cpp file needed changing.\"}",
+  "cost": {
+    "cached_prompt_tokens": 512,
+    "completion_tokens": 180,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000397572,
+    "prompt_tokens": 1107
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 5.827327781007625,
+  "response_meta": {
+    "content_chars": 587,
+    "created": 1794424879,
+    "finish_reason": "stop",
+    "id": "chatcmpl-a038eff99dc7437290a86e8a9fd116c0",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0052",
+  "usage": {
+    "completion_tokens": 180,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00011927,
+      "billing_source": "go",
+      "list_cost": 0.00019879,
+      "tokens": {
+        "cache_read": 512,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 595,
+        "output": 180,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 1107,
+    "prompt_tokens_details": {
+      "cached_tokens": 512
+    },
+    "total_tokens": 1287
+  },
+  "wall_seconds": 5.827357383997878
+}

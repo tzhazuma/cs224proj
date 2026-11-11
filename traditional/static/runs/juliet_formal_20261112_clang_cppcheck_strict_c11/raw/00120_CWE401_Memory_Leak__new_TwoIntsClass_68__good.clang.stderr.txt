@@ -1,0 +1,30 @@
+In file included from /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck/work/00120_CWE401_Memory_Leak__new_TwoIntsClass_68__good.cpp:1:
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_68a.cpp:73:5: warning: Address of stack memory associated with local variable 'dataGoodBuffer' is still referred to by the global variable 'goodG2BData' upon returning to the caller.  This will be a dangling reference [core.StackAddressEscape]
+   73 |     goodG2BSink();
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_68a.cpp:117:5: note: Calling 'good'
+  117 |     good();
+      |     ^~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_68a.cpp:94:5: note: Calling 'goodG2B'
+   94 |     goodG2B();
+      |     ^~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_68a.cpp:73:5: note: Address of stack memory associated with local variable 'dataGoodBuffer' is still referred to by the global variable 'goodG2BData' upon returning to the caller.  This will be a dangling reference
+   65 |     TwoIntsClass dataGoodBuffer;
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   66 |     data = &dataGoodBuffer;
+   67 |     /* Initialize and make use of data */
+   68 |     data->intOne = 0;
+   69 |     data->intTwo = 0;
+   70 |     printIntLine(data->intOne);
+   71 |     printIntLine(data->intTwo);
+   72 |     goodG2BData = data;
+   73 |     goodG2BSink();
+      |     ^
+In file included from /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck/work/00120_CWE401_Memory_Leak__new_TwoIntsClass_68__good.cpp:2:
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_68b.cpp:47:20: warning: Value stored to 'data' during its initialization is never read [deadcode.DeadStores]
+   47 |     TwoIntsClass * data = goodG2BData;
+      |                    ^~~~   ~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_68b.cpp:47:20: note: Value stored to 'data' during its initialization is never read
+   47 |     TwoIntsClass * data = goodG2BData;
+      |                    ^~~~   ~~~~~~~~~~~
+2 warnings generated.

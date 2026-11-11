@@ -1,0 +1,155 @@
+{
+  "api": {
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "input_price_usd_per_1m": 0.14,
+    "max_attempts": 3,
+    "max_tokens": 8192,
+    "max_tokens_field": "max_completion_tokens",
+    "model": "mimo-v2.6-flash",
+    "output_price_usd_per_1m": 0.28,
+    "reasoning_effort": "none",
+    "response_format": "json_object",
+    "temperature": 0.0,
+    "thinking": "disabled",
+    "timeout_seconds": 300.0,
+    "user_agent": "secvul-pair-joint/1.0"
+  },
+  "api_key_env": "OPENCODE_API_KEY",
+  "api_key_present": true,
+  "api_key_value_stored": false,
+  "completed_at": "2026-11-11T19:17:19.174+00:00",
+  "concurrency": 8,
+  "config_fingerprint": "d38da56d70234743580715c7b61bded91c5efbbdb22c8a8054a01227e07b6410",
+  "counts": {
+    "by_status": {
+      "ok": 8
+    },
+    "planned_requests": 8,
+    "recorded_requests": 8
+  },
+  "created_at": "2026-11-11T19:17:10.090+00:00",
+  "dataset_metadata": {
+    "schema_version": 1,
+    "source_file": "SecVulEval.xlsx",
+    "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+    "split": {
+      "manifest": "splits/split_v1.json",
+      "protocol": "research/evaluation_protocol.md#4",
+      "role": "dev",
+      "seed": 42,
+      "source_dataset": "datasets/vulnerable_fixed_200_pairs.json",
+      "source_dataset_sha256": "7028b98d6f2c13b960bd08dd2e737e2ba61732b89dba03e3f173fe44c27214d5",
+      "split_id": "secvul-split-v1",
+      "task": "pairs"
+    }
+  },
+  "dataset_path": "splits/pilot_pairs_18.json",
+  "dataset_sha256": "e237137718a973af0a1c9cde1fc7ecf594b51feb6ce5600f5a47894f29e54747",
+  "dataset_units_total": 18,
+  "leakage_audit": {
+    "dataset": {
+      "commit_pair_ids": [],
+      "cve_pair_ids": [],
+      "cwe_pair_ids": [],
+      "note": "These strings occur inside source code supplied by the dataset, not in the prompt wrapper or metadata. They cannot be removed without altering the code.",
+      "pairs": 8,
+      "pairs_with_commit_id_in_body": 0,
+      "pairs_with_cve_string_in_body": 0,
+      "pairs_with_cwe_string_in_body": 0
+    },
+    "slot_leak_all": false,
+    "wrapper_clean_all": true
+  },
+  "limit": 8,
+  "max_evidence_items": 20,
+  "metrics": {
+    "counts": {
+      "by_status": {
+        "ok": 8
+      },
+      "error_codes": {},
+      "recorded": 8
+    },
+    "latency_seconds": {
+      "max": 9.006506,
+      "mean": 6.917684,
+      "n": 8,
+      "p50": 6.962686,
+      "p95": 8.571798
+    },
+    "notes": [
+      "Cost is null when the provider did not report token usage or prices were not configured.",
+      "A partial run used --limit and must not be reported as full-dataset evidence."
+    ],
+    "run": {
+      "completed_at": "2026-11-11T19:17:19.166+00:00",
+      "limit": 8,
+      "model": "mimo-v2.6-flash",
+      "partial": true,
+      "prompt_version": "pair-joint-2026-11-12.1",
+      "run_id": "pilot_mimo_8",
+      "selected_units": 8,
+      "started_at": "2026-11-11T19:17:10.043+00:00"
+    },
+    "schema_version": 1,
+    "usage": {
+      "cached_prompt_tokens": 0,
+      "completion_tokens": 1293,
+      "cost_usd": 0.00428232,
+      "prompt_tokens": 28002,
+      "reasoning_tokens": 0,
+      "reasoning_tokens_known": 8,
+      "recorded": 8,
+      "records_with_cost": 8,
+      "with_usage": 8
+    }
+  },
+  "notes": [
+    "No API key or Authorization header is stored in any artifact.",
+    "The A/B -> vulnerable/fixed mapping is stored only in position_map.json, never in a prompt.",
+    "Pair IDs in requests.jsonl are local bookkeeping; the model sees only the rendered messages."
+  ],
+  "order": {
+    "position_map_sha256": "512c9a9b350b923ed307501d196bb8bc78c8367146d6ad5b8a877437f6aee285",
+    "salt": "secvul-pair-order-v1",
+    "vulnerable_slot_counts": {
+      "A": 4,
+      "B": 4
+    }
+  },
+  "order_salt": "secvul-pair-order-v1",
+  "out_dir": "pair_joint/runs/pilot_mimo_8",
+  "outputs": {
+    "cache": "cache/",
+    "leak_audit": "leak_audit.json",
+    "metrics": "metrics.json",
+    "position_map": "position_map.json",
+    "requests": "requests.jsonl",
+    "results": "results.jsonl"
+  },
+  "partial": true,
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+  "prompt_version": "pair-joint-2026-11-12.1",
+  "python_version": "3.14.8",
+  "run_id": "pilot_mimo_8",
+  "run_label": "pair-joint-pilot-mimo",
+  "runner": "pair_joint.runner",
+  "runner_version": "1.0.0",
+  "schema_version": 1,
+  "selected_units": 8,
+  "session": {
+    "header": "x-opencode-session",
+    "is_secret": false,
+    "note": "Random per-run identifier for request routing; it is not an API key.",
+    "sha256": "47741f89419a845a7a5b103551ef0cedf0a3feee78a1bfec9fb981f24e65dbb5",
+    "source": "generated",
+    "value": "ses_4344af9b776a6cf1665bd046478c09ac"
+  },
+  "started_at": "2026-11-11T19:17:10.043+00:00",
+  "status": "completed",
+  "updated_at": "2026-11-11T19:17:19.174+00:00"
+}

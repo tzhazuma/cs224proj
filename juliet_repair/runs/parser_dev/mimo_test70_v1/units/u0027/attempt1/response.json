@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:42.146+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-1e81-763c-b2b4-5fd82ad3c4e4"
+      },
+      "http_status": 200,
+      "latency_seconds": 2.6110272700025234,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424839-7s62ADwsrAIDz3DeHAPq\",\"object\":\"chat.completion\",\"created\":1794424839,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01_bad()\\\\n{\\\\n    {\\\\n        twoIntsStruct * data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));\\\\n        if (data == NULL) {exit(-1);}\\\\n\\\\n        data[0].intOne = 0;\\\\n        data[0].intTwo = 0;\\\\n        printStructLine(&data[0]);\\\\n\\\\n        twoIntsStruct * newData = (twoIntsStruct *)realloc(data, (130000)*sizeof(twoIntsStruct));\\\\n        if (newData != NULL)\\\\n        {\\\\n            data = newData;\\\\n            data[0].intOne = 1;\\\\n            data[0].intTwo = 1;\\\\n            printStructLine(&data[0]);\\\\n            free(data);\\\\n        }\\\\n        else\\\\n        {\\\\n            free(data);\\\\n        }\\\\n    }\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The original code overwrote the data pointer with realloc's return value; if realloc failed (returned NULL), the original allocation was leaked. Now the realloc result is stored in a separate variable, and the original pointer is freed in both the success and failure paths, while preserving the same printed output and behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":441,\"completion_tokens\":345,\"total_tokens\":786,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00015834,\"allowance\":0.00015834,\"tokens\":{\"input\":441,\"output\":345,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:39.535+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01_bad()\\n{\\n    {\\n        twoIntsStruct * data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));\\n        if (data == NULL) {exit(-1);}\\n\\n        data[0].intOne = 0;\\n        data[0].intTwo = 0;\\n        printStructLine(&data[0]);\\n\\n        twoIntsStruct * newData = (twoIntsStruct *)realloc(data, (130000)*sizeof(twoIntsStruct));\\n        if (newData != NULL)\\n        {\\n            data = newData;\\n            data[0].intOne = 1;\\n            data[0].intTwo = 1;\\n            printStructLine(&data[0]);\\n            free(data);\\n        }\\n        else\\n        {\\n            free(data);\\n        }\\n    }\\n}\\n\"}], \"explanation\": \"The original code overwrote the data pointer with realloc's return value; if realloc failed (returned NULL), the original allocation was leaked. Now the realloc result is stored in a separate variable, and the original pointer is freed in both the success and failure paths, while preserving the same printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 345,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00015834000000000003,
+    "prompt_tokens": 441
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 2.6110272700025234,
+  "response_meta": {
+    "content_chars": 1173,
+    "created": 1794424839,
+    "finish_reason": "stop",
+    "id": "gen-1794424839-7s62ADwsrAIDz3DeHAPq",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0027",
+  "usage": {
+    "completion_tokens": 345,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00015834,
+      "billing_source": "go",
+      "list_cost": 0.00015834,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 441,
+        "output": 345,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 441,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 786
+  },
+  "wall_seconds": 2.611065643999609
+}

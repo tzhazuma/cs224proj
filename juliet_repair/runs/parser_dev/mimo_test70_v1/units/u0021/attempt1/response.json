@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:38.375+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-0d4b-7d70-ade4-8d80ce70aca0"
+      },
+      "http_status": 200,
+      "latency_seconds": 3.2566351119894534,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424835-hdnnvCHjTG4wlzJMagiQ\",\"object\":\"chat.completion\",\"created\":1794424835,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int_realloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__int_realloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    int * data;\\\\n    int * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (int *)realloc(data, 100*sizeof(int));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5;\\\\n    printIntLine(data[0]);\\\\n    {\\\\n        int * data = dataRef;\\\\n\\\\n        free(data);\\\\n        data = NULL;\\\\n    }\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\", \\\"content_note\\\": \\\"\\\"}], \\\"explanation\\\": \\\"The inner scope shadows the outer pointer but holds the same allocated buffer; freeing it there releases the memory while preserving the printed output and return status.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":367,\"completion_tokens\":227,\"total_tokens\":594,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":128,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00009738,\"allowance\":0.00009738,\"tokens\":{\"input\":239,\"output\":227,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:35.119+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int_realloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__int_realloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    int * data;\\n    int * &dataRef = data;\\n    data = NULL;\\n\\n    data = (int *)realloc(data, 100*sizeof(int));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5;\\n    printIntLine(data[0]);\\n    {\\n        int * data = dataRef;\\n\\n        free(data);\\n        data = NULL;\\n    }\\n}\\n\\n\\n}\\n\", \"content_note\": \"\"}], \"explanation\": \"The inner scope shadows the outer pointer but holds the same allocated buffer; freeing it there releases the memory while preserving the printed output and return status.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 227,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 9.737840000000002e-05,
+    "prompt_tokens": 367
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 3.2566351119894534,
+  "response_meta": {
+    "content_chars": 707,
+    "created": 1794424835,
+    "finish_reason": "stop",
+    "id": "gen-1794424835-hdnnvCHjTG4wlzJMagiQ",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0021",
+  "usage": {
+    "completion_tokens": 227,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 9.738e-05,
+      "billing_source": "go",
+      "list_cost": 9.738e-05,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 239,
+        "output": 227,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 367,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 128
+    },
+    "total_tokens": 594
+  },
+  "wall_seconds": 3.2566666479979176
+}

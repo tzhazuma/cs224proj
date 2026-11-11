@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:06.817+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc15-c34a-79c4-8b41-83b27e7472fd"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.8130583919992205,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794425340-oIy01MVGuvCiiJwqYhK9\",\"object\":\"chat.completion\",\"created\":1794425340,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int64_t_calloc_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__int64_t_calloc_01_bad()\\\\n{\\\\n    int64_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = (int64_t *)calloc(100, sizeof(int64_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5LL;\\\\n    printLongLongLine(data[0]);\\\\n\\\\n    free(data);\\\\n    data = NULL;\\\\n}\\\\n\\\", \\\"explanation\\\": \\\"Added free(data) after printing to release the calloc'd buffer, eliminating the memory leak while preserving output and behavior.\\\"}] }\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":359,\"completion_tokens\":197,\"total_tokens\":556,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":320,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00006152,\"allowance\":0.00006152,\"tokens\":{\"input\":39,\"output\":197,\"reasoning\":0,\"cache_read\":320,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:00.004+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int64_t_calloc_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__int64_t_calloc_01_bad()\\n{\\n    int64_t * data;\\n    data = NULL;\\n\\n    data = (int64_t *)calloc(100, sizeof(int64_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5LL;\\n    printLongLongLine(data[0]);\\n\\n    free(data);\\n    data = NULL;\\n}\\n\", \"explanation\": \"Added free(data) after printing to release the calloc'd buffer, eliminating the memory leak while preserving output and behavior.\"}] }",
+  "cost": {
+    "cached_prompt_tokens": 320,
+    "completion_tokens": 197,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 6.151600000000001e-05,
+    "prompt_tokens": 359
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.8130583919992205,
+  "response_meta": {
+    "content_chars": 560,
+    "created": 1794425340,
+    "finish_reason": "stop",
+    "id": "gen-1794425340-oIy01MVGuvCiiJwqYhK9",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0008",
+  "usage": {
+    "completion_tokens": 197,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 6.152e-05,
+      "billing_source": "go",
+      "list_cost": 6.152e-05,
+      "tokens": {
+        "cache_read": 320,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 39,
+        "output": 197,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 359,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 320
+    },
+    "total_tokens": 556
+  },
+  "wall_seconds": 6.813090846990235
+}

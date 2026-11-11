@@ -1,0 +1,10 @@
+--- a/CWE401_Memory_Leak__char_malloc_01.c
++++ b/CWE401_Memory_Leak__char_malloc_01.c
+@@ -14,5 +14,6 @@
+     strcpy(data, "A String");
+     printLine(data);
+ 
+-    ;
++    free(data);
++    data = NULL;
+ }

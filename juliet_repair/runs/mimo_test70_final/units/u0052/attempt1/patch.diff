@@ -1,0 +1,10 @@
+--- a/CWE401_Memory_Leak__new_twoIntsStruct_82a.cpp
++++ b/CWE401_Memory_Leak__new_twoIntsStruct_82a.cpp
+@@ -18,6 +18,7 @@
+     CWE401_Memory_Leak__new_twoIntsStruct_82_base* baseObject = new CWE401_Memory_Leak__new_twoIntsStruct_82_bad;
+     baseObject->action(data);
+     delete baseObject;
++    delete data;
+ }
+ 
+ 

@@ -1,0 +1,16 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_smoke_both/work/00003_juliet_int_malloc_01_bad.c:34:5: warning: Potential leak of memory pointed to by 'data' [unix.Malloc]
+   34 |     printIntLine(data[0]);
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_smoke_both/work/00003_juliet_int_malloc_01_bad.c:30:19: note: Memory is allocated
+   30 |     data = (int *)malloc(100*sizeof(int));
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_smoke_both/work/00003_juliet_int_malloc_01_bad.c:31:9: note: Assuming 'data' is not equal to NULL
+   31 |     if (data == NULL) {exit(-1);}
+      |         ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_smoke_both/work/00003_juliet_int_malloc_01_bad.c:31:5: note: Taking false branch
+   31 |     if (data == NULL) {exit(-1);}
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_smoke_both/work/00003_juliet_int_malloc_01_bad.c:34:5: note: Potential leak of memory pointed to by 'data'
+   34 |     printIntLine(data[0]);
+      |     ^
+1 warning generated.

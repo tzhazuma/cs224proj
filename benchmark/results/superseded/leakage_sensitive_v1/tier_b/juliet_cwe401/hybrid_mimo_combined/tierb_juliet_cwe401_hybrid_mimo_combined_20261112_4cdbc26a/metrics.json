@@ -1,0 +1,330 @@
+{
+  "schema_version": "benchmark-metrics-v1",
+  "run_id": "tierb_juliet_cwe401_hybrid_mimo_combined_20261112_4cdbc26a",
+  "protocol_version": "1.0.0",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "generated_at": "2026-11-11T19:55:34Z",
+  "settings": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "confidence": 0.95,
+    "cluster_unit": "record.cluster_id",
+    "coverage_threshold": 0.8,
+    "strict_policy": "non-ok records count as errors in strict_accuracy; valid-only metrics exclude them"
+  },
+  "tasks": {
+    "leak_detection": {
+      "detection": {
+        "scores": {
+          "n": 140,
+          "valid": 140,
+          "invalid": 0,
+          "coverage": 1.0,
+          "invalid_rate": 0.0,
+          "confusion": {
+            "tp": 70,
+            "fp": 2,
+            "tn": 68,
+            "fn": 0
+          },
+          "label_counts": {
+            "vulnerable": 70,
+            "non_vulnerable": 70
+          },
+          "precision": 0.9722222222222222,
+          "recall": 1.0,
+          "specificity": 0.9714285714285714,
+          "f1": 0.9859154929577465,
+          "negative_f1": 0.9855072463768116,
+          "macro_f1": 0.985711369667279,
+          "balanced_accuracy": 0.9857142857142858,
+          "accuracy": 0.9857142857142858,
+          "strict_accuracy": 0.9857142857142858,
+          "mcc": 0.97182531580755,
+          "mcc_degenerate": false,
+          "predicted_positive_rate": 0.5142857142857142,
+          "undefined_metrics": [],
+          "wilson": {
+            "precision": {
+              "successes": 70,
+              "total": 72,
+              "estimate": 0.9722222222222222,
+              "low": 0.9042582477856177,
+              "high": 0.9923489780955054,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            },
+            "recall": {
+              "successes": 70,
+              "total": 70,
+              "estimate": 1.0,
+              "low": 0.9479769375897331,
+              "high": 1.0,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            },
+            "specificity": {
+              "successes": 68,
+              "total": 70,
+              "estimate": 0.9714285714285714,
+              "low": 0.9016774388157609,
+              "high": 0.9921293880545587,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            },
+            "accuracy": {
+              "successes": 138,
+              "total": 140,
+              "estimate": 0.9857142857142858,
+              "low": 0.9494118460788701,
+              "high": 0.9960735592765573,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            },
+            "strict_accuracy": {
+              "successes": 138,
+              "total": 140,
+              "estimate": 0.9857142857142858,
+              "low": 0.9494118460788701,
+              "high": 0.9960735592765573,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            },
+            "coverage": {
+              "successes": 140,
+              "total": 140,
+              "estimate": 1.0,
+              "low": 0.9732937996305869,
+              "high": 0.9999999999999999,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            }
+          }
+        },
+        "bootstrap": {
+          "macro_f1": {
+            "ci_low": 0.9647450220964298,
+            "ci_high": 1.0,
+            "bootstrap_median": 0.9859126984126985,
+            "bootstrap_mean": 0.985662568810841,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "f1": {
+            "ci_low": 0.9659863945578231,
+            "ci_high": 1.0,
+            "bootstrap_median": 0.9861111111111112,
+            "bootstrap_mean": 0.9859608318758314,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "mcc": {
+            "ci_low": 0.9318911162960933,
+            "ci_high": 1.0,
+            "bootstrap_median": 0.9722167862426851,
+            "bootstrap_mean": 0.9719075502122598,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "balanced_accuracy": {
+            "ci_low": 0.9647887323943662,
+            "ci_high": 1.0,
+            "bootstrap_median": 0.9859154929577465,
+            "bootstrap_mean": 0.9856700280099074,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "accuracy": {
+            "ci_low": 0.9647887323943662,
+            "ci_high": 1.0,
+            "bootstrap_median": 0.9859154929577465,
+            "bootstrap_mean": 0.9856700280099074,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "strict_accuracy": {
+            "ci_low": 0.9647887323943662,
+            "ci_high": 1.0,
+            "bootstrap_median": 0.9859154929577465,
+            "bootstrap_mean": 0.9856700280099074,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          }
+        },
+        "cluster_count": 29,
+        "by_status": {
+          "ok": 140
+        },
+        "by_side": {
+          "bad": 70,
+          "good": 70
+        }
+      },
+      "coverage_strata": {
+        "ge_0.90": null,
+        "0.50_0.90": null,
+        "lt_0.50": null,
+        "unknown": {
+          "n": 140,
+          "valid": 140,
+          "invalid": 0,
+          "coverage": 1.0,
+          "invalid_rate": 0.0,
+          "confusion": {
+            "tp": 70,
+            "fp": 2,
+            "tn": 68,
+            "fn": 0
+          },
+          "label_counts": {
+            "vulnerable": 70,
+            "non_vulnerable": 70
+          },
+          "precision": 0.9722222222222222,
+          "recall": 1.0,
+          "specificity": 0.9714285714285714,
+          "f1": 0.9859154929577465,
+          "negative_f1": 0.9855072463768116,
+          "macro_f1": 0.985711369667279,
+          "balanced_accuracy": 0.9857142857142858,
+          "accuracy": 0.9857142857142858,
+          "strict_accuracy": 0.9857142857142858,
+          "mcc": 0.97182531580755,
+          "mcc_degenerate": false,
+          "predicted_positive_rate": 0.5142857142857142,
+          "undefined_metrics": [],
+          "wilson": {
+            "precision": {
+              "successes": 70,
+              "total": 72,
+              "estimate": 0.9722222222222222,
+              "low": 0.9042582477856177,
+              "high": 0.9923489780955054,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            },
+            "recall": {
+              "successes": 70,
+              "total": 70,
+              "estimate": 1.0,
+              "low": 0.9479769375897331,
+              "high": 1.0,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            },
+            "specificity": {
+              "successes": 68,
+              "total": 70,
+              "estimate": 0.9714285714285714,
+              "low": 0.9016774388157609,
+              "high": 0.9921293880545587,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            },
+            "accuracy": {
+              "successes": 138,
+              "total": 140,
+              "estimate": 0.9857142857142858,
+              "low": 0.9494118460788701,
+              "high": 0.9960735592765573,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            },
+            "strict_accuracy": {
+              "successes": 138,
+              "total": 140,
+              "estimate": 0.9857142857142858,
+              "low": 0.9494118460788701,
+              "high": 0.9960735592765573,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            },
+            "coverage": {
+              "successes": 140,
+              "total": 140,
+              "estimate": 1.0,
+              "low": 0.9732937996305869,
+              "high": 0.9999999999999999,
+              "confidence": 0.95,
+              "z": 1.9599639845400536,
+              "method": "wilson"
+            }
+          }
+        }
+      },
+      "inconclusive": {
+        "count": 0,
+        "coverage_inconclusive": 0,
+        "coverage_threshold": 0.8,
+        "policy": "clean prediction below threshold is excluded from valid-only and counted wrong in strict accuracy",
+        "strict_treated_as": "error"
+      },
+      "oracle_consistency": {
+        "counts": {
+          "unknown": 140
+        },
+        "mismatches": 0
+      }
+    }
+  },
+  "cost": {
+    "currency": "USD",
+    "usd_known_sum": 0.011963319200000001,
+    "usd_unknown_records": 0,
+    "usd_complete": true,
+    "wall_s_sum": 589.0550629109493,
+    "cpu_s_sum": null,
+    "peak_rss_mb_max": null,
+    "prompt_tokens_sum": 114501,
+    "completion_tokens_sum": 6675,
+    "cached_prompt_tokens_sum": 43264,
+    "latency_ms_p50": 2812.0396609956515,
+    "latency_ms_p95": 7945.666783994231,
+    "latency_samples": 140,
+    "cost_basis_counts": {
+      "api_price": 140
+    },
+    "cost_per_100_units_usd": 0.008545228,
+    "wall_s_per_100_units": 420.7536163649638,
+    "cost_per_true_positive_usd": 0.00017090456
+  },
+  "counts": {
+    "records": 140,
+    "planned_units": 140,
+    "by_task": {
+      "leak_detection": 140
+    },
+    "by_status": {
+      "ok": 140
+    },
+    "missing_units": 0
+  },
+  "provenance": {
+    "run_manifest_sha256": "ecbb23ffd169ae14f9edb2122d8d519c16c707fcfdf649b075b2043e39ef244a",
+    "predictions_sha256": "40032fea433696152231da34358aaa8fc5dd12045a6f9ae1343fa1d00db98868"
+  },
+  "notes": [
+    "Tasks and tiers are not pooled into a single score.",
+    "Detection and pair metrics use valid predictions only; strict accuracy is separate.",
+    "Leak clean predictions below the coverage threshold are inconclusive, not true negatives.",
+    "Cost is a known-sum plus unknown count, never an imputed total."
+  ]
+}

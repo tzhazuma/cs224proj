@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:57.154+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-8a27-7b9f-a8a5-84bf6f5b93b9"
+      },
+      "http_status": 200,
+      "latency_seconds": 5.771692582013202,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794425391-ykgU97E4tlQZP06JlX8d\",\"object\":\"chat.completion\",\"created\":1794425391,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_int_72b.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include <vector>\\\\n\\\\n#include <wchar.h>\\\\n\\\\nusing namespace std;\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int_72\\\\n{\\\\n\\\\n\\\\nvoid badSink(vector<int *> dataVector)\\\\n{\\\\n\\\\n    int * data = dataVector[2];\\\\n\\\\n    delete data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The sink takes ownership of the pointer stored in the vector but never frees it. Adding `delete data;` in badSink releases the allocated int, eliminating the leak while preserving printed output and return status.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":474,\"completion_tokens\":165,\"total_tokens\":639,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":448,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00005109,\"allowance\":0.00005109,\"tokens\":{\"input\":26,\"output\":165,\"reasoning\":0,\"cache_read\":448,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:51.382+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_int_72b.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include <vector>\\n\\n#include <wchar.h>\\n\\nusing namespace std;\\n\\nnamespace CWE401_Memory_Leak__new_int_72\\n{\\n\\n\\nvoid badSink(vector<int *> dataVector)\\n{\\n\\n    int * data = dataVector[2];\\n\\n    delete data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The sink takes ownership of the pointer stored in the vector but never frees it. Adding `delete data;` in badSink releases the allocated int, eliminating the leak while preserving printed output and return status.\"}",
+  "cost": {
+    "cached_prompt_tokens": 448,
+    "completion_tokens": 165,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 5.109440000000001e-05,
+    "prompt_tokens": 474
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 5.771692582013202,
+  "response_meta": {
+    "content_chars": 560,
+    "created": 1794425391,
+    "finish_reason": "stop",
+    "id": "gen-1794425391-ykgU97E4tlQZP06JlX8d",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0049",
+  "usage": {
+    "completion_tokens": 165,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 5.109e-05,
+      "billing_source": "go",
+      "list_cost": 5.109e-05,
+      "tokens": {
+        "cache_read": 448,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 26,
+        "output": 165,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 474,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 448
+    },
+    "total_tokens": 639
+  },
+  "wall_seconds": 5.77171785000246
+}

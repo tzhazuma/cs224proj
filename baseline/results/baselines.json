@@ -1,0 +1,438 @@
+{
+  "schema_version": 1,
+  "kind": "reference_baseline_not_llm",
+  "generated_at_utc": "2026-11-11T07:01:53Z",
+  "provenance": {
+    "audit_json_sha256": "bcf891867e77ed8bf12bfee40ec8d5626523f6a46d27cc7deafea48755cdec5f",
+    "inputs": {
+      "independent_200.json": {
+        "path": "datasets/independent_200.json",
+        "exists": true,
+        "bytes": 1106950,
+        "sha256": "055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d"
+      },
+      "vulnerable_fixed_200_pairs.json": {
+        "path": "datasets/vulnerable_fixed_200_pairs.json",
+        "exists": true,
+        "bytes": 2071482,
+        "sha256": "7028b98d6f2c13b960bd08dd2e737e2ba61732b89dba03e3f173fe44c27214d5"
+      }
+    },
+    "random_seed": 42,
+    "network_access": false,
+    "llm_calls": 0,
+    "api_calls": 0
+  },
+  "label_convention": {
+    "positive": "vulnerable",
+    "negative": "non_vulnerable",
+    "matrix_order": "[[TN, FP], [FN, TP]]",
+    "matrix_rows": [
+      "actual non-vulnerable",
+      "actual vulnerable"
+    ],
+    "matrix_columns": [
+      "predicted non-vulnerable",
+      "predicted vulnerable"
+    ]
+  },
+  "metrics_definitions": {
+    "accuracy": "(TP + TN) / N",
+    "precision": "TP / (TP + FP); null when no positive prediction is made",
+    "recall": "TP / (TP + FN)",
+    "f1": "2 * precision * recall / (precision + recall); null when undefined",
+    "specificity": "TN / (TN + FP)",
+    "balanced_accuracy": "(recall + specificity) / 2",
+    "pair_both_correct": "both members of a pair classified correctly / number of pairs",
+    "pair_at_least_one_correct": "at least one member classified correctly / number of pairs",
+    "accuracy_ci95_wilson": "Wilson score interval, descriptive"
+  },
+  "independent": {
+    "n": 200,
+    "label_counts": {
+      "vulnerable": 160,
+      "non_vulnerable": 40
+    },
+    "baselines": {
+      "always_vulnerable_majority": {
+        "id": "always_vulnerable_majority",
+        "display_name_zh": "永远预测有漏洞（多数类）",
+        "kind": "reference_baseline",
+        "is_llm": false,
+        "uses_code": false,
+        "description": "Predict every independent function as vulnerable. This is the majority-class baseline.",
+        "rule": "prediction = True for every sample",
+        "n": 200,
+        "n_positive": 160,
+        "n_negative": 40,
+        "confusion_matrix": {
+          "tn": 0,
+          "fp": 40,
+          "fn": 0,
+          "tp": 160
+        },
+        "matrix": [
+          [
+            0,
+            40
+          ],
+          [
+            0,
+            160
+          ]
+        ],
+        "predicted_positive_count": 200,
+        "predicted_negative_count": 0,
+        "metrics": {
+          "accuracy": 0.8,
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1": 0.888889,
+          "specificity": 0.0,
+          "balanced_accuracy": 0.5,
+          "false_positive_rate": 1.0,
+          "false_negative_rate": 0.0,
+          "accuracy_ci95_wilson": [
+            0.739145,
+            0.849548
+          ]
+        },
+        "undefined_metrics": []
+      },
+      "always_non_vulnerable": {
+        "id": "always_non_vulnerable",
+        "display_name_zh": "永远预测无漏洞",
+        "kind": "reference_baseline",
+        "is_llm": false,
+        "uses_code": false,
+        "description": "Predict every independent function as non-vulnerable; included to expose the accuracy/recall tradeoff.",
+        "rule": "prediction = False for every sample",
+        "n": 200,
+        "n_positive": 160,
+        "n_negative": 40,
+        "confusion_matrix": {
+          "tn": 40,
+          "fp": 0,
+          "fn": 160,
+          "tp": 0
+        },
+        "matrix": [
+          [
+            40,
+            0
+          ],
+          [
+            160,
+            0
+          ]
+        ],
+        "predicted_positive_count": 0,
+        "predicted_negative_count": 200,
+        "metrics": {
+          "accuracy": 0.2,
+          "precision": null,
+          "recall": 0.0,
+          "f1": null,
+          "specificity": 1.0,
+          "balanced_accuracy": 0.5,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 1.0,
+          "accuracy_ci95_wilson": [
+            0.150452,
+            0.260855
+          ]
+        },
+        "undefined_metrics": [
+          "precision",
+          "f1"
+        ]
+      }
+    }
+  },
+  "paired": {
+    "n_pairs": 200,
+    "n_function_records": 400,
+    "label_counts": {
+      "vulnerable": 200,
+      "non_vulnerable": 200
+    },
+    "baselines": {
+      "always_vulnerable_both": {
+        "id": "always_vulnerable_both",
+        "display_name_zh": "永远预测有漏洞（配对两侧）",
+        "kind": "reference_baseline",
+        "is_llm": false,
+        "uses_code": false,
+        "description": "Predict vulnerable for both members of every pair.",
+        "rule": "prediction = (True, True) for every pair",
+        "n": 400,
+        "n_positive": 200,
+        "n_negative": 200,
+        "confusion_matrix": {
+          "tn": 0,
+          "fp": 200,
+          "fn": 0,
+          "tp": 200
+        },
+        "matrix": [
+          [
+            0,
+            200
+          ],
+          [
+            0,
+            200
+          ]
+        ],
+        "predicted_positive_count": 400,
+        "predicted_negative_count": 0,
+        "metrics": {
+          "accuracy": 0.5,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.666667,
+          "specificity": 0.0,
+          "balanced_accuracy": 0.5,
+          "false_positive_rate": 1.0,
+          "false_negative_rate": 0.0,
+          "accuracy_ci95_wilson": [
+            0.451235,
+            0.548765
+          ]
+        },
+        "undefined_metrics": [],
+        "pair_metrics": {
+          "n_pairs": 200,
+          "both_correct_count": 0,
+          "both_correct_rate": 0.0,
+          "both_correct_ci95_wilson": [
+            0.0,
+            0.018845
+          ],
+          "at_least_one_correct_count": 200,
+          "at_least_one_correct_rate": 1.0,
+          "both_wrong_count": 0,
+          "both_wrong_rate": 0.0,
+          "vulnerable_member_correct_count": 200,
+          "vulnerable_member_correct_rate": 1.0,
+          "fixed_member_correct_count": 0,
+          "fixed_member_correct_rate": 0.0
+        }
+      },
+      "always_non_vulnerable_both": {
+        "id": "always_non_vulnerable_both",
+        "display_name_zh": "永远预测无漏洞（配对两侧）",
+        "kind": "reference_baseline",
+        "is_llm": false,
+        "uses_code": false,
+        "description": "Predict non-vulnerable for both members of every pair.",
+        "rule": "prediction = (False, False) for every pair",
+        "n": 400,
+        "n_positive": 200,
+        "n_negative": 200,
+        "confusion_matrix": {
+          "tn": 200,
+          "fp": 0,
+          "fn": 200,
+          "tp": 0
+        },
+        "matrix": [
+          [
+            200,
+            0
+          ],
+          [
+            200,
+            0
+          ]
+        ],
+        "predicted_positive_count": 0,
+        "predicted_negative_count": 400,
+        "metrics": {
+          "accuracy": 0.5,
+          "precision": null,
+          "recall": 0.0,
+          "f1": null,
+          "specificity": 1.0,
+          "balanced_accuracy": 0.5,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 1.0,
+          "accuracy_ci95_wilson": [
+            0.451235,
+            0.548765
+          ]
+        },
+        "undefined_metrics": [
+          "precision",
+          "f1"
+        ],
+        "pair_metrics": {
+          "n_pairs": 200,
+          "both_correct_count": 0,
+          "both_correct_rate": 0.0,
+          "both_correct_ci95_wilson": [
+            0.0,
+            0.018845
+          ],
+          "at_least_one_correct_count": 200,
+          "at_least_one_correct_rate": 1.0,
+          "both_wrong_count": 0,
+          "both_wrong_rate": 0.0,
+          "vulnerable_member_correct_count": 0,
+          "vulnerable_member_correct_rate": 0.0,
+          "fixed_member_correct_count": 200,
+          "fixed_member_correct_rate": 1.0
+        }
+      },
+      "random_member_seeded": {
+        "id": "random_member_seeded",
+        "display_name_zh": "配对内随机指定一个有漏洞",
+        "kind": "reference_baseline",
+        "is_llm": false,
+        "uses_code": false,
+        "description": "For each pair, randomly designate exactly one member as vulnerable. This is the chance-level correspondence baseline.",
+        "rule": "per pair: choose (True, False) or (False, True) with probability 0.5",
+        "n": 400,
+        "n_positive": 200,
+        "n_negative": 200,
+        "confusion_matrix": {
+          "tn": 103,
+          "fp": 97,
+          "fn": 97,
+          "tp": 103
+        },
+        "matrix": [
+          [
+            103,
+            97
+          ],
+          [
+            97,
+            103
+          ]
+        ],
+        "predicted_positive_count": 200,
+        "predicted_negative_count": 200,
+        "metrics": {
+          "accuracy": 0.515,
+          "precision": 0.515,
+          "recall": 0.515,
+          "f1": 0.515,
+          "specificity": 0.515,
+          "balanced_accuracy": 0.515,
+          "false_positive_rate": 0.485,
+          "false_negative_rate": 0.485,
+          "accuracy_ci95_wilson": [
+            0.466114,
+            0.563601
+          ]
+        },
+        "undefined_metrics": [],
+        "pair_metrics": {
+          "n_pairs": 200,
+          "both_correct_count": 103,
+          "both_correct_rate": 0.515,
+          "both_correct_ci95_wilson": [
+            0.446108,
+            0.583326
+          ],
+          "at_least_one_correct_count": 103,
+          "at_least_one_correct_rate": 0.515,
+          "both_wrong_count": 97,
+          "both_wrong_rate": 0.485,
+          "vulnerable_member_correct_count": 103,
+          "vulnerable_member_correct_rate": 0.515,
+          "fixed_member_correct_count": 103,
+          "fixed_member_correct_rate": 0.515
+        },
+        "seed": 42,
+        "is_chance_reference": true,
+        "chosen_vulnerable_slot_count": 103
+      },
+      "pair_slot_oracle_leakage": {
+        "id": "pair_slot_oracle_leakage",
+        "display_name_zh": "配对槽位 oracle（泄漏，不是检测器）",
+        "kind": "reference_baseline",
+        "is_llm": false,
+        "uses_code": false,
+        "description": "Predict the member stored in the 'vulnerable' slot as vulnerable and the 'fixed' slot as fixed.",
+        "rule": "prediction = (True, False) for every pair, using JSON member order",
+        "n": 400,
+        "n_positive": 200,
+        "n_negative": 200,
+        "confusion_matrix": {
+          "tn": 200,
+          "fp": 0,
+          "fn": 0,
+          "tp": 200
+        },
+        "matrix": [
+          [
+            200,
+            0
+          ],
+          [
+            0,
+            200
+          ]
+        ],
+        "predicted_positive_count": 200,
+        "predicted_negative_count": 200,
+        "metrics": {
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "specificity": 1.0,
+          "balanced_accuracy": 1.0,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 0.0,
+          "accuracy_ci95_wilson": [
+            0.990488,
+            1.0
+          ]
+        },
+        "undefined_metrics": [],
+        "pair_metrics": {
+          "n_pairs": 200,
+          "both_correct_count": 200,
+          "both_correct_rate": 1.0,
+          "both_correct_ci95_wilson": [
+            0.981155,
+            1.0
+          ],
+          "at_least_one_correct_count": 200,
+          "at_least_one_correct_rate": 1.0,
+          "both_wrong_count": 0,
+          "both_wrong_rate": 0.0,
+          "vulnerable_member_correct_count": 200,
+          "vulnerable_member_correct_rate": 1.0,
+          "fixed_member_correct_count": 200,
+          "fixed_member_correct_rate": 1.0
+        },
+        "is_detector": false,
+        "is_leakage_sentinel": true,
+        "exclude_from_method_comparison": true,
+        "uses_dataset_construction_artifact": true,
+        "warning": "The paired JSON is always ordered (vulnerable, fixed). The 100% score measures slot order, not vulnerability detection."
+      }
+    }
+  },
+  "reference_points": {
+    "independent_majority_accuracy": 0.8,
+    "paired_per_function_chance_accuracy": 0.5,
+    "paired_pair_both_correct_chance": 0.5,
+    "paired_slot_oracle_pair_both_correct": 1.0,
+    "note": "The independent majority baseline equals the observed vulnerable prevalence. The paired random-member baseline has 50% per-function accuracy and 50% pair both-correct in expectation. The slot oracle's 100% is leakage."
+  },
+  "notes": [
+    "All entries here are deterministic reference baselines, not LLM methods.",
+    "No network, API or credential access is used by this script.",
+    "Independent majority accuracy is 80% because 160/200 samples are vulnerable; it is a floor, not evidence of detection.",
+    "Always-non-vulnerable makes no positive predictions, so precision and F1 are undefined (null).",
+    "Paired per-function metrics treat 400 member records as rows; members within a pair are dependent, so these metrics are descriptive and the Wilson interval is not a clustered interval.",
+    "Pair both-correct is the strict paired metric: both members must be classified correctly.",
+    "Random-member is one seeded realization; the analytic expectation of pair both-correct is 0.5.",
+    "The slot oracle is a label-leakage sentinel and must not be reported as a detector."
+  ]
+}

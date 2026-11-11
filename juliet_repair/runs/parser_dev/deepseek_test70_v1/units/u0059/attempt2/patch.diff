@@ -1,0 +1,9 @@
+--- a/CWE401_Memory_Leak__twoIntsStruct_malloc_68a.c
++++ b/CWE401_Memory_Leak__twoIntsStruct_malloc_68a.c
+@@ -20,4 +20,6 @@
+     printStructLine(&data[0]);
+     CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData = data;
+     CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink();
++    free(data);
++    CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData = NULL;
+ }

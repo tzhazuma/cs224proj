@@ -1,0 +1,73 @@
+{
+  "run_id": "dev_pilot_few-shot_pairs",
+  "path": "runner/runs/dev_pilot_few-shot_pairs",
+  "category": "runner",
+  "class": "pilot",
+  "model": "deepseek-v4.1-flash",
+  "model_key": "deepseek",
+  "endpoint": "https://opencode.ai/zen/go/v1",
+  "artifact": "results.jsonl",
+  "records": 9,
+  "expected_records": 9,
+  "data_complete": true,
+  "unit_results": 9,
+  "usage_records": 9,
+  "statuses": {
+    "ok": 9
+  },
+  "configured_prices_usd_per_1m": {
+    "input": 0.3,
+    "output": 1.2,
+    "cached_input": 0.006
+  },
+  "normalized_prices_usd_per_1m": {
+    "input": 0.15,
+    "output": 0.6,
+    "cached_input": 0.003
+  },
+  "tokens": {
+    "input_uncached": 13446,
+    "cached_input": 14464,
+    "output": 3778,
+    "reasoning": 0,
+    "cache_write": 0
+  },
+  "configured_recorded_usd": 0.012906599999999999,
+  "configured_cache_aware_usd": 0.008654183999999999,
+  "configured_no_cache_usd": 0.012906599999999999,
+  "normalized_list_usd": 0.004327091999999999,
+  "provider_list_usd": 0.00432708,
+  "provider_allowance_usd": 0.00259628,
+  "window_utc": {
+    "start": "2026-11-11T11:15:04.558000+00:00",
+    "end": "2026-11-11T11:15:29.922000+00:00",
+    "source": "request timestamps"
+  },
+  "checks": {
+    "configured_basis": "prompt_at_input_price_no_cache_discount",
+    "configured_recorded_matches_declared_basis": true,
+    "configured_cache_aware_matches_recorded": false,
+    "token_reconciliation": true,
+    "token_mismatch_rows": 0,
+    "missing_cost_rows": 0,
+    "usage_rows_with_timestamp": 9,
+    "usage_rows_missing_timestamp": 0,
+    "peak_rows": 0,
+    "all_usage_rows_off_peak": true,
+    "provider_list_rows": 9,
+    "provider_allowance_rows": 9,
+    "provider_list_rel_dev_vs_normalized": -2.773225066570173e-06,
+    "provider_list_max_row_rel_dev": 3.742374911101443e-05,
+    "provider_list_matches_normalized": true,
+    "source_artifact_unchanged": true
+  },
+  "source": {
+    "artifact": "runner/runs/dev_pilot_few-shot_pairs/results.jsonl",
+    "artifact_sha256": "7d86e791451a4c79d67ee86819f7f0881ed5eb9a9f53c4f457a9b43d67153ad7",
+    "config": "runner/runs/dev_pilot_few-shot_pairs/config.json",
+    "config_sha256": "27e5e3cd9fc9a5d7a63d4e4590d4f7ebd9659e57105d3cf988a11b92d2058fcb"
+  },
+  "notes": [
+    "Legacy recorded cost bills every prompt token at the input price; the cache discount is not applied in the stored figure."
+  ]
+}

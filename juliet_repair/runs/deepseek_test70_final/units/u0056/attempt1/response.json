@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:30:07.757+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-b0be-7cd2-9c39-9de2cc09ae81"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.486893915993278,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-48dd573c81e943729da9b61811da9d5e\",\"object\":\"chat.completion\",\"created\":1794425401,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__twoIntsStruct_calloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__twoIntsStruct_calloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    twoIntsStruct * data;\\\\n    twoIntsStruct * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (twoIntsStruct *)calloc(100, sizeof(twoIntsStruct));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0].intOne = 0;\\\\n    data[0].intTwo = 0;\\\\n    printStructLine(&data[0]);\\\\n    {\\\\n        twoIntsStruct * data = dataRef;\\\\n\\\\n        ;\\\\n    }\\\\n    free(data);\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added free(data) at the end of bad() to release the calloc-allocated buffer, preserving all printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":419,\"completion_tokens\":252,\"total_tokens\":671,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00019523,\"allowance\":0.00011714,\"tokens\":{\"input\":291,\"output\":252,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:30:01.270+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__twoIntsStruct_calloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__twoIntsStruct_calloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    twoIntsStruct * data;\\n    twoIntsStruct * &dataRef = data;\\n    data = NULL;\\n\\n    data = (twoIntsStruct *)calloc(100, sizeof(twoIntsStruct));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0].intOne = 0;\\n    data[0].intTwo = 0;\\n    printStructLine(&data[0]);\\n    {\\n        twoIntsStruct * data = dataRef;\\n\\n        ;\\n    }\\n    free(data);\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added free(data) at the end of bad() to release the calloc-allocated buffer, preserving all printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 252,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00039046799999999993,
+    "prompt_tokens": 419
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.486893915993278,
+  "response_meta": {
+    "content_chars": 720,
+    "created": 1794425401,
+    "finish_reason": "stop",
+    "id": "chatcmpl-48dd573c81e943729da9b61811da9d5e",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0056",
+  "usage": {
+    "completion_tokens": 252,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00011714,
+      "billing_source": "go",
+      "list_cost": 0.00019523,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 291,
+        "output": 252,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 419,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 671
+  },
+  "wall_seconds": 6.486969856006908
+}

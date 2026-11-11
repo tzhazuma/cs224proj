@@ -1,0 +1,90 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__new_TwoIntsClass_68b.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 158,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.00010962000000000001,
+        "prompt_tokens": 467
+      },
+      "elapsed_seconds": 7.674,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.017
+        },
+        "strict_evaluable": false,
+        "strict_pass": false
+      },
+      "parse_error": null,
+      "parsed_explanation": "The allocated TwoIntsClass object was never freed in badSink(). Added a delete of the data pointer to release the memory while preserving the printed output and entry points.",
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 158,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.00010962,
+          "billing_source": "go",
+          "list_cost": 0.00010962,
+          "tokens": {
+            "cache_read": 0,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 467,
+            "output": 158,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 467,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 625
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 0,
+  "changed_paths": [
+    "CWE401_Memory_Leak__new_TwoIntsClass_68b.cpp"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 158,
+  "cost_complete": true,
+  "cost_usd_sum": 0.00010962,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__new_TwoIntsClass_68",
+  "language": "cpp",
+  "leak_removed": true,
+  "model": "mimo-v2.6-flash",
+  "model_alias": "mimo",
+  "prompt_tokens_sum": 467,
+  "schema": "juliet-repair-result-v1",
+  "strict_evaluable": false,
+  "strict_pass": false,
+  "unit_id": "CWE401_Memory_Leak__new_TwoIntsClass_68__bad",
+  "unit_key": "u0030"
+}

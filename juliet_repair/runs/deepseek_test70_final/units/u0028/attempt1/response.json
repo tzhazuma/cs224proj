@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:30.498+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-1178-7e42-838e-1a9d301162b3"
+      },
+      "http_status": 200,
+      "latency_seconds": 10.046739987010369,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-243223c2508b425fbd29ae87c1bc7c48\",\"object\":\"chat.completion\",\"created\":1794425360,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18_bad()\\\\n{\\\\n    goto sink;\\\\nsink:\\\\n    {\\\\n        twoIntsStruct * data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));\\\\n        if (data == NULL) {exit(-1);}\\\\n\\\\n        data[0].intOne = 0;\\\\n        data[0].intTwo = 0;\\\\n        printStructLine(&data[0]);\\\\n\\\\n        {\\\\n            twoIntsStruct *tmp = (twoIntsStruct *)realloc(data, (130000)*sizeof(twoIntsStruct));\\\\n            if (tmp != NULL)\\\\n            {\\\\n                data = tmp;\\\\n                data[0].intOne = 1;\\\\n                data[0].intTwo = 1;\\\\n                printStructLine(&data[0]);\\\\n            }\\\\n            free(data);\\\\n        }\\\\n    }\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The original code overwrote the only pointer to the malloc'd block with the realloc result. If realloc failed (returning NULL), the original block leaked. The fix stores realloc's result in a temporary, only replacing data on success, and always frees the still-valid pointer, preserving the same printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":460,\"completion_tokens\":346,\"total_tokens\":806,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00025778,\"allowance\":0.00015467,\"tokens\":{\"input\":332,\"output\":346,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:20.451+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18_bad()\\n{\\n    goto sink;\\nsink:\\n    {\\n        twoIntsStruct * data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));\\n        if (data == NULL) {exit(-1);}\\n\\n        data[0].intOne = 0;\\n        data[0].intTwo = 0;\\n        printStructLine(&data[0]);\\n\\n        {\\n            twoIntsStruct *tmp = (twoIntsStruct *)realloc(data, (130000)*sizeof(twoIntsStruct));\\n            if (tmp != NULL)\\n            {\\n                data = tmp;\\n                data[0].intOne = 1;\\n                data[0].intTwo = 1;\\n                printStructLine(&data[0]);\\n            }\\n            free(data);\\n        }\\n    }\\n}\\n\"}], \"explanation\": \"The original code overwrote the only pointer to the malloc'd block with the realloc result. If realloc failed (returning NULL), the original block leaked. The fix stores realloc's result in a temporary, only replacing data on success, and always frees the still-valid pointer, preserving the same printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 346,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000515568,
+    "prompt_tokens": 460
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 10.046739987010369,
+  "response_meta": {
+    "content_chars": 1172,
+    "created": 1794425360,
+    "finish_reason": "stop",
+    "id": "chatcmpl-243223c2508b425fbd29ae87c1bc7c48",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0028",
+  "usage": {
+    "completion_tokens": 346,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00015467,
+      "billing_source": "go",
+      "list_cost": 0.00025778,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 332,
+        "output": 346,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 460,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 806
+  },
+  "wall_seconds": 10.046766803003266
+}

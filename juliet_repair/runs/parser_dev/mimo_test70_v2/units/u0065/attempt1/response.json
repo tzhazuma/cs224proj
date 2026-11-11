@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:22:46.762+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0f-f997-7e81-9c17-be800eff425d"
+      },
+      "http_status": 200,
+      "latency_seconds": 5.679392353995354,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424961-4KoTHT5cOQQN5hWEsQIY\",\"object\":\"chat.completion\",\"created\":1794424961,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__wchar_t_calloc_68b.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n#include <stdlib.h>\\\\n\\\\nextern wchar_t * CWE401_Memory_Leak__wchar_t_calloc_68_badData;\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__wchar_t_calloc_68b_badSink()\\\\n{\\\\n    wchar_t * data = CWE401_Memory_Leak__wchar_t_calloc_68_badData;\\\\n\\\\n    free(data);\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The sink function receives the heap-allocated buffer via the global badData pointer but never frees it. Added free(data) in CWE401_Memory_Leak__wchar_t_calloc_68b_badSink() to release the memory after it has been printed, preserving the printed output and return status.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":550,\"completion_tokens\":214,\"total_tokens\":764,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00013692,\"allowance\":0.00013692,\"tokens\":{\"input\":550,\"output\":214,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:22:41.082+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__wchar_t_calloc_68b.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n#include <stdlib.h>\\n\\nextern wchar_t * CWE401_Memory_Leak__wchar_t_calloc_68_badData;\\n\\n\\nvoid CWE401_Memory_Leak__wchar_t_calloc_68b_badSink()\\n{\\n    wchar_t * data = CWE401_Memory_Leak__wchar_t_calloc_68_badData;\\n\\n    free(data);\\n}\\n\"}], \"explanation\": \"The sink function receives the heap-allocated buffer via the global badData pointer but never frees it. Added free(data) in CWE401_Memory_Leak__wchar_t_calloc_68b_badSink() to release the memory after it has been printed, preserving the printed output and return status.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 214,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00013692,
+    "prompt_tokens": 550
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 5.679392353995354,
+  "response_meta": {
+    "content_chars": 661,
+    "created": 1794424961,
+    "finish_reason": "stop",
+    "id": "gen-1794424961-4KoTHT5cOQQN5hWEsQIY",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0065",
+  "usage": {
+    "completion_tokens": 214,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00013692,
+      "billing_source": "go",
+      "list_cost": 0.00013692,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 550,
+        "output": 214,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 550,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 764
+  },
+  "wall_seconds": 5.6794201849988895
+}

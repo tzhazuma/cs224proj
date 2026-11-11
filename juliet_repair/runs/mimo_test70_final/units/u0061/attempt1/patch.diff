@@ -1,0 +1,12 @@
+--- a/CWE401_Memory_Leak__twoIntsStruct_realloc_22b.c
++++ b/CWE401_Memory_Leak__twoIntsStruct_realloc_22b.c
+@@ -9,7 +9,7 @@
+ {
+     if(CWE401_Memory_Leak__twoIntsStruct_realloc_22_badGlobal)
+     {
+-
+-        ;
++        free(data);
++        data = NULL;
+     }
+ }

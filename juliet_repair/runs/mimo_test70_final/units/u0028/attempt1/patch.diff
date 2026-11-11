@@ -1,0 +1,24 @@
+--- a/CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18.c
++++ b/CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18.c
+@@ -15,14 +15,18 @@
+         data[0].intTwo = 0;
+         printStructLine(&data[0]);
+ 
+-        data = (twoIntsStruct *)realloc(data, (130000)*sizeof(twoIntsStruct));
+-        if (data != NULL)
++        twoIntsStruct * newData = (twoIntsStruct *)realloc(data, (130000)*sizeof(twoIntsStruct));
++        if (newData != NULL)
+         {
+-
++            data = newData;
+             data[0].intOne = 1;
+             data[0].intTwo = 1;
+             printStructLine(&data[0]);
+             free(data);
+         }
++        else
++        {
++            free(data);
++        }
+     }
+ }

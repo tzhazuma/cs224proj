@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:48.539+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-5705-76b8-9c32-670e146a4ba8"
+      },
+      "http_status": 200,
+      "latency_seconds": 10.257826418004697,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-78186f0b98a14455b3ddf759656c783c\",\"object\":\"chat.completion\",\"created\":1794425378,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_int64_t_01.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int64_t_01\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    int64_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = new int64_t;\\\\n\\\\n    *data = 5LL;\\\\n    printLongLongLine(*data);\\\\n\\\\n    delete data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added delete data to free the heap allocation after printing, preserving output and behavior while eliminating the memory leak.\\\"}\"}}],\"usage\":{\"prompt_tokens\":344,\"completion_tokens\":161,\"total_tokens\":505,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00012938,\"allowance\":0.00007763,\"tokens\":{\"input\":216,\"output\":161,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:38.281+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_int64_t_01.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_int64_t_01\\n{\\n\\n\\nvoid bad()\\n{\\n    int64_t * data;\\n    data = NULL;\\n\\n    data = new int64_t;\\n\\n    *data = 5LL;\\n    printLongLongLine(*data);\\n\\n    delete data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added delete data to free the heap allocation after printing, preserving output and behavior while eliminating the memory leak.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 161,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000258768,
+    "prompt_tokens": 344
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 10.257826418004697,
+  "response_meta": {
+    "content_chars": 492,
+    "created": 1794425378,
+    "finish_reason": "stop",
+    "id": "chatcmpl-78186f0b98a14455b3ddf759656c783c",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0045",
+  "usage": {
+    "completion_tokens": 161,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 7.763e-05,
+      "billing_source": "go",
+      "list_cost": 0.00012938,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 216,
+        "output": 161,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 344,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 505
+  },
+  "wall_seconds": 10.257851467002183
+}

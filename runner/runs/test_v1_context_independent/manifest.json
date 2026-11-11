@@ -1,0 +1,200 @@
+{
+  "api": {
+    "api_key_env": "OPENCODE_API_KEY",
+    "api_key_present": true,
+    "api_key_value_stored": false,
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.006,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "input_price_usd_per_1m": 0.3,
+    "max_attempts": 3,
+    "max_tokens": 8192,
+    "model": "deepseek-v4.1-flash",
+    "output_price_usd_per_1m": 1.2,
+    "response_format": "json_object",
+    "session": {
+      "header": "x-opencode-session",
+      "is_secret": false,
+      "note": "Random per-run identifier used only for OpenCode Go request routing and prompt-cache affinity. It is not an API key; Authorization is never written to run artifacts.",
+      "sha256": "50a47566ca6411598d14d0a3d39806246fd9a053d85ad5ffe81539f7963fb4f5",
+      "source": "generated",
+      "value": "ses_c85dd974bfe714af3940805f9ff90b27"
+    },
+    "temperature": 0.0,
+    "timeout_seconds": 180.0,
+    "user_agent": "secvul-eval-runner/1.0"
+  },
+  "completed_at": "2026-11-11T11:54:41.433+00:00",
+  "concurrency": 8,
+  "config": {
+    "api": {
+      "backoff_base_seconds": 1.5,
+      "backoff_cap_seconds": 30.0,
+      "base_url": "https://opencode.ai/zen/go/v1",
+      "cached_input_price_usd_per_1m": 0.006,
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "input_price_usd_per_1m": 0.3,
+      "max_attempts": 3,
+      "max_tokens": 8192,
+      "model": "deepseek-v4.1-flash",
+      "output_price_usd_per_1m": 1.2,
+      "response_format": "json_object",
+      "temperature": 0.0,
+      "timeout_seconds": 180.0,
+      "user_agent": "secvul-eval-runner/1.0"
+    },
+    "api_key_env": "OPENCODE_API_KEY",
+    "concurrency": 8,
+    "config_fingerprint": "864f49a5160d77a85907c49ce3ebbed4a7bc780863292d269589553180a29c9e",
+    "dataset_path": "splits/test_detection_160.json",
+    "dataset_sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "dataset_type": "independent",
+    "dataset_units": 160,
+    "dev_examples": null,
+    "dry_run": false,
+    "expected_requests": 288,
+    "limit": 0,
+    "partial": false,
+    "prompt_version": "secvul-prompt-2026-11-11.1",
+    "refresh": false,
+    "retry_invalid": false,
+    "reuse_cached_errors": false,
+    "runner_version": "1.0.0",
+    "selected_units": 160,
+    "strategy": "context",
+    "task": "both"
+  },
+  "config_fingerprint": "864f49a5160d77a85907c49ce3ebbed4a7bc780863292d269589553180a29c9e",
+  "counts": {
+    "by_status": {
+      "invalid": 20,
+      "ok": 268
+    },
+    "cache_hits": 0,
+    "detection": 160,
+    "planned_requests": 288,
+    "recorded_requests": 288,
+    "repair": 128
+  },
+  "created_at": "2026-11-11T11:48:57.541+00:00",
+  "dataset": {
+    "full_label_counts": {
+      "functions": 160,
+      "non_vulnerable": 32,
+      "units": 160,
+      "vulnerable": 128
+    },
+    "metadata": {
+      "constraints": [
+        "At most one function per (project, commit_id)",
+        "No vulnerable/fixed pair within samples",
+        "Negative samples are not the fixed_func_idx target of any vulnerable source row"
+      ],
+      "cross_dataset_isolation": "No shared source idx or (project, commit_id) group",
+      "dataset_type": "independent_functions",
+      "excluded_malformed_rows": [
+        {
+          "idx": 3510,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9418,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9578,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10195,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10196,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 16033,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 18071,
+          "reason": "changed_statements is not a valid serialized list"
+        }
+      ],
+      "field_encoding": {
+        "context": "Original workbook string, not evaluated",
+        "json_arrays": [
+          "changed_lines",
+          "changed_statements",
+          "cve_list",
+          "cwe_list"
+        ]
+      },
+      "non_vulnerable_count": 32,
+      "sample_count": 160,
+      "sampling": "Shuffle source rows with random.Random(seed); keep at most one item per project+commit. Select pairs first.",
+      "schema_version": 1,
+      "seed": 42,
+      "source_file": "SecVulEval.xlsx",
+      "source_label_counts": {
+        "False": 14442,
+        "True": 10998
+      },
+      "source_rows": 25440,
+      "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+      "source_sheet": "train",
+      "split": {
+        "manifest": "splits/split_v1.json",
+        "protocol": "research/evaluation_protocol.md#4",
+        "role": "test",
+        "seed": 42,
+        "source_dataset": "datasets/independent_200.json",
+        "source_dataset_sha256": "055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d",
+        "split_id": "secvul-split-v1",
+        "task": "detection"
+      },
+      "usable_rows": 25433,
+      "vulnerable_count": 128
+    },
+    "path": "splits/test_detection_160.json",
+    "selected_label_counts": {
+      "functions": 160,
+      "non_vulnerable": 32,
+      "units": 160,
+      "vulnerable": 128
+    },
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "type": "independent"
+  },
+  "httpx_version": "0.28.1",
+  "notes": [
+    "No API key or Authorization header is stored in run artifacts.",
+    "Metrics are null for cost when prices are not configured.",
+    "Use --resume with the same command and --out-dir to continue an interrupted run."
+  ],
+  "outputs": {
+    "cache": "cache/",
+    "config": "config.json",
+    "log": "run.log",
+    "metrics_json": "metrics.json",
+    "metrics_markdown": "metrics.md",
+    "requests": "requests.jsonl",
+    "results": "results.jsonl"
+  },
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+  "python_version": "3.14.8",
+  "resume": {
+    "count": 0,
+    "events": []
+  },
+  "run_id": "test_v1_context_independent",
+  "run_label": "split-v1-frozen-test-nonthinking",
+  "runner_version": "1.0.0",
+  "schema_version": 1,
+  "started_at": "2026-11-11T11:48:57.541+00:00",
+  "status": "completed",
+  "updated_at": "2026-11-11T11:54:41.446+00:00"
+}

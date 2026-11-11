@@ -1,0 +1,605 @@
+{
+  "schema_version": "static-cwe401-metrics-v1",
+  "generated_at": "2026-11-11T18:22:53.622+00:00",
+  "started_at": "2026-11-11T18:22:52.410+00:00",
+  "wall_seconds": 1.212328648995026,
+  "dataset": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/juliet_smoke_manifest.jsonl",
+    "sha256": "e9c78123f77a7e82d6a4031f28569415f1f6ab967a46dd3240fed969f4ad6c1a",
+    "bytes": 3997,
+    "name": null,
+    "n_input": 10,
+    "n_selected": 10,
+    "n_labelled": 10,
+    "label_counts": {
+      "vulnerable": 5,
+      "non_vulnerable": 5
+    },
+    "language_counts": {
+      "c": 8,
+      "cpp": 2
+    },
+    "filter_counts": {
+      "selected": 10,
+      "input_records": 10
+    },
+    "filter_cwe": null
+  },
+  "settings": {
+    "tools": [
+      "clang",
+      "cppcheck"
+    ],
+    "missing_tools": [],
+    "std_c": "c11",
+    "std_cxx": "c++17",
+    "timeout_seconds": 120.0,
+    "jobs": 4,
+    "include_dirs": [
+      "juliet/raw/testcasesupport"
+    ],
+    "defines": [],
+    "clang_args": [],
+    "cppcheck_args": [],
+    "cppcheck_force": false,
+    "include_external": false,
+    "filter_cwe": null,
+    "assume_cwe": null,
+    "only_label": null,
+    "limit": null
+  },
+  "tool_info": {
+    "clang": {
+      "available": true,
+      "binary": "/usr/bin/clang",
+      "version": "Ubuntu clang version 22.1.8 (1ubuntu1)",
+      "environment_errors": []
+    },
+    "cppcheck": {
+      "available": true,
+      "binary": "/tmp/cppcheck_probe/cppcheck",
+      "version": "Cppcheck 2.21.0",
+      "environment_errors": []
+    }
+  },
+  "tools": {
+    "clang": {
+      "tool": "clang",
+      "method": "clang-static-analyzer",
+      "available": true,
+      "version": "Ubuntu clang version 22.1.8 (1ubuntu1)",
+      "binary": "/usr/bin/clang",
+      "runs": 10,
+      "labelled": 10,
+      "evaluable": 10,
+      "coverage_labelled": 1.0,
+      "status_counts": {
+        "ok": 10
+      },
+      "confusion_evaluable": {
+        "tp": 5,
+        "fp": 0,
+        "tn": 5,
+        "fn": 0,
+        "unlabelled": 0
+      },
+      "metrics_evaluable": {
+        "n": 10,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "accuracy": 1.0,
+        "f1_vulnerable": 1.0,
+        "f1_non_vulnerable": 1.0,
+        "macro_f1": 1.0,
+        "balanced_accuracy": 1.0,
+        "mcc": 1.0,
+        "wilson_95": {
+          "precision": {
+            "low": 0.5655175352168251,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "recall": {
+            "low": 0.5655175352168251,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.5655175352168251,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.7224672001371107,
+            "high": 0.9999999999999999,
+            "confidence": 0.95
+          }
+        }
+      },
+      "confusion_end_to_end": {
+        "tp": 5,
+        "fp": 0,
+        "tn": 5,
+        "fn": 0,
+        "unlabelled": 0
+      },
+      "metrics_end_to_end": {
+        "n": 10,
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "accuracy": 1.0,
+        "f1_vulnerable": 1.0,
+        "f1_non_vulnerable": 1.0,
+        "macro_f1": 1.0,
+        "balanced_accuracy": 1.0,
+        "mcc": 1.0,
+        "wilson_95": {
+          "precision": {
+            "low": 0.5655175352168251,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "recall": {
+            "low": 0.5655175352168251,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.5655175352168251,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.7224672001371107,
+            "high": 0.9999999999999999,
+            "confidence": 0.95
+          }
+        }
+      },
+      "by_language": {
+        "c": {
+          "confusion": {
+            "tp": 4,
+            "fp": 0,
+            "tn": 4,
+            "fn": 0,
+            "unlabelled": 0
+          },
+          "metrics": {
+            "n": 8,
+            "precision": 1.0,
+            "recall": 1.0,
+            "specificity": 1.0,
+            "accuracy": 1.0,
+            "f1_vulnerable": 1.0,
+            "f1_non_vulnerable": 1.0,
+            "macro_f1": 1.0,
+            "balanced_accuracy": 1.0,
+            "mcc": 1.0,
+            "wilson_95": {
+              "precision": {
+                "low": 0.5101091635454027,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "recall": {
+                "low": 0.5101091635454027,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "specificity": {
+                "low": 0.5101091635454027,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "accuracy": {
+                "low": 0.6755924351161198,
+                "high": 1.0,
+                "confidence": 0.95
+              }
+            }
+          }
+        },
+        "cpp": {
+          "confusion": {
+            "tp": 1,
+            "fp": 0,
+            "tn": 1,
+            "fn": 0,
+            "unlabelled": 0
+          },
+          "metrics": {
+            "n": 2,
+            "precision": 1.0,
+            "recall": 1.0,
+            "specificity": 1.0,
+            "accuracy": 1.0,
+            "f1_vulnerable": 1.0,
+            "f1_non_vulnerable": 1.0,
+            "macro_f1": 1.0,
+            "balanced_accuracy": 1.0,
+            "mcc": 1.0,
+            "wilson_95": {
+              "precision": {
+                "low": 0.20654931437723745,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "recall": {
+                "low": 0.20654931437723745,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "specificity": {
+                "low": 0.20654931437723745,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "accuracy": {
+                "low": 0.34238022750665303,
+                "high": 1.0,
+                "confidence": 0.95
+              }
+            }
+          }
+        }
+      },
+      "by_split": {
+        "smoke": {
+          "confusion": {
+            "tp": 5,
+            "fp": 0,
+            "tn": 5,
+            "fn": 0,
+            "unlabelled": 0
+          },
+          "metrics": {
+            "n": 10,
+            "precision": 1.0,
+            "recall": 1.0,
+            "specificity": 1.0,
+            "accuracy": 1.0,
+            "f1_vulnerable": 1.0,
+            "f1_non_vulnerable": 1.0,
+            "macro_f1": 1.0,
+            "balanced_accuracy": 1.0,
+            "mcc": 1.0,
+            "wilson_95": {
+              "precision": {
+                "low": 0.5655175352168251,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "recall": {
+                "low": 0.5655175352168251,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "specificity": {
+                "low": 0.5655175352168251,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "accuracy": {
+                "low": 0.7224672001371107,
+                "high": 0.9999999999999999,
+                "confidence": 0.95
+              }
+            }
+          }
+        }
+      },
+      "diagnostics": {
+        "total": 5,
+        "cwe401": 5,
+        "samples_with_cwe401": 5,
+        "by_rule": {
+          "unix.Malloc": 4,
+          "cplusplus.NewDeleteLeaks": 1
+        },
+        "by_cwe401_rule": {
+          "unix.Malloc": 4,
+          "cplusplus.NewDeleteLeaks": 1
+        }
+      },
+      "timing": {
+        "n": 10,
+        "total_seconds": 0.8706711990089389,
+        "mean_seconds": 0.08706711990089389,
+        "median_seconds": 0.07687176299805287,
+        "p95_seconds": 0.1148423099948559,
+        "max_seconds": 0.1148423099948559
+      },
+      "error_examples": [],
+      "environment_errors": []
+    },
+    "cppcheck": {
+      "tool": "cppcheck",
+      "method": "cppcheck",
+      "available": true,
+      "version": "Cppcheck 2.21.0",
+      "binary": "/tmp/cppcheck_probe/cppcheck",
+      "runs": 10,
+      "labelled": 10,
+      "evaluable": 10,
+      "coverage_labelled": 1.0,
+      "status_counts": {
+        "ok": 10
+      },
+      "confusion_evaluable": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 5,
+        "fn": 3,
+        "unlabelled": 0
+      },
+      "metrics_evaluable": {
+        "n": 10,
+        "precision": 1.0,
+        "recall": 0.4,
+        "specificity": 1.0,
+        "accuracy": 0.7,
+        "f1_vulnerable": 0.5714285714285715,
+        "f1_non_vulnerable": 0.7692307692307693,
+        "macro_f1": 0.6703296703296704,
+        "balanced_accuracy": 0.7,
+        "mcc": 0.5,
+        "wilson_95": {
+          "precision": {
+            "low": 0.34238022750665303,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "recall": {
+            "low": 0.11762077423264783,
+            "high": 0.769275718723987,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.5655175352168251,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.39677814746114537,
+            "high": 0.8922087325936989,
+            "confidence": 0.95
+          }
+        }
+      },
+      "confusion_end_to_end": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 5,
+        "fn": 3,
+        "unlabelled": 0
+      },
+      "metrics_end_to_end": {
+        "n": 10,
+        "precision": 1.0,
+        "recall": 0.4,
+        "specificity": 1.0,
+        "accuracy": 0.7,
+        "f1_vulnerable": 0.5714285714285715,
+        "f1_non_vulnerable": 0.7692307692307693,
+        "macro_f1": 0.6703296703296704,
+        "balanced_accuracy": 0.7,
+        "mcc": 0.5,
+        "wilson_95": {
+          "precision": {
+            "low": 0.34238022750665303,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "recall": {
+            "low": 0.11762077423264783,
+            "high": 0.769275718723987,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.5655175352168251,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.39677814746114537,
+            "high": 0.8922087325936989,
+            "confidence": 0.95
+          }
+        }
+      },
+      "by_language": {
+        "c": {
+          "confusion": {
+            "tp": 1,
+            "fp": 0,
+            "tn": 4,
+            "fn": 3,
+            "unlabelled": 0
+          },
+          "metrics": {
+            "n": 8,
+            "precision": 1.0,
+            "recall": 0.25,
+            "specificity": 1.0,
+            "accuracy": 0.625,
+            "f1_vulnerable": 0.4,
+            "f1_non_vulnerable": 0.7272727272727273,
+            "macro_f1": 0.5636363636363637,
+            "balanced_accuracy": 0.625,
+            "mcc": 0.3779644730092272,
+            "wilson_95": {
+              "precision": {
+                "low": 0.20654931437723745,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "recall": {
+                "low": 0.04558726080970055,
+                "high": 0.6993581574175981,
+                "confidence": 0.95
+              },
+              "specificity": {
+                "low": 0.5101091635454027,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "accuracy": {
+                "low": 0.30574239460262737,
+                "high": 0.8631557141764026,
+                "confidence": 0.95
+              }
+            }
+          }
+        },
+        "cpp": {
+          "confusion": {
+            "tp": 1,
+            "fp": 0,
+            "tn": 1,
+            "fn": 0,
+            "unlabelled": 0
+          },
+          "metrics": {
+            "n": 2,
+            "precision": 1.0,
+            "recall": 1.0,
+            "specificity": 1.0,
+            "accuracy": 1.0,
+            "f1_vulnerable": 1.0,
+            "f1_non_vulnerable": 1.0,
+            "macro_f1": 1.0,
+            "balanced_accuracy": 1.0,
+            "mcc": 1.0,
+            "wilson_95": {
+              "precision": {
+                "low": 0.20654931437723745,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "recall": {
+                "low": 0.20654931437723745,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "specificity": {
+                "low": 0.20654931437723745,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "accuracy": {
+                "low": 0.34238022750665303,
+                "high": 1.0,
+                "confidence": 0.95
+              }
+            }
+          }
+        }
+      },
+      "by_split": {
+        "smoke": {
+          "confusion": {
+            "tp": 2,
+            "fp": 0,
+            "tn": 5,
+            "fn": 3,
+            "unlabelled": 0
+          },
+          "metrics": {
+            "n": 10,
+            "precision": 1.0,
+            "recall": 0.4,
+            "specificity": 1.0,
+            "accuracy": 0.7,
+            "f1_vulnerable": 0.5714285714285715,
+            "f1_non_vulnerable": 0.7692307692307693,
+            "macro_f1": 0.6703296703296704,
+            "balanced_accuracy": 0.7,
+            "mcc": 0.5,
+            "wilson_95": {
+              "precision": {
+                "low": 0.34238022750665303,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "recall": {
+                "low": 0.11762077423264783,
+                "high": 0.769275718723987,
+                "confidence": 0.95
+              },
+              "specificity": {
+                "low": 0.5655175352168251,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "accuracy": {
+                "low": 0.39677814746114537,
+                "high": 0.8922087325936989,
+                "confidence": 0.95
+              }
+            }
+          }
+        }
+      },
+      "diagnostics": {
+        "total": 6,
+        "cwe401": 2,
+        "samples_with_cwe401": 2,
+        "by_rule": {
+          "allocaCalled": 4,
+          "memleak": 2
+        },
+        "by_cwe401_rule": {
+          "memleak": 2
+        }
+      },
+      "timing": {
+        "n": 10,
+        "total_seconds": 0.5870623099908698,
+        "mean_seconds": 0.058706230999086985,
+        "median_seconds": 0.05786688000080176,
+        "p95_seconds": 0.07759051900939085,
+        "max_seconds": 0.07759051900939085
+      },
+      "error_examples": [],
+      "environment_errors": []
+    }
+  },
+  "target_cwe": "CWE-401",
+  "rule_mapping": {
+    "clang": {
+      "checkers": [
+        "alpha.unix.MallocWithAnnotations",
+        "cplusplus.NewDeleteLeaks",
+        "unix.Malloc"
+      ],
+      "message_rule": "checker-specific leak phrase (leak of memory)"
+    },
+    "cppcheck": {
+      "ids": [
+        "memleak",
+        "memleakOnRealloc"
+      ],
+      "cwe_attribute": "401"
+    }
+  },
+  "environment": {
+    "python": "3.14.8",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+    "hostname": "ThinkBook16plus"
+  },
+  "limitations": [
+    "Static analysis needs a parsable translation unit; isolated function snippets often fail to compile.",
+    "A file-level label attributes any leak in the file to the sample; use line ranges or per-function units for function-level claims.",
+    "Clang text diagnostics are parsed from stdout/stderr; raw output is retained for audit.",
+    "Only CWE-401 leak diagnostics are mapped; other memory errors are recorded but not counted."
+  ],
+  "errors": {
+    "per_tool": {
+      "clang": [],
+      "cppcheck": []
+    }
+  }
+}

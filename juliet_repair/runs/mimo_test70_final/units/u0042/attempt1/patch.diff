@@ -1,0 +1,12 @@
+--- a/CWE401_Memory_Leak__new_char_01.cpp
++++ b/CWE401_Memory_Leak__new_char_01.cpp
+@@ -16,7 +16,8 @@
+     *data = 'A';
+     printHexCharLine(*data);
+ 
+-    ;
++    delete [] data;
++    data = NULL;
+ }
+ 
+ 

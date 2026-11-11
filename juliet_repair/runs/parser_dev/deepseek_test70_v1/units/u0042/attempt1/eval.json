@@ -1,0 +1,62 @@
+{
+  "baseline_behavior_lines": [
+    "41"
+  ],
+  "behavior_matches_good_subsequence": true,
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "compile": {
+    "command": [
+      "g++",
+      "-std=gnu++11",
+      "-O0",
+      "-g",
+      "-fsanitize=address",
+      "-fno-omit-frame-pointer",
+      "-w",
+      "-DOMITGOOD",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0042/attempt1/eval/src",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+      "-o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0042/attempt1/eval/fixed",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0042/attempt1/eval/src/CWE401_Memory_Leak__new_char_01.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0042/attempt1/eval/src/__repair_probe_main.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/io.o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/std_thread.o",
+      "-lpthread",
+      "-lm"
+    ],
+    "ok": true,
+    "returncode": 0,
+    "source_files": [
+      "CWE401_Memory_Leak__new_char_01.cpp",
+      "__repair_probe_main.cpp"
+    ],
+    "stderr_tail": "",
+    "stdout_tail": "",
+    "timed_out": false
+  },
+  "compile_pass": true,
+  "fixed_behavior_lines": [
+    "41"
+  ],
+  "fixed_stdout_sha256": "ddb5c6d217ea442d92dcdead04dade6263ea482787904ab5c50a86d142b3c07d",
+  "good_behavior_lines": [
+    "41",
+    "41"
+  ],
+  "leak_removed": true,
+  "parsed_explanation": "Added a matching delete for the heap allocation in bad(), preserving the printed output and entry point while eliminating the memory leak.",
+  "run": {
+    "leak_detected": false,
+    "other_asan_error": false,
+    "returncode": 0,
+    "summary": null,
+    "timed_out": false,
+    "wall_seconds": 0.018
+  },
+  "strict_evaluable": true,
+  "strict_pass": true
+}

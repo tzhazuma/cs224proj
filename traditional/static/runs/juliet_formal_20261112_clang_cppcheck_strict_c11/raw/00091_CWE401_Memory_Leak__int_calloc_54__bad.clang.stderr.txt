@@ -1,0 +1,20 @@
+In file included from /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck/work/00091_CWE401_Memory_Leak__int_calloc_54__bad.c:1:
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54a.c:38:1: warning: Potential leak of memory pointed to by 'data' [unix.Malloc]
+   38 | }
+      | ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54a.c:101:5: note: Calling 'CWE401_Memory_Leak__int_calloc_54_bad'
+  101 |     CWE401_Memory_Leak__int_calloc_54_bad();
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54a.c:32:19: note: Memory is allocated
+   32 |     data = (int *)calloc(100, sizeof(int));
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54a.c:33:9: note: Assuming 'data' is not equal to NULL
+   33 |     if (data == NULL) {exit(-1);}
+      |         ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54a.c:33:5: note: Taking false branch
+   33 |     if (data == NULL) {exit(-1);}
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54a.c:38:1: note: Potential leak of memory pointed to by 'data'
+   38 | }
+      | ^
+1 warning generated.

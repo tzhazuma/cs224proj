@@ -1,0 +1,12 @@
+--- a/CWE401_Memory_Leak__malloc_realloc_int64_t_18.c
++++ b/CWE401_Memory_Leak__malloc_realloc_int64_t_18.c
+@@ -22,5 +22,9 @@
+             printLongLongLine(data[0]);
+             free(data);
+         }
++        else
++        {
++            free(data);
++        }
+     }
+ }

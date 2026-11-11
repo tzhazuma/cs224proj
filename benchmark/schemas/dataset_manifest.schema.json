@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cs224.local/benchmark/schemas/dataset_manifest.schema.json",
+  "title": "Unified benchmark dataset manifest",
+  "description": "Dataset card and unit manifest for Tier A (SecVulEval) or Tier B (Juliet CWE-401). Raw archives are not stored in this directory; hashes and manifests are.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "tier",
+    "track",
+    "source",
+    "version",
+    "license",
+    "frozen",
+    "created_at",
+    "units"
+  ],
+  "properties": {
+    "schema_version": {"const": "benchmark-dataset-v1"},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "tier": {"enum": ["A", "B"]},
+    "track": {"enum": ["secvuleval", "juliet_cwe401"]},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "url"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "minLength": 1},
+        "archive_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "retrieved_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "version": {"type": "string", "minLength": 1},
+    "license": {"type": "string", "minLength": 1},
+    "frozen": {"type": "boolean"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "count", "id_format"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "count": {"type": "integer", "minimum": 0},
+        "id_format": {"type": "string", "minLength": 1},
+        "label_counts": {
+          "type": "object",
+          "additionalProperties": {"type": "integer", "minimum": 0}
+        },
+        "cluster_count": {"type": ["integer", "null"], "minimum": 0}
+      }
+    },
+    "splits": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "dev": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "path": {"type": "string"},
+            "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "unit_count": {"type": "integer", "minimum": 0},
+            "cluster_count": {"type": "integer", "minimum": 0}
+          }
+        },
+        "test": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "path": {"type": "string"},
+            "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "unit_count": {"type": "integer", "minimum": 0},
+            "cluster_count": {"type": "integer", "minimum": 0}
+          }
+        },
+        "split_policy": {"type": "string"}
+      }
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "compiler": {"type": ["string", "null"]},
+        "flags": {"type": "array", "items": {"type": "string"}},
+        "compile_commands": {"type": ["string", "null"]},
+        "harness": {"type": ["string", "null"]},
+        "variant_macros": {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        },
+        "timeout_s": {"type": ["number", "null"], "minimum": 0}
+      }
+    },
+    "sanitization": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "version": {"type": ["string", "null"]},
+        "removed": {"type": "array", "items": {"type": "string"}},
+        "identifier_map_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "audit": {"type": ["object", "null"]}
+      }
+    },
+    "oracle": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "reference": {"type": ["string", "null"]},
+        "dynamic_tools": {"type": "array", "items": {"type": "string"}},
+        "coverage_threshold": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "consensus_policy": {"type": ["string", "null"]}
+      }
+    },
+    "provenance": {"type": "object", "additionalProperties": true},
+    "notes": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 128,
+        "completion_tokens": 260,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.000400668,
+        "prompt_tokens": 421
+      },
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.017
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "Added free(data) at the end of bad() to release the heap block allocated by realloc, eliminating the memory leak while preserving the printed output and behavior.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 260,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.0001202,
+          "billing_source": "go",
+          "list_cost": 0.00020033,
+          "tokens": {
+            "cache_read": 128,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 293,
+            "output": 260,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 421,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "total_tokens": 681
+      },
+      "usage_chars": 772
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 128,
+  "changed_paths": [
+    "CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 260,
+  "cost_complete": true,
+  "cost_usd_sum": 0.00040067,
+  "explanation_present": true,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__twoIntsStruct_realloc_33",
+  "language": "cpp",
+  "last_attempt": 1,
+  "leak_removed": true,
+  "model": "deepseek-v4.1-flash",
+  "model_alias": "deepseek",
+  "prompt_tokens_sum": 421,
+  "reevaluated_at_utc": "2026-11-11T19:24:29Z",
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "selection_reason": "latest_observable_pass",
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__twoIntsStruct_realloc_33__bad",
+  "unit_key": "u0062"
+}

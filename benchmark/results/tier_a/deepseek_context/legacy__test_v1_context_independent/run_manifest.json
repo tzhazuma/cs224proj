@@ -1,0 +1,105 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "legacy__test_v1_context_independent",
+  "created_at": "2026-11-11T19:17:48Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": 160,
+    "label_counts": {
+      "functions": 160,
+      "non_vulnerable": 32,
+      "units": 160,
+      "vulnerable": 128
+    }
+  },
+  "method": {
+    "method_id": "llm.deepseek.context",
+    "family": "llm",
+    "name": "DeepSeek V4.1 Flash / context",
+    "strategy": "context",
+    "prompt_version": "secvul-prompt-2026-11-11.1",
+    "config_sha256": "864f49a5160d77a85907c49ce3ebbed4a7bc780863292d269589553180a29c9e",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "deepseek",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_tokens",
+        "thinking": null,
+        "reasoning_effort": null,
+        "response_format": "json_object",
+        "timeout_seconds": 180.0
+      },
+      "pricing_usd_per_1m": {
+        "input": 0.3,
+        "output": 1.2,
+        "cached_input": 0.006
+      },
+      "price_snapshot": null
+    },
+    "tool": null
+  },
+  "execution": {
+    "started_at": "2026-11-11T11:48:57.541+00:00",
+    "finished_at": "2026-11-11T11:54:41.433+00:00",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 8,
+    "command": null,
+    "command_sha256": null,
+    "environment": {
+      "python_version": "3.14.8",
+      "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44"
+    }
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": "metrics.json",
+    "validation": null,
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "220f830a57c2f89d0d066e37bd168fcc37b94f452a55ff944429b6dd97eb79e1",
+    "source_results_sha256": "5c7b2a05addd65525ccf52eb11fea1d2f7d3ab66a35eca4496a60069f95a5d2e",
+    "source_metrics_sha256": "9a59ce6fb51016952e9bc750534a147d8a5cc83cd0c0c5c97011c750abbe8ed6"
+  },
+  "legacy_import": {
+    "source_run_dir": "/mnt/c/Users/tzh03/Downloads/cs224proj/runner/runs/test_v1_context_independent",
+    "source_results_sha256": "5c7b2a05addd65525ccf52eb11fea1d2f7d3ab66a35eca4496a60069f95a5d2e",
+    "conversion_tool": "bench-import-legacy-1.0.1",
+    "derived_not_rerun": true,
+    "repair_records_omitted": 128,
+    "omitted_task_counts": {
+      "repair": 128
+    },
+    "full_run_cost_usd": 0.25977659999999997,
+    "full_run_requests": 288,
+    "model_id": "deepseek-v4.1-flash",
+    "model_family": "deepseek",
+    "strategy": "context"
+  },
+  "notes": [
+    "Derived from an existing runner run; no model call and no prediction change.",
+    "Repair records are omitted; this run is for the v1 detection/pair benchmark only.",
+    "Legacy metrics are valid-only; the unified metrics recompute both valid-only and strict views.",
+    "Cost sums on this run cover the imported task only; full_run_cost_usd preserves the original run total.",
+    "DeepSeek run uses thinking disabled, temperature 0, max_tokens=8192."
+  ]
+}

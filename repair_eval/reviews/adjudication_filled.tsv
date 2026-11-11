@@ -1,0 +1,94 @@
+candidate_id	case_id	dimension	rater_A	rater_B	final_value	rationale
+PATCH-FE129E81D2	CASE-DCC9474352	EF	0	1	1	解释逐条列出 path 判空、calloc/strdup/dlsym 返回值检查与 fail 清理，与未改动的 patch 一致，不是与 patch 矛盾的幻觉；但它据此断言 'No security defect is present'，完全没有提 CWE-428 的 dlopen 搜索路径问题，属遗漏 CWE 的部分一致，EF=1 而非 0。
+PATCH-3D47E33C97	CASE-DCC9474352	VR	1	2	2	patch 在 dlopen 前新增 `if (path[0] != '/') goto fail;` 并改用 RTLD_NOW|RTLD_LOCAL：dlopen 对不含 '/' 的名字会走 LD_LIBRARY_PATH、当前目录等搜索路径，强制绝对路径直接切断了 CWE-428 的搜索路径要素，'internal' 分支仍在检查之前返回。上游用 lib_contains_symbol 校验是另一种写法，rubric 明确不因写法不同而扣 VR，故 2。
+PATCH-3D47E33C97	CASE-DCC9474352	SP	1	2	1	签名未变，'internal' 与绝对路径 provider 的正常路径完全保持；但原先合法的相对路径（如 ./libsk.so）现在在 `path[0] != '/'` 处直接报错返回 NULL，输入域被收窄并新增一条错误路径，属 SP=1 的边界/错误路径变化，未改签名故不到 0。
+PATCH-5F02230667	CASE-6D28703FF0	VR	2	1	1	扩展位图循环改成先算 `header_len + sizeof(uint32_t) > _max_length` 再 `get_unaligned_le32`，这条越界读确实堵住了；但 `radiotap_header->it_version` 与 `it_len = get_unaligned_le16(...)` 仍在任何 max_length 校验之前读取，`it_len < sizeof(*radiotap_header)` 的检查发生在读取之后，max_length 小于固定头（如 1）时仍越界读 it_len，属部分修复。
+PATCH-7DA054A251	CASE-F6966509D4	EF	1	0	0	解释称原代码把 size_t 加到 '32-bit size field' 会溢出、cast 可避免截断；但 patch 新增的 `s->size += (u32) name_len;` 本身就是一次显式窄化，把 size_t 截成 u32 只可能制造截断、不可能避免截断，且 GF_Box::size 是 64 位累计值，所述溢出机制与代码相反，属解释与 patch 矛盾的幻觉，EF=0。
+PATCH-7DA054A251	CASE-F6966509D4	NS	1	2	1	新增的 `(u32) name_len` 把 strlen 结果截断到 32 位再累加到 s->size；若 s->size 为 64 位，超长 textName 会低估尺寸，属 patch 新引入的可疑窄化，但 4GiB 字符串难以触发、未证实可利用，NS=1。
+PATCH-40B2004FB6	CASE-F6966509D4	SP	1	2	1	正常长度路径（`s->size += 51 + 1` 后加 strlen）不变；但新增的 `return GF_ISOM_INVALID_FILE;` 让溢出分支从返回 GF_OK 变为返回错误码，调用方可见的返回约定在该路径上改变，属 SP=1 的错误路径变化而非 0。
+PATCH-40B2004FB6	CASE-F6966509D4	NS	1	2	1	`len > (size_t)-1 - s->size` 对 64 位 s->size 基本不可能成立，真正改变语义的是后面的 `s->size += (u32)len;`——与 7DA054A251 一样引入长度窄化，存在尺寸低估的可疑点，NS=1 而非 2。
+PATCH-3310A63B3C	CASE-1F1920B09F	SP	1	2	2	新增的 `depth < 0 || depth >= p->length()` 位于函数入口；合法调用中 depth 从 0 开始且只在 `depth + 1 < p->length()` 时递归，最大为 length-1，守卫对正常路径恒不触发，签名与返回约定不变，只把越界 depth 的未定义行为变成 -1，SP=2。
+PATCH-3310A63B3C	CASE-1F1920B09F	MIN	1	2	1	3 行守卫加在函数入口的 `p->component_str(depth)` 之前，针对的是 depth 越界这一另一类问题；本用例 CWE-200 的根因在底部 `else { ... s.setReadBy(i->value()); }` 缺少 what==3/setPrivate，改动完全落在漏洞区域之外，不满足 MIN=2 的'必要且充分'。
+PATCH-2FF31C56FE	CASE-1F1920B09F	SP	1	2	2	与 3310A63B3C 相同的入口守卫 `depth < 0 || depth >= p->length()`；合法递归深度上限为 p->length()-1，守卫不会改变正常调用的行为，签名保持，只把非法 depth 由未定义行为改为返回 -1。
+PATCH-2FF31C56FE	CASE-1F1920B09F	MIN	1	2	1	改动只有入口处 3 行 depth 检查，未触及 `if (what == 0) ... else { s.setReadBy(i->value()); }` 这个真正导致 private 属性被当作 section_type 的分支，属漏洞区域之外的附带加固，MIN=1。
+PATCH-2D166BA126	CASE-4371674E6C	MIN	1	2	1	patch 只是在 len 校验之后插入 `if (bin == NULL)` 的 4 行守卫；本用例 CWE-190 的修法是把 `int len` 改为 `size_t len`（签名处），新增的空指针检查与整数类型问题无关，超出漏洞区域，MIN=1。
+PATCH-1EE6B09BA4	CASE-4371674E6C	EF	0	1	1	解释准确描述了现有的 `len != 9 * RLC_FP_BYTES` 校验与三次 fp3_read_bin 的偏移，和未改动的 patch 不矛盾；但它据此断言 'No security defect is present'，没有提 `int len` 相对 size_t 的窄化（CWE-190），属遗漏 CWE 的部分一致，EF=1。
+PATCH-C725C09C12	CASE-4371674E6C	MIN	1	2	1	与 2D166BA126 一样只加了 `bin == NULL` 的 4 行检查，签名 `int len` 未动；改动不在 CWE-190 的修复点上，虽小但非必要，MIN=1。
+PATCH-3146A6C06E	CASE-60CD69697A	EF	0	1	1	解释称 wrapper 'validates all pointer arguments' 并据此认为无缺陷，这与未改动的 patch 一致；但它没有提 `ecdsa_sign_det_restartable(..., NULL)` 传空盲化参数这一 CWE-200 根因（上游改为 f_rng_blind/p_rng_blind），属遗漏 CWE 的 EF=1。
+PATCH-FFEE536229	CASE-60CD69697A	MIN	2	1	1	除缩进/空行外没有任何逻辑改动：`return( ecdsa_sign_det_restartable(..., NULL) )` 原样保留；整函数去掉行首空格并重排大括号，属与漏洞无关的格式改动，MIN=1 而非 2。
+PATCH-FFEE536229	CASE-60CD69697A	EF	0	1	1	解释描述的是函数现有的指针校验，与 patch（仅改缩进）不矛盾；但结论 'no security defect' 回避了仍然传入 NULL 的盲化参数和 CWE-200，属部分一致、遗漏 CWE，EF=1。
+PATCH-BFF28A58BB	CASE-60CD69697A	MIN	2	1	1	patch 仅把缩进从 1 空格改为 4 空格、删掉行尾空白，`ecdsa_sign_det_restartable(..., NULL)` 未变；纯格式重排不落在盲化参数这个漏洞区域，MIN=1。
+PATCH-BFF28A58BB	CASE-60CD69697A	EF	0	1	1	解释列举的指针/长度校验在原代码中确实存在，patch 也确实未改逻辑；但结论 'no security defect' 回避了 NULL 盲化参数这一 CWE-200 根因，按 EF=1 计，而非与 patch 矛盾的 0。
+PATCH-E84E688503	CASE-6249AF121D	MIN	2	1	1	实质修复只有 `if (watch_fencing && st != NULL && st->state == stonith_disconnected)` 这一处条件增强；但 patch 同时把 `if(` 改成 `if (`、删除行尾空格并删掉一个空行，整函数格式化混在修复里，属夹带无关改动，MIN=1。
+PATCH-3E5561DBB8	CASE-6249AF121D	MIN	2	1	1	与 E84E688503 相同：核心是 `st != NULL` 一行，另外对 `if(watch_fencing && st == NULL)`、`if(rc == pcmk_ok)` 等多处做空格规范化并删空行，格式重排超出漏洞点，MIN=1。
+PATCH-9330389209	CASE-AA3F1B2863	SP	1	2	2	`%9s`/`%4095s` 只影响超长字段的截断；新增的 `if (strlcat(info->path, “maps”, sizeof(info->path)) >= sizeof(info->path)) goto out;` 只在路径拼接被截断时提前跳到 out，而 out 仍执行 `info->path[info->parent_length] = '\0'`，正常路径与最终状态不变，SP=2。
+PATCH-52B4C1A4B5	CASE-AA3F1B2863	SP	1	2	2	同上：strlcat 返回值检查位于 fopen 之前，截断时直接 goto out，函数结尾仍恢复 `info->path[info->parent_length]`；合法输入下输出与行为不变，也没有签名变化，SP=2。
+PATCH-DD0982794F	CASE-27AD9A5170	VR	1	2	1	`safe_salt = salt ? salt : 空串` 消除了 string_crypt 收到 NULL 的崩溃，并加了 result==nullptr 检查；但 NULL salt 时 `if (salt && salt[0] == '\0')` 不会触发 notice，仍用空 salt 生成弱哈希，上游以 assertx(salt) 拒绝 NULL，根因只缓解未消除，VR=1。
+PATCH-852390361D	CASE-27AD9A5170	VR	2	1	2	`if (salt == nullptr || salt[0] == '\0') { ... return String(); }` 在调用 string_crypt 之前同时拒绝 NULL 与空 salt，NULL 解引用路径被完全移除；未检查 string_crypt 返回值是原代码本就存在、上游修复也未涉及的另一个问题，不影响对本 CWE 根因的判定，VR=2。
+PATCH-852390361D	CASE-27AD9A5170	EF	2	1	2	解释说明原代码把 NULL/空 salt 传给 crypt 产生弱哈希，patch 改为直接返回空 String 并保留 notice，与 diff 中新增的 `return String();` 完全对应，未虚构不存在的改动，EF=2。
+PATCH-B11C1914E1	CASE-0796C40D2C	MIN	1	2	1	patch 只把 `zsocket_set_sndbuf(pData->socket, pData->rcvBuf)` 改成 `zsocket_set_rcvbuf`，修的是 rcvBuf setter 用错这个配置 bug；CWE-134 的 `zsocket_bind/connect(..., pData->description)` 一行未动，改动不在漏洞区域，MIN=1。
+PATCH-5735D11F53	CASE-0796C40D2C	MIN	1	2	1	包含两处与 CWE-134 无关的改动：rcvBuf setter 纠正、`s_context == NULL` 的 zctx_new 检查，并删掉了 bind 分支的注释；格式串 sink 未变，属超出漏洞区域的附带修改，MIN=1。
+PATCH-02216D9E2C	CASE-0796C40D2C	MIN	1	2	1	与 5735D11F53 内容相同：rcvbuf setter + zctx_new 空检查，`zsocket_bind/connect` 仍把 description 当格式串；两处改动都不在 CWE-134 修复点，MIN=1。
+PATCH-E6743C4B4E	CASE-CC0F135324	EF	0	1	1	解释准确引用了现有的 `ASSERT(header->size() < blinkPagePayloadSize())` 等断言，patch 也确实未改；但它把这些断言当成能阻止越界读的运行时检查，忽略了 NDEBUG 下 ASSERT 被编译掉、上游正是把 checkHeader 改为无条件调用，属遗漏 CWE 的 EF=1。
+PATCH-629714F815	CASE-CC0F135324	MIN	1	2	2	改动集中在 `do { ... } while (headerAddress < payloadEnd())` 这一个遍历循环：改为 `while (headerAddress < endAddress)`、提取 `headerSize` 并在推进前断言，没有触碰函数其他部分；虽重排了循环，但范围就是漏洞所在，MIN=2。
+PATCH-629714F815	CASE-CC0F135324	EF	2	1	1	解释称新检查 'validates each header size is nonzero and does not exceed the remaining payload'，但 patch 里这两条都是 `ASSERT(headerSize > 0)` / `ASSERT(headerSize <= ...)`，release 构建下不生效，与'确保不越过 payloadEnd'的表述不符，属夸大，EF=1。
+PATCH-B3416E2825	CASE-6936A42C95	MIN	1	2	1	patch 只在函数开头加了 `if (size == 0) return to;` 三行；本用例 CWE-113/116 的根因是 `*d++ = from_hex(s[1]) << 4 | from_hex(s[2]);` 未过滤 CR/LF（上游改为 isprint 过滤），改动不在该区域，MIN=1。
+PATCH-99150A9E5F	CASE-6936A42C95	MIN	1	2	1	与 B3416E2825 相同的 `size == 0` 提前返回，仅 3 行；解码循环里对 `%0d%0a` 的写入未做任何过滤，改动完全避开 CWE-113/116 的注入点，MIN=1。
+PATCH-8054537CEA	CASE-6936A42C95	SP	2	1	1	新增 `else { *d++ = *s; }` 后，非法 `%XX` 不再写入 `(hi << 4) | lo` 的结果字节，而是原样拷贝 '%' 且只前进 1 字节（候选自己用 `hi >= 0 && lo >= 0` 判断 from_hex 可能为负），这是调用方可见的边界行为变化；正常合法转义与 CR/LF 注入路径不变，故 SP=1。
+PATCH-F730906101	CASE-B7A06F125E	MIN	1	2	1	patch 修的是 `case '['` 分支的 `strchr` 空指针与 `p - fmt + 1 > sizeof(s)` 的 off-by-one；本用例 CWE-674 的根因在 `case '*':` 递归调用 smb_fdata 处缺少 depth 上限（上游 `if (depth == 10)`），两者不在同一代码区域，MIN=1。
+PATCH-6AB8DE21CD	CASE-B7A06F125E	MIN	1	2	1	改动仅合并 `p == NULL` 与长度比较两处判断，仍属 `case '['` 分支；递归深度上限未加，修改区域与 CWE-674 的 `case '*':` 递归点不同，MIN=1。
+PATCH-8A2CE34B49	CASE-B7A06F125E	MIN	1	2	1	与 F730906101 相同的 '[' 分支修复（strchr 判空 + `p - fmt < sizeof(s)`），3 处小改全部在格式说明符处理分支；未触及 `depth++` 附近的递归调用，MIN=1。
+PATCH-0912454AD0	CASE-39E946DC7B	EF	0	1	1	解释只说明函数没有指针运算/数组访问、无内存安全缺陷，patch 也只是删掉行首空格；它没有提 `x <= frameRight` / `y <= frameBottom` 的闭区间与 upstream 改为 `<` 的边界语义，属遗漏 CWE 的 EF=1，而非与 patch 矛盾。
+PATCH-91CCAD2D29	CASE-39E946DC7B	EF	0	1	1	解释描述的是函数'只有整数比较'这一事实，patch 同样只是空白改动；但结论 'no exploitable security defect' 未涉及访问控制边界的开闭区间问题（upstream 改为 `x < frameRight`），遗漏 CWE，EF=1。
+PATCH-61D619B2CB	CASE-39E946DC7B	EF	0	1	1	解释称已做边界检查、行为保持不变，与 patch 的空白改动一致；但没有指出 `<=` 把右/下边界多算一像素这一 CWE-264 根因，属部分一致、遗漏 CWE，EF=1。
+PATCH-B5D725561F	CASE-8F4CEBDDB4	MIN	2	1	1	除 `if (password == NULL) return;` 外，patch 把原来的单行 for 循环重写为 `for (i = 0; i < 255; i++) { if (...) return; }` 并单独检查 password[255]；上游只加 NULL 判断，这里额外重写了扫描循环，属中等改动的超出部分，MIN=1。
+PATCH-8C9E20C078	CASE-BF50803A62	MIN	1	2	1	patch 在 `createDummyConnection(65535, &sentData)` 之后插入 2 行 `if(!testingConnection) return;`；CWE-770 的修法是把 65535 换成 `UA_ConnectionConfig_default.sendBufferSize`，空检查与资源上限无关，MIN=1。
+PATCH-9750DF1AEC	CASE-BF50803A62	MIN	1	2	1	与 8C9E20C078 相同，仅在 createDummyConnection 后加 `if(testingConnection == NULL) return;`；`65535` 这个硬编码分配参数未动，改动不在 CWE-770 的修复点，MIN=1。
+PATCH-3443318B63	CASE-BF50803A62	COM	2	1	2	函数文本完整：`void setup_secureChannel(void)` 签名、花括号、函数体齐全，`return;` 与 void 返回类型匹配，没有截断或 Markdown 围栏；显式写出 void 属于签名改动，已在 SP 维度计 1，COM 只判断文本完整性，故 2。
+PATCH-3443318B63	CASE-BF50803A62	EF	1	2	1	解释准确说明了空检查与显式 void 两处改动，与 patch 一致；但完全没有提 CWE-770（65535 字节的固定分配），也未说明该改动为何与资源消耗相关，不满足 EF=2 的'说明为何处理该 CWE'，EF=1。
+PATCH-E6BE5F831E	CASE-533FB0E13C	MIN	2	1	2	改动全部落在 IDAT 的 row_factor/idat_limit 计算块内：row_factor 改用 png_alloc_size_t，对 `width*channels*(bit_depth>8?2:1)`、`+1+6`、`height*row_factor`、zlib 开销逐处加溢出检查；这些检查对 CWE-190/369 必要且局限在该区域，MIN=2。
+PATCH-33824DD89C	CASE-533FB0E13C	MIN	2	1	2	与 E6BE5F831E 同一计算块，额外加 `row_factor == 0 ||` 的除零保护；所有 hunk 都在 `png_ptr->chunk_name == png_IDAT` 的 idat_limit 计算内，未波及其他逻辑，MIN=2。
+PATCH-701CC5A91F	CASE-94465F15EE	EF	0	1	1	解释称函数已执行 reserved-name 与 schema 校验，patch 也确实未改动；但它没有提 `sqlite3ReadOnlyShadowTables(db) && sqlite3ShadowTableName(db, zName)` 这一被 upstream 补上的 shadow table 分支，属遗漏 CWE 的 EF=1。
+PATCH-1B8B915631	CASE-94465F15EE	EF	0	1	1	解释只做'已安全、无内存安全问题'的结论，patch 为原文；它未涉及 shadow table 名称检查这一 upstream 新增条件，属于遗漏关键 CWE 的部分一致，EF=1。
+PATCH-BDC447DFBD	CASE-7D5DA88F1F	MIN	1	2	1	patch 把 `Jsi_JSONQuote(interp, str?str:空串, -1, dStr)` 改写成 `if (!str) str = 空串;` 再调用，两者语义等价；CWE-120 的修法是把 `char nbuf[200]` 换成 `JSI_MAX_NUMBER_STRING`（upstream），改动在末尾的字符串回退处，与缓冲区尺寸无关，MIN=1。
+PATCH-72D0C61343	CASE-7D5DA88F1F	MIN	1	2	1	与 BDC447DFBD 相同的等价改写（`str?str:空串` → 两次 if 赋值），nbuf 仍为 200 字节、Jsi_NumberToString 调用未变；改动不在 CWE-120 的缓冲区声明处，MIN=1。
+PATCH-0C619DD9AF	CASE-5F170A3E90	EF	0	1	0	解释称函数'validates overflow when narrowing doubles'，但 patch 中 PyLong 分支仍是 `*out = PyLong_AsDouble(v);`，没有任何窄化溢出检查，真正带检查的只有 PyFloat 分支；这是对不存在改动的虚构，EF=0。
+PATCH-31B2C9FAF4	CASE-5F170A3E90	VR	1	2	1	PyLong 分支改为先存 `const double as_double = PyLong_AsDouble(v);`，再 `*out = static_cast<T>(as_double);` 并用 `sizeof(T) < sizeof(double) && std::isinf(*out) && std::isfinite(as_double)` 判断；但 `std::isinf(*out)` 只在 T 为 float 时能捕获溢出，T 为 int32/int64 时恒为 false，2^40 之类的整数仍被静默截断，效果弱于上游的 CheckForOverflow<T> 范围检查，属部分修复，VR=1。
+PATCH-355C14DB59	CASE-A40AB3FCF8	VR	0	1	1	patch 在 `w->dobj.private`、`swidget->private`、`sdai->platform_private` 与 `ops->post_trigger` 前加了 w/swidget/sdai/ops 的空检查，确实堵住了这几处 NULL 解引用；但 upstream 的修复是把 `ops->post_trigger(...)` 移到 `hda_link_dma_cleanup(...)` 之前，patch 仍是 cleanup 先执行、post_trigger 后执行，rtd/cpu_dai 也未检查，根因未完全处理，VR=1。
+PATCH-355C14DB59	CASE-A40AB3FCF8	SP	1	2	1	指针齐全时行为不变，签名保持；但新增的 `continue` 会在 w/swidget/sdai/ops 为空时跳过整个 `hda_link_dma_cleanup()`，该流不再被清理，suspend 路径的状态发生变化，属 SP=1。
+PATCH-355C14DB59	CASE-A40AB3FCF8	MIN	1	2	2	四处 `if (!x) continue;` 都插在原有解引用语句之间，没有重排或改写其他逻辑，改动范围就是 `if (hext_stream->link_substream)` 内的指针链，MIN=2。
+PATCH-355C14DB59	CASE-A40AB3FCF8	EF	1	2	2	解释准确列出新增检查的 w、swidget、sdai、ops 四个指针，并说明'跳过缺少指针的流'，与 diff 中的四段 `if (!x) continue;` 一一对应，未声称修复了顺序问题，EF=2。
+PATCH-355C14DB59	CASE-A40AB3FCF8	NS	1	2	1	新增的 `continue` 让指针缺失的流绕过 `hda_link_dma_cleanup()`，可能把仍在运行的 DMA 留在 suspend 状态；这是可疑但未证实的新状态风险，按 NS=1。
+PATCH-5B27C7CC59	CASE-A40AB3FCF8	VR	0	2	1	patch 为 rtd/cpu_dai/w/swidget/sdev/sdai/ops 七个指针都加了 `if (!x) continue;`，覆盖了解引用链上的空指针路径；但 upstream 的关键改动是把 post_trigger 调到 hda_link_dma_cleanup 之前，patch 仍是 cleanup 先执行，cleanup 之后使用 hext_stream->link_substream 的路径未被处理，故不是完整修复，VR=1。
+PATCH-5B27C7CC59	CASE-A40AB3FCF8	SP	1	2	1	在指针齐全的正常路径上签名与行为不变；但任一指针为空时 `continue` 会跳过 hda_link_dma_cleanup，与原来'先清理再崩溃'相比流状态不同，属 SP=1 的状态变化。
+PATCH-5B27C7CC59	CASE-A40AB3FCF8	MIN	1	2	2	七个 `if (!x) continue;` 均紧贴对应的解引用语句插入，未改写函数其他部分，改动局限在 `if (hext_stream->link_substream)` 块内的指针链，MIN=2。
+PATCH-5B27C7CC59	CASE-A40AB3FCF8	EF	1	2	2	解释逐一列出 rtd、cpu_dai、widget、swidget、sdev、sdai、ops 七处空检查，与 diff 完全一致，并说明针对 suspend 期间指针链不完整的情况，未虚构 patch 内容，EF=2。
+PATCH-5B27C7CC59	CASE-A40AB3FCF8	NS	1	2	1	与 355C14DB59 相同，`continue` 使 rtd/cpu_dai 等为空时跳过 hda_link_dma_cleanup，可能留下未清理的 DMA 流；属可疑但未证实的新风险，NS=1。
+PATCH-034C803CD1	CASE-2D5DAFD31C	SP	1	2	1	新增 `if (received_content_length < 0 || original_content_length < 0) return;` 与两个溢出 return 后，负值/溢出输入不再调用 StoreAccumulatedContentLength、也不再累加，错误路径的可见行为改变；正常非负输入不变，SP=1。
+PATCH-034C803CD1	CASE-2D5DAFD31C	MIN	1	2	1	实质改动是 `if (received_content_length < 0 || original_content_length < 0) return;` 与两段溢出 return 共约 6 行校验，但整个函数从 1 空格缩进重排为 2 空格缩进，diff 中每一行（含 DCHECK_GE、StoreAccumulatedContentLength 调用）都被改写；格式重排超出漏洞区域，MIN=1。
+PATCH-B4C73BEAD4	CASE-2D5DAFD31C	SP	1	2	1	两个累加器在 `received_content_length_ > std::numeric_limits<int64>::max() - received_content_length` 时被置为 INT64_MAX，而不是原来的回绕；溢出边界上的累加语义由未定义行为变为饱和，属调用方可观察的状态变化，SP=1。
+PATCH-B4C73BEAD4	CASE-2D5DAFD31C	MIN	1	2	2	改动只替换了 `received_content_length_ += ...` 与 `original_content_length_ += ...` 两条累加语句，改成 if/else 饱和判断，其他语句与缩进原样保留，范围与漏洞点一致，MIN=2。
+PATCH-ED0F4EA977	CASE-2D5DAFD31C	SP	1	2	1	把 DCHECK 换成运行时 `return` 后，负值或溢出的调用不再存储/累加任何内容；原实现在 release 下会继续累加，故错误路径行为改变，SP=1。
+PATCH-ED0F4EA977	CASE-2D5DAFD31C	MIN	1	2	1	patch 用 `if (received_content_length < 0 || original_content_length < 0) { return; }` 替换了两行 `DCHECK_GE(...)`，并加了一段溢出 return；同时整函数每行前导空格都被重排（diff 中 DCHECK 行、StoreAccumulatedContentLength 行均被改写），格式改动覆盖全文，MIN=1。
+PATCH-6D9A8C108C	CASE-D4027977C7	EF	0	1	1	解释称函数'委派给 Metadata::setString，只对 TOOLCAP_KEY 触发刷新，无注入缺陷'，这与未改动的 patch 一致；但没有提 upstream 新增的 `sanitize_string(clean_name/clean_var)`，遗漏了该 CWE 的关键修复点，EF=1。
+PATCH-E3E9BAF8FE	CASE-D4027977C7	EF	0	1	1	解释准确描述了转发与 TOOLCAP_KEY 分支，patch 也确实未改；但它断言 'no memory-unsafe operation, unchecked input, or injection'，回避了 name/var 未 sanitize 这一根因，属遗漏 CWE 的 EF=1。
+PATCH-A9D55487A6	CASE-D4027977C7	EF	0	1	1	解释只给出'无注入路径'的结论，patch 为原文；未涉及 sanitize_string，也没有说明为何该函数不存在注入风险，属泛泛结论加遗漏 CWE，EF=1。
+PATCH-206040C475	CASE-E2E930B67A	SP	2	1	1	把 Len/MaxLen/BufferOffset 的复位移到 `if (fields->Buffer)` 之外后，当 Buffer 为 NULL 时这些字段也会被清零，而原实现此时不改动结构体；这是调用方可观察的状态变化，SP=1。
+PATCH-60058FE734	CASE-E2E930B67A	SP	2	1	1	与 206040C475 相同，且连 `fields->Buffer = NULL` 也移出了条件；Buffer 已为 NULL 的调用现在会清空 Len/MaxLen/BufferOffset，属于错误/边界路径上的状态改变，SP=1。
+PATCH-1A01F0553C	CASE-E2E930B67A	EF	0	1	1	解释称已 'nulls the pointer after free and resets all associated fields'，这与原文一致；但本用例 upstream 改动是加 `static`（CWE-125），解释谈的是 use-after-free/double-free，未提该 CWE，EF=1。
+PATCH-285FFB3AC0	CASE-DF17D126E1	MIN	2	1	1	patch 只删除了 `// We do not reuse PPMd coder...` 与两处 `// Extra safety check.` 注释，`pps--` 与循环结构原样保留；删注释与 CWE-59 的边界问题无关，MIN=1。
+PATCH-285FFB3AC0	CASE-DF17D126E1	EF	0	1	1	解释称函数'已在每次解引用/写入前做 ASIZE 检查、无缺陷'，但 `pps--;` 仍会把指针移到 ps 之前；解释还把删注释说成 'rewritten version'，遗漏 upstream 去掉 pps-- 的关键改动，EF=1。
+PATCH-D7EA782FC5	CASE-DF17D126E1	EF	0	1	0	解释声称把 `p=*(pps=ps)` 拆成 `pps=ps; p=*pps;` 可以 'avoid any potential undefined behavior from pointer arithmetic before the array start'，但 patch 中 `pps--;` 一行未动、UB 依然存在；把未发生的修复说成已发生，与 patch 矛盾，EF=0。
+PATCH-7F81886DBB	CASE-DF17D126E1	EF	0	1	1	解释称已有 ASIZE 边界检查、patch 保持原逻辑，这与未改动的 patch 一致；但 `pps--` 造成的数组前指针运算仍在，解释未提该 CWE 根因，EF=1。
+PATCH-F9513018E2	CASE-7D7B2DAC54	EF	0	1	1	解释准确描述了这个 thin wrapper 的转发行为，patch 也确实未改；但它断言无安全缺陷，未提 upstream 新增的 `int *rc` 出参（CWE-200 的状态传播），属遗漏关键改动的 EF=1。
+PATCH-B453900405	CASE-7D7B2DAC54	MIN	1	2	1	只在函数入口加了 `if ( addr == NULL ) { return( -1 ); }` 三行；CWE-200 的修复是给 `find_entry2modify_only_ext` 增加 `int *rc` 出参并转发给 find_entry_internal，空检查不在该改动点上，MIN=1。
+PATCH-B453900405	CASE-7D7B2DAC54	CQ	2	1	2	新增代码沿用文件既有风格：`if ( ... ) {` 与 `return( -1 );` 的括号写法同下方的 `return( find_entry_internal( ... ) )` 一致，没有调试残留或重复代码，CQ=2。
+PATCH-B453900405	CASE-7D7B2DAC54	NS	2	1	2	`return( -1 )` 在隐式 int 返回下是合法的错误码，addr 为空时提前返回，未删除任何原有检查、未更换 API，也没有引入新的危险惯用法，NS=2。
+PATCH-CADC01A189	CASE-7D7B2DAC54	SP	0	1	0	函数定义没有返回类型，按 C 语言为隐式 int，与 `return( find_entry_internal( ... ) )` 的整型返回一致；patch 却写 `return NULL;`，addr 为空时把空指针常量转成 0（通常表示成功）返回，破坏了返回约定，SP=0。
+PATCH-CADC01A189	CASE-7D7B2DAC54	MIN	1	2	1	与 B453900405 相同的 3 行入口守卫，未触及 `int *rc` 出参这一 upstream 修复点；改动虽小但不在漏洞区域，MIN=1。
+PATCH-CADC01A189	CASE-7D7B2DAC54	CQ	1	2	1	`return NULL;` 出现在隐式 int 返回的函数里，类型不匹配、语义上等于返回 0，容易误导读者；其余代码清晰，故 CQ=1 而非 0。
+PATCH-CADC01A189	CASE-7D7B2DAC54	NS	0	2	0	addr 为空时返回 NULL（即整型 0，通常表示成功），调用方可能据此认为查找/修改成功并继续使用未初始化的 entry，属于 patch 引入的错误边界，NS=0。
+PATCH-B08638DA65	CASE-CDF116D7FD	MIN	2	1	2	新增代码全部在 `rawsize += ...` 这个循环内：对 width*height、prec+7、乘积累加逐项做 UINT_FAST32_MAX 溢出检查，失败时 jas_image_destroy 后返回 0，未改动循环外逻辑，范围与 CWE-190 一致，MIN=2。
+PATCH-483849BD4A	CASE-CDF116D7FD	VR	0	1	0	patch 只加了 `if (numcmpts <= 0) return 0;`；`rawsize += cmptparm->width * cmptparm->height * (cmptparm->prec + 7) / 8;` 的 uint_fast32_t 乘法溢出原样保留（upstream 改为 jas_safe_size_mul3 后 /=8），CWE-190 根因未处理，VR=0。
+PATCH-483849BD4A	CASE-CDF116D7FD	SP	1	2	1	numcmpts == 0 原本会走完 jas_image_create0 并返回一个 0 组件的 image，现在直接返回 0（失败）；这是边界输入上的调用方可见行为变化，SP=1。
+PATCH-483849BD4A	CASE-CDF116D7FD	MIN	1	2	1	4 行 `numcmpts <= 0` 守卫加在函数最前面，未触及 rawsize 计算循环；改动不在 CWE-190 的漏洞区域，MIN=1。

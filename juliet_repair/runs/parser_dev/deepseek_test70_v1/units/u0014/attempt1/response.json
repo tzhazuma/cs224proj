@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:29.266+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0d-e331-7e9a-bbc9-e35dc5f23b2f"
+      },
+      "http_status": 200,
+      "latency_seconds": 4.962754976993892,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-2a847832879443d69063915ec054ae4b\",\"object\":\"chat.completion\",\"created\":1794424824,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int_calloc_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__int_calloc_01_bad()\\\\n{\\\\n    int * data;\\\\n    data = NULL;\\\\n\\\\n    data = (int *)calloc(100, sizeof(int));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5;\\\\n    printIntLine(data[0]);\\\\n\\\\n    free(data);\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added free(data) before the function returns to release the calloc-allocated buffer, eliminating the memory leak while preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":354,\"completion_tokens\":181,\"total_tokens\":535,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00014288,\"allowance\":0.00008573,\"tokens\":{\"input\":226,\"output\":181,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:24.303+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int_calloc_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__int_calloc_01_bad()\\n{\\n    int * data;\\n    data = NULL;\\n\\n    data = (int *)calloc(100, sizeof(int));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5;\\n    printIntLine(data[0]);\\n\\n    free(data);\\n}\\n\"}], \"explanation\": \"Added free(data) before the function returns to release the calloc-allocated buffer, eliminating the memory leak while preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 181,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000285768,
+    "prompt_tokens": 354
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 4.962754976993892,
+  "response_meta": {
+    "content_chars": 547,
+    "created": 1794424824,
+    "finish_reason": "stop",
+    "id": "chatcmpl-2a847832879443d69063915ec054ae4b",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0014",
+  "usage": {
+    "completion_tokens": 181,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 8.573e-05,
+      "billing_source": "go",
+      "list_cost": 0.00014288,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 226,
+        "output": 181,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 354,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 535
+  },
+  "wall_seconds": 4.962780147005105
+}

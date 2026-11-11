@@ -1,0 +1,7 @@
+{"sample_id":"leak_malloc","path":"leak_malloc.c","language":"c","label":true,"cwe":["CWE-401"],"split":"smoke","notes":"malloc leak on early return"}
+{"sample_id":"leak_new","path":"leak_new.cpp","language":"cpp","label":true,"cwe":["CWE-401"],"split":"smoke","notes":"new[] leak on early return"}
+{"sample_id":"clean_malloc","path":"clean_malloc.c","language":"c","label":false,"cwe":["CWE-401"],"split":"smoke","notes":"malloc freed on all paths"}
+{"sample_id":"clean_new","path":"clean_new.cpp","language":"cpp","label":false,"cwe":["CWE-401"],"split":"smoke","notes":"new[] deleted on all paths"}
+{"sample_id":"double_free","path":"double_free.c","language":"c","label":false,"cwe":["CWE-401"],"split":"smoke","notes":"negative control: CWE-415 diagnostic must not map to CWE-401"}
+{"sample_id":"multi_region_leak","path":"multi_region.c","language":"c","label":true,"cwe":["CWE-401"],"split":"smoke","line_start":3,"line_end":15,"notes":"leak_region only; line-range attribution"}
+{"sample_id":"multi_region_clean","path":"multi_region.c","language":"c","label":false,"cwe":["CWE-401"],"split":"smoke","line_start":17,"line_end":27,"notes":"clean_region only; leak elsewhere in file must not count"}

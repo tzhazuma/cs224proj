@@ -1,0 +1,19 @@
+--- a/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp
++++ b/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp
+@@ -1,6 +1,7 @@
+ #include "std_testcase.h"
+ 
+ #include <wchar.h>
++#include <stdlib.h>
+ 
+ namespace CWE401_Memory_Leak__twoIntsStruct_realloc_33
+ {
+@@ -21,7 +22,7 @@
+     {
+         twoIntsStruct * data = dataRef;
+ 
+-        ;
++        free(data);
+     }
+ }
+ 

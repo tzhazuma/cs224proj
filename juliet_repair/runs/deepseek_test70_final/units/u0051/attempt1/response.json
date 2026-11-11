@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:30:00.448+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-825e-7c0e-8d8a-e5e9725da95e"
+      },
+      "http_status": 200,
+      "latency_seconds": 11.057031780001125,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-5a9f6e1ef9c441efab68786aa4efddb8\",\"object\":\"chat.completion\",\"created\":1794425389,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_twoIntsStruct_54e.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_twoIntsStruct_54\\\\n{\\\\n\\\\n\\\\nvoid badSink_e(twoIntsStruct * data)\\\\n{\\\\n\\\\n    delete data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The heap allocation created with `new twoIntsStruct` in bad() was never freed. The terminal sink badSink_e now deletes the pointer after the data has been printed, eliminating the leak while preserving the printed output and call chain.\\\"}\"}}],\"usage\":{\"prompt_tokens\":738,\"completion_tokens\":158,\"total_tokens\":896,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00018668,\"allowance\":0.00011201,\"tokens\":{\"input\":610,\"output\":158,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:49.391+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_twoIntsStruct_54e.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_twoIntsStruct_54\\n{\\n\\n\\nvoid badSink_e(twoIntsStruct * data)\\n{\\n\\n    delete data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The heap allocation created with `new twoIntsStruct` in bad() was never freed. The terminal sink badSink_e now deletes the pointer after the data has been printed, eliminating the leak while preserving the printed output and call chain.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 158,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000373368,
+    "prompt_tokens": 738
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 11.057031780001125,
+  "response_meta": {
+    "content_chars": 523,
+    "created": 1794425389,
+    "finish_reason": "stop",
+    "id": "chatcmpl-5a9f6e1ef9c441efab68786aa4efddb8",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0051",
+  "usage": {
+    "completion_tokens": 158,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00011201,
+      "billing_source": "go",
+      "list_cost": 0.00018668,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 610,
+        "output": 158,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 738,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 896
+  },
+  "wall_seconds": 11.05706275999546
+}

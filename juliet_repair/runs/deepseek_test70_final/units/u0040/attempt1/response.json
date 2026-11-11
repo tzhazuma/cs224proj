@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:48.290+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-481a-7fbf-b3c7-d25c47bd7334"
+      },
+      "http_status": 200,
+      "latency_seconds": 13.818206211988581,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-1b85b77277e249a69ffc36ff0f8d350b\",\"object\":\"chat.completion\",\"created\":1794425374,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_wchar_t_31.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_31\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    wchar_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = new wchar_t[100];\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n    {\\\\n        wchar_t * dataCopy = data;\\\\n        wchar_t * data = dataCopy;\\\\n\\\\n        ;\\\\n    }\\\\n    delete [] data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added delete [] data at the end of bad() to free the heap array allocated with new wchar_t[100], eliminating the memory leak while preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":374,\"completion_tokens\":218,\"total_tokens\":592,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00016808,\"allowance\":0.00010085,\"tokens\":{\"input\":246,\"output\":218,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:34.472+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_array_wchar_t_31.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_31\\n{\\n\\n\\nvoid bad()\\n{\\n    wchar_t * data;\\n    data = NULL;\\n\\n    data = new wchar_t[100];\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n    {\\n        wchar_t * dataCopy = data;\\n        wchar_t * data = dataCopy;\\n\\n        ;\\n    }\\n    delete [] data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added delete [] data at the end of bad() to free the heap array allocated with new wchar_t[100], eliminating the memory leak while preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 218,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00033616799999999997,
+    "prompt_tokens": 374
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 13.818206211988581,
+  "response_meta": {
+    "content_chars": 664,
+    "created": 1794425374,
+    "finish_reason": "stop",
+    "id": "chatcmpl-1b85b77277e249a69ffc36ff0f8d350b",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0040",
+  "usage": {
+    "completion_tokens": 218,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00010085,
+      "billing_source": "go",
+      "list_cost": 0.00016808,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 246,
+        "output": 218,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 374,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 592
+  },
+  "wall_seconds": 13.818228628995712
+}

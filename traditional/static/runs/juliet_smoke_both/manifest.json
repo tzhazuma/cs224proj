@@ -1,0 +1,65 @@
+{
+  "schema_version": "static-cwe401-v1",
+  "generated_at": "2026-11-11T18:22:53.662+00:00",
+  "command": "/usr/bin/python3 /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/static_adapter.py --input traditional/static/fixtures/juliet_smoke_manifest.jsonl --out traditional/static/runs/juliet_smoke_both --tool both --cppcheck-bin /tmp/cppcheck_probe/cppcheck --include-dir juliet/raw/testcasesupport --jobs 4",
+  "adapter": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/static_adapter.py",
+    "sha256": "8cf96ee2e2adc6bb1d50e6aa6f04d13d949482afa6afe6aa52a679a3cf5acd4c"
+  },
+  "input": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/juliet_smoke_manifest.jsonl",
+    "sha256": "e9c78123f77a7e82d6a4031f28569415f1f6ab967a46dd3240fed969f4ad6c1a",
+    "bytes": 3997
+  },
+  "outputs": {
+    "predictions.jsonl": {
+      "sha256": "edda77c283aa250d0e9bbf5dd00141bd899cbdd88cadb65a2512d0afdf89647e",
+      "bytes": 71378
+    },
+    "metrics.json": {
+      "sha256": "e5950aa28514d0e8cc9f7a73027a6ecf640ef99d69deb0b5a22255f230b22421",
+      "bytes": 16043
+    },
+    "metrics.md": {
+      "sha256": "59ee69d2c749d7f921bb7f6de28ae2d0124b304af25268ff0102da7df75b64cb",
+      "bytes": 3162
+    }
+  },
+  "tools": {
+    "clang": {
+      "available": true,
+      "binary": "/usr/bin/clang",
+      "version": "Ubuntu clang version 22.1.8 (1ubuntu1)",
+      "environment_errors": []
+    },
+    "cppcheck": {
+      "available": true,
+      "binary": "/tmp/cppcheck_probe/cppcheck",
+      "version": "Cppcheck 2.21.0",
+      "environment_errors": []
+    }
+  },
+  "settings": {
+    "tools": [
+      "clang",
+      "cppcheck"
+    ],
+    "missing_tools": [],
+    "std_c": "c11",
+    "std_cxx": "c++17",
+    "timeout_seconds": 120.0,
+    "jobs": 4,
+    "include_dirs": [
+      "juliet/raw/testcasesupport"
+    ],
+    "defines": [],
+    "clang_args": [],
+    "cppcheck_args": [],
+    "cppcheck_force": false,
+    "include_external": false,
+    "filter_cwe": null,
+    "assume_cwe": null,
+    "only_label": null,
+    "limit": null
+  }
+}

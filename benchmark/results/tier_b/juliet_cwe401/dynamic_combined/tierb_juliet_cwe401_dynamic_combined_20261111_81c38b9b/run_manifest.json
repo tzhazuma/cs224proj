@@ -1,0 +1,80 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "tierb_juliet_cwe401_dynamic_combined_20261111_81c38b9b",
+  "created_at": "2026-11-11T19:16:21Z",
+  "protocol_version": "1.0.0",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "tasks": [
+    "leak_detection"
+  ],
+  "dataset": {
+    "dataset_id": "juliet-cwe401-v1.3-subset-v1",
+    "split_id": "juliet-cwe401-v1.3-subset-v1",
+    "path": "juliet/subset_units.jsonl",
+    "sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "unit_manifest": {
+      "path": "juliet/manifest.json",
+      "sha256": "8df222f84a4295f3b90ae7cabe165adc04858d91def3fda19a073db6e17cafd6"
+    },
+    "unit_count": 200,
+    "group_count": 100,
+    "label_counts": {
+      "bad": 100,
+      "good": 100
+    }
+  },
+  "method": {
+    "method_id": "dynamic.combined",
+    "family": "dynamic",
+    "name": "ASan+LSan+Valgrind (any leak)",
+    "strategy": null,
+    "tool": {
+      "name": "ASan/LSan + Valgrind combined",
+      "version": "LSan (g++ (Ubuntu 15.3.0-4ubuntu1) 15.3.0); Valgrind valgrind-3.27.1",
+      "command_template": "ASan/LSan run + Valgrind Memcheck run; leak if either reports",
+      "rules": [
+        "any detector reports definite/indirect leak"
+      ],
+      "license": "GPL-2.0-or-later (Valgrind); GCC runtime (ASan/LSan)"
+    },
+    "config_sha256": "81c38b9b618cbdfb38acf9ace6e9f29c46d740980067194295c291bcbf625e74"
+  },
+  "execution": {
+    "started_at": "2026-11-11T17:56:59Z",
+    "finished_at": "2026-11-11T18:13:31Z",
+    "status": "completed",
+    "planned_units": 200,
+    "recorded_units": 200,
+    "retries": 0,
+    "concurrency": 8,
+    "command": null,
+    "command_sha256": null,
+    "environment": {
+      "collector": "bench-collect-tier-b-1.0.0",
+      "source_artifact": "traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl"
+    }
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": "metrics.json",
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "1f6eec84e8ee4767e799ee54f6b17c340a1f334f56c7e6ea1718151163a0ea41",
+    "source_results_sha256": "405381672467c146ac9e183f427be27fbff677be26844b6782d28a0f02218f64",
+    "source_manifest_sha256": "6a6096a05a455a034ab1392d52a9f7e32dc71170ccd917c1513350888069b0b9",
+    "source_metrics_sha256": "2983fd804329ce86bbdb43a9335a0562b1c2b808b73dd0d8de245c0cb98ac038",
+    "units_sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24"
+  },
+  "legacy_import": null,
+  "notes": [
+    "Derived view over a frozen source run; predictions are copied, not re-executed.",
+    "All 200 frozen units (dev 60 + test 140) are present in one run; the summary tool marks test 140 as primary.",
+    "Static compile errors and dynamic inconclusive records stay non-ok; they are never rewritten as y_pred=0.",
+    "Dynamic detector: ASan+LSan+Valgrind (any leak).",
+    "The source run has no line/branch coverage instrumentation; clean is 'no leak observed', not verified TN.",
+    "Runtime-supported population is defined by the LSan preflight; ASan scores on that subset are largely circular."
+  ]
+}

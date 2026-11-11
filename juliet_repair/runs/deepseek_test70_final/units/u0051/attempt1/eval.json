@@ -1,0 +1,70 @@
+{
+  "baseline_behavior_lines": [
+    "0 -- 0"
+  ],
+  "behavior_matches_good_subsequence": true,
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "compile": {
+    "command": [
+      "g++",
+      "-std=gnu++11",
+      "-O0",
+      "-g",
+      "-fsanitize=address",
+      "-fno-omit-frame-pointer",
+      "-w",
+      "-DOMITGOOD",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_final/units/u0051/attempt1/eval/src",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+      "-o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_final/units/u0051/attempt1/eval/fixed",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_final/units/u0051/attempt1/eval/src/CWE401_Memory_Leak__new_twoIntsStruct_54a.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_final/units/u0051/attempt1/eval/src/CWE401_Memory_Leak__new_twoIntsStruct_54b.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_final/units/u0051/attempt1/eval/src/CWE401_Memory_Leak__new_twoIntsStruct_54c.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_final/units/u0051/attempt1/eval/src/CWE401_Memory_Leak__new_twoIntsStruct_54d.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_final/units/u0051/attempt1/eval/src/CWE401_Memory_Leak__new_twoIntsStruct_54e.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_final/units/u0051/attempt1/eval/src/__repair_probe_main.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/io.o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/std_thread.o",
+      "-lpthread",
+      "-lm"
+    ],
+    "ok": true,
+    "returncode": 0,
+    "source_files": [
+      "CWE401_Memory_Leak__new_twoIntsStruct_54a.cpp",
+      "CWE401_Memory_Leak__new_twoIntsStruct_54b.cpp",
+      "CWE401_Memory_Leak__new_twoIntsStruct_54c.cpp",
+      "CWE401_Memory_Leak__new_twoIntsStruct_54d.cpp",
+      "CWE401_Memory_Leak__new_twoIntsStruct_54e.cpp",
+      "__repair_probe_main.cpp"
+    ],
+    "stderr_tail": "",
+    "stdout_tail": "",
+    "timed_out": false
+  },
+  "compile_pass": true,
+  "fixed_behavior_lines": [
+    "0 -- 0"
+  ],
+  "fixed_stdout_sha256": "6629b75e9e12ed34bce817a9e4f87c6f67d20f48d028c2b78e07ea105ea77ba4",
+  "good_behavior_lines": [
+    "0 -- 0",
+    "0 -- 0"
+  ],
+  "leak_removed": true,
+  "parsed_explanation": "The heap allocation created with `new twoIntsStruct` in bad() was never freed. The terminal sink badSink_e now deletes the pointer after the data has been printed, eliminating the leak while preserving the printed output and call chain.",
+  "run": {
+    "leak_detected": false,
+    "other_asan_error": false,
+    "returncode": 0,
+    "summary": null,
+    "timed_out": false,
+    "wall_seconds": 0.02
+  },
+  "strict_evaluable": true,
+  "strict_pass": true
+}

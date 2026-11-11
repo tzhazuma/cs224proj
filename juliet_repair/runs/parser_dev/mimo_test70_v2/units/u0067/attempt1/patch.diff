@@ -1,0 +1,20 @@
+--- a/CWE401_Memory_Leak__wchar_t_malloc_33.cpp
++++ b/CWE401_Memory_Leak__wchar_t_malloc_33.cpp
+@@ -1,6 +1,7 @@
+ #include "std_testcase.h"
+ 
+ #include <wchar.h>
++#include <stdlib.h>
+ 
+ namespace CWE401_Memory_Leak__wchar_t_malloc_33
+ {
+@@ -20,7 +21,8 @@
+     {
+         wchar_t * data = dataRef;
+ 
+-        ;
++        free(data);
++        data = NULL;
+     }
+ }
+ 

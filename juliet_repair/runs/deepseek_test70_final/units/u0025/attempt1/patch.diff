@@ -1,0 +1,22 @@
+--- a/CWE401_Memory_Leak__malloc_realloc_int_01.c
++++ b/CWE401_Memory_Leak__malloc_realloc_int_01.c
+@@ -12,12 +12,14 @@
+         data[0] = 5;
+         printIntLine(data[0]);
+ 
+-        data = (int *)realloc(data, (130000)*sizeof(int));
+-        if (data != NULL)
+         {
+-
+-            data[0] = 10;
+-            printIntLine(data[0]);
++            int *tmp = (int *)realloc(data, (130000)*sizeof(int));
++            if (tmp != NULL)
++            {
++                data = tmp;
++                data[0] = 10;
++                printIntLine(data[0]);
++            }
+             free(data);
+         }
+     }

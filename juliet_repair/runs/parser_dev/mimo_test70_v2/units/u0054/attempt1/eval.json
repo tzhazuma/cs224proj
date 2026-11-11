@@ -1,0 +1,64 @@
+{
+  "baseline_behavior_lines": [
+    "41"
+  ],
+  "behavior_matches_good_subsequence": true,
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "compile": {
+    "command": [
+      "g++",
+      "-std=gnu++11",
+      "-O0",
+      "-g",
+      "-fsanitize=address",
+      "-fno-omit-frame-pointer",
+      "-w",
+      "-DOMITGOOD",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0054/attempt1/eval/src",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+      "-o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0054/attempt1/eval/fixed",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0054/attempt1/eval/src/CWE401_Memory_Leak__new_wchar_t_82_bad.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0054/attempt1/eval/src/CWE401_Memory_Leak__new_wchar_t_82a.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0054/attempt1/eval/src/__repair_probe_main.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/io.o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/std_thread.o",
+      "-lpthread",
+      "-lm"
+    ],
+    "ok": true,
+    "returncode": 0,
+    "source_files": [
+      "CWE401_Memory_Leak__new_wchar_t_82_bad.cpp",
+      "CWE401_Memory_Leak__new_wchar_t_82a.cpp",
+      "__repair_probe_main.cpp"
+    ],
+    "stderr_tail": "",
+    "stdout_tail": "",
+    "timed_out": false
+  },
+  "compile_pass": true,
+  "fixed_behavior_lines": [
+    "41"
+  ],
+  "fixed_stdout_sha256": "ddb5c6d217ea442d92dcdead04dade6263ea482787904ab5c50a86d142b3c07d",
+  "good_behavior_lines": [
+    "41",
+    "41"
+  ],
+  "leak_removed": true,
+  "parsed_explanation": "The leak was the `new wchar_t` allocated in bad() and never freed. The action() method now deletes the data pointer, and a virtual destructor was added to the base class so `delete baseObject` is well-defined.",
+  "run": {
+    "leak_detected": false,
+    "other_asan_error": false,
+    "returncode": 0,
+    "summary": null,
+    "timed_out": false,
+    "wall_seconds": 0.016
+  },
+  "strict_evaluable": true,
+  "strict_pass": true
+}

@@ -1,0 +1,64 @@
+{
+  "baseline_behavior_lines": [
+    "0 -- 0",
+    "1 -- 1"
+  ],
+  "behavior_matches_good_subsequence": true,
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "compile": {
+    "command": [
+      "gcc",
+      "-std=gnu11",
+      "-O0",
+      "-g",
+      "-fsanitize=address",
+      "-fno-omit-frame-pointer",
+      "-w",
+      "-DOMITGOOD",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0027/attempt2/eval/src",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+      "-o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0027/attempt2/eval/fixed",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0027/attempt2/eval/src/CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01.c",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0027/attempt2/eval/src/__repair_probe_main.c",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/io.o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/std_thread.o",
+      "-lpthread",
+      "-lm"
+    ],
+    "ok": true,
+    "returncode": 0,
+    "source_files": [
+      "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01.c",
+      "__repair_probe_main.c"
+    ],
+    "stderr_tail": "",
+    "stdout_tail": "",
+    "timed_out": false
+  },
+  "compile_pass": true,
+  "fixed_behavior_lines": [
+    "0 -- 0",
+    "1 -- 1"
+  ],
+  "fixed_stdout_sha256": "4cbc82268dc9847dfda551d44789f43783f9ab7bcd4fc11369e131ff21e810a1",
+  "good_behavior_lines": [
+    "0 -- 0",
+    "1 -- 1"
+  ],
+  "leak_removed": true,
+  "parsed_explanation": "If realloc fails, the original pointer remains valid and must be freed; previously it was leaked. Using a separate newData pointer preserves the original pointer for freeing on failure while keeping identical output.",
+  "run": {
+    "leak_detected": false,
+    "other_asan_error": false,
+    "returncode": 0,
+    "summary": null,
+    "timed_out": false,
+    "wall_seconds": 0.015
+  },
+  "strict_evaluable": false,
+  "strict_pass": false
+}

@@ -1,0 +1,91 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__twoIntsStruct_malloc_68a.c"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 128,
+        "completion_tokens": 501,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.0007456679999999999,
+        "prompt_tokens": 607
+      },
+      "elapsed_seconds": 8.012,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.018
+        },
+        "strict_evaluable": false,
+        "strict_pass": false
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "The malloc'd buffer was stored in the global and never freed. Added free(data) after the sink call in the bad() function (and cleared the global) so the allocation is released while preserving the printed output and behavior.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 501,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.0002237,
+          "billing_source": "go",
+          "list_cost": 0.00037283,
+          "tokens": {
+            "cache_read": 128,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 479,
+            "output": 501,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 607,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "total_tokens": 1108
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 128,
+  "changed_paths": [
+    "CWE401_Memory_Leak__twoIntsStruct_malloc_68a.c"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 501,
+  "cost_complete": true,
+  "cost_usd_sum": 0.00074567,
+  "explanation_present": true,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_68",
+  "language": "c",
+  "leak_removed": true,
+  "model": "deepseek-v4.1-flash",
+  "model_alias": "deepseek",
+  "prompt_tokens_sum": 607,
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "strict_evaluable": false,
+  "strict_pass": false,
+  "unit_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_68__bad",
+  "unit_key": "u0059"
+}

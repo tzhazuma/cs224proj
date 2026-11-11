@@ -1,0 +1,201 @@
+{
+  "schema_version": "static-cwe401-verified-subset-v1",
+  "generated_at": "2026-11-11T18:26:04.298+00:00",
+  "population": {
+    "definition": "label=bad with runtime_check.leak_detected=true, or label=good with runtime_check.leak_detected=false",
+    "manifest_units": 200,
+    "supported_units": 178,
+    "excluded_units": 22,
+    "prediction_rows_selected": 356,
+    "prediction_rows_excluded": 44
+  },
+  "manifest": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/manifest.json",
+    "sha256": "04e804abebc4bf51c499f4e816381a1fc5b7e81006baa540773cad2445463826"
+  },
+  "predictions": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck_gnu/predictions.jsonl",
+    "sha256": "f9d2f59af172dd3b68af5ee84bc17ac784f53a95a3f07d61c2441bda66e26fa5"
+  },
+  "tools": {
+    "clang": {
+      "rows": 178,
+      "units": 178,
+      "status_counts": {
+        "ok": 172,
+        "compile_error": 6
+      },
+      "confusion_evaluable": {
+        "tp": 58,
+        "fp": 0,
+        "tn": 97,
+        "fn": 17,
+        "unlabelled": 0
+      },
+      "metrics_evaluable": {
+        "n": 172,
+        "precision": 1.0,
+        "recall": 0.7733333333333333,
+        "specificity": 1.0,
+        "accuracy": 0.9011627906976745,
+        "f1_vulnerable": 0.8721804511278195,
+        "f1_non_vulnerable": 0.919431279620853,
+        "macro_f1": 0.8958058653743363,
+        "balanced_accuracy": 0.8866666666666667,
+        "mcc": 0.8111792008591152,
+        "wilson_95": {
+          "precision": {
+            "low": 0.9378821442127971,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "recall": {
+            "low": 0.6666446452773059,
+            "high": 0.8533863208320934,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.9619059574740523,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.8474255227303822,
+            "high": 0.9373723339611897,
+            "confidence": 0.95
+          }
+        }
+      },
+      "confusion_end_to_end": {
+        "tp": 58,
+        "fp": 0,
+        "tn": 100,
+        "fn": 20,
+        "unlabelled": 0
+      },
+      "metrics_end_to_end": {
+        "n": 178,
+        "precision": 1.0,
+        "recall": 0.7435897435897436,
+        "specificity": 1.0,
+        "accuracy": 0.8876404494382022,
+        "f1_vulnerable": 0.8529411764705882,
+        "f1_non_vulnerable": 0.9090909090909091,
+        "macro_f1": 0.8810160427807486,
+        "balanced_accuracy": 0.8717948717948718,
+        "mcc": 0.787183663231218,
+        "wilson_95": {
+          "precision": {
+            "low": 0.9378821442127971,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "recall": {
+            "low": 0.6368667271880386,
+            "high": 0.8274456219265334,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.9630065017930143,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.832825340864612,
+            "high": 0.926077501726833,
+            "confidence": 0.95
+          }
+        }
+      }
+    },
+    "cppcheck": {
+      "rows": 178,
+      "units": 178,
+      "status_counts": {
+        "ok": 178
+      },
+      "confusion_evaluable": {
+        "tp": 15,
+        "fp": 4,
+        "tn": 96,
+        "fn": 63,
+        "unlabelled": 0
+      },
+      "metrics_evaluable": {
+        "n": 178,
+        "precision": 0.7894736842105263,
+        "recall": 0.19230769230769232,
+        "specificity": 0.96,
+        "accuracy": 0.6235955056179775,
+        "f1_vulnerable": 0.30927835051546393,
+        "f1_non_vulnerable": 0.7413127413127413,
+        "macro_f1": 0.5252955459141027,
+        "balanced_accuracy": 0.5761538461538461,
+        "mcc": 0.24473370030583944,
+        "wilson_95": {
+          "precision": {
+            "low": 0.5666572155618583,
+            "high": 0.9149232336708375,
+            "confidence": 0.95
+          },
+          "recall": {
+            "low": 0.12015206340148435,
+            "high": 0.2933481271906353,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.9016292856411208,
+            "high": 0.9843366960084523,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.5505186339113299,
+            "high": 0.6914503883642031,
+            "confidence": 0.95
+          }
+        }
+      },
+      "confusion_end_to_end": {
+        "tp": 15,
+        "fp": 4,
+        "tn": 96,
+        "fn": 63,
+        "unlabelled": 0
+      },
+      "metrics_end_to_end": {
+        "n": 178,
+        "precision": 0.7894736842105263,
+        "recall": 0.19230769230769232,
+        "specificity": 0.96,
+        "accuracy": 0.6235955056179775,
+        "f1_vulnerable": 0.30927835051546393,
+        "f1_non_vulnerable": 0.7413127413127413,
+        "macro_f1": 0.5252955459141027,
+        "balanced_accuracy": 0.5761538461538461,
+        "mcc": 0.24473370030583944,
+        "wilson_95": {
+          "precision": {
+            "low": 0.5666572155618583,
+            "high": 0.9149232336708375,
+            "confidence": 0.95
+          },
+          "recall": {
+            "low": 0.12015206340148435,
+            "high": 0.2933481271906353,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.9016292856411208,
+            "high": 0.9843366960084523,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.5505186339113299,
+            "high": 0.6914503883642031,
+            "confidence": 0.95
+          }
+        }
+      }
+    }
+  }
+}

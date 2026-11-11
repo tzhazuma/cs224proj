@@ -1,0 +1,94 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__new_int64_t_54e.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 151,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.0001414,
+        "prompt_tokens": 708
+      },
+      "elapsed_seconds": 4.397,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.018
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "The allocated int64_t is passed through the sink chain but never freed. Added `delete data;` in the final sink (badSink_e) to release the memory while preserving all printed output and entry points.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 151,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.0001414,
+          "billing_source": "go",
+          "list_cost": 0.0001414,
+          "tokens": {
+            "cache_read": 0,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 708,
+            "output": 151,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 708,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 859
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 0,
+  "changed_paths": [
+    "CWE401_Memory_Leak__new_int64_t_54e.cpp"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 151,
+  "cost_complete": true,
+  "cost_usd_sum": 0.0001414,
+  "explanation_present": true,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__new_int64_t_54",
+  "language": "cpp",
+  "leak_removed": true,
+  "model": "mimo-v2.6-flash",
+  "model_alias": "mimo",
+  "prompt_tokens_sum": 708,
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__new_int64_t_54__bad",
+  "unit_key": "u0046"
+}

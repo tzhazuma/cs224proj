@@ -1,0 +1,90 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__char_calloc_01.c"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 320,
+        "completion_tokens": 177,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 5.2556e-05,
+        "prompt_tokens": 335
+      },
+      "elapsed_seconds": 9.274,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.022
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "parse_error": null,
+      "parsed_explanation": "Added free(data) after printing to release the calloc'd buffer, eliminating the memory leak while preserving output and behavior.",
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 177,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 5.256e-05,
+          "billing_source": "go",
+          "list_cost": 5.256e-05,
+          "tokens": {
+            "cache_read": 320,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 15,
+            "output": 177,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 335,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 320
+        },
+        "total_tokens": 512
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 320,
+  "changed_paths": [
+    "CWE401_Memory_Leak__char_calloc_01.c"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 177,
+  "cost_complete": true,
+  "cost_usd_sum": 5.256e-05,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__char_calloc_01",
+  "language": "c",
+  "leak_removed": true,
+  "model": "mimo-v2.6-flash",
+  "model_alias": "mimo",
+  "prompt_tokens_sum": 335,
+  "schema": "juliet-repair-result-v1",
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__char_calloc_01__bad",
+  "unit_key": "u0001"
+}

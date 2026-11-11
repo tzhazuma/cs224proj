@@ -1,0 +1,21 @@
+--- a/CWE401_Memory_Leak__char_malloc_33.cpp
++++ b/CWE401_Memory_Leak__char_malloc_33.cpp
+@@ -1,6 +1,8 @@
+ #include "std_testcase.h"
+ 
+ #include <wchar.h>
++#include <stdlib.h>
++#include <string.h>
+ 
+ namespace CWE401_Memory_Leak__char_malloc_33
+ {
+@@ -20,7 +22,8 @@
+     {
+         char * data = dataRef;
+ 
+-        ;
++        free(data);
++        data = NULL;
+     }
+ }
+ 

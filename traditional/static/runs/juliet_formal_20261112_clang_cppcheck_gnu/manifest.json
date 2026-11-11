@@ -1,0 +1,70 @@
+{
+  "schema_version": "static-cwe401-v1",
+  "generated_at": "2026-11-11T18:25:32.094+00:00",
+  "command": "/usr/bin/python3 /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/static_adapter.py --input juliet/subset_units.jsonl --out traditional/static/runs/juliet_formal_20261112_clang_cppcheck_gnu --tool both --cppcheck-bin /tmp/cppcheck_probe/cppcheck --include-dir juliet/raw/testcasesupport --assume-cwe CWE-401 --define _GNU_SOURCE --clang-arg=-include --clang-arg=alloca.h --timeout 120 --jobs 8 --dataset-name juliet-cwe401-v1.3-subset-v1",
+  "adapter": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/static_adapter.py",
+    "sha256": "8cf96ee2e2adc6bb1d50e6aa6f04d13d949482afa6afe6aa52a679a3cf5acd4c"
+  },
+  "input": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/subset_units.jsonl",
+    "sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "bytes": 78682
+  },
+  "outputs": {
+    "predictions.jsonl": {
+      "sha256": "f9d2f59af172dd3b68af5ee84bc17ac784f53a95a3f07d61c2441bda66e26fa5",
+      "bytes": 1564026
+    },
+    "metrics.json": {
+      "sha256": "a13eee6e4f3b35abe2a4d99b8a75645f75e571327fe390ac76928d83d4efba3f",
+      "bytes": 22985
+    },
+    "metrics.md": {
+      "sha256": "ed7ef553cb3eca947805dd180272948fb501106ad796cd2bba685f7469ddb954",
+      "bytes": 5926
+    }
+  },
+  "tools": {
+    "clang": {
+      "available": true,
+      "binary": "/usr/bin/clang",
+      "version": "Ubuntu clang version 22.1.8 (1ubuntu1)",
+      "environment_errors": []
+    },
+    "cppcheck": {
+      "available": true,
+      "binary": "/tmp/cppcheck_probe/cppcheck",
+      "version": "Cppcheck 2.21.0",
+      "environment_errors": []
+    }
+  },
+  "settings": {
+    "tools": [
+      "clang",
+      "cppcheck"
+    ],
+    "missing_tools": [],
+    "std_c": "c11",
+    "std_cxx": "c++17",
+    "timeout_seconds": 120.0,
+    "jobs": 8,
+    "include_dirs": [
+      "juliet/raw/testcasesupport"
+    ],
+    "defines": [
+      "_GNU_SOURCE"
+    ],
+    "clang_args": [
+      "-include",
+      "alloca.h"
+    ],
+    "cppcheck_args": [],
+    "cppcheck_force": false,
+    "include_external": false,
+    "filter_cwe": null,
+    "assume_cwe": "CWE-401",
+    "only_label": null,
+    "limit": null
+  }
+}

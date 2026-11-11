@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:27.357+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-0dcd-70eb-8a25-fa6549147c57"
+      },
+      "http_status": 200,
+      "latency_seconds": 7.807971551010269,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-965746a040414a8f9219a1eff2d33272\",\"object\":\"chat.completion\",\"created\":1794425359,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__malloc_realloc_int_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__malloc_realloc_int_01_bad()\\\\n{\\\\n    {\\\\n        int * data = (int *)malloc(100*sizeof(int));\\\\n        if (data == NULL) {exit(-1);}\\\\n\\\\n        data[0] = 5;\\\\n        printIntLine(data[0]);\\\\n\\\\n        {\\\\n            int *tmp = (int *)realloc(data, (130000)*sizeof(int));\\\\n            if (tmp != NULL)\\\\n            {\\\\n                data = tmp;\\\\n                data[0] = 10;\\\\n                printIntLine(data[0]);\\\\n            }\\\\n            free(data);\\\\n        }\\\\n    }\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The original code overwrote the only pointer to the malloc'd block with the realloc result; if realloc failed (returning NULL), the original block leaked. The fix stores realloc's result in a temporary, only replacing data on success, and always frees the still-valid pointer, preserving the same printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":399,\"completion_tokens\":282,\"total_tokens\":681,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00021023,\"allowance\":0.00012614,\"tokens\":{\"input\":271,\"output\":282,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:19.549+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__malloc_realloc_int_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__malloc_realloc_int_01_bad()\\n{\\n    {\\n        int * data = (int *)malloc(100*sizeof(int));\\n        if (data == NULL) {exit(-1);}\\n\\n        data[0] = 5;\\n        printIntLine(data[0]);\\n\\n        {\\n            int *tmp = (int *)realloc(data, (130000)*sizeof(int));\\n            if (tmp != NULL)\\n            {\\n                data = tmp;\\n                data[0] = 10;\\n                printIntLine(data[0]);\\n            }\\n            free(data);\\n        }\\n    }\\n}\\n\"}], \"explanation\": \"The original code overwrote the only pointer to the malloc'd block with the realloc result; if realloc failed (returning NULL), the original block leaked. The fix stores realloc's result in a temporary, only replacing data on success, and always frees the still-valid pointer, preserving the same printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 282,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00042046799999999996,
+    "prompt_tokens": 399
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 7.807971551010269,
+  "response_meta": {
+    "content_chars": 982,
+    "created": 1794425359,
+    "finish_reason": "stop",
+    "id": "chatcmpl-965746a040414a8f9219a1eff2d33272",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0025",
+  "usage": {
+    "completion_tokens": 282,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00012614,
+      "billing_source": "go",
+      "list_cost": 0.00021023,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 271,
+        "output": 282,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 399,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 681
+  },
+  "wall_seconds": 7.808003383994219
+}

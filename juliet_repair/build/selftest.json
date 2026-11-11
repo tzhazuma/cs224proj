@@ -1,0 +1,120 @@
+{
+  "controls": {
+    "behaviour_break": {
+      "actual": {
+        "behavior_preserved": false,
+        "compile_pass": true,
+        "leak_removed": true,
+        "strict_pass": false
+      },
+      "baseline_behavior_lines": [
+        "A String"
+      ],
+      "expected": {
+        "behavior_preserved": false,
+        "compile_pass": true,
+        "leak_removed": true,
+        "strict_pass": false
+      },
+      "fixed_behavior_lines": [],
+      "ok": true,
+      "run": {
+        "leak_detected": false,
+        "other_asan_error": false,
+        "returncode": 0,
+        "summary": null,
+        "timed_out": false,
+        "wall_seconds": 0.015
+      }
+    },
+    "correct_free": {
+      "actual": {
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "strict_pass": true
+      },
+      "baseline_behavior_lines": [
+        "A String"
+      ],
+      "expected": {
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "strict_pass": true
+      },
+      "fixed_behavior_lines": [
+        "A String"
+      ],
+      "ok": true,
+      "run": {
+        "leak_detected": false,
+        "other_asan_error": false,
+        "returncode": 0,
+        "summary": null,
+        "timed_out": false,
+        "wall_seconds": 0.016
+      }
+    },
+    "double_free": {
+      "actual": {
+        "behavior_preserved": false,
+        "compile_pass": true,
+        "leak_removed": false,
+        "strict_pass": false
+      },
+      "baseline_behavior_lines": [
+        "A String"
+      ],
+      "expected": {
+        "behavior_preserved": false,
+        "compile_pass": true,
+        "leak_removed": false,
+        "strict_pass": false
+      },
+      "fixed_behavior_lines": [
+        "A String"
+      ],
+      "ok": true,
+      "run": {
+        "leak_detected": false,
+        "other_asan_error": true,
+        "returncode": 23,
+        "summary": "SUMMARY: AddressSanitizer: double-free /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/selftest/double_free/src/CWE401_Memory_Leak__char_calloc_01.c:18 in CWE401_Memory_Leak__char_calloc_01_bad",
+        "timed_out": false,
+        "wall_seconds": 0.101
+      }
+    },
+    "no_fix": {
+      "actual": {
+        "behavior_preserved": false,
+        "compile_pass": true,
+        "leak_removed": false,
+        "strict_pass": false
+      },
+      "baseline_behavior_lines": [
+        "A String"
+      ],
+      "expected": {
+        "behavior_preserved": false,
+        "compile_pass": true,
+        "leak_removed": false,
+        "strict_pass": false
+      },
+      "fixed_behavior_lines": [
+        "A String"
+      ],
+      "ok": true,
+      "run": {
+        "leak_detected": true,
+        "other_asan_error": false,
+        "returncode": 23,
+        "summary": "SUMMARY: AddressSanitizer: 100 byte(s) leaked in 1 allocation(s).",
+        "timed_out": false,
+        "wall_seconds": 0.102
+      }
+    }
+  },
+  "failures": [],
+  "status": "PASS"
+}

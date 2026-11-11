@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:47.264+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-21c4-786c-aa35-1a5abbe48e44"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.892190894999658,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424840-xWi4WWG3RQyhXBfTYH7p\",\"object\":\"chat.completion\",\"created\":1794424840,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int_malloc_22a.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nint CWE401_Memory_Leak__int_malloc_22_badGlobal = 0;\\\\n\\\\nvoid CWE401_Memory_Leak__int_malloc_22_badSink(int * data);\\\\n\\\\nvoid CWE401_Memory_Leak__int_malloc_22_bad()\\\\n{\\\\n    int * data;\\\\n    data = NULL;\\\\n\\\\n    data = (int *)malloc(100*sizeof(int));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5;\\\\n    printIntLine(data[0]);\\\\n    CWE401_Memory_Leak__int_malloc_22_badGlobal = 1;\\\\n    CWE401_Memory_Leak__int_malloc_22_badSink(data);\\\\n    free(data);\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The allocated buffer was never freed. Added free(data) after the sink call in CWE401_Memory_Leak__int_malloc_22_bad() so the memory is released while preserving the printed output and control flow. The sink file needs no change.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":994,\"completion_tokens\":294,\"total_tokens\":1288,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":512,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00015123,\"allowance\":0.00015123,\"tokens\":{\"input\":482,\"output\":294,\"reasoning\":0,\"cache_read\":512,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:40.372+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int_malloc_22a.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nint CWE401_Memory_Leak__int_malloc_22_badGlobal = 0;\\n\\nvoid CWE401_Memory_Leak__int_malloc_22_badSink(int * data);\\n\\nvoid CWE401_Memory_Leak__int_malloc_22_bad()\\n{\\n    int * data;\\n    data = NULL;\\n\\n    data = (int *)malloc(100*sizeof(int));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5;\\n    printIntLine(data[0]);\\n    CWE401_Memory_Leak__int_malloc_22_badGlobal = 1;\\n    CWE401_Memory_Leak__int_malloc_22_badSink(data);\\n    free(data);\\n}\\n\"}], \"explanation\": \"The allocated buffer was never freed. Added free(data) after the sink call in CWE401_Memory_Leak__int_malloc_22_bad() so the memory is released while preserving the printed output and control flow. The sink file needs no change.\"}",
+  "cost": {
+    "cached_prompt_tokens": 512,
+    "completion_tokens": 294,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00015123360000000004,
+    "prompt_tokens": 994
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.892190894999658,
+  "response_meta": {
+    "content_chars": 838,
+    "created": 1794424840,
+    "finish_reason": "stop",
+    "id": "gen-1794424840-xWi4WWG3RQyhXBfTYH7p",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0018",
+  "usage": {
+    "completion_tokens": 294,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00015123,
+      "billing_source": "go",
+      "list_cost": 0.00015123,
+      "tokens": {
+        "cache_read": 512,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 482,
+        "output": 294,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 994,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 512
+    },
+    "total_tokens": 1288
+  },
+  "wall_seconds": 6.89221545199689
+}

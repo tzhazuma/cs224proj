@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:22:44.990+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0f-ed3c-78b7-99c7-5d91b991ecd5"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.985239165995154,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424958-2u8rNZ8SnuMlk4nEML6e\",\"object\":\"chat.completion\",\"created\":1794424958,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__twoIntsStruct_realloc_22b.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nextern int CWE401_Memory_Leak__twoIntsStruct_realloc_22_badGlobal;\\\\n\\\\nvoid CWE401_Memory_Leak__twoIntsStruct_realloc_22_badSink(twoIntsStruct * data)\\\\n{\\\\n    if(CWE401_Memory_Leak__twoIntsStruct_realloc_22_badGlobal)\\\\n    {\\\\n        free(data);\\\\n        data = NULL;\\\\n    }\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The sink function received the heap-allocated data pointer but never freed it, causing a memory leak. Added free(data) in the sink where the badGlobal flag indicates ownership, preserving all printed output and return behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":607,\"completion_tokens\":207,\"total_tokens\":814,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00014294,\"allowance\":0.00014294,\"tokens\":{\"input\":607,\"output\":207,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:22:38.004+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__twoIntsStruct_realloc_22b.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nextern int CWE401_Memory_Leak__twoIntsStruct_realloc_22_badGlobal;\\n\\nvoid CWE401_Memory_Leak__twoIntsStruct_realloc_22_badSink(twoIntsStruct * data)\\n{\\n    if(CWE401_Memory_Leak__twoIntsStruct_realloc_22_badGlobal)\\n    {\\n        free(data);\\n        data = NULL;\\n    }\\n}\\n\"}], \"explanation\": \"The sink function received the heap-allocated data pointer but never freed it, causing a memory leak. Added free(data) in the sink where the badGlobal flag indicates ownership, preserving all printed output and return behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 207,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00014294,
+    "prompt_tokens": 607
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.985239165995154,
+  "response_meta": {
+    "content_chars": 666,
+    "created": 1794424958,
+    "finish_reason": "stop",
+    "id": "gen-1794424958-2u8rNZ8SnuMlk4nEML6e",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0061",
+  "usage": {
+    "completion_tokens": 207,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00014294,
+      "billing_source": "go",
+      "list_cost": 0.00014294,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 607,
+        "output": 207,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 607,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 814
+  },
+  "wall_seconds": 6.985266437011887
+}

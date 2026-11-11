@@ -1,0 +1,19 @@
+--- a/CWE401_Memory_Leak__char_calloc_01.c
++++ b/CWE401_Memory_Leak__char_calloc_01.c
+@@ -1,6 +1,8 @@
+ #include "std_testcase.h"
+ 
+ #include <wchar.h>
++#include <stdlib.h>
++#include <string.h>
+ 
+ 
+ void CWE401_Memory_Leak__char_calloc_01_bad()
+@@ -14,5 +16,6 @@
+     strcpy(data, "A String");
+     printLine(data);
+ 
+-    ;
++    free(data);
++    data = NULL;
+ }

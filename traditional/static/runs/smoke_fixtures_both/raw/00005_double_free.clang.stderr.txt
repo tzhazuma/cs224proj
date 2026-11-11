@@ -1,0 +1,22 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/double_free.c:11:5: warning: Attempt to release already released memory [unix.Malloc]
+   11 |     free(values);
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/double_free.c:18:12: note: Calling 'double_free'
+   18 |     return double_free(argc);
+      |            ^~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/double_free.c:5:26: note: Memory is allocated
+    5 |     int *values = (int *)malloc(4 * sizeof(int));
+      |                          ^~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/double_free.c:6:9: note: Assuming 'values' is not equal to NULL
+    6 |     if (values == NULL) {
+      |         ^~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/double_free.c:6:5: note: Taking false branch
+    6 |     if (values == NULL) {
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/double_free.c:10:5: note: Memory is released
+   10 |     free(values);
+      |     ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/double_free.c:11:5: note: Attempt to release already released memory
+   11 |     free(values);
+      |     ^~~~~~~~~~~~
+1 warning generated.

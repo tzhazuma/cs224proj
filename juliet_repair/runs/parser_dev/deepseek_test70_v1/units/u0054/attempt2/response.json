@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:25.552+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-c691-73dd-b34f-304bbb98007b"
+      },
+      "http_status": 200,
+      "latency_seconds": 2.9876571310014697,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-31c6f988338749229f503aeef5a6c58b\",\"object\":\"chat.completion\",\"created\":1794424882,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_wchar_t_82_bad.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include \\\\\\\"CWE401_Memory_Leak__new_wchar_t_82.h\\\\\\\"\\\\n\\\\nnamespace CWE401_Memory_Leak__new_wchar_t_82\\\\n{\\\\n\\\\nvoid CWE401_Memory_Leak__new_wchar_t_82_bad::action(wchar_t * data)\\\\n{\\\\n\\\\n    delete data;\\\\n}\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The leaked wchar_t allocation is now freed in the bad class's action() via delete, preserving output and behavior while eliminating the memory leak. Only the bad.cpp file needed changing.\\\"}\"}}],\"usage\":{\"prompt_tokens\":1051,\"completion_tokens\":168,\"total_tokens\":1219,\"prompt_tokens_details\":{\"cached_tokens\":512},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00018319,\"allowance\":0.00010991,\"tokens\":{\"input\":539,\"output\":168,\"reasoning\":0,\"cache_read\":512,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:22.564+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_wchar_t_82_bad.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include \\\"CWE401_Memory_Leak__new_wchar_t_82.h\\\"\\n\\nnamespace CWE401_Memory_Leak__new_wchar_t_82\\n{\\n\\nvoid CWE401_Memory_Leak__new_wchar_t_82_bad::action(wchar_t * data)\\n{\\n\\n    delete data;\\n}\\n\\n}\\n\"}], \"explanation\": \"The leaked wchar_t allocation is now freed in the bad class's action() via delete, preserving output and behavior while eliminating the memory leak. Only the bad.cpp file needed changing.\"}",
+  "cost": {
+    "cached_prompt_tokens": 512,
+    "completion_tokens": 168,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00036637199999999995,
+    "prompt_tokens": 1051
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 2.9876571310014697,
+  "response_meta": {
+    "content_chars": 521,
+    "created": 1794424882,
+    "finish_reason": "stop",
+    "id": "chatcmpl-31c6f988338749229f503aeef5a6c58b",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0054",
+  "usage": {
+    "completion_tokens": 168,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00010991,
+      "billing_source": "go",
+      "list_cost": 0.00018319,
+      "tokens": {
+        "cache_read": 512,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 539,
+        "output": 168,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 1051,
+    "prompt_tokens_details": {
+      "cached_tokens": 512
+    },
+    "total_tokens": 1219
+  },
+  "wall_seconds": 2.987682887003757
+}

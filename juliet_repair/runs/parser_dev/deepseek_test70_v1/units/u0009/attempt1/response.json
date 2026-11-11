@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:27.719+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0d-de95-7fb8-8585-166dee5d9dad"
+      },
+      "http_status": 200,
+      "latency_seconds": 4.728082102010376,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-229b18d0c97a42019d476ff23b3fd803\",\"object\":\"chat.completion\",\"created\":1794424823,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int64_t_calloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__int64_t_calloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    int64_t * data;\\\\n    int64_t * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (int64_t *)calloc(100, sizeof(int64_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5LL;\\\\n    printLongLongLine(data[0]);\\\\n    {\\\\n        int64_t * data = dataRef;\\\\n\\\\n        ;\\\\n    }\\\\n    free(data);\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added free(data) at the end of bad() to release the calloc-allocated buffer, preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":398,\"completion_tokens\":231,\"total_tokens\":629,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00017948,\"allowance\":0.00010769,\"tokens\":{\"input\":270,\"output\":231,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:22.991+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int64_t_calloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__int64_t_calloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    int64_t * data;\\n    int64_t * &dataRef = data;\\n    data = NULL;\\n\\n    data = (int64_t *)calloc(100, sizeof(int64_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5LL;\\n    printLongLongLine(data[0]);\\n    {\\n        int64_t * data = dataRef;\\n\\n        ;\\n    }\\n    free(data);\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added free(data) at the end of bad() to release the calloc-allocated buffer, preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 231,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000358968,
+    "prompt_tokens": 398
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 4.728082102010376,
+  "response_meta": {
+    "content_chars": 649,
+    "created": 1794424823,
+    "finish_reason": "stop",
+    "id": "chatcmpl-229b18d0c97a42019d476ff23b3fd803",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0009",
+  "usage": {
+    "completion_tokens": 231,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00010769,
+      "billing_source": "go",
+      "list_cost": 0.00017948,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 270,
+        "output": 231,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 398,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 629
+  },
+  "wall_seconds": 4.728110873998958
+}

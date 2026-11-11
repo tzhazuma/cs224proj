@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:30:04.766+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-a923-798f-b735-91f6df694186"
+      },
+      "http_status": 200,
+      "latency_seconds": 5.455835146000027,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794425399-j5wD5eYDC8E6NPeELzrf\",\"object\":\"chat.completion\",\"created\":1794425399,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__twoIntsStruct_malloc_68b.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nextern twoIntsStruct * CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink()\\\\n{\\\\n    twoIntsStruct * data = CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\\\n\\\\n    free(data);\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The sink function receives the heap-allocated data via the global but never frees it. Adding free(data) in the sink releases the allocation without changing any printed output or the entry point.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":587,\"completion_tokens\":189,\"total_tokens\":776,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0001351,\"allowance\":0.0001351,\"tokens\":{\"input\":587,\"output\":189,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:59.311+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__twoIntsStruct_malloc_68b.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nextern twoIntsStruct * CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\n\\n\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink()\\n{\\n    twoIntsStruct * data = CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\n\\n    free(data);\\n}\\n\"}], \"explanation\": \"The sink function receives the heap-allocated data via the global but never frees it. Adding free(data) in the sink releases the allocation without changing any printed output or the entry point.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 189,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00013510000000000003,
+    "prompt_tokens": 587
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 5.455835146000027,
+  "response_meta": {
+    "content_chars": 601,
+    "created": 1794425399,
+    "finish_reason": "stop",
+    "id": "gen-1794425399-j5wD5eYDC8E6NPeELzrf",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0059",
+  "usage": {
+    "completion_tokens": 189,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.0001351,
+      "billing_source": "go",
+      "list_cost": 0.0001351,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 587,
+        "output": 189,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 587,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 776
+  },
+  "wall_seconds": 5.455861305003054
+}

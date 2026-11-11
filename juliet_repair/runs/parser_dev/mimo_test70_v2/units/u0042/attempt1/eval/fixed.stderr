@@ -1,0 +1,21 @@
+=================================================================
+==210392==ERROR: AddressSanitizer: alloc-dealloc-mismatch (operator new vs operator delete []) on 0x76e23bde0010
+    #0 0x7ac23d32d44f in operator delete[](void*) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:179
+    #1 0x55e73787c5c9 in CWE401_Memory_Leak__new_char_01::bad() /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0042/attempt1/eval/src/CWE401_Memory_Leak__new_char_01.cpp:19
+    #2 0x55e73787c5f5 in main /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0042/attempt1/eval/src/__repair_probe_main.cpp:2
+    #3 0x7ac23ca2a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #4 0x7ac23ca2a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #5 0x55e73787c484 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0042/attempt1/eval/fixed+0x2484) (BuildId: c78a807a0661f0081a9c0aa8b639f30e195abd5d)
+
+0x76e23bde0010 is located 0 bytes inside of 1-byte region [0x76e23bde0010,0x76e23bde0011)
+allocated by thread T0 here:
+    #0 0x7ac23d32c71f in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:109
+    #1 0x55e73787c566 in CWE401_Memory_Leak__new_char_01::bad() /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0042/attempt1/eval/src/CWE401_Memory_Leak__new_char_01.cpp:14
+    #2 0x55e73787c5f5 in main /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0042/attempt1/eval/src/__repair_probe_main.cpp:2
+    #3 0x7ac23ca2a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #4 0x7ac23ca2a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #5 0x55e73787c484 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0042/attempt1/eval/fixed+0x2484) (BuildId: c78a807a0661f0081a9c0aa8b639f30e195abd5d)
+
+SUMMARY: AddressSanitizer: alloc-dealloc-mismatch /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0042/attempt1/eval/src/CWE401_Memory_Leak__new_char_01.cpp:19 in CWE401_Memory_Leak__new_char_01::bad()
+==210392==HINT: if you don't care about these errors you may set ASAN_OPTIONS=alloc_dealloc_mismatch=0
+==210392==ABORTING

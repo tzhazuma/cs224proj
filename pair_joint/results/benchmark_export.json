@@ -1,0 +1,442 @@
+{
+  "cross_model": {
+    "accuracy_a_all": 0.766667,
+    "accuracy_a_valid_intersection": 0.766667,
+    "accuracy_b_all": 0.866667,
+    "accuracy_b_valid_intersection": 0.866667,
+    "bootstrap": {
+      "primary_project_cluster": {
+        "cluster_count": 60,
+        "cluster_size_summary": {
+          "max": 53,
+          "median": 1.0,
+          "min": 1,
+          "total_units": 180
+        },
+        "enabled": true,
+        "metrics": {
+          "da_a": {
+            "bootstrap_mean": 0.7749981994054755,
+            "bootstrap_median": 0.7721518987341772,
+            "ci_high": 0.8899082568807339,
+            "ci_low": 0.6797364400305578,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "da_b": {
+            "bootstrap_mean": 0.8731060178495565,
+            "bootstrap_median": 0.8698224852071006,
+            "ci_high": 0.954954954954955,
+            "ci_low": 0.8092446137677353,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "difference": {
+            "bootstrap_mean": -0.098107818444081,
+            "bootstrap_median": -0.09844559585492224,
+            "ci_high": -0.045454545454545414,
+            "ci_low": -0.14583333333333337,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          }
+        },
+        "settings": {
+          "alpha": 0.025,
+          "cluster_unit": null,
+          "confidence": 0.95,
+          "method": "cluster percentile bootstrap",
+          "paired_metrics": "same resample used for all metric functions",
+          "percentile_method": "linear",
+          "resamples": 10000,
+          "resampling": "clusters with replacement; all units within a selected cluster",
+          "seed": 42
+        }
+      },
+      "sensitivity_pair_cluster": {
+        "cluster_count": 180,
+        "cluster_size_summary": {
+          "max": 1,
+          "median": 1.0,
+          "min": 1,
+          "total_units": 180
+        },
+        "enabled": true,
+        "metrics": {
+          "da_a": {
+            "bootstrap_mean": 0.7661777777777777,
+            "bootstrap_median": 0.7666666666666667,
+            "ci_high": 0.8222222222222222,
+            "ci_low": 0.7055555555555556,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "da_b": {
+            "bootstrap_mean": 0.8663483333333334,
+            "bootstrap_median": 0.8666666666666667,
+            "ci_high": 0.9166666666666666,
+            "ci_low": 0.8166666666666667,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "difference": {
+            "bootstrap_mean": -0.10017055555555555,
+            "bootstrap_median": -0.09999999999999998,
+            "ci_high": -0.04444444444444451,
+            "ci_low": -0.15555555555555556,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          }
+        },
+        "settings": {
+          "alpha": 0.025,
+          "cluster_unit": null,
+          "confidence": 0.95,
+          "method": "cluster percentile bootstrap",
+          "paired_metrics": "same resample used for all metric functions",
+          "percentile_method": "linear",
+          "resamples": 10000,
+          "resampling": "clusters with replacement; all units within a selected cluster",
+          "seed": 42
+        }
+      },
+      "settings": {
+        "confidence": 0.95,
+        "resamples": 10000,
+        "seed": 42
+      }
+    },
+    "intersection": {
+      "a_correct": 138,
+      "a_only": 5,
+      "b_correct": 156,
+      "b_only": 23,
+      "mcnemar": {
+        "a_correct_b_wrong": 5,
+        "a_wrong_b_correct": 23,
+        "alpha": 0.05,
+        "discordant": 28,
+        "odds_ratio": 0.21739130434782608,
+        "p_value": 0.0009122341871261597,
+        "p_value_method": "exact two-sided binomial",
+        "risk_difference": -0.1,
+        "significant_unadjusted_0_05": true,
+        "total": 180
+      },
+      "n_pairs": 180
+    },
+    "joint_correct_a": 138,
+    "joint_correct_b": 156,
+    "label_a": "deepseek-v4.1-flash",
+    "label_b": "mimo-v2.6-flash",
+    "mcnemar_all": {
+      "a_correct_b_wrong": 5,
+      "a_wrong_b_correct": 23,
+      "alpha": 0.05,
+      "discordant": 28,
+      "odds_ratio": 0.21739130434782608,
+      "p_value": 0.0009122341871261597,
+      "p_value_method": "exact two-sided binomial",
+      "risk_difference": -0.1,
+      "significant_unadjusted_0_05": true,
+      "total": 180
+    },
+    "n_pairs": 180,
+    "table": {
+      "a_correct_b_wrong": 5,
+      "a_wrong_b_correct": 23,
+      "both_correct": 133,
+      "both_wrong": 19
+    },
+    "wilson_a_all": {
+      "estimate": 0.766667,
+      "high": 0.822487,
+      "low": 0.699702,
+      "method": "wilson_95",
+      "successes": 138,
+      "total": 180
+    },
+    "wilson_b_all": {
+      "estimate": 0.866667,
+      "high": 0.908737,
+      "low": 0.809273,
+      "method": "wilson_95",
+      "successes": 156,
+      "total": 180
+    }
+  },
+  "dataset_sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+  "dataset_units": 180,
+  "method": "pair_joint",
+  "models": [
+    {
+      "categories": {
+        "both_safe": 0,
+        "both_vulnerable": 0,
+        "correct": 138,
+        "invalid": 0,
+        "swapped": 42
+      },
+      "comparisons": [
+        {
+          "baseline_da": 0.116667,
+          "baseline_run_id": "test_v1_direct_pairs",
+          "baseline_strategy": "direct",
+          "bootstrap_pair_delta": {
+            "bootstrap_mean": 0.6497261111111111,
+            "bootstrap_median": 0.65,
+            "ci_high": 0.7222222222222222,
+            "ci_low": 0.5777777777777777,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "bootstrap_project_delta": {
+            "bootstrap_mean": 0.660918487443491,
+            "bootstrap_median": 0.6530612244897959,
+            "ci_high": 0.7790697674418605,
+            "ci_low": 0.586497097173313,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "delta_da": 0.65,
+          "mcnemar_p": 3.6111186457260672e-34
+        },
+        {
+          "baseline_da": 0.122222,
+          "baseline_run_id": "test_v1_context_pairs",
+          "baseline_strategy": "context",
+          "bootstrap_pair_delta": {
+            "bootstrap_mean": 0.6441011111111111,
+            "bootstrap_median": 0.6444444444444445,
+            "ci_high": 0.7166666666666667,
+            "ci_low": 0.5722222222222222,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "bootstrap_project_delta": {
+            "bootstrap_mean": 0.6577267558835079,
+            "bootstrap_median": 0.6489578810247503,
+            "ci_high": 0.7961165048543689,
+            "ci_low": 0.5689042010208089,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "delta_da": 0.644445,
+          "mcnemar_p": 7.162051980690033e-34
+        }
+      ],
+      "cost": {
+        "cost_per_pair_usd": 0.000853,
+        "total_cost_usd": 0.153593
+      },
+      "da_all": 0.766667,
+      "da_wilson": {
+        "estimate": 0.766667,
+        "high": 0.822487,
+        "low": 0.699702,
+        "method": "wilson_95",
+        "successes": 138,
+        "total": 180
+      },
+      "evidence": {
+        "compliance_rate": 0.983333,
+        "joint_correct_and_localization_rate_all": 0.666667,
+        "localization_hit_rate_correct": 0.930233
+      },
+      "latency_seconds": {
+        "max": 16.974559,
+        "mean": 6.42587,
+        "n": 180,
+        "p50": 6.275203,
+        "p95": 8.031902
+      },
+      "length_confound": {
+        "mcnemar_p_vs_shorter": 0.6587380770236564,
+        "shorter_characters_da": 0.744444,
+        "strata": {
+          "tie": {
+            "accuracy": 0.666667,
+            "correct": 4,
+            "n": 6
+          },
+          "vulnerable_longer": {
+            "accuracy": 0.568182,
+            "correct": 25,
+            "n": 44
+          },
+          "vulnerable_shorter": {
+            "accuracy": 0.838462,
+            "correct": 109,
+            "n": 130
+          }
+        }
+      },
+      "model": "deepseek-v4.1-flash",
+      "n_pairs": 180,
+      "partial": false,
+      "position_bias": {
+        "da_when_vulnerable_A": 0.922222,
+        "da_when_vulnerable_B": 0.611111,
+        "difference": 0.311111,
+        "fisher_p": 1e-06,
+        "selected_slot_counts": {
+          "A": 118,
+          "B": 62
+        }
+      },
+      "run_id": "test_deepseek_180",
+      "usage": {
+        "cached_prompt_tokens": 40192,
+        "completion_tokens": 30080,
+        "completion_tokens_per_pair": 167.111111,
+        "prompt_tokens": 431045,
+        "prompt_tokens_per_pair": 2394.694444,
+        "reasoning_tokens": 0,
+        "records": 180,
+        "records_with_usage": 180
+      }
+    },
+    {
+      "categories": {
+        "both_safe": 0,
+        "both_vulnerable": 0,
+        "correct": 156,
+        "invalid": 0,
+        "swapped": 24
+      },
+      "comparisons": [
+        {
+          "baseline_da": 0.077778,
+          "baseline_run_id": "test_v1_mimo_direct_pairs",
+          "baseline_strategy": "direct",
+          "bootstrap_pair_delta": {
+            "bootstrap_mean": 0.789025,
+            "bootstrap_median": 0.788888888888889,
+            "ci_high": 0.85,
+            "ci_low": 0.7277777777777777,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "bootstrap_project_delta": {
+            "bootstrap_mean": 0.7954002487343731,
+            "bootstrap_median": 0.7903225806451613,
+            "ci_high": 0.8761904761904762,
+            "ci_low": 0.7414961154916512,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "delta_da": 0.788889,
+          "mcnemar_p": 3.587324068671532e-43
+        },
+        {
+          "baseline_da": 0.105556,
+          "baseline_run_id": "test_v1_mimo_context_pairs",
+          "baseline_strategy": "context",
+          "bootstrap_pair_delta": {
+            "bootstrap_mean": 0.7612133333333333,
+            "bootstrap_median": 0.7611111111111111,
+            "ci_high": 0.8222222222222222,
+            "ci_low": 0.7,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "bootstrap_project_delta": {
+            "bootstrap_mean": 0.7677265634304964,
+            "bootstrap_median": 0.7628865979381443,
+            "ci_high": 0.8488372093023255,
+            "ci_low": 0.713375796178344,
+            "resamples": 10000,
+            "unstable": false,
+            "valid_resamples": 10000
+          },
+          "delta_da": 0.761111,
+          "mcnemar_p": 1.1479437019748901e-41
+        }
+      ],
+      "cost": {
+        "cost_per_pair_usd": 0.000399,
+        "total_cost_usd": 0.071803
+      },
+      "da_all": 0.866667,
+      "da_wilson": {
+        "estimate": 0.866667,
+        "high": 0.908737,
+        "low": 0.809273,
+        "method": "wilson_95",
+        "successes": 156,
+        "total": 180
+      },
+      "evidence": {
+        "compliance_rate": 0.977778,
+        "joint_correct_and_localization_rate_all": 0.777778,
+        "localization_hit_rate_correct": 0.958904
+      },
+      "latency_seconds": {
+        "max": 40.115128,
+        "mean": 6.684058,
+        "n": 180,
+        "p50": 6.108824,
+        "p95": 12.921704
+      },
+      "length_confound": {
+        "mcnemar_p_vs_shorter": 0.00031255115754902363,
+        "shorter_characters_da": 0.744444,
+        "strata": {
+          "tie": {
+            "accuracy": 0.833333,
+            "correct": 5,
+            "n": 6
+          },
+          "vulnerable_longer": {
+            "accuracy": 0.636364,
+            "correct": 28,
+            "n": 44
+          },
+          "vulnerable_shorter": {
+            "accuracy": 0.946154,
+            "correct": 123,
+            "n": 130
+          }
+        }
+      },
+      "model": "mimo-v2.6-flash",
+      "n_pairs": 180,
+      "partial": false,
+      "position_bias": {
+        "da_when_vulnerable_A": 0.888889,
+        "da_when_vulnerable_B": 0.844444,
+        "difference": 0.044445,
+        "fisher_p": 0.511381,
+        "selected_slot_counts": {
+          "A": 94,
+          "B": 86
+        }
+      },
+      "run_id": "test_mimo_180",
+      "usage": {
+        "cached_prompt_tokens": 10240,
+        "completion_tokens": 30598,
+        "completion_tokens_per_pair": 169.988889,
+        "prompt_tokens": 461720,
+        "prompt_tokens_per_pair": 2565.111111,
+        "reasoning_tokens": 0,
+        "records": 180,
+        "records_with_usage": 180
+      }
+    }
+  ],
+  "prompt_version": "pair-joint-2026-11-12.1",
+  "schema_version": 1
+}

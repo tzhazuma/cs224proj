@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:22:42.630+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0f-f37d-7500-bd4a-5f5752b8966c"
+      },
+      "http_status": 200,
+      "latency_seconds": 3.357300490999478,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424960-AjyVjSSPzwbxFmlBxeCK\",\"object\":\"chat.completion\",\"created\":1794424960,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_int64_t_54e.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int64_t_54\\\\n{\\\\n\\\\n\\\\nvoid badSink_e(int64_t * data)\\\\n{\\\\n\\\\n    delete data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The final sink in the chain now deletes the allocated int64_t, freeing the memory and eliminating the leak while preserving all printed output and behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":8965,\"completion_tokens\":140,\"total_tokens\":9105,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":640,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00120649,\"allowance\":0.00120649,\"tokens\":{\"input\":8325,\"output\":140,\"reasoning\":0,\"cache_read\":640,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:22:39.273+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_int64_t_54e.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_int64_t_54\\n{\\n\\n\\nvoid badSink_e(int64_t * data)\\n{\\n\\n    delete data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The final sink in the chain now deletes the allocated int64_t, freeing the memory and eliminating the leak while preserving all printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 640,
+    "completion_tokens": 140,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.001206492,
+    "prompt_tokens": 8965
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 3.357300490999478,
+  "response_meta": {
+    "content_chars": 425,
+    "created": 1794424960,
+    "finish_reason": "stop",
+    "id": "gen-1794424960-AjyVjSSPzwbxFmlBxeCK",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0046",
+  "usage": {
+    "completion_tokens": 140,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00120649,
+      "billing_source": "go",
+      "list_cost": 0.00120649,
+      "tokens": {
+        "cache_read": 640,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 8325,
+        "output": 140,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 8965,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 640
+    },
+    "total_tokens": 9105
+  },
+  "wall_seconds": 3.3573326430050656
+}

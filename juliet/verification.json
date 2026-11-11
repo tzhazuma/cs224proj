@@ -1,0 +1,34 @@
+{
+  "dataset_id": "juliet-cwe401-v1.3-subset-v1",
+  "verified_at_utc": "2026-11-11T18:05:25Z",
+  "commands": [
+    "python3 juliet/scripts/verify.py",
+    "python3 juliet/scripts/verify.py --build --jobs 6"
+  ],
+  "checks": {
+    "archive_sha256_ok": true,
+    "raw_files_verified": 2839,
+    "units": 200,
+    "groups": 100,
+    "families": 42,
+    "dev_units": 60,
+    "test_units": 140,
+    "macro_gate_ok": 200,
+    "compile_ok": 200,
+    "symbol_gate_ok": 200,
+    "good_units_without_leak": 100,
+    "bad_units_with_observed_leak": 78,
+    "bad_units_without_observed_leak": 22,
+    "near_duplicate_threshold": 0.85,
+    "cross_split_max_jaccard": 0.8231,
+    "cross_split_violations": 0,
+    "sha256sums_all_files_verified": true
+  },
+  "independent_rebuild": {
+    "bad_units_built": 100,
+    "bad_units_with_leak_in_default_run": 78,
+    "good_units_clean": 100,
+    "status": "PASS"
+  },
+  "status": "PASS"
+}

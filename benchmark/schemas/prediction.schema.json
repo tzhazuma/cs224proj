@@ -1,0 +1,477 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cs224.local/benchmark/schemas/prediction.schema.json",
+  "title": "Unified benchmark prediction record",
+  "description": "One JSONL line per evaluated unit (function, pair side, or Juliet variant). Version 1.0.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "tier",
+    "track",
+    "task",
+    "unit_id",
+    "cluster_id",
+    "dataset",
+    "method",
+    "input",
+    "label",
+    "prediction",
+    "status",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "benchmark-prediction-v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "tier": {
+      "enum": ["A", "B"]
+    },
+    "track": {
+      "enum": ["secvuleval", "juliet_cwe401"]
+    },
+    "task": {
+      "enum": ["detection", "pair_detection", "leak_detection", "repair"]
+    },
+    "unit_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "description": "Stable unique ID within the run. Tier A detection: secvul:det:<idx>; Tier A pair: secvul:pair:<pair_id>:<side>; Tier B: juliet:<case_id>:<bad|good>."
+    },
+    "cluster_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "description": "Primary resampling cluster. Tier A detection: project; Tier A pair: pair_id; Tier B: case_family."
+    },
+    "group_id": {
+      "type": ["string", "null"],
+      "maxLength": 300,
+      "description": "Pair or case ID. Required for pair_detection and leak_detection."
+    },
+    "side": {
+      "enum": ["vulnerable", "fixed", "bad", "good", null]
+    },
+    "dataset": {
+      "$ref": "#/$defs/dataset_ref"
+    },
+    "method": {
+      "$ref": "#/$defs/method"
+    },
+    "input": {
+      "$ref": "#/$defs/input"
+    },
+    "label": {
+      "$ref": "#/$defs/label"
+    },
+    "prediction": {
+      "$ref": "#/$defs/prediction"
+    },
+    "status": {
+      "$ref": "#/$defs/status"
+    },
+    "error": {
+      "$ref": "#/$defs/error"
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "oracle": {
+      "$ref": "#/$defs/oracle"
+    },
+    "usage": {
+      "$ref": "#/$defs/usage"
+    },
+    "cost": {
+      "$ref": "#/$defs/cost"
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Method-specific fields that do not change the meaning of required fields."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"task": {"const": "pair_detection"}},
+        "required": ["task"]
+      },
+      "then": {
+        "required": ["group_id", "side"],
+        "properties": {
+          "side": {"enum": ["vulnerable", "fixed"]}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"task": {"const": "leak_detection"}},
+        "required": ["task"]
+      },
+      "then": {
+        "required": ["group_id", "side"],
+        "properties": {
+          "side": {"enum": ["bad", "good"]}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"status": {"const": "ok"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "prediction": {
+            "properties": {
+              "y_pred": {"$ref": "#/$defs/binary_nonnull"}
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "prediction": {
+            "properties": {
+              "y_pred": {"type": "null"}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task": {"const": "leak_detection"},
+          "method": {
+            "properties": {"family": {"const": "dynamic"}},
+            "required": ["family"]
+          }
+        },
+        "required": ["task", "method"]
+      },
+      "then": {
+        "required": ["coverage"]
+      }
+    }
+  ],
+  "$defs": {
+    "binary_nonnull": {
+      "oneOf": [
+        {"type": "boolean"},
+        {"type": "integer", "enum": [0, 1]}
+      ]
+    },
+    "binary_or_null": {
+      "oneOf": [
+        {"type": "boolean"},
+        {"type": "integer", "enum": [0, 1]},
+        {"type": "null"}
+      ]
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "schema_invalid",
+        "api_error",
+        "timeout",
+        "tool_error",
+        "compile_error",
+        "harness_error",
+        "crash",
+        "unsupported",
+        "not_applicable",
+        "inconclusive",
+        "skipped_budget",
+        "not_run"
+      ]
+    },
+    "dataset_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dataset_id", "split_id", "sha256"],
+      "properties": {
+        "dataset_id": {"type": "string", "minLength": 1},
+        "split_id": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "unit_manifest_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method_id", "family", "name"],
+      "properties": {
+        "method_id": {"type": "string", "minLength": 1, "maxLength": 200},
+        "family": {"enum": ["llm", "static", "dynamic", "hybrid"]},
+        "name": {"type": "string", "minLength": 1},
+        "strategy": {
+          "type": ["string", "null"],
+          "description": "For LLM: direct, few-shot, context. For other families: null or a named tool configuration."
+        },
+        "model": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": true,
+              "required": ["model_id", "family", "provider"],
+              "properties": {
+                "model_id": {"type": "string", "minLength": 1},
+                "family": {"type": "string", "minLength": 1},
+                "provider": {"type": "string", "minLength": 1},
+                "endpoint": {"type": ["string", "null"]},
+                "version": {"type": ["string", "null"]},
+                "context_window": {"type": ["integer", "null"], "minimum": 1},
+                "tokenizer": {"type": ["string", "null"]},
+                "decoding": {"type": ["object", "null"]},
+                "price_snapshot": {"type": ["string", "null"]}
+              }
+            }
+          ]
+        },
+        "tool": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": true,
+              "required": ["name", "version"],
+              "properties": {
+                "name": {"type": "string", "minLength": 1},
+                "version": {"type": "string", "minLength": 1},
+                "command_template": {"type": ["string", "null"]},
+                "rules": {"type": "array", "items": {"type": "string"}},
+                "license": {"type": ["string", "null"]}
+              }
+            }
+          ]
+        },
+        "config_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["view", "sanitized"],
+      "properties": {
+        "view": {"enum": ["function", "unit", "file", "pair", "other"]},
+        "source_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "prompt_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "context_mode": {
+          "enum": ["none", "project", "tool_evidence", "dynamic_trace", "mixed", null]
+        },
+        "sanitized": {"type": "boolean"},
+        "sanitizer_version": {"type": ["string", "null"]},
+        "evidence_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "label": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["y_true", "label_source"],
+      "properties": {
+        "y_true": {"$ref": "#/$defs/binary_nonnull"},
+        "cwe": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^CWE-[0-9]+$"}
+        },
+        "label_source": {
+          "enum": ["secvuleval", "juliet_intended", "dynamic_consensus", "manual"]
+        },
+        "label_note": {"type": ["string", "null"]}
+      }
+    },
+    "prediction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["y_pred"],
+      "properties": {
+        "y_pred": {"$ref": "#/$defs/binary_or_null"},
+        "cwe_pred": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^CWE-[0-9]+$"}
+        },
+        "confidence": {
+          "oneOf": [
+            {"type": "number", "minimum": 0, "maximum": 1},
+            {"type": "null"}
+          ]
+        },
+        "evidence_lines": {
+          "type": "array",
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "rationale": {"type": ["string", "null"]},
+        "raw_output_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "fixed_function": {
+          "type": ["string", "null"],
+          "description": "Repair output only; not scored by the v1 detection benchmark."
+        }
+      }
+    },
+    "error": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "message", "retryable"],
+          "properties": {
+            "type": {"type": "string", "minLength": 1},
+            "message": {"type": "string"},
+            "retryable": {"type": "boolean"},
+            "attempt": {"type": ["integer", "null"], "minimum": 1},
+            "http_status": {"type": ["integer", "null"], "minimum": 100, "maximum": 599}
+          }
+        }
+      ]
+    },
+    "coverage": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["unit_executed", "line_coverage", "coverage_source"],
+          "properties": {
+            "unit_executed": {"type": ["boolean", "null"]},
+            "target_function_entered": {"type": ["boolean", "null"]},
+            "line_coverage": {
+              "oneOf": [
+                {"type": "number", "minimum": 0, "maximum": 1},
+                {"type": "null"}
+              ]
+            },
+            "branch_coverage": {
+              "oneOf": [
+                {"type": "number", "minimum": 0, "maximum": 1},
+                {"type": "null"}
+              ]
+            },
+            "allocation_site_executed": {"type": ["boolean", "null"]},
+            "free_site_executed": {"type": ["boolean", "null"]},
+            "coverage_source": {
+              "enum": ["gcov", "llvm-cov", "sanitizer", "instrumentation", "none", "unknown"]
+            },
+            "notes": {"type": ["string", "null"]}
+          }
+        }
+      ]
+    },
+    "oracle": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "reference": {
+              "enum": ["juliet_intended", "dynamic_consensus", "manual"]
+            },
+            "dynamic_consensus": {
+              "enum": ["leak", "clean", "disagree", "not_run", "unknown", null]
+            },
+            "lsan": {"enum": ["leak", "clean", "error", "not_run", "unknown", null]},
+            "valgrind": {"enum": ["leak", "clean", "error", "not_run", "unknown", null]},
+            "mismatch": {"type": ["boolean", "null"]},
+            "note": {"type": ["string", "null"]}
+          }
+        }
+      ]
+    },
+    "usage": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "prompt_tokens": {"type": ["integer", "null"], "minimum": 0},
+            "completion_tokens": {"type": ["integer", "null"], "minimum": 0},
+            "cached_prompt_tokens": {"type": ["integer", "null"], "minimum": 0},
+            "reasoning_tokens": {"type": ["integer", "null"], "minimum": 0},
+            "latency_ms": {"type": ["number", "null"], "minimum": 0},
+            "api_attempts": {"type": ["integer", "null"], "minimum": 1}
+          }
+        }
+      ]
+    },
+    "cost": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["usd", "wall_s", "currency", "cost_basis"],
+          "properties": {
+            "usd": {
+              "oneOf": [
+                {"type": "number", "minimum": 0},
+                {"type": "null"}
+              ]
+            },
+            "wall_s": {"type": ["number", "null"], "minimum": 0},
+            "cpu_s": {"type": ["number", "null"], "minimum": 0},
+            "peak_rss_mb": {"type": ["number", "null"], "minimum": 0},
+            "currency": {"type": "string", "minLength": 3, "maxLength": 3},
+            "cost_basis": {
+              "enum": ["api_price", "local_compute", "license", "mixed", "unknown"]
+            },
+            "pricing_snapshot": {"type": ["string", "null"]},
+            "note": {"type": ["string", "null"]}
+          }
+        }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["produced_by", "created_at", "source_artifact"],
+      "properties": {
+        "produced_by": {"type": "string", "minLength": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "source_artifact": {"type": "string", "minLength": 1},
+        "source_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "record_index": {"type": ["integer", "null"], "minimum": 0},
+        "command_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "legacy_run_id": {"type": ["string", "null"]},
+        "note": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

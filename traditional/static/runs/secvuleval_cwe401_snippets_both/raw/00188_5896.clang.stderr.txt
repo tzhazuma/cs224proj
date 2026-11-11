@@ -1,0 +1,80 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:3:31: error: incomplete definition of type 'struct platform_device'
+    3 |         struct device_node *np = pdev->dev.of_node;
+      |                                  ~~~~^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:1:35: note: forward declaration of 'struct platform_device'
+    1 | static int fsl_lpspi_probe(struct platform_device *pdev)
+      |                                   ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:7:3: error: call to undeclared function 'dev_get_platdata'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    7 |                 dev_get_platdata(&pdev->dev);
+      |                 ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:7:25: error: incomplete definition of type 'struct platform_device'
+    7 |                 dev_get_platdata(&pdev->dev);
+      |                                   ~~~~^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:1:35: note: forward declaration of 'struct platform_device'
+    1 | static int fsl_lpspi_probe(struct platform_device *pdev)
+      |                                   ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:10:2: error: use of undeclared identifier 'u32'
+   10 |         u32 temp;
+      |         ^~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:11:2: error: use of undeclared identifier 'bool'
+   11 |         bool is_slave;
+      |         ^~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:13:2: error: use of undeclared identifier 'is_slave'
+   13 |         is_slave = of_property_read_bool((&pdev->dev)->of_node, "spi-slave");
+      |         ^~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:13:13: error: call to undeclared function 'of_property_read_bool'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   13 |         is_slave = of_property_read_bool((&pdev->dev)->of_node, "spi-slave");
+      |                    ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:13:41: error: incomplete definition of type 'struct platform_device'
+   13 |         is_slave = of_property_read_bool((&pdev->dev)->of_node, "spi-slave");
+      |                                            ~~~~^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:1:35: note: forward declaration of 'struct platform_device'
+    1 | static int fsl_lpspi_probe(struct platform_device *pdev)
+      |                                   ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:14:6: error: use of undeclared identifier 'is_slave'
+   14 |         if (is_slave)
+      |             ^~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:15:16: error: call to undeclared function 'spi_alloc_slave'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   15 |                 controller = spi_alloc_slave(&pdev->dev,
+      |                              ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:15:37: error: incomplete definition of type 'struct platform_device'
+   15 |                 controller = spi_alloc_slave(&pdev->dev,
+      |                                               ~~~~^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:1:35: note: forward declaration of 'struct platform_device'
+    1 | static int fsl_lpspi_probe(struct platform_device *pdev)
+      |                                   ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:16:6: error: invalid application of 'sizeof' to an incomplete type 'struct fsl_lpspi_data'
+   16 |                                         sizeof(struct fsl_lpspi_data));
+      |                                         ^     ~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:4:9: note: forward declaration of 'struct fsl_lpspi_data'
+    4 |         struct fsl_lpspi_data *fsl_lpspi;
+      |                ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:18:16: error: call to undeclared function 'spi_alloc_master'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   18 |                 controller = spi_alloc_master(&pdev->dev,
+      |                              ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:18:38: error: incomplete definition of type 'struct platform_device'
+   18 |                 controller = spi_alloc_master(&pdev->dev,
+      |                                                ~~~~^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:1:35: note: forward declaration of 'struct platform_device'
+    1 | static int fsl_lpspi_probe(struct platform_device *pdev)
+      |                                   ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:19:6: error: invalid application of 'sizeof' to an incomplete type 'struct fsl_lpspi_data'
+   19 |                                         sizeof(struct fsl_lpspi_data));
+      |                                         ^     ~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:4:9: note: forward declaration of 'struct fsl_lpspi_data'
+    4 |         struct fsl_lpspi_data *fsl_lpspi;
+      |                ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:22:11: error: use of undeclared identifier 'ENOMEM'
+   22 |                 return -ENOMEM;
+      |                         ^~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:24:2: error: call to undeclared function 'platform_set_drvdata'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   24 |         platform_set_drvdata(pdev, controller);
+      |         ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:26:14: error: call to undeclared function 'spi_controller_get_devdata'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   26 |         fsl_lpspi = spi_controller_get_devdata(controller);
+      |                     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00188_5896.c:26:12: error: incompatible integer to pointer conversion assigning to 'struct fsl_lpspi_data *' from 'int' [-Wint-conversion]
+   26 |         fsl_lpspi = spi_controller_get_devdata(controller);
+      |                   ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.

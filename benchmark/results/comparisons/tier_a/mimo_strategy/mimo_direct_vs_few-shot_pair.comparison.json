@@ -1,0 +1,110 @@
+{
+  "schema_version": "benchmark-comparison-v1",
+  "generated_at": "2026-11-11T19:21:09Z",
+  "task": "pair_detection",
+  "run_a": "legacy__test_v1_mimo_direct_pairs",
+  "run_b": "legacy__test_v1_mimo_few-shot_pairs",
+  "dataset": {
+    "sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1"
+  },
+  "settings": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "cohort": "common units with valid predictions in both runs for primary metrics",
+    "test": "exact two-sided McNemar on paired correctness"
+  },
+  "alignment": {
+    "pairs_a": 180,
+    "pairs_b": 180,
+    "common_pairs": 180,
+    "common_valid_pairs": 154,
+    "only_a": 0,
+    "only_b": 0
+  },
+  "metrics": {
+    "a": {
+      "valid_only_joint_accuracy": 0.09090909090909091,
+      "strict_joint_accuracy": 0.07777777777777778,
+      "valid_pairs": 154
+    },
+    "b": {
+      "valid_only_joint_accuracy": 0.1038961038961039,
+      "strict_joint_accuracy": 0.09444444444444444,
+      "valid_pairs": 154
+    },
+    "delta_joint_accuracy": -0.012987012987012991,
+    "delta_bootstrap": {
+      "delta_joint_accuracy": {
+        "ci_low": -0.05194805194805194,
+        "ci_high": 0.019480519480519487,
+        "bootstrap_median": -0.012987012987012991,
+        "bootstrap_mean": -0.013003246753246753,
+        "valid_resamples": 10000,
+        "resamples": 10000,
+        "unstable": false
+      }
+    },
+    "mcnemar": {
+      "a_correct_b_wrong": 3,
+      "a_wrong_b_correct": 5,
+      "discordant": 8,
+      "total": 154,
+      "p_value": 0.7265625,
+      "p_value_method": "exact two-sided binomial",
+      "odds_ratio": 0.6,
+      "risk_difference": -0.012987012987012988,
+      "significant_unadjusted_0_05": false,
+      "alpha": 0.05
+    }
+  },
+  "cost": {
+    "a": {
+      "currency": "USD",
+      "usd_known_sum": 0.048289505600000004,
+      "usd_unknown_records": 0,
+      "usd_complete": true,
+      "wall_s_sum": 1992.5277814901347,
+      "cpu_s_sum": null,
+      "peak_rss_mb_max": null,
+      "prompt_tokens_sum": 304372,
+      "completion_tokens_sum": 28681,
+      "cached_prompt_tokens_sum": 17152,
+      "latency_ms_p50": 4444.0029289980885,
+      "latency_ms_p95": 10311.925713895473,
+      "latency_samples": 360,
+      "cost_basis_counts": {
+        "api_price": 360
+      }
+    },
+    "b": {
+      "currency": "USD",
+      "usd_known_sum": 0.06788014240000001,
+      "usd_unknown_records": 0,
+      "usd_complete": true,
+      "wall_s_sum": 1816.893917879177,
+      "cpu_s_sum": null,
+      "peak_rss_mb_max": null,
+      "prompt_tokens_sum": 822772,
+      "completion_tokens_sum": 23029,
+      "cached_prompt_tokens_sum": 391808,
+      "latency_ms_p50": 4409.948191001604,
+      "latency_ms_p95": 8548.66793274632,
+      "latency_samples": 360,
+      "cost_basis_counts": {
+        "api_price": 360
+      }
+    },
+    "note": "cost is descriptive; pair units are not function units"
+  },
+  "notes": [
+    "Pair DA is the proportion of pairs where vulnerable is flagged and fixed is clean; it is not per-function accuracy."
+  ],
+  "hashes": {
+    "run_a_manifest": "7ebb3df7912c575d622d0c084ecd1089fe988e6c1e08a4d9276902055ea04786",
+    "run_b_manifest": "877b1420f545fc760cdfde8b96a811ef3e9fb7731117f7dcdf3217ceb61420ad",
+    "run_a_predictions": "2c694824628c53cb364e6f7bd239589ee053fc0c9308ae5ac0ebb36aecdcc1ae",
+    "run_b_predictions": "75685e54ad03117707166e4f47942e00e0df4747f58e154dba5e3f38915f64aa"
+  }
+}

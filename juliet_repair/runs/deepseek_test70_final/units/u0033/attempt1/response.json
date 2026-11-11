@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:33.536+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-2e40-71be-afba-2d112032a48a"
+      },
+      "http_status": 200,
+      "latency_seconds": 5.695732551990659,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-43dd5012ac714008a2121494db49e341\",\"object\":\"chat.completion\",\"created\":1794425368,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_int64_t_01.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_int64_t_01\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    int64_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = new int64_t[100];\\\\n\\\\n    data[0] = 5LL;\\\\n    printLongLongLine(data[0]);\\\\n\\\\n    delete[] data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added delete[] data to free the heap array allocated with new int64_t[100], eliminating the memory leak while preserving the printed output and entry point.\\\"}\"}}],\"usage\":{\"prompt_tokens\":352,\"completion_tokens\":180,\"total_tokens\":532,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00014198,\"allowance\":0.00008519,\"tokens\":{\"input\":224,\"output\":180,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:27.840+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_array_int64_t_01.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_array_int64_t_01\\n{\\n\\n\\nvoid bad()\\n{\\n    int64_t * data;\\n    data = NULL;\\n\\n    data = new int64_t[100];\\n\\n    data[0] = 5LL;\\n    printLongLongLine(data[0]);\\n\\n    delete[] data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added delete[] data to free the heap array allocated with new int64_t[100], eliminating the memory leak while preserving the printed output and entry point.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 180,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000283968,
+    "prompt_tokens": 352
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 5.695732551990659,
+  "response_meta": {
+    "content_chars": 544,
+    "created": 1794425368,
+    "finish_reason": "stop",
+    "id": "chatcmpl-43dd5012ac714008a2121494db49e341",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0033",
+  "usage": {
+    "completion_tokens": 180,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 8.519e-05,
+      "billing_source": "go",
+      "list_cost": 0.00014198,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 224,
+        "output": 180,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 352,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 532
+  },
+  "wall_seconds": 5.695762689996627
+}

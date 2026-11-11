@@ -1,0 +1,31 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c:42:1: warning: Potential leak of memory pointed to by 'data' [unix.Malloc]
+   42 | }
+      | ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c:96:5: note: Calling 'CWE401_Memory_Leak__malloc_realloc_int_01_bad'
+   96 |     CWE401_Memory_Leak__malloc_realloc_int_01_bad();
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c:27:29: note: Memory is allocated
+   27 |         int * data = (int *)malloc(100*sizeof(int));
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c:28:13: note: Assuming 'data' is not equal to NULL
+   28 |         if (data == NULL) {exit(-1);}
+      |             ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c:28:9: note: Taking false branch
+   28 |         if (data == NULL) {exit(-1);}
+      |         ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c:33:23: note: Attempt to reallocate memory
+   33 |         data = (int *)realloc(data, (130000)*sizeof(int));
+      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c:34:13: note: Assuming 'data' is equal to NULL
+   34 |         if (data != NULL)
+      |             ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c:34:13: note: Reallocation failed
+   34 |         if (data != NULL)
+      |             ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c:34:9: note: Taking false branch
+   34 |         if (data != NULL)
+      |         ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c:42:1: note: Potential leak of memory pointed to by 'data'
+   42 | }
+      | ^
+1 warning generated.

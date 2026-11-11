@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:27.541+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-b4af-7064-a316-f80690cb7ee8"
+      },
+      "http_status": 200,
+      "latency_seconds": 10.156643843001802,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424878-UUnPKAQf7v9yRpgeRvpt\",\"object\":\"chat.completion\",\"created\":1794424878,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__char_realloc_54e.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__char_realloc_54e_badSink(char * data)\\\\n{\\\\n    free(data);\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The final sink function never frees the allocated buffer, causing a memory leak. Adding free(data) in CWE401_Memory_Leak__char_realloc_54e_badSink releases the memory after it has been printed, preserving the printed output and entry points.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":781,\"completion_tokens\":147,\"total_tokens\":928,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":768,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00004513,\"allowance\":0.00004513,\"tokens\":{\"input\":13,\"output\":147,\"reasoning\":0,\"cache_read\":768,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:17.384+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__char_realloc_54e.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__char_realloc_54e_badSink(char * data)\\n{\\n    free(data);\\n}\\n\"}], \"explanation\": \"The final sink function never frees the allocated buffer, causing a memory leak. Adding free(data) in CWE401_Memory_Leak__char_realloc_54e_badSink releases the memory after it has been printed, preserving the printed output and entry points.\"}",
+  "cost": {
+    "cached_prompt_tokens": 768,
+    "completion_tokens": 147,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 4.5130400000000004e-05,
+    "prompt_tokens": 781
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 10.156643843001802,
+  "response_meta": {
+    "content_chars": 480,
+    "created": 1794424878,
+    "finish_reason": "stop",
+    "id": "gen-1794424878-UUnPKAQf7v9yRpgeRvpt",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0007",
+  "usage": {
+    "completion_tokens": 147,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 4.513e-05,
+      "billing_source": "go",
+      "list_cost": 4.513e-05,
+      "tokens": {
+        "cache_read": 768,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 13,
+        "output": 147,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 781,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 768
+    },
+    "total_tokens": 928
+  },
+  "wall_seconds": 10.156668474999606
+}

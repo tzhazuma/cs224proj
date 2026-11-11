@@ -1,0 +1,94 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__twoIntsStruct_malloc_68b.c"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 189,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.00013510000000000003,
+        "prompt_tokens": 587
+      },
+      "elapsed_seconds": 5.468,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.017
+        },
+        "strict_evaluable": false,
+        "strict_pass": false
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "The sink function receives the heap-allocated data via the global but never frees it. Adding free(data) in the sink releases the allocation without changing any printed output or the entry point.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 189,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.0001351,
+          "billing_source": "go",
+          "list_cost": 0.0001351,
+          "tokens": {
+            "cache_read": 0,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 587,
+            "output": 189,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 587,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 776
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 0,
+  "changed_paths": [
+    "CWE401_Memory_Leak__twoIntsStruct_malloc_68b.c"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 189,
+  "cost_complete": true,
+  "cost_usd_sum": 0.0001351,
+  "explanation_present": true,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_68",
+  "language": "c",
+  "leak_removed": true,
+  "model": "mimo-v2.6-flash",
+  "model_alias": "mimo",
+  "prompt_tokens_sum": 587,
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "strict_evaluable": false,
+  "strict_pass": false,
+  "unit_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_68__bad",
+  "unit_key": "u0059"
+}

@@ -1,0 +1,347 @@
+{
+  "aggregate": {
+    "cost": {
+      "api_allowance_usd": {
+        "known_records": 0,
+        "sum": null,
+        "unknown_records": 4
+      },
+      "api_list_cost_usd": {
+        "known_records": 0,
+        "sum": null,
+        "unknown_records": 4
+      },
+      "published_price_usd": {
+        "known_records": 4,
+        "sum": 0.00042252,
+        "unknown_records": 0
+      }
+    },
+    "error_types": {},
+    "invalid_reasons": {},
+    "latency_seconds": {
+      "max": 3.0439308089989936,
+      "mean": 2.4164672034967225,
+      "n": 4,
+      "p50": 2.2987980759935454,
+      "p95": 2.950507723948249
+    },
+    "records": 4,
+    "status_counts": {
+      "ok": 4
+    },
+    "usage": {
+      "cached_prompt_tokens": {
+        "known_records": 0,
+        "sum": null,
+        "unknown_records": 4
+      },
+      "completion_tokens": {
+        "known_records": 4,
+        "sum": 209.0,
+        "unknown_records": 0
+      },
+      "prompt_tokens": {
+        "known_records": 4,
+        "sum": 2600.0,
+        "unknown_records": 0
+      },
+      "reasoning_tokens": {
+        "known_records": 4,
+        "sum": 0.0,
+        "unknown_records": 0
+      },
+      "total_tokens": {
+        "known_records": 4,
+        "sum": 2809.0,
+        "unknown_records": 0
+      }
+    },
+    "wall_seconds": {
+      "max": 3.043953375003184,
+      "mean": 2.416491655003483,
+      "n": 4,
+      "p50": 2.2988247625035,
+      "p95": 2.950530557103775
+    }
+  },
+  "evaluation": {
+    "by_language": {
+      "c": {
+        "coverage": 1.0,
+        "n_invalid": 0,
+        "n_total": 2,
+        "n_valid": 2,
+        "strict": {
+          "accuracy": 0.5,
+          "balanced_accuracy": 0.5,
+          "coverage": 1.0,
+          "f1": 0.0,
+          "fn": 1,
+          "fp": 0,
+          "invalid": 0,
+          "mcc": 0.0,
+          "n": 2,
+          "n_total": 2,
+          "precision": null,
+          "recall": 0.0,
+          "specificity": 1.0,
+          "tn": 1,
+          "tp": 0
+        },
+        "valid_only": {
+          "accuracy": 0.5,
+          "balanced_accuracy": 0.5,
+          "coverage": 1.0,
+          "f1": 0.0,
+          "fn": 1,
+          "fp": 0,
+          "invalid": 0,
+          "mcc": 0.0,
+          "n": 2,
+          "n_total": 2,
+          "precision": null,
+          "recall": 0.0,
+          "specificity": 1.0,
+          "tn": 1,
+          "tp": 0
+        }
+      },
+      "cpp": {
+        "coverage": 1.0,
+        "n_invalid": 0,
+        "n_total": 2,
+        "n_valid": 2,
+        "strict": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "coverage": 1.0,
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "invalid": 0,
+          "mcc": 1.0,
+          "n": 2,
+          "n_total": 2,
+          "precision": 1.0,
+          "recall": 1.0,
+          "specificity": 1.0,
+          "tn": 1,
+          "tp": 1
+        },
+        "valid_only": {
+          "accuracy": 1.0,
+          "balanced_accuracy": 1.0,
+          "coverage": 1.0,
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "invalid": 0,
+          "mcc": 1.0,
+          "n": 2,
+          "n_total": 2,
+          "precision": 1.0,
+          "recall": 1.0,
+          "specificity": 1.0,
+          "tn": 1,
+          "tp": 1
+        }
+      }
+    },
+    "coverage": 1.0,
+    "n_invalid": 0,
+    "n_total": 4,
+    "n_valid": 4,
+    "strict": {
+      "accuracy": 0.75,
+      "balanced_accuracy": 0.75,
+      "coverage": 1.0,
+      "f1": 0.6666666666666666,
+      "fn": 1,
+      "fp": 0,
+      "invalid": 0,
+      "mcc": 0.5773502691896258,
+      "n": 4,
+      "n_total": 4,
+      "precision": 1.0,
+      "recall": 0.5,
+      "specificity": 1.0,
+      "tn": 2,
+      "tp": 1
+    },
+    "valid_only": {
+      "accuracy": 0.75,
+      "balanced_accuracy": 0.75,
+      "coverage": 1.0,
+      "f1": 0.6666666666666666,
+      "fn": 1,
+      "fp": 0,
+      "invalid": 0,
+      "mcc": 0.5773502691896258,
+      "n": 4,
+      "n_total": 4,
+      "precision": 1.0,
+      "recall": 0.5,
+      "specificity": 1.0,
+      "tn": 2,
+      "tp": 1
+    }
+  },
+  "manifest": {
+    "api": {
+      "backoff_base_seconds": 1.5,
+      "backoff_cap_seconds": 30.0,
+      "base_url": "https://api.xiaomimimo.com/v1",
+      "cached_input_price_usd_per_1m": 0.0028,
+      "endpoint": "https://api.xiaomimimo.com/v1/chat/completions",
+      "input_price_usd_per_1m": 0.14,
+      "max_attempts": 1,
+      "max_tokens": 8192,
+      "max_tokens_field": "max_completion_tokens",
+      "model": "mimo-v2.6-flash",
+      "output_price_usd_per_1m": 0.28,
+      "reasoning_effort": "none",
+      "response_format": "json_object",
+      "temperature": 0.0,
+      "thinking": "disabled",
+      "timeout_seconds": 120,
+      "user_agent": "juliet-llm-eval/1.0"
+    },
+    "api_errors": 0,
+    "code_sha256": {
+      "cleaning.py": "ee81a14e60263694013ddc16f16ec5f5e3047b5664100ef37ed864fcc3db5a92",
+      "llm_run.py": "c5cc6ac44947820676b95460157a6a0466cbfff0eb8dbc991a3fb792ebc3a30b",
+      "metrics.py": "2c733a78982fd0584e2445c319b04cd46db62d1a949eb418e79a0c00526871d8",
+      "prompting.py": "2f54b05bc402d5b2b4a4f9f8f7629522d851233296cfd4dc9e5d38bfba4dc582"
+    },
+    "completed_at_utc": "2026-11-11T19:22:35+00:00",
+    "concurrency": 4,
+    "expected_requests": 4,
+    "inputs": {
+      "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_llm/build/dev.jsonl",
+      "selected_sha256": "088f3d2b806ccf672b6653703f2b7c2de7d9bfbcaf79c8bfe8170e3ef5ecfa61",
+      "sha256": "8334908ea7ca180b2d52109d293256b2a8d5288ed6ad6cea71884a09389647cc",
+      "units": 4
+    },
+    "invalid_answers": 0,
+    "kind": "probe",
+    "model": "mimo-v2.6-flash",
+    "model_catalog": {
+      "api": {
+        "chat-completions": {
+          "base_url": "https://opencode.ai/inference/go/openai/v1",
+          "capabilities": {
+            "tools": {
+              "choice": [
+                "auto"
+              ],
+              "strict": true,
+              "updates": false
+            }
+          },
+          "compatibility": {
+            "reasoning_field": "reasoning_content"
+          },
+          "sdk": {
+            "aisdk": "@ai-sdk/openai-compatible",
+            "opencodeai": "@opencode/ai/providers/openai-compatible"
+          }
+        }
+      },
+      "canonical_id": "xiaomi/mimo-v2.6-flash",
+      "capabilities": {
+        "effort_updates": false,
+        "reasoning": {
+          "supported": true
+        },
+        "system_updates": true,
+        "temperature": true,
+        "tools": {
+          "supported": true
+        },
+        "top_k": true,
+        "top_p": true
+      },
+      "cost": {
+        "text": {
+          "input": {
+            "cache": {
+              "read": 0.0028
+            },
+            "price": 0.14
+          },
+          "output": {
+            "price": 0.28
+          }
+        }
+      },
+      "created": 1794424951,
+      "description": "MiMo Flash model for multimodal coding agents and long-context automation",
+      "family": "mimo",
+      "id": "mimo-v2.6-flash",
+      "last_updated": "2026-09-22",
+      "limit": {
+        "context": 1048576,
+        "output": 131072
+      },
+      "modalities": {
+        "input": [
+          "text",
+          "image/jpeg",
+          "image/png",
+          "image/gif",
+          "image/webp",
+          "image/bmp",
+          "audio/mpeg",
+          "audio/wav",
+          "audio/flac",
+          "audio/mp4",
+          "audio/ogg",
+          "video/mp4",
+          "video/quicktime",
+          "video/x-msvideo",
+          "video/x-ms-wmv"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "name": "MiMo-V2.6-Flash",
+      "object": "model",
+      "open_weights": true,
+      "owned_by": "opencode",
+      "release_date": "2026-09-22",
+      "type": "chat"
+    },
+    "partial": true,
+    "price_source": "https://opencode.ai/zen/go/v1/models snapshot 2026-11-11T19:22:32+00:00",
+    "prices_usd_per_1m": {
+      "cached_input": 0.0028,
+      "input": 0.14,
+      "output": 0.28
+    },
+    "probe": "mimo_reasoning_none_max_completion_tokens",
+    "prompt_version": "juliet-llm-binary-2026-11-12.1",
+    "recorded_requests": 4,
+    "request_body_sha256": {
+      "CWE401_Memory_Leak__malloc_realloc_char_01__bad": "16b99ac37fefbfdb5bee3d06bc7ef4594f067563e1c2019ab6904fafdccee19b",
+      "CWE401_Memory_Leak__malloc_realloc_char_01__good": "ce239bb00cd07c011520858675723b1dd7384bbb27051b119eced84e65081fc2",
+      "CWE401_Memory_Leak__new_array_TwoIntsClass_54__bad": "e489021b8749ee06e9b5c637bb44a5d92c8fa33972b2baf5596a957e27ff8245",
+      "CWE401_Memory_Leak__new_array_TwoIntsClass_54__good": "7ec0529dd0457937089b7825165fc0aa44acc98b2856517805d9c63d1a4a4d11"
+    },
+    "run_id": "mimo_reasoning_none_max_completion_tokens",
+    "selection": {
+      "split": "dev",
+      "unit_ids": [
+        "CWE401_Memory_Leak__new_array_TwoIntsClass_54__bad",
+        "CWE401_Memory_Leak__malloc_realloc_char_01__bad",
+        "CWE401_Memory_Leak__new_array_TwoIntsClass_54__good",
+        "CWE401_Memory_Leak__malloc_realloc_char_01__good"
+      ]
+    },
+    "session_id_sha256": "1f935696d3b5f8e316d2a15d4921c97f4c000a2548a974112baec1f28084abc9",
+    "started_at_utc": "2026-11-11T19:22:32+00:00",
+    "user_agent": "juliet-llm-eval/1.0",
+    "valid_answers": 4
+  }
+}

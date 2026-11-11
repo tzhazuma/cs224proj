@@ -1,0 +1,27 @@
+In file included from /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck/work/00190_CWE401_Memory_Leak__wchar_t_calloc_68__good.c:1:
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_68a.c:64:5: warning: Address of stack memory allocated by call to alloca() on line 59 is still referred to by the global variable 'CWE401_Memory_Leak__wchar_t_calloc_68_goodG2BData' upon returning to the caller.  This will be a dangling reference [core.StackAddressEscape]
+   64 |     CWE401_Memory_Leak__wchar_t_calloc_68b_goodG2BSink();
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_68a.c:103:5: note: Calling 'CWE401_Memory_Leak__wchar_t_calloc_68_good'
+  103 |     CWE401_Memory_Leak__wchar_t_calloc_68_good();
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_68a.c:84:5: note: Calling 'goodG2B'
+   84 |     goodG2B();
+      |     ^~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_68a.c:64:5: note: Address of stack memory allocated by call to alloca() on line 59 is still referred to by the global variable 'CWE401_Memory_Leak__wchar_t_calloc_68_goodG2BData' upon returning to the caller.  This will be a dangling reference
+   59 |     data = (wchar_t *)ALLOCA(100*sizeof(wchar_t));
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   60 |     /* Initialize and make use of data */
+   61 |     wcscpy(data, L"A String");
+   62 |     printWLine(data);
+   63 |     CWE401_Memory_Leak__wchar_t_calloc_68_goodG2BData = data;
+   64 |     CWE401_Memory_Leak__wchar_t_calloc_68b_goodG2BSink();
+      |     ^
+In file included from /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/juliet_formal_20261112_clang_cppcheck/work/00190_CWE401_Memory_Leak__wchar_t_calloc_68__good.c:2:
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_68b.c:42:15: warning: Value stored to 'data' during its initialization is never read [deadcode.DeadStores]
+   42 |     wchar_t * data = CWE401_Memory_Leak__wchar_t_calloc_68_goodG2BData;
+      |               ^~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_68b.c:42:15: note: Value stored to 'data' during its initialization is never read
+   42 |     wchar_t * data = CWE401_Memory_Leak__wchar_t_calloc_68_goodG2BData;
+      |               ^~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 warnings generated.

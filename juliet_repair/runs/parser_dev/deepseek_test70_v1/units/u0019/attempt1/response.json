@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:35.241+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0d-f393-7ee2-8e8b-1e6071af5967"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.687195967999287,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-68838b8071ba43cda5c79dcc8972787a\",\"object\":\"chat.completion\",\"created\":1794424828,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int_malloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__int_malloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    int * data;\\\\n    int * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (int *)malloc(100*sizeof(int));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5;\\\\n    printIntLine(data[0]);\\\\n    {\\\\n        int * data = dataRef;\\\\n\\\\n        ;\\\\n    }\\\\n    free(data);\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added free(data) at the end of bad() to release the malloc'd buffer after its value is printed, preserving output and behavior while eliminating the memory leak.\\\"}\"}}],\"usage\":{\"prompt_tokens\":379,\"completion_tokens\":219,\"total_tokens\":598,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00016943,\"allowance\":0.00010166,\"tokens\":{\"input\":251,\"output\":219,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:28.554+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int_malloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__int_malloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    int * data;\\n    int * &dataRef = data;\\n    data = NULL;\\n\\n    data = (int *)malloc(100*sizeof(int));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5;\\n    printIntLine(data[0]);\\n    {\\n        int * data = dataRef;\\n\\n        ;\\n    }\\n    free(data);\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added free(data) at the end of bad() to release the malloc'd buffer after its value is printed, preserving output and behavior while eliminating the memory leak.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 219,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000338868,
+    "prompt_tokens": 379
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.687195967999287,
+  "response_meta": {
+    "content_chars": 654,
+    "created": 1794424828,
+    "finish_reason": "stop",
+    "id": "chatcmpl-68838b8071ba43cda5c79dcc8972787a",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0019",
+  "usage": {
+    "completion_tokens": 219,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00010166,
+      "billing_source": "go",
+      "list_cost": 0.00016943,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 251,
+        "output": 219,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 379,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 598
+  },
+  "wall_seconds": 6.687231667994638
+}

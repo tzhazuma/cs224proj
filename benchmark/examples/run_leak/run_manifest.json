@@ -1,0 +1,68 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "example_leak_v1",
+  "created_at": "2026-11-12T00:00:00Z",
+  "protocol_version": "1.0.0",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "tasks": [
+    "leak_detection"
+  ],
+  "dataset": {
+    "dataset_id": "juliet-cwe401-demo",
+    "split_id": "test",
+    "path": "examples/run_leak/predictions.jsonl",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "unit_manifest": null,
+    "unit_count": 2,
+    "group_count": 1,
+    "label_counts": {
+      "bad": 1,
+      "good": 1
+    }
+  },
+  "method": {
+    "method_id": "dynamic.example.lsan",
+    "family": "dynamic",
+    "name": "Example LSan",
+    "strategy": null,
+    "model": null,
+    "tool": {
+      "name": "example-tool",
+      "version": "0",
+      "command_template": "example --check {file}",
+      "rules": [
+        "CWE-401"
+      ],
+      "license": "example"
+    },
+    "config_sha256": null
+  },
+  "execution": {
+    "started_at": "2026-11-12T00:00:00Z",
+    "finished_at": "2026-11-12T00:00:00Z",
+    "status": "completed",
+    "planned_units": 2,
+    "recorded_units": 2,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {
+      "synthetic": true
+    }
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": null,
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "5671c1dc51454fb0671bca55eaa550dc0f704a56948cc611631bc8d722e0de31"
+  },
+  "legacy_import": null,
+  "notes": [
+    "synthetic schema example; not an experimental result"
+  ]
+}

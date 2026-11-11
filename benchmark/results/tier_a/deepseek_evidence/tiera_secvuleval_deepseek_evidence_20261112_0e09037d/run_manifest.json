@@ -1,0 +1,93 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "tiera_secvuleval_deepseek_evidence_20261112_0e09037d",
+  "created_at": "2026-11-11T21:36:46Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": null,
+    "label_counts": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    }
+  },
+  "method": {
+    "method_id": "llm.deepseek.evidence",
+    "family": "llm",
+    "name": "DeepSeek V4.1 Flash / evidence-lines + counterfactual",
+    "strategy": "evidence",
+    "prompt_version": "secvul-evidence-prompt-2026-11-12.1",
+    "config_sha256": "4b696fc5fc39c57c9eb8cebb9506c34c5373c92d96ac7bd564f7562f7c6f01ef",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "deepseek",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "context_window": null,
+      "tokenizer": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_tokens",
+        "thinking": null,
+        "reasoning_effort": null,
+        "response_format": "json_object",
+        "timeout_seconds": 180.0
+      },
+      "pricing_usd_per_1m": {
+        "input": 0.3,
+        "output": 1.2,
+        "cached_input": 0.006
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-12 snapshot"
+    },
+    "tool": null
+  },
+  "execution": {
+    "started_at": "2026-11-11T19:15:10.475+00:00",
+    "finished_at": "2026-11-11T19:17:33.225+00:00",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 8,
+    "command": null,
+    "command_sha256": null,
+    "environment": {
+      "source_run": "evidence_prompt/runs/test_evidence_deepseek",
+      "endpoint": "https://opencode.ai/zen/go/v1"
+    }
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": "metrics.json",
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "source_results_sha256": "0e09037d536085a6ef72fde70441dbbb522e1da327ad5c910f652431c7765cd3",
+    "source_manifest_sha256": "4e714a4b09884131f1451856466be50e0a7588662ac9990327c300462d38d1fe",
+    "dataset_sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "prompt_template_sha256": "a91bda673c2ae8c4b0924c85adeee9ca3ca5bf50616227fe4ae261826f20e2f3",
+    "predictions_sha256": "7573f2acdd53a88091765ebd7c90fcbaccf31498bedbfb41ca35458e551f00ef",
+    "source_results_jsonl_sha256": "0e09037d536085a6ef72fde70441dbbb522e1da327ad5c910f652431c7765cd3",
+    "source_manifest_json_sha256": "4e714a4b09884131f1451856466be50e0a7588662ac9990327c300462d38d1fe"
+  },
+  "legacy_import": null,
+  "notes": [
+    "Derived view over the real evidence-prompt run; no model call and no prediction change.",
+    "Input is the numbered function source only; prompt wrapper contains no project/CVE/CWE/label metadata.",
+    "Two model runs share the frozen detection split and the same six-field output contract."
+  ]
+}

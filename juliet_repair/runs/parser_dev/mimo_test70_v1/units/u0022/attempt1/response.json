@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:46.936+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-11e9-79e5-8cc2-f3dfbc36dec1"
+      },
+      "http_status": 200,
+      "latency_seconds": 10.627908957991167,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424836-Ae2UBv6XnYSo5cvO2KaC\",\"object\":\"chat.completion\",\"created\":1794424836,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__malloc_realloc_int64_t_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__malloc_realloc_int64_t_01_bad()\\\\n{\\\\n    {\\\\n        int64_t * data = (int64_t *)malloc(100*sizeof(int64_t));\\\\n        if (data == NULL) {exit(-1);}\\\\n\\\\n        data[0] = 5LL;\\\\n        printLongLongLine(data[0]);\\\\n\\\\n        int64_t * newData = (int64_t *)realloc(data, (130000)*sizeof(int64_t));\\\\n        if (newData != NULL)\\\\n        {\\\\n            data = newData;\\\\n            data[0] = 10LL;\\\\n            printLongLongLine(data[0]);\\\\n            free(data);\\\\n        }\\\\n        else\\\\n        {\\\\n            free(data);\\\\n        }\\\\n    }\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The original code overwrote the only pointer to the malloc'd buffer with realloc's result. If realloc fails (returns NULL), the original buffer is leaked. By storing realloc's result in a separate variable, we can free the original buffer when realloc fails, while still freeing the new buffer on success. Observable behavior (printed lines, return status) is unchanged.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":416,\"completion_tokens\":328,\"total_tokens\":744,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00015008,\"allowance\":0.00015008,\"tokens\":{\"input\":416,\"output\":328,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:36.308+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__malloc_realloc_int64_t_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__malloc_realloc_int64_t_01_bad()\\n{\\n    {\\n        int64_t * data = (int64_t *)malloc(100*sizeof(int64_t));\\n        if (data == NULL) {exit(-1);}\\n\\n        data[0] = 5LL;\\n        printLongLongLine(data[0]);\\n\\n        int64_t * newData = (int64_t *)realloc(data, (130000)*sizeof(int64_t));\\n        if (newData != NULL)\\n        {\\n            data = newData;\\n            data[0] = 10LL;\\n            printLongLongLine(data[0]);\\n            free(data);\\n        }\\n        else\\n        {\\n            free(data);\\n        }\\n    }\\n}\\n\"}], \"explanation\": \"The original code overwrote the only pointer to the malloc'd buffer with realloc's result. If realloc fails (returns NULL), the original buffer is leaked. By storing realloc's result in a separate variable, we can free the original buffer when realloc fails, while still freeing the new buffer on success. Observable behavior (printed lines, return status) is unchanged.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 328,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00015008,
+    "prompt_tokens": 416
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 10.627908957991167,
+  "response_meta": {
+    "content_chars": 1097,
+    "created": 1794424836,
+    "finish_reason": "stop",
+    "id": "gen-1794424836-Ae2UBv6XnYSo5cvO2KaC",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0022",
+  "usage": {
+    "completion_tokens": 328,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00015008,
+      "billing_source": "go",
+      "list_cost": 0.00015008,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 416,
+        "output": 328,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 416,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 744
+  },
+  "wall_seconds": 10.627935374999652
+}

@@ -1,0 +1,28 @@
+SecVulEval split freeze record
+split_id: secvul-split-v1
+seed: 42
+protocol: research/evaluation_protocol.md#4
+generated_utc: 2026-11-11T07:49:27Z
+
+source_sha256:
+  datasets/independent_200.json: 055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d
+  datasets/vulnerable_fixed_200_pairs.json: 7028b98d6f2c13b960bd08dd2e737e2ba61732b89dba03e3f173fe44c27214d5
+  splits/example_notes.json: 2480dd8aada28f5fa76dd8b44eba852b5a5ed39f022254d236845cd71f6b6365
+  splits/make_splits.py: 5ea75ee31ebbea00175cb67c2b77e6fdf8461eaffc43499873f505d3ef14f470
+
+artifact_sha256:
+  dev_detection_40.json: b378f250a3c7eddde24ebca4a5636de7c88d895dc3089436b8266ce298fdcc3e
+  dev_examples_fewshot.json: 466b8a305013c06983cab010a4f8cdc0e50d9d5bb91346cb462aae7779673852
+  dev_pairs_20.json: 98ec3e3954f9e41002735453f75eb80448c4e3c3d6ef0fbf45b2104891e11257
+  pilot_detection_36.json: 1f4d21ada228ec1e413bda5348e0dd74cf639a512a97cf85e979430b94ccceff
+  pilot_pairs_18.json: e237137718a973af0a1c9cde1fc7ecf594b51feb6ce5600f5a47894f29e54747
+  split_v1.json: 7b346713095c5396dda6040ea7254c7bc906c6cd7fca0e5933ebcb51372bb70b
+  test_detection_160.json: bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8
+  test_pairs_180.json: 21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d
+
+runner_checks: passed
+  test_detection units: 160
+  test_pairs units: 180
+
+verify_with: python3 splits/make_splits.py verify
+Do not edit any frozen file. Any change requires a new split_id and a new freeze record.

@@ -1,0 +1,353 @@
+{
+  "context": null,
+  "cost": {
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cost_bases": [
+      "input_output_prices"
+    ],
+    "currency": "USD",
+    "input_price_usd_per_1m": 0.14,
+    "known_cost_usd": 0.11428228000000001,
+    "output_price_usd_per_1m": 0.28,
+    "pricing_configured": true,
+    "total_cost_usd": 0.11428228000000001,
+    "unknown_cost_records": 0
+  },
+  "counts": {
+    "api_attempts": 540,
+    "by_status": {
+      "invalid": 31,
+      "ok": 509
+    },
+    "by_task": {
+      "detection": 360,
+      "repair": 180
+    },
+    "cache_hits": 0,
+    "complete_planned_requests": true,
+    "expected_requests": 540,
+    "missing_requests": 0,
+    "records": 540,
+    "retries": 0
+  },
+  "detection": {
+    "api_errors": 0,
+    "average_confidence": 0.817069486405,
+    "by_label": {
+      "non_vulnerable": {
+        "api_errors": 0,
+        "detection_rate": null,
+        "false_positive_rate": 0.2215568862275449,
+        "predicted_vulnerable": 37,
+        "predicted_vulnerable_rate": 0.2215568862275449,
+        "requested": 180,
+        "schema_invalid": 13,
+        "valid_predictions": 167
+      },
+      "vulnerable": {
+        "api_errors": 0,
+        "detection_rate": 0.2865853658536585,
+        "false_positive_rate": null,
+        "predicted_vulnerable": 47,
+        "predicted_vulnerable_rate": 0.2865853658536585,
+        "requested": 180,
+        "schema_invalid": 16,
+        "valid_predictions": 164
+      }
+    },
+    "by_side": {
+      "fixed": {
+        "api_errors": 0,
+        "predicted_vulnerable": 37,
+        "predicted_vulnerable_rate": 0.2215568862275449,
+        "requested": 180,
+        "schema_invalid": 13,
+        "valid_predictions": 167
+      },
+      "vulnerable": {
+        "api_errors": 0,
+        "predicted_vulnerable": 47,
+        "predicted_vulnerable_rate": 0.2865853658536585,
+        "requested": 180,
+        "schema_invalid": 16,
+        "valid_predictions": 164
+      }
+    },
+    "confusion": {
+      "fn": 117,
+      "fp": 37,
+      "tn": 130,
+      "tp": 47
+    },
+    "coverage": 0.9194444444444444,
+    "invalid_rate": 0.08055555555555556,
+    "metrics_valid_only": {
+      "accuracy": 0.5347432024169184,
+      "balanced_accuracy": 0.5325142398130568,
+      "f1": 0.3790322580645161,
+      "mcc": 0.07471290795118528,
+      "precision": 0.5595238095238095,
+      "predicted_positive_rate": 0.2537764350453172,
+      "recall": 0.2865853658536585,
+      "specificity": 0.7784431137724551
+    },
+    "requested": 360,
+    "schema_invalid": 29,
+    "strict_accuracy_all_samples": 0.49166666666666664,
+    "strict_correct_all_samples": 177,
+    "valid_predictions": 331
+  },
+  "failures": {
+    "error_types": {},
+    "examples": [
+      {
+        "error": "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])",
+        "sample_id": "pair:3822:3828:fixed",
+        "status": "invalid",
+        "task": "detection"
+      },
+      {
+        "error": "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])",
+        "sample_id": "pair:22910:22920:fixed",
+        "status": "invalid",
+        "task": "detection"
+      },
+      {
+        "error": "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])",
+        "sample_id": "pair:22834:22835:fixed",
+        "status": "invalid",
+        "task": "detection"
+      },
+      {
+        "error": "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])",
+        "sample_id": "pair:20228:20229:fixed",
+        "status": "invalid",
+        "task": "detection"
+      },
+      {
+        "error": "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])",
+        "sample_id": "pair:8565:8566:vulnerable",
+        "status": "invalid",
+        "task": "detection"
+      }
+    ],
+    "schema_invalid_reasons": {
+      "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])": 29,
+      "invalid JSON: Unterminated string starting at: line 1 column 20 (char 19)": 2
+    }
+  },
+  "latency": {
+    "max_request_latency_seconds": 178.00696423499903,
+    "mean_request_latency_seconds": 10.238358581283197,
+    "p50_request_latency_seconds": 5.462709763000021,
+    "p95_request_latency_seconds": 33.464427895901345,
+    "records_with_latency": 540,
+    "total_request_latency_seconds": 5528.713633892927,
+    "total_wall_seconds": 5528.731022027132
+  },
+  "notes": [
+    "Detection confusion uses only schema-valid predictions. strict_accuracy_all_samples counts schema-invalid and API-error records as incorrect.",
+    "Repair scores are structural proxies (complete function and changed text); they do not prove that a vulnerability was removed or that behaviour was preserved.",
+    "usage.opencode from the provider is preserved in each record's usage. opencode.allowance is Go-plan usage in USD and is summed separately; it is never used as cost_usd. cost_usd still comes only from explicit price arguments."
+  ],
+  "pair_joint": {
+    "coverage": 0.8555555555555555,
+    "definition": "A pair is handled correctly only when the vulnerable side is predicted vulnerable and its fixed side is predicted non-vulnerable.",
+    "discrimination_accuracy_all_pairs": 0.07777777777777778,
+    "discrimination_accuracy_valid_pairs": 0.09090909090909091,
+    "invalid_pairs": 26,
+    "joint_categories": {
+      "both_clean": 108,
+      "both_flagged": 27,
+      "vulnerable_detected_fixed_clean": 14,
+      "vulnerable_missed_fixed_flagged": 5
+    },
+    "joint_rates_valid_pairs": {
+      "both_clean": 0.7012987012987013,
+      "both_flagged": 0.17532467532467533,
+      "vulnerable_detected_fixed_clean": 0.09090909090909091,
+      "vulnerable_missed_fixed_flagged": 0.032467532467532464
+    },
+    "matrix": {
+      "vulnerable_side_predicted_clean": {
+        "fixed_side_predicted_clean": 108,
+        "fixed_side_predicted_vulnerable": 5
+      },
+      "vulnerable_side_predicted_vulnerable": {
+        "fixed_side_predicted_clean": 14,
+        "fixed_side_predicted_vulnerable": 27
+      }
+    },
+    "pairs_requested": 180,
+    "valid_pairs": 154
+  },
+  "repair": {
+    "api_errors": 0,
+    "changed_from_input": 141,
+    "changed_from_input_rate_of_schema_valid": 0.7921348314606742,
+    "complete_and_changed": 140,
+    "complete_and_changed_rate_of_schema_valid": 0.7865168539325843,
+    "complete_function": 177,
+    "complete_function_rate_of_all": 0.9833333333333333,
+    "complete_function_rate_of_schema_valid": 0.9943820224719101,
+    "definition": "complete_function and changed_from_input are structural proxies only. Reference matches use normalised text equality and are not a correctness or security-equivalence oracle.",
+    "exact_match_reference_fixed": 3,
+    "exact_match_reference_fixed_rate": 0.016853932584269662,
+    "reference_fixed_available": 178,
+    "requested": 180,
+    "schema_invalid": 2,
+    "schema_valid": 178,
+    "schema_valid_rate": 0.9888888888888889,
+    "whitespace_collapsed_match_reference_fixed": 3,
+    "whitespace_collapsed_match_reference_fixed_rate": 0.016853932584269662
+  },
+  "run": {
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "completed_at": "2026-11-11T18:33:52.512+00:00",
+    "config_fingerprint": "aed5ce71e1a1932dbb271d01b9b7eb1190540a00ec766d4c0105686c01dd1554",
+    "dataset_label_counts": {
+      "functions": 360,
+      "non_vulnerable": 180,
+      "units": 180,
+      "vulnerable": 180
+    },
+    "dataset_metadata": {
+      "constraints": [
+        "vulnerable.fixed_func_idx == fixed.idx",
+        "Same project, commit_id, filepath and func_name within each pair",
+        "Vulnerable label true, fixed label false, different function bodies",
+        "At most one pair per (project, commit_id)"
+      ],
+      "cross_dataset_isolation": "No shared source idx or (project, commit_id) group",
+      "dataset_type": "vulnerable_fixed_pairs",
+      "eligible_pair_count": 10004,
+      "excluded_malformed_rows": [
+        {
+          "idx": 3510,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9418,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9578,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10195,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10196,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 16033,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 18071,
+          "reason": "changed_statements is not a valid serialized list"
+        }
+      ],
+      "field_encoding": {
+        "context": "Original workbook string, not evaluated",
+        "json_arrays": [
+          "changed_lines",
+          "changed_statements",
+          "cve_list",
+          "cwe_list"
+        ]
+      },
+      "function_count": 360,
+      "pair_count": 180,
+      "rejected_pair_counts": {
+        "missing_or_malformed_fixed_version": 975,
+        "unchanged_function_body": 15
+      },
+      "sampling": "Shuffle source rows with random.Random(seed); keep at most one item per project+commit. Select pairs first.",
+      "schema_version": 1,
+      "seed": 42,
+      "source_file": "SecVulEval.xlsx",
+      "source_label_counts": {
+        "False": 14442,
+        "True": 10998
+      },
+      "source_rows": 25440,
+      "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+      "source_sheet": "train",
+      "split": {
+        "manifest": "splits/split_v1.json",
+        "protocol": "research/evaluation_protocol.md#4",
+        "role": "test",
+        "seed": 42,
+        "source_dataset": "datasets/vulnerable_fixed_200_pairs.json",
+        "source_dataset_sha256": "7028b98d6f2c13b960bd08dd2e737e2ba61732b89dba03e3f173fe44c27214d5",
+        "split_id": "secvul-split-v1",
+        "task": "pairs"
+      },
+      "usable_rows": 25433
+    },
+    "dataset_path": "splits/test_pairs_180.json",
+    "dataset_sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "dataset_type": "pairs",
+    "dataset_units": 180,
+    "dev_examples": null,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "expected_by_task": {
+      "detection": 360,
+      "repair": 180,
+      "requests": 540
+    },
+    "expected_requests": 540,
+    "httpx_version": "0.28.1",
+    "input_price_usd_per_1m": 0.14,
+    "limit": 0,
+    "max_tokens": 8192,
+    "max_tokens_field": "max_completion_tokens",
+    "model": "mimo-v2.6-flash",
+    "notes": [
+      "No API key or Authorization header is stored in run artifacts.",
+      "Prompts contain function source and, for context strategy, sanitised context only."
+    ],
+    "output_price_usd_per_1m": 0.28,
+    "partial": false,
+    "pricing_configured": true,
+    "prompt_version": "secvul-prompt-2026-11-11.1",
+    "python_version": "3.14.8",
+    "reasoning_effort": "none",
+    "response_format": "json_object",
+    "run_id": "test_v1_mimo_direct_pairs",
+    "run_label": "split-v1-frozen-test-mimo",
+    "runner_version": "1.0.0",
+    "selected_label_counts": {
+      "functions": 360,
+      "non_vulnerable": 180,
+      "units": 180,
+      "vulnerable": 180
+    },
+    "selected_units": 180,
+    "started_at": "2026-11-11T18:27:01.920+00:00",
+    "strategy": "direct",
+    "task": "both",
+    "temperature": 0.0,
+    "thinking": "disabled"
+  },
+  "schema_version": 1,
+  "usage": {
+    "cached_prompt_tokens_known_sum": 22400,
+    "completion_tokens_known_sum": 191274,
+    "opencode_allowance_known_sum_usd": 0.11428252,
+    "opencode_allowance_records": 540,
+    "opencode_billing_sources": {
+      "go": 540
+    },
+    "prompt_tokens_known_sum": 455706,
+    "reasoning_tokens_known_sum": 0,
+    "records_missing_usage": 0,
+    "records_with_opencode_usage": 540,
+    "total_tokens_known_sum": 646980
+  }
+}

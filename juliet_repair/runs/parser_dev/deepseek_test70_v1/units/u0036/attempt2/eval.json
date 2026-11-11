@@ -1,0 +1,65 @@
+{
+  "baseline_behavior_lines": [
+    "5"
+  ],
+  "behavior_matches_good_subsequence": true,
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "compile": {
+    "command": [
+      "g++",
+      "-std=gnu++11",
+      "-O0",
+      "-g",
+      "-fsanitize=address",
+      "-fno-omit-frame-pointer",
+      "-w",
+      "-DOMITGOOD",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0036/attempt2/eval/src",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+      "-o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0036/attempt2/eval/fixed",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0036/attempt2/eval/src/CWE401_Memory_Leak__new_array_int_22a.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0036/attempt2/eval/src/CWE401_Memory_Leak__new_array_int_22b.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/deepseek_test70_v1/units/u0036/attempt2/eval/src/__repair_probe_main.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/io.o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/std_thread.o",
+      "-lpthread",
+      "-lm"
+    ],
+    "ok": true,
+    "returncode": 0,
+    "source_files": [
+      "CWE401_Memory_Leak__new_array_int_22a.cpp",
+      "CWE401_Memory_Leak__new_array_int_22b.cpp",
+      "__repair_probe_main.cpp"
+    ],
+    "stderr_tail": "",
+    "stdout_tail": "",
+    "timed_out": false
+  },
+  "compile_pass": true,
+  "fixed_behavior_lines": [
+    "5"
+  ],
+  "fixed_stdout_sha256": "7fb2aaeaf3eef66b52db104118c30f62899f5f0df520350a94a8fcb843c0dfdf",
+  "good_behavior_lines": [
+    "5",
+    "5",
+    "5"
+  ],
+  "leak_removed": true,
+  "parsed_explanation": "The heap array allocated with new int[100] in bad() was never freed, causing a memory leak. Added delete[] data after badSink(data) to release the memory while preserving the printed output, return status, and external interfaces. Only the file containing the allocation needed changing.",
+  "run": {
+    "leak_detected": false,
+    "other_asan_error": false,
+    "returncode": 0,
+    "summary": null,
+    "timed_out": false,
+    "wall_seconds": 0.016
+  },
+  "strict_evaluable": true,
+  "strict_pass": true
+}

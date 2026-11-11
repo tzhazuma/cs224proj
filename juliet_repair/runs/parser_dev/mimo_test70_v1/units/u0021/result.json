@@ -1,0 +1,133 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "cost": {
+        "cached_prompt_tokens": 128,
+        "completion_tokens": 227,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 9.737840000000002e-05,
+        "prompt_tokens": 367
+      },
+      "elapsed_seconds": 3.266,
+      "error": null,
+      "evaluation": null,
+      "parse_error": "files[0] must contain exactly path and content",
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 227,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 9.738e-05,
+          "billing_source": "go",
+          "list_cost": 9.738e-05,
+          "tokens": {
+            "cache_read": 128,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 239,
+            "output": 227,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 367,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 128
+        },
+        "total_tokens": 594
+      }
+    },
+    {
+      "attempt": 2,
+      "changed_paths": [
+        "CWE401_Memory_Leak__int_realloc_33.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 256,
+        "completion_tokens": 223,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.00011747680000000001,
+        "prompt_tokens": 644
+      },
+      "elapsed_seconds": 2.191,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.025
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "parse_error": null,
+      "parsed_explanation": "The inner scope shadows the outer pointer but holds the same allocated buffer; freeing it there releases the memory while preserving the printed output and return status.",
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 223,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.00011748,
+          "billing_source": "go",
+          "list_cost": 0.00011748,
+          "tokens": {
+            "cache_read": 256,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 388,
+            "output": 223,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 644,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 256
+        },
+        "total_tokens": 867
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 384,
+  "changed_paths": [
+    "CWE401_Memory_Leak__int_realloc_33.cpp"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 450,
+  "cost_complete": true,
+  "cost_usd_sum": 0.00021486,
+  "final_attempt": 2,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__int_realloc_33",
+  "language": "cpp",
+  "leak_removed": true,
+  "model": "mimo-v2.6-flash",
+  "model_alias": "mimo",
+  "prompt_tokens_sum": 1011,
+  "schema": "juliet-repair-result-v1",
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__int_realloc_33__bad",
+  "unit_key": "u0021"
+}

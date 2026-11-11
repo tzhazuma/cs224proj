@@ -1,0 +1,91 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__twoIntsStruct_calloc_01.c"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 128,
+        "completion_tokens": 214,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.000335268,
+        "prompt_tokens": 387
+      },
+      "elapsed_seconds": 4.886,
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.02
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "Added free(data) at the end of the function to release the calloc-allocated buffer, eliminating the memory leak while preserving the printed output and behavior.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 214,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.00010058,
+          "billing_source": "go",
+          "list_cost": 0.00016763,
+          "tokens": {
+            "cache_read": 128,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 259,
+            "output": 214,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 387,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "total_tokens": 601
+      }
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 128,
+  "changed_paths": [
+    "CWE401_Memory_Leak__twoIntsStruct_calloc_01.c"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 214,
+  "cost_complete": true,
+  "cost_usd_sum": 0.00033527,
+  "explanation_present": true,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_01",
+  "language": "c",
+  "leak_removed": true,
+  "model": "deepseek-v4.1-flash",
+  "model_alias": "deepseek",
+  "prompt_tokens_sum": 387,
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_01__bad",
+  "unit_key": "u0055"
+}

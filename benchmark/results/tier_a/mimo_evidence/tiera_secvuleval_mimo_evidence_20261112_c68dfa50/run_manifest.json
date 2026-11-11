@@ -1,0 +1,93 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "tiera_secvuleval_mimo_evidence_20261112_c68dfa50",
+  "created_at": "2026-11-11T21:36:47Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": null,
+    "label_counts": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    }
+  },
+  "method": {
+    "method_id": "llm.mimo.evidence",
+    "family": "llm",
+    "name": "MiMo-V2.6-Flash / evidence-lines + counterfactual",
+    "strategy": "evidence",
+    "prompt_version": "secvul-evidence-prompt-2026-11-12.1",
+    "config_sha256": "0daedca301b1ca1b0438f3b11f7d8600786a9b201b1f29e3187ea45562721510",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "context_window": null,
+      "tokenizer": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_completion_tokens",
+        "thinking": "disabled",
+        "reasoning_effort": "none",
+        "response_format": "json_object",
+        "timeout_seconds": 300.0
+      },
+      "pricing_usd_per_1m": {
+        "input": 0.14,
+        "output": 0.28,
+        "cached_input": 0.0028
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-12 snapshot"
+    },
+    "tool": null
+  },
+  "execution": {
+    "started_at": "2026-11-11T19:17:45.981+00:00",
+    "finished_at": "2026-11-11T19:18:53.344+00:00",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 16,
+    "command": null,
+    "command_sha256": null,
+    "environment": {
+      "source_run": "evidence_prompt/runs/test_evidence_mimo",
+      "endpoint": "https://opencode.ai/zen/go/v1"
+    }
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": "metrics.json",
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "source_results_sha256": "c68dfa509ad5aadc9256404f44f44cd025d502897abec9fd75d64f0a760e2e05",
+    "source_manifest_sha256": "dabe1554adaf0261dbaabe23cf6a19616886ed45b50ea4b7e89f8c7b4bcaa881",
+    "dataset_sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "prompt_template_sha256": "a91bda673c2ae8c4b0924c85adeee9ca3ca5bf50616227fe4ae261826f20e2f3",
+    "predictions_sha256": "c4ef543aba1b39bc0ee58808569a4e169429fb1723a394b69903ee1005e728b2",
+    "source_results_jsonl_sha256": "c68dfa509ad5aadc9256404f44f44cd025d502897abec9fd75d64f0a760e2e05",
+    "source_manifest_json_sha256": "dabe1554adaf0261dbaabe23cf6a19616886ed45b50ea4b7e89f8c7b4bcaa881"
+  },
+  "legacy_import": null,
+  "notes": [
+    "Derived view over the real evidence-prompt run; no model call and no prediction change.",
+    "Input is the numbered function source only; prompt wrapper contains no project/CVE/CWE/label metadata.",
+    "Two model runs share the frozen detection split and the same six-field output contract."
+  ]
+}

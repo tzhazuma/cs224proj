@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:31.738+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-ce7b-70c7-806c-64e4babe14be"
+      },
+      "http_status": 200,
+      "latency_seconds": 7.172186481999233,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-c5045ae667bc49b094d58b914136775a\",\"object\":\"chat.completion\",\"created\":1794424884,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__twoIntsStruct_realloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    twoIntsStruct * data;\\\\n    twoIntsStruct * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (twoIntsStruct *)realloc(data, 100*sizeof(twoIntsStruct));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0].intOne = 0;\\\\n    data[0].intTwo = 0;\\\\n    printStructLine(&data[0]);\\\\n    {\\\\n        twoIntsStruct * data = dataRef;\\\\n\\\\n        ;\\\\n    }\\\\n\\\\n    free(data);\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added free(data) at the end of bad() to release the heap block allocated by realloc, eliminating the memory leak while preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":421,\"completion_tokens\":260,\"total_tokens\":681,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00020033,\"allowance\":0.0001202,\"tokens\":{\"input\":293,\"output\":260,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:24.565+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__twoIntsStruct_realloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    twoIntsStruct * data;\\n    twoIntsStruct * &dataRef = data;\\n    data = NULL;\\n\\n    data = (twoIntsStruct *)realloc(data, 100*sizeof(twoIntsStruct));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0].intOne = 0;\\n    data[0].intTwo = 0;\\n    printStructLine(&data[0]);\\n    {\\n        twoIntsStruct * data = dataRef;\\n\\n        ;\\n    }\\n\\n    free(data);\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added free(data) at the end of bad() to release the heap block allocated by realloc, eliminating the memory leak while preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 260,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000400668,
+    "prompt_tokens": 421
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 7.172186481999233,
+  "response_meta": {
+    "content_chars": 772,
+    "created": 1794424884,
+    "finish_reason": "stop",
+    "id": "chatcmpl-c5045ae667bc49b094d58b914136775a",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0062",
+  "usage": {
+    "completion_tokens": 260,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.0001202,
+      "billing_source": "go",
+      "list_cost": 0.00020033,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 293,
+        "output": 260,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 421,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 681
+  },
+  "wall_seconds": 7.172208710006089
+}

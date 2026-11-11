@@ -1,0 +1,195 @@
+{
+  "schema_version": "benchmark-metrics-v1",
+  "run_id": "tiera_secvuleval_mimo_pair_joint_20261112_9ac69067",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "generated_at": "2026-11-11T21:37:31Z",
+  "settings": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "confidence": 0.95,
+    "cluster_unit": "record.cluster_id",
+    "coverage_threshold": 0.8,
+    "strict_policy": "non-ok records count as errors in strict_accuracy; valid-only metrics exclude them"
+  },
+  "tasks": {
+    "pair_detection": {
+      "n_pairs": 180,
+      "valid_pairs": 180,
+      "invalid_pairs": 0,
+      "coverage": 1.0,
+      "invalid_rate": 0.0,
+      "joint_correct_valid_pairs": 156,
+      "joint_correct_all_pairs": 156,
+      "joint_accuracy_valid_pairs": 0.8666666666666667,
+      "joint_accuracy_all_pairs": 0.8666666666666667,
+      "joint_categories": {
+        "vulnerable_detected_fixed_clean": 156,
+        "both_flagged": 0,
+        "both_clean": 0,
+        "vulnerable_missed_fixed_flagged": 24
+      },
+      "joint_rates_valid_pairs": {
+        "vulnerable_detected_fixed_clean": 0.8666666666666667,
+        "both_flagged": 0.0,
+        "both_clean": 0.0,
+        "vulnerable_missed_fixed_flagged": 0.13333333333333333
+      },
+      "consistent": 180,
+      "swapped": 24,
+      "consistent_rate": 1.0,
+      "swapped_rate": 0.13333333333333333,
+      "both_vulnerable_rate": 0.0,
+      "both_safe_rate": 0.0,
+      "wilson": {
+        "joint_accuracy_valid_pairs": {
+          "successes": 156,
+          "total": 180,
+          "estimate": 0.8666666666666667,
+          "low": 0.8092727787274112,
+          "high": 0.908737189463406,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "joint_accuracy_all_pairs": {
+          "successes": 156,
+          "total": 180,
+          "estimate": 0.8666666666666667,
+          "low": 0.8092727787274112,
+          "high": 0.908737189463406,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "coverage": {
+          "successes": 180,
+          "total": 180,
+          "estimate": 1.0,
+          "low": 0.979104502078387,
+          "high": 0.9999999999999999,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "consistent_rate": {
+          "successes": 180,
+          "total": 180,
+          "estimate": 1.0,
+          "low": 0.979104502078387,
+          "high": 0.9999999999999999,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "swapped_rate": {
+          "successes": 24,
+          "total": 180,
+          "estimate": 0.13333333333333333,
+          "low": 0.09126281053659402,
+          "high": 0.19072722127258884,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "both_vulnerable_rate": {
+          "successes": 0,
+          "total": 180,
+          "estimate": 0.0,
+          "low": 1.734723475976807e-18,
+          "high": 0.020895497921613042,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "both_safe_rate": {
+          "successes": 0,
+          "total": 180,
+          "estimate": 0.0,
+          "low": 1.734723475976807e-18,
+          "high": 0.020895497921613042,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        }
+      },
+      "missing_pairs": 0,
+      "by_status": {
+        "ok": 360
+      },
+      "bootstrap": {
+        "joint_accuracy_valid_pairs": {
+          "ci_low": 0.8166666666666667,
+          "ci_high": 0.9166666666666666,
+          "bootstrap_median": 0.8666666666666667,
+          "bootstrap_mean": 0.8663483333333334,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "joint_accuracy_all_pairs": {
+          "ci_low": 0.8166666666666667,
+          "ci_high": 0.9166666666666666,
+          "bootstrap_median": 0.8666666666666667,
+          "bootstrap_mean": 0.8663483333333334,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "coverage": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cluster_count": 180
+    }
+  },
+  "cost": {
+    "currency": "USD",
+    "usd_known_sum": 0.07180331200000001,
+    "usd_unknown_records": 0,
+    "usd_complete": true,
+    "wall_s_sum": 1203.1303617240046,
+    "cpu_s_sum": null,
+    "peak_rss_mb_max": null,
+    "prompt_tokens_sum": 461720,
+    "completion_tokens_sum": 30598,
+    "cached_prompt_tokens_sum": 10240,
+    "latency_ms_p50": 6108.823780501552,
+    "latency_ms_p95": 12921.703823791902,
+    "latency_samples": 180,
+    "cost_basis_counts": {
+      "api_price": 360
+    },
+    "cost_per_100_units_usd": 0.03989072888888889,
+    "wall_s_per_100_units": 668.4057565133359,
+    "cost_per_true_positive_usd": null
+  },
+  "counts": {
+    "records": 360,
+    "planned_units": 360,
+    "by_task": {
+      "pair_detection": 360
+    },
+    "by_status": {
+      "ok": 360
+    },
+    "missing_units": 0
+  },
+  "provenance": {
+    "run_manifest_sha256": "ad3ef9f8b7eb586fddc84d25a521c7cd6a1f4e27720f22973b88a76730097b10",
+    "predictions_sha256": "bd54866c42a0c8121176f2070c42d9c39a9b4991d12940edcdda20eb9d0d18f8"
+  },
+  "notes": [
+    "Tasks and tiers are not pooled into a single score.",
+    "Detection and pair metrics use valid predictions only; strict accuracy is separate.",
+    "Leak clean predictions below the coverage threshold are inconclusive, not true negatives.",
+    "Cost is a known-sum plus unknown count, never an imputed total."
+  ]
+}

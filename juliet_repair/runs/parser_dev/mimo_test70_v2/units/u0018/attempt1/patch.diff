@@ -1,0 +1,8 @@
+--- a/CWE401_Memory_Leak__int_malloc_22a.c
++++ b/CWE401_Memory_Leak__int_malloc_22a.c
+@@ -19,4 +19,5 @@
+     printIntLine(data[0]);
+     CWE401_Memory_Leak__int_malloc_22_badGlobal = 1;
+     CWE401_Memory_Leak__int_malloc_22_badSink(data);
++    free(data);
+ }

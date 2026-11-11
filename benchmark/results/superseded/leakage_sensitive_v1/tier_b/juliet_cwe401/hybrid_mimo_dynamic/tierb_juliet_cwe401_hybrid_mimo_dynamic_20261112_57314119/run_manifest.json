@@ -1,0 +1,98 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "tierb_juliet_cwe401_hybrid_mimo_dynamic_20261112_57314119",
+  "created_at": "2026-11-11T19:54:17Z",
+  "protocol_version": "1.0.0",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "tasks": [
+    "leak_detection"
+  ],
+  "dataset": {
+    "dataset_id": "juliet-cwe401-v1.3-subset-v1",
+    "split_id": "juliet-cwe401-v1.3-subset-v1",
+    "path": "juliet/subset_units.jsonl",
+    "sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "unit_manifest": {
+      "path": "juliet/manifest.json",
+      "sha256": "8df222f84a4295f3b90ae7cabe165adc04858d91def3fda19a073db6e17cafd6"
+    },
+    "unit_count": 200,
+    "group_count": 100,
+    "label_counts": {
+      "bad": 100,
+      "good": 100
+    }
+  },
+  "method": {
+    "method_id": "hybrid.mimo.dynamic",
+    "family": "hybrid",
+    "name": "MiMo-V2.6-Flash / dynamic evidence (Juliet)",
+    "strategy": "dynamic",
+    "prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+    "config_sha256": "9257e8b009c0ee7e609839029011ce825041aa8cd3609277d8185eabf806f6d8",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "context_window": null,
+      "tokenizer": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_completion_tokens",
+        "thinking": "disabled",
+        "reasoning_effort": "none",
+        "response_format": "json_object",
+        "timeout_seconds": 300.0
+      },
+      "pricing_usd_per_1m": {
+        "input": 0.14,
+        "output": 0.28,
+        "cached_input": 0.0028
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-12 snapshot"
+    },
+    "tool": null
+  },
+  "execution": {
+    "started_at": "2026-11-11T19:28:24.931718+00:00",
+    "finished_at": "2026-11-11T19:29:13.652262+00:00",
+    "status": "completed",
+    "planned_units": 140,
+    "recorded_units": 140,
+    "retries": 1,
+    "concurrency": 12,
+    "command": null,
+    "command_sha256": null,
+    "environment": {
+      "source_run": "hybrid/runs/hybrid_v1_mimo_dynamic",
+      "endpoint": "https://opencode.ai/zen/go/v1"
+    }
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": "metrics.json",
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "source_results_sha256": "5731411912893f2cf425ed507e1aeccfa760bbfdbefe31dc01801da85fd063a2",
+    "source_config_sha256": "ea3dc39c971b8a793991adbf258cdf604e80e32250c7b83b55efb600d3ac4e09",
+    "source_manifest_sha256": "54467f0af85572602d18beca77453ceca3ea5b163bb42465e907c3ed943cab27",
+    "dataset_sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "predictions_sha256": "2156dd9ac186ec67e1e5f7f1fa0cec03cb160d41014baf6dbd717b36de43fdd3",
+    "source_results_jsonl_sha256": "5731411912893f2cf425ed507e1aeccfa760bbfdbefe31dc01801da85fd063a2",
+    "source_config_json_sha256": "ea3dc39c971b8a793991adbf258cdf604e80e32250c7b83b55efb600d3ac4e09",
+    "source_manifest_json_sha256": "54467f0af85572602d18beca77453ceca3ea5b163bb42465e907c3ed943cab27"
+  },
+  "legacy_import": null,
+  "notes": [
+    "Derived view over the real hybrid run; no model call and no prediction change.",
+    "Test split only (140 units, 70 bad / 70 good). dev 60 was not run for this experiment.",
+    "Direct is the no-evidence control; static/dynamic/combined add real tool evidence; shuffled is the placebo.",
+    "OpenCode Go endpoint for both models; this is not the Xiaomi fallback run."
+  ]
+}

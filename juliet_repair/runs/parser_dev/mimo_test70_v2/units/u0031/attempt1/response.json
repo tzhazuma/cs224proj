@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:48.666+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0f-241a-7f1c-819d-9bc03c8aac29"
+      },
+      "http_status": 200,
+      "latency_seconds": 2.1705089489987586,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424906-3EyRZmwI0BpUo26FASp9\",\"object\":\"chat.completion\",\"created\":1794424906,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_char_01.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_char_01\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    char * data;\\\\n    data = NULL;\\\\n\\\\n    data = new char[100];\\\\n\\\\n    strcpy(data, \\\\\\\"A String\\\\\\\");\\\\n    printLine(data);\\\\n\\\\n    delete [] data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added delete [] data to free the array allocated with new char[100], preserving the printed output and behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":324,\"completion_tokens\":164,\"total_tokens\":488,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":128,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00007372,\"allowance\":0.00007372,\"tokens\":{\"input\":196,\"output\":164,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:46.495+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_array_char_01.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_array_char_01\\n{\\n\\n\\nvoid bad()\\n{\\n    char * data;\\n    data = NULL;\\n\\n    data = new char[100];\\n\\n    strcpy(data, \\\"A String\\\");\\n    printLine(data);\\n\\n    delete [] data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added delete [] data to free the array allocated with new char[100], preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 164,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 7.37184e-05,
+    "prompt_tokens": 324
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 2.1705089489987586,
+  "response_meta": {
+    "content_chars": 491,
+    "created": 1794424906,
+    "finish_reason": "stop",
+    "id": "gen-1794424906-3EyRZmwI0BpUo26FASp9",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0031",
+  "usage": {
+    "completion_tokens": 164,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 7.372e-05,
+      "billing_source": "go",
+      "list_cost": 7.372e-05,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 196,
+        "output": 164,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 324,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 128
+    },
+    "total_tokens": 488
+  },
+  "wall_seconds": 2.1705386609974084
+}

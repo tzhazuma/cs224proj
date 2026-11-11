@@ -1,0 +1,22 @@
+--- a/CWE401_Memory_Leak__new_wchar_t_82.h
++++ b/CWE401_Memory_Leak__new_wchar_t_82.h
+@@ -10,6 +10,7 @@
+ public:
+ 
+     virtual void action(wchar_t * data) = 0;
++    virtual ~CWE401_Memory_Leak__new_wchar_t_82_base() {}
+ };
+ 
+ 
+--- a/CWE401_Memory_Leak__new_wchar_t_82_bad.cpp
++++ b/CWE401_Memory_Leak__new_wchar_t_82_bad.cpp
+@@ -6,8 +6,7 @@
+ 
+ void CWE401_Memory_Leak__new_wchar_t_82_bad::action(wchar_t * data)
+ {
+-
+-    ;
++    delete data;
+ }
+ 
+ }

@@ -1,0 +1,28 @@
+=================================================================
+==210059==ERROR: AddressSanitizer: attempting double-free on 0x73000a9e0080 in thread T0:
+    #0 0x75800bb2a3df in free ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:51
+    #1 0x6387b42555ee in CWE401_Memory_Leak__malloc_realloc_int64_t_18_bad /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0024/attempt2/eval/src/CWE401_Memory_Leak__malloc_realloc_int64_t_18.c:23
+    #2 0x6387b4255667 in main /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0024/attempt2/eval/src/__repair_probe_main.c:2
+    #3 0x75800b62a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #4 0x75800b62a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #5 0x6387b4255484 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0024/attempt2/eval/fixed+0x2484) (BuildId: 8399cb6c2e9d99172609c22d33fefb432ccc8fd4)
+
+0x73000a9e0080 is located 0 bytes inside of 800-byte region [0x73000a9e0080,0x73000a9e03a0)
+freed by thread T0 here:
+    #0 0x75800bb2a6af in realloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:81
+    #1 0x6387b42555cd in CWE401_Memory_Leak__malloc_realloc_int64_t_18_bad /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0024/attempt2/eval/src/CWE401_Memory_Leak__malloc_realloc_int64_t_18.c:18
+    #2 0x6387b4255667 in main /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0024/attempt2/eval/src/__repair_probe_main.c:2
+    #3 0x75800b62a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #4 0x75800b62a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #5 0x6387b4255484 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0024/attempt2/eval/fixed+0x2484) (BuildId: 8399cb6c2e9d99172609c22d33fefb432ccc8fd4)
+
+previously allocated by thread T0 here:
+    #0 0x75800bb2b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x6387b425555f in CWE401_Memory_Leak__malloc_realloc_int64_t_18_bad /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0024/attempt2/eval/src/CWE401_Memory_Leak__malloc_realloc_int64_t_18.c:11
+    #2 0x6387b4255667 in main /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0024/attempt2/eval/src/__repair_probe_main.c:2
+    #3 0x75800b62a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #4 0x75800b62a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #5 0x6387b4255484 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0024/attempt2/eval/fixed+0x2484) (BuildId: 8399cb6c2e9d99172609c22d33fefb432ccc8fd4)
+
+SUMMARY: AddressSanitizer: double-free /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0024/attempt2/eval/src/CWE401_Memory_Leak__malloc_realloc_int64_t_18.c:23 in CWE401_Memory_Leak__malloc_realloc_int64_t_18_bad
+==210059==ABORTING

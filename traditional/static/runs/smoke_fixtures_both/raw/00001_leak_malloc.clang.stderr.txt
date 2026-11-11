@@ -1,0 +1,25 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_malloc.c:13:9: warning: Potential leak of memory pointed to by 'buffer' [unix.Malloc]
+   13 |         return (int)buffer[0];
+      |         ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_malloc.c:21:12: note: Calling 'may_leak'
+   21 |     return may_leak(argc, argv);
+      |            ^~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_malloc.c:6:28: note: Memory is allocated
+    6 |     char *buffer = (char *)malloc(32);
+      |                            ^~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_malloc.c:7:9: note: Assuming 'buffer' is not equal to NULL
+    7 |     if (buffer == NULL) {
+      |         ^~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_malloc.c:7:5: note: Taking false branch
+    7 |     if (buffer == NULL) {
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_malloc.c:10:9: note: Assuming 'argc' is > 1
+   10 |     if (argc > 1) {
+      |         ^~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_malloc.c:10:5: note: Taking true branch
+   10 |     if (argc > 1) {
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/leak_malloc.c:13:9: note: Potential leak of memory pointed to by 'buffer'
+   13 |         return (int)buffer[0];
+      |         ^
+1 warning generated.

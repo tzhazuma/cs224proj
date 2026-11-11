@@ -1,0 +1,161 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__new_char_01.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 168,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 9.170000000000002e-05,
+        "prompt_tokens": 319
+      },
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": false,
+        "compile_pass": true,
+        "leak_removed": false,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": true,
+          "returncode": 23,
+          "summary": "SUMMARY: AddressSanitizer: alloc-dealloc-mismatch /mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_v2/units/u0042/attempt1/eval/src/CWE401_Memory_Leak__new_char_01.cpp:19 in CWE401_Memory_Leak__new_char_01::bad()",
+          "timed_out": false,
+          "wall_seconds": 0.103
+        },
+        "strict_evaluable": true,
+        "strict_pass": false
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "Added delete [] data and set data to NULL after use to free the allocated memory, preserving the printed output and behavior.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 168,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 9.17e-05,
+          "billing_source": "go",
+          "list_cost": 9.17e-05,
+          "tokens": {
+            "cache_read": 0,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 319,
+            "output": 168,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 319,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 487
+      },
+      "usage_chars": 505
+    },
+    {
+      "attempt": 2,
+      "changed_paths": [
+        "CWE401_Memory_Leak__new_char_01.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 128,
+        "completion_tokens": 183,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.0001116584,
+        "prompt_tokens": 557
+      },
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.016
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "Changed allocation to new char[1] so that delete [] matches the allocation form, avoiding the mismatched-new/delete ASan error while still freeing the memory and printing the same output.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 183,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.00011166,
+          "billing_source": "go",
+          "list_cost": 0.00011166,
+          "tokens": {
+            "cache_read": 128,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 429,
+            "output": 183,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 557,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 128
+        },
+        "total_tokens": 740
+      },
+      "usage_chars": 570
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 128,
+  "changed_paths": [
+    "CWE401_Memory_Leak__new_char_01.cpp"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 351,
+  "cost_complete": true,
+  "cost_usd_sum": 0.00020336,
+  "explanation_present": true,
+  "final_attempt": 2,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__new_char_01",
+  "language": "cpp",
+  "last_attempt": 2,
+  "leak_removed": true,
+  "model": "mimo-v2.6-flash",
+  "model_alias": "mimo",
+  "prompt_tokens_sum": 876,
+  "reevaluated_at_utc": "2026-11-11T19:27:13Z",
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "selection_reason": "latest_observable_pass",
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__new_char_01__bad",
+  "unit_key": "u0042"
+}

@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:22.549+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-ac69-7de8-ab00-6b2e7a5f12a6"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.695363131992053,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-6178213ab1814167b4df8332c6fa5d11\",\"object\":\"chat.completion\",\"created\":1794424876,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_wchar_t_82_bad.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include \\\\\\\"CWE401_Memory_Leak__new_wchar_t_82.h\\\\\\\"\\\\n\\\\nnamespace CWE401_Memory_Leak__new_wchar_t_82\\\\n{\\\\n\\\\nvoid CWE401_Memory_Leak__new_wchar_t_82_bad::action(wchar_t * data)\\\\n{\\\\n\\\\n    delete data;\\\\n}\\\\n\\\\n}\\\\n\\\"}, {\\\"path\\\": \\\"CWE401_Memory_Leak__new_wchar_t_82a.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include \\\\\\\"CWE401_Memory_Leak__new_wchar_t_82.h\\\\\\\"\\\\n\\\\nnamespace CWE401_Memory_Leak__new_wchar_t_82\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    wchar_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = new wchar_t;\\\\n\\\\n    *data = L'A';\\\\n    printHexCharLine((char)*data);\\\\n    CWE401_Memory_Leak__new_wchar_t_82_base* baseObject = new CWE401_Memory_Leak__new_wchar_t_82_bad;\\\\n    baseObject->action(data);\\\\n    delete baseObject;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The leaked wchar_t allocation is now freed in the bad class's action() via delete, preserving output and behavior while eliminating the memory leak.\\\"}\"}}],\"usage\":{\"prompt_tokens\":652,\"completion_tokens\":354,\"total_tokens\":1006,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00029138,\"allowance\":0.00017483,\"tokens\":{\"input\":524,\"output\":354,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:15.853+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_wchar_t_82_bad.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include \\\"CWE401_Memory_Leak__new_wchar_t_82.h\\\"\\n\\nnamespace CWE401_Memory_Leak__new_wchar_t_82\\n{\\n\\nvoid CWE401_Memory_Leak__new_wchar_t_82_bad::action(wchar_t * data)\\n{\\n\\n    delete data;\\n}\\n\\n}\\n\"}, {\"path\": \"CWE401_Memory_Leak__new_wchar_t_82a.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include \\\"CWE401_Memory_Leak__new_wchar_t_82.h\\\"\\n\\nnamespace CWE401_Memory_Leak__new_wchar_t_82\\n{\\n\\n\\nvoid bad()\\n{\\n    wchar_t * data;\\n    data = NULL;\\n\\n    data = new wchar_t;\\n\\n    *data = L'A';\\n    printHexCharLine((char)*data);\\n    CWE401_Memory_Leak__new_wchar_t_82_base* baseObject = new CWE401_Memory_Leak__new_wchar_t_82_bad;\\n    baseObject->action(data);\\n    delete baseObject;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The leaked wchar_t allocation is now freed in the bad class's action() via delete, preserving output and behavior while eliminating the memory leak.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 354,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000582768,
+    "prompt_tokens": 652
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.695363131992053,
+  "response_meta": {
+    "content_chars": 991,
+    "created": 1794424876,
+    "finish_reason": "stop",
+    "id": "chatcmpl-6178213ab1814167b4df8332c6fa5d11",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0054",
+  "usage": {
+    "completion_tokens": 354,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00017483,
+      "billing_source": "go",
+      "list_cost": 0.00029138,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 524,
+        "output": 354,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 652,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 1006
+  },
+  "wall_seconds": 6.695396191003965
+}

@@ -1,0 +1,68 @@
+{
+  "baseline_behavior_lines": [
+    "0",
+    "0"
+  ],
+  "behavior_matches_good_subsequence": true,
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "compile": {
+    "command": [
+      "g++",
+      "-std=gnu++11",
+      "-O0",
+      "-g",
+      "-fsanitize=address",
+      "-fno-omit-frame-pointer",
+      "-w",
+      "-DOMITGOOD",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_final/units/u0030/attempt1/eval/src",
+      "-I",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+      "-o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_final/units/u0030/attempt1/eval/fixed",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_final/units/u0030/attempt1/eval/src/CWE401_Memory_Leak__new_TwoIntsClass_68a.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_final/units/u0030/attempt1/eval/src/CWE401_Memory_Leak__new_TwoIntsClass_68b.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/runs/mimo_test70_final/units/u0030/attempt1/eval/src/__repair_probe_main.cpp",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/io.o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet_repair/build/support/std_thread.o",
+      "-lpthread",
+      "-lm"
+    ],
+    "ok": true,
+    "returncode": 0,
+    "source_files": [
+      "CWE401_Memory_Leak__new_TwoIntsClass_68a.cpp",
+      "CWE401_Memory_Leak__new_TwoIntsClass_68b.cpp",
+      "__repair_probe_main.cpp"
+    ],
+    "stderr_tail": "",
+    "stdout_tail": "",
+    "timed_out": false
+  },
+  "compile_pass": true,
+  "fixed_behavior_lines": [
+    "0",
+    "0"
+  ],
+  "fixed_stdout_sha256": "1b65b6b25638d3319fe371d1443f075eb1ba0aba97f1050d620c88aad483bad2",
+  "good_behavior_lines": [
+    "0",
+    "0",
+    "0",
+    "0"
+  ],
+  "leak_removed": true,
+  "parsed_explanation": "The allocated TwoIntsClass object was never freed in badSink(). Added a delete of the data pointer to release the memory while preserving the printed output and entry points.",
+  "run": {
+    "leak_detected": false,
+    "other_asan_error": false,
+    "returncode": 0,
+    "summary": null,
+    "timed_out": false,
+    "wall_seconds": 0.02
+  },
+  "strict_evaluable": false,
+  "strict_pass": false
+}

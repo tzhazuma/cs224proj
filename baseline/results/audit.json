@@ -1,0 +1,2053 @@
+{
+  "schema_version": 1,
+  "kind": "data_audit",
+  "generated_at_utc": "2026-11-11T07:01:53Z",
+  "provenance": {
+    "command": "/usr/bin/python3 baseline/audit_and_baselines.py",
+    "argv": [
+      "baseline/audit_and_baselines.py"
+    ],
+    "cwd": "/mnt/c/Users/tzh03/Downloads/zy",
+    "python_version": "3.14.8",
+    "python_executable": "/usr/bin/python3",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+    "generated_at_utc": "2026-11-11T07:01:53Z",
+    "network_access": false,
+    "llm_calls": 0,
+    "api_calls": 0,
+    "random_seed": 42
+  },
+  "inputs": {
+    "independent_200.json": {
+      "path": "datasets/independent_200.json",
+      "exists": true,
+      "bytes": 1106950,
+      "sha256": "055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d"
+    },
+    "vulnerable_fixed_200_pairs.json": {
+      "path": "datasets/vulnerable_fixed_200_pairs.json",
+      "exists": true,
+      "bytes": 2071482,
+      "sha256": "7028b98d6f2c13b960bd08dd2e737e2ba61732b89dba03e3f173fe44c27214d5"
+    },
+    "SecVulEval.xlsx": {
+      "path": "SecVulEval.xlsx",
+      "exists": true,
+      "bytes": 18852781,
+      "sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11"
+    },
+    "script": {
+      "path": "baseline/audit_and_baselines.py",
+      "exists": true,
+      "bytes": 70994,
+      "sha256": "60122a24d2254c2cc324fdeaec629342c437f9569e09edf03dc1aa4373ad1ffd"
+    }
+  },
+  "datasets": {
+    "independent": {
+      "record_count": 200,
+      "label_counts": {
+        "vulnerable": 160,
+        "non_vulnerable": 40
+      },
+      "prevalence_vulnerable": 0.8,
+      "metadata_claims": {
+        "schema_version": 1,
+        "dataset_type": "independent_functions",
+        "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+        "seed": 42,
+        "sample_count": 200,
+        "vulnerable_count": 160,
+        "non_vulnerable_count": 40
+      },
+      "fields": {
+        "record_count": 200,
+        "expected_field_count": 16,
+        "all_expected_fields_present": true,
+        "records_with_missing_fields": [],
+        "records_with_extra_fields": [],
+        "extra_fields": {},
+        "fields": {
+          "idx": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "int": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "project": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "project_url": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "filepath": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "commit_id": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "commit_message": {
+            "present": 200,
+            "missing": 0,
+            "null": 1,
+            "empty": 0,
+            "types": {
+              "NoneType": 1,
+              "str": 199
+            },
+            "null_record_indices": [
+              19871
+            ],
+            "empty_record_indices": []
+          },
+          "is_vulnerable": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "bool": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "hash": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "func_name": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "func_body": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "changed_lines": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 10,
+            "types": {
+              "list": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": [
+              1830,
+              2293,
+              2162,
+              2101,
+              2916,
+              155,
+              2548,
+              2852,
+              1938,
+              3080
+            ]
+          },
+          "changed_statements": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 12,
+            "types": {
+              "list": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": [
+              1830,
+              2293,
+              25211,
+              2162,
+              2101,
+              22472,
+              2916,
+              155,
+              2548,
+              2852,
+              1938,
+              3080
+            ]
+          },
+          "cve_list": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "list": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "cwe_list": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "list": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "fixed_func_idx": {
+            "present": 200,
+            "missing": 0,
+            "null": 57,
+            "empty": 0,
+            "types": {
+              "NoneType": 57,
+              "int": 143
+            },
+            "null_record_indices": [
+              22421,
+              22611,
+              20380,
+              15371,
+              19088,
+              5978,
+              17218,
+              10248,
+              1915,
+              18662,
+              8632,
+              17182,
+              13529,
+              17502,
+              25211,
+              9192,
+              10365,
+              21434,
+              10399,
+              15307,
+              13518,
+              19464,
+              5756,
+              11231,
+              7415,
+              24026,
+              18900,
+              6158,
+              9775,
+              7057,
+              6812,
+              15937,
+              22472,
+              23914,
+              17743,
+              9991,
+              4532,
+              17658,
+              10457,
+              210,
+              6620,
+              5133,
+              4545,
+              17507,
+              8265,
+              9495,
+              5541,
+              21940,
+              24485,
+              9892,
+              8786,
+              13765,
+              23986,
+              9882,
+              15821,
+              6037,
+              8047
+            ],
+            "empty_record_indices": []
+          },
+          "context": {
+            "present": 200,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 200
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          }
+        }
+      },
+      "projects": {
+        "distinct_projects": 80,
+        "top": [
+          {
+            "project": "linux",
+            "count": 52,
+            "percent": 26.0
+          },
+          {
+            "project": "Chrome",
+            "count": 31,
+            "percent": 15.5
+          },
+          {
+            "project": "tensorflow",
+            "count": 7,
+            "percent": 3.5
+          },
+          {
+            "project": "Android",
+            "count": 6,
+            "percent": 3.0
+          },
+          {
+            "project": "vim",
+            "count": 5,
+            "percent": 2.5
+          },
+          {
+            "project": "php-src",
+            "count": 5,
+            "percent": 2.5
+          },
+          {
+            "project": "pjproject",
+            "count": 4,
+            "percent": 2.0
+          },
+          {
+            "project": "ImageMagick",
+            "count": 4,
+            "percent": 2.0
+          },
+          {
+            "project": "OpenSC",
+            "count": 3,
+            "percent": 1.5
+          },
+          {
+            "project": "gpac",
+            "count": 3,
+            "percent": 1.5
+          }
+        ],
+        "top_two_share_percent": 41.5
+      }
+    },
+    "pairs": {
+      "pair_count": 200,
+      "function_count": 400,
+      "label_counts": {
+        "vulnerable": 200,
+        "non_vulnerable": 200
+      },
+      "metadata_claims": {
+        "schema_version": 1,
+        "dataset_type": "vulnerable_fixed_pairs",
+        "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+        "seed": 42,
+        "pair_count": 200,
+        "function_count": 400,
+        "eligible_pair_count": 10004
+      },
+      "fields": {
+        "record_count": 400,
+        "expected_field_count": 16,
+        "all_expected_fields_present": true,
+        "records_with_missing_fields": [],
+        "records_with_extra_fields": [],
+        "extra_fields": {},
+        "fields": {
+          "idx": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "int": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "project": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "project_url": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "filepath": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "commit_id": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "commit_message": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "is_vulnerable": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "bool": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "hash": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "func_name": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "func_body": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "changed_lines": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 11,
+            "types": {
+              "list": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": [
+              1613,
+              2508,
+              1085,
+              2960,
+              1002,
+              2460,
+              758,
+              803,
+              875,
+              3239,
+              2948
+            ]
+          },
+          "changed_statements": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 27,
+            "types": {
+              "list": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": [
+              1613,
+              23247,
+              23259,
+              25163,
+              24007,
+              24012,
+              2508,
+              1085,
+              2960,
+              23812,
+              1002,
+              21901,
+              24078,
+              2460,
+              20063,
+              758,
+              24273,
+              24281,
+              23217,
+              20566,
+              803,
+              875,
+              3239,
+              20957,
+              2948,
+              24636,
+              24699
+            ]
+          },
+          "cve_list": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "list": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "cwe_list": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "list": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "fixed_func_idx": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "int": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          },
+          "context": {
+            "present": 400,
+            "missing": 0,
+            "null": 0,
+            "empty": 0,
+            "types": {
+              "str": 400
+            },
+            "null_record_indices": [],
+            "empty_record_indices": []
+          }
+        }
+      },
+      "pair_structure_facts": {
+        "fixed_func_idx_equals_fixed_idx": 200,
+        "same_project_commit_filepath_func_name": 200,
+        "labels_true_false": 200,
+        "different_function_bodies": 200,
+        "identical_cwe_list": 200,
+        "identical_cve_list": 200,
+        "identical_context": 200,
+        "identical_commit_message": 200,
+        "identical_changed_lines": 0,
+        "identical_changed_statements": 4
+      },
+      "projects": {
+        "distinct_projects": 80,
+        "top": [
+          {
+            "project": "linux",
+            "count": 53,
+            "percent": 26.5
+          },
+          {
+            "project": "Chrome",
+            "count": 25,
+            "percent": 12.5
+          },
+          {
+            "project": "radare2",
+            "count": 9,
+            "percent": 4.5
+          },
+          {
+            "project": "Android",
+            "count": 9,
+            "percent": 4.5
+          },
+          {
+            "project": "tcpdump",
+            "count": 7,
+            "percent": 3.5
+          },
+          {
+            "project": "FreeRDP",
+            "count": 5,
+            "percent": 2.5
+          },
+          {
+            "project": "tensorflow",
+            "count": 5,
+            "percent": 2.5
+          },
+          {
+            "project": "ImageMagick",
+            "count": 5,
+            "percent": 2.5
+          },
+          {
+            "project": "FFmpeg",
+            "count": 3,
+            "percent": 1.5
+          },
+          {
+            "project": "389-ds-base",
+            "count": 2,
+            "percent": 1.0
+          }
+        ],
+        "top_two_share_percent": 39.0
+      }
+    },
+    "combined": {
+      "unique_function_records": 600,
+      "unique_function_hashes": 600,
+      "unique_function_bodies": 600,
+      "total_records_with_pair_members": 600
+    }
+  },
+  "integrity": {
+    "total": 23,
+    "passed": 23,
+    "failed": 0,
+    "not_checked": 0,
+    "checks": [
+      {
+        "id": "independent.metadata.sample_count",
+        "passed": true,
+        "detail": "claimed=200 observed=200"
+      },
+      {
+        "id": "independent.metadata.vulnerable_count",
+        "passed": true,
+        "detail": "claimed=160 observed=160"
+      },
+      {
+        "id": "independent.metadata.non_vulnerable_count",
+        "passed": true,
+        "detail": "claimed=40 observed=40"
+      },
+      {
+        "id": "independent.idx_unique",
+        "passed": true,
+        "detail": "records=200 unique=200"
+      },
+      {
+        "id": "independent.labels_boolean",
+        "passed": true,
+        "detail": "all is_vulnerable values are JSON booleans"
+      },
+      {
+        "id": "independent.fields_complete",
+        "passed": true,
+        "detail": "missing_field_records=0"
+      },
+      {
+        "id": "independent.fixed_targets_outside_subset",
+        "passed": true,
+        "detail": "targets=143 overlap_with_subset=0"
+      },
+      {
+        "id": "pairs.metadata.pair_count",
+        "passed": true,
+        "detail": "claimed=200 observed=200"
+      },
+      {
+        "id": "pairs.metadata.function_count",
+        "passed": true,
+        "detail": "claimed=400 observed=400"
+      },
+      {
+        "id": "pairs.pair_id_unique",
+        "passed": true,
+        "detail": "pairs=200 unique=200"
+      },
+      {
+        "id": "pairs.pair_id_matches_indices",
+        "passed": true,
+        "detail": "all pair_id values equal '<vulnerable.idx>:<fixed.idx>'"
+      },
+      {
+        "id": "pairs.fixed_func_idx_link",
+        "passed": true,
+        "detail": "all vulnerable.fixed_func_idx point to the paired fixed.idx"
+      },
+      {
+        "id": "pairs.identity_fields_equal",
+        "passed": true,
+        "detail": "project, commit_id, filepath and func_name match within every pair"
+      },
+      {
+        "id": "pairs.labels_opposite",
+        "passed": true,
+        "detail": "every pair is (vulnerable=true, fixed=false)"
+      },
+      {
+        "id": "pairs.bodies_differ",
+        "passed": true,
+        "detail": "all paired function bodies differ"
+      },
+      {
+        "id": "pairs.idx_unique",
+        "passed": true,
+        "detail": "records=400 unique=400"
+      },
+      {
+        "id": "pairs.fields_complete",
+        "passed": true,
+        "detail": "missing_field_records=0"
+      },
+      {
+        "id": "cross.no_shared_idx",
+        "passed": true,
+        "detail": "shared_source_indices=0"
+      },
+      {
+        "id": "cross.no_shared_project_commit",
+        "passed": true,
+        "detail": "shared_groups=0"
+      },
+      {
+        "id": "cross.function_hash_unique",
+        "passed": true,
+        "detail": "records=600 unique=600"
+      },
+      {
+        "id": "cross.function_body_unique",
+        "passed": true,
+        "detail": "records=600 unique=600"
+      },
+      {
+        "id": "source.workbook_sha256_matches_metadata",
+        "passed": true,
+        "detail": "claimed=3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11 observed=3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11"
+      },
+      {
+        "id": "metadata.consistent_between_datasets",
+        "passed": true,
+        "detail": "seed, source hash, sheet, row counts and exclusions match across both JSON files"
+      }
+    ]
+  },
+  "field_completeness_by_group": {
+    "independent_all": {
+      "record_count": 200,
+      "commit_message_null": 1,
+      "fixed_func_idx_null": 57,
+      "changed_lines_empty": 10,
+      "changed_statements_empty": 12,
+      "context_missing_or_empty": 0
+    },
+    "independent_vulnerable": {
+      "record_count": 160,
+      "commit_message_null": 1,
+      "fixed_func_idx_null": 17,
+      "changed_lines_empty": 10,
+      "changed_statements_empty": 11,
+      "context_missing_or_empty": 0
+    },
+    "independent_non_vulnerable": {
+      "record_count": 40,
+      "commit_message_null": 0,
+      "fixed_func_idx_null": 40,
+      "changed_lines_empty": 0,
+      "changed_statements_empty": 1,
+      "context_missing_or_empty": 0
+    },
+    "paired_vulnerable": {
+      "record_count": 200,
+      "commit_message_null": 0,
+      "fixed_func_idx_null": 0,
+      "changed_lines_empty": 10,
+      "changed_statements_empty": 17,
+      "context_missing_or_empty": 0
+    },
+    "paired_fixed": {
+      "record_count": 200,
+      "commit_message_null": 0,
+      "fixed_func_idx_null": 0,
+      "changed_lines_empty": 1,
+      "changed_statements_empty": 10,
+      "context_missing_or_empty": 0
+    }
+  },
+  "field_facts_by_group": {
+    "independent_all": {
+      "vulnerable": {
+        "count": 160,
+        "fixed_func_idx_non_null": 143,
+        "cwe_list_non_empty": 160,
+        "cve_list_non_empty": 160,
+        "changed_lines_empty": 10,
+        "changed_statements_empty": 11
+      },
+      "non_vulnerable": {
+        "count": 40,
+        "fixed_func_idx_non_null": 0,
+        "cwe_list_non_empty": 40,
+        "cve_list_non_empty": 40,
+        "changed_lines_empty": 0,
+        "changed_statements_empty": 1
+      }
+    },
+    "independent_vulnerable": {
+      "vulnerable": {
+        "count": 160,
+        "fixed_func_idx_non_null": 143,
+        "cwe_list_non_empty": 160,
+        "cve_list_non_empty": 160,
+        "changed_lines_empty": 10,
+        "changed_statements_empty": 11
+      },
+      "non_vulnerable": {
+        "count": 0,
+        "fixed_func_idx_non_null": 0,
+        "cwe_list_non_empty": 0,
+        "cve_list_non_empty": 0,
+        "changed_lines_empty": 0,
+        "changed_statements_empty": 0
+      }
+    },
+    "independent_non_vulnerable": {
+      "vulnerable": {
+        "count": 0,
+        "fixed_func_idx_non_null": 0,
+        "cwe_list_non_empty": 0,
+        "cve_list_non_empty": 0,
+        "changed_lines_empty": 0,
+        "changed_statements_empty": 0
+      },
+      "non_vulnerable": {
+        "count": 40,
+        "fixed_func_idx_non_null": 0,
+        "cwe_list_non_empty": 40,
+        "cve_list_non_empty": 40,
+        "changed_lines_empty": 0,
+        "changed_statements_empty": 1
+      }
+    },
+    "paired_vulnerable": {
+      "vulnerable": {
+        "count": 200,
+        "fixed_func_idx_non_null": 200,
+        "cwe_list_non_empty": 200,
+        "cve_list_non_empty": 200,
+        "changed_lines_empty": 10,
+        "changed_statements_empty": 17
+      },
+      "non_vulnerable": {
+        "count": 0,
+        "fixed_func_idx_non_null": 0,
+        "cwe_list_non_empty": 0,
+        "cve_list_non_empty": 0,
+        "changed_lines_empty": 0,
+        "changed_statements_empty": 0
+      }
+    },
+    "paired_fixed": {
+      "vulnerable": {
+        "count": 0,
+        "fixed_func_idx_non_null": 0,
+        "cwe_list_non_empty": 0,
+        "cve_list_non_empty": 0,
+        "changed_lines_empty": 0,
+        "changed_statements_empty": 0
+      },
+      "non_vulnerable": {
+        "count": 200,
+        "fixed_func_idx_non_null": 200,
+        "cwe_list_non_empty": 200,
+        "cve_list_non_empty": 200,
+        "changed_lines_empty": 1,
+        "changed_statements_empty": 10
+      }
+    }
+  },
+  "context_audit": {
+    "summary": {
+      "record_count": 600,
+      "length": {
+        "count": 600,
+        "min": 159,
+        "p50": 299.0,
+        "p90": 432.5,
+        "p95": 504.65,
+        "p99": 762.0,
+        "max": 1286,
+        "mean": 325.47
+      },
+      "keys": [
+        "Execution Environment",
+        "Explanation",
+        "External Function",
+        "Function Argument",
+        "Globals",
+        "Type Execution Declaration"
+      ],
+      "key_presence": {
+        "Execution Environment": {
+          "present": 600,
+          "null_or_none": 40
+        },
+        "Explanation": {
+          "present": 600,
+          "null_or_none": 600
+        },
+        "External Function": {
+          "present": 600,
+          "null_or_none": 40
+        },
+        "Function Argument": {
+          "present": 600,
+          "null_or_none": 40
+        },
+        "Globals": {
+          "present": 600,
+          "null_or_none": 40
+        },
+        "Type Execution Declaration": {
+          "present": 600,
+          "null_or_none": 40
+        }
+      },
+      "all_six_keys_null": 40,
+      "python_array_repr": 560,
+      "json_object_with_double_quotes": 40
+    },
+    "by_group": {
+      "independent_all": {
+        "all_six_keys_null": 40,
+        "python_array_repr": 160,
+        "unique_context_strings": 158,
+        "explanation_non_null": 0
+      },
+      "independent_vulnerable": {
+        "all_six_keys_null": 0,
+        "python_array_repr": 160,
+        "unique_context_strings": 157,
+        "explanation_non_null": 0
+      },
+      "independent_non_vulnerable": {
+        "all_six_keys_null": 40,
+        "python_array_repr": 0,
+        "unique_context_strings": 1,
+        "explanation_non_null": 0
+      },
+      "paired_vulnerable": {
+        "all_six_keys_null": 0,
+        "python_array_repr": 200,
+        "unique_context_strings": 196,
+        "explanation_non_null": 0
+      },
+      "paired_fixed": {
+        "all_six_keys_null": 0,
+        "python_array_repr": 200,
+        "unique_context_strings": 196,
+        "explanation_non_null": 0
+      }
+    },
+    "note": "context 以原始工作簿字符串保存，未执行其中的表达式。统计只检查键、null/None 和 array(...) 形式，不解析或执行内容。"
+  },
+  "code_length_audit": {
+    "units": "func_body Unicode characters and newline-separated lines; UTF-8 bytes also recorded",
+    "estimated_tokens_note": "estimated_tokens_chars_div4 = characters / 4 is a coarse heuristic, not a tokenizer measurement.",
+    "groups": {
+      "independent_all": {
+        "n": 200,
+        "func_body_chars": {
+          "count": 200,
+          "min": 57,
+          "p50": 1345.5,
+          "p90": 5682.7,
+          "p95": 8866.1,
+          "p99": 32767.0,
+          "max": 32767,
+          "mean": 2878.18
+        },
+        "func_body_lines": {
+          "count": 200,
+          "min": 3,
+          "p50": 46.0,
+          "p90": 180.7,
+          "p95": 266.0,
+          "p99": 978.19,
+          "max": 1172,
+          "mean": 90.54
+        },
+        "func_body_utf8_bytes": {
+          "count": 200,
+          "min": 57,
+          "p50": 1345.5,
+          "p90": 5682.7,
+          "p95": 8866.1,
+          "p99": 32767.0,
+          "max": 32767,
+          "mean": 2878.18
+        },
+        "estimated_tokens_chars_div4": {
+          "count": 200,
+          "min": 14.25,
+          "p50": 336.38,
+          "p90": 1420.67,
+          "p95": 2216.52,
+          "p99": 8191.75,
+          "max": 8191.75,
+          "mean": 719.54
+        },
+        "char_threshold_exceedances": {
+          "2000": {
+            "count": 73,
+            "percent": 36.5
+          },
+          "4000": {
+            "count": 36,
+            "percent": 18.0
+          },
+          "8000": {
+            "count": 14,
+            "percent": 7.0
+          },
+          "16000": {
+            "count": 7,
+            "percent": 3.5
+          },
+          "32000": {
+            "count": 3,
+            "percent": 1.5
+          },
+          "64000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "128000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "line_threshold_exceedances": {
+          "100": {
+            "count": 46,
+            "percent": 23.0
+          },
+          "200": {
+            "count": 16,
+            "percent": 8.0
+          },
+          "500": {
+            "count": 6,
+            "percent": 3.0
+          },
+          "1000": {
+            "count": 1,
+            "percent": 0.5
+          },
+          "2000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "estimated_token_threshold_exceedances": {
+          "1000": {
+            "count": 36,
+            "percent": 18.0
+          },
+          "2000": {
+            "count": 14,
+            "percent": 7.0
+          },
+          "4000": {
+            "count": 7,
+            "percent": 3.5
+          },
+          "8000": {
+            "count": 3,
+            "percent": 1.5
+          },
+          "16000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "32000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "records_at_excel_cell_limit": 3,
+        "max_record": {
+          "idx": 9991,
+          "chars": 32767,
+          "lines": 1172
+        }
+      },
+      "independent_vulnerable": {
+        "n": 160,
+        "func_body_chars": {
+          "count": 160,
+          "min": 95,
+          "p50": 1329.0,
+          "p90": 5460.8,
+          "p95": 8866.1,
+          "p99": 22815.73,
+          "max": 32767,
+          "mean": 2642.99
+        },
+        "func_body_lines": {
+          "count": 160,
+          "min": 3,
+          "p50": 45.5,
+          "p90": 175.2,
+          "p95": 246.95,
+          "p99": 766.78,
+          "max": 997,
+          "mean": 82.71
+        },
+        "func_body_utf8_bytes": {
+          "count": 160,
+          "min": 95,
+          "p50": 1329.0,
+          "p90": 5460.8,
+          "p95": 8866.1,
+          "p99": 22815.73,
+          "max": 32767,
+          "mean": 2642.99
+        },
+        "estimated_tokens_chars_div4": {
+          "count": 160,
+          "min": 23.75,
+          "p50": 332.25,
+          "p90": 1365.2,
+          "p95": 2216.52,
+          "p99": 5703.93,
+          "max": 8191.75,
+          "mean": 660.75
+        },
+        "char_threshold_exceedances": {
+          "2000": {
+            "count": 54,
+            "percent": 33.75
+          },
+          "4000": {
+            "count": 25,
+            "percent": 15.62
+          },
+          "8000": {
+            "count": 11,
+            "percent": 6.88
+          },
+          "16000": {
+            "count": 5,
+            "percent": 3.12
+          },
+          "32000": {
+            "count": 1,
+            "percent": 0.62
+          },
+          "64000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "128000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "line_threshold_exceedances": {
+          "100": {
+            "count": 32,
+            "percent": 20.0
+          },
+          "200": {
+            "count": 11,
+            "percent": 6.88
+          },
+          "500": {
+            "count": 4,
+            "percent": 2.5
+          },
+          "1000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "2000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "estimated_token_threshold_exceedances": {
+          "1000": {
+            "count": 25,
+            "percent": 15.62
+          },
+          "2000": {
+            "count": 11,
+            "percent": 6.88
+          },
+          "4000": {
+            "count": 5,
+            "percent": 3.12
+          },
+          "8000": {
+            "count": 1,
+            "percent": 0.62
+          },
+          "16000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "32000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "records_at_excel_cell_limit": 1,
+        "max_record": {
+          "idx": 7018,
+          "chars": 32767,
+          "lines": 978
+        }
+      },
+      "independent_non_vulnerable": {
+        "n": 40,
+        "func_body_chars": {
+          "count": 40,
+          "min": 57,
+          "p50": 1791.0,
+          "p90": 6419.2,
+          "p95": 9249.75,
+          "p99": 32767.0,
+          "max": 32767,
+          "mean": 3818.9
+        },
+        "func_body_lines": {
+          "count": 40,
+          "min": 3,
+          "p50": 62.5,
+          "p90": 213.8,
+          "p95": 323.0,
+          "p99": 996.5,
+          "max": 1172,
+          "mean": 121.88
+        },
+        "func_body_utf8_bytes": {
+          "count": 40,
+          "min": 57,
+          "p50": 1791.0,
+          "p90": 6419.2,
+          "p95": 9249.75,
+          "p99": 32767.0,
+          "max": 32767,
+          "mean": 3818.9
+        },
+        "estimated_tokens_chars_div4": {
+          "count": 40,
+          "min": 14.25,
+          "p50": 447.75,
+          "p90": 1604.8,
+          "p95": 2312.44,
+          "p99": 8191.75,
+          "max": 8191.75,
+          "mean": 954.73
+        },
+        "char_threshold_exceedances": {
+          "2000": {
+            "count": 19,
+            "percent": 47.5
+          },
+          "4000": {
+            "count": 11,
+            "percent": 27.5
+          },
+          "8000": {
+            "count": 3,
+            "percent": 7.5
+          },
+          "16000": {
+            "count": 2,
+            "percent": 5.0
+          },
+          "32000": {
+            "count": 2,
+            "percent": 5.0
+          },
+          "64000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "128000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "line_threshold_exceedances": {
+          "100": {
+            "count": 14,
+            "percent": 35.0
+          },
+          "200": {
+            "count": 5,
+            "percent": 12.5
+          },
+          "500": {
+            "count": 2,
+            "percent": 5.0
+          },
+          "1000": {
+            "count": 1,
+            "percent": 2.5
+          },
+          "2000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "estimated_token_threshold_exceedances": {
+          "1000": {
+            "count": 11,
+            "percent": 27.5
+          },
+          "2000": {
+            "count": 3,
+            "percent": 7.5
+          },
+          "4000": {
+            "count": 2,
+            "percent": 5.0
+          },
+          "8000": {
+            "count": 2,
+            "percent": 5.0
+          },
+          "16000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "32000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "records_at_excel_cell_limit": 2,
+        "max_record": {
+          "idx": 9991,
+          "chars": 32767,
+          "lines": 1172
+        }
+      },
+      "paired_vulnerable": {
+        "n": 200,
+        "func_body_chars": {
+          "count": 200,
+          "min": 83,
+          "p50": 1273.0,
+          "p90": 5220.6,
+          "p95": 7535.85,
+          "p99": 16951.03,
+          "max": 32767,
+          "mean": 2342.76
+        },
+        "func_body_lines": {
+          "count": 200,
+          "min": 4,
+          "p50": 43.5,
+          "p90": 169.2,
+          "p95": 266.4,
+          "p99": 626.43,
+          "max": 1011,
+          "mean": 81.03
+        },
+        "func_body_utf8_bytes": {
+          "count": 200,
+          "min": 83,
+          "p50": 1273.0,
+          "p90": 5220.6,
+          "p95": 7535.85,
+          "p99": 16951.03,
+          "max": 32767,
+          "mean": 2342.76
+        },
+        "estimated_tokens_chars_div4": {
+          "count": 200,
+          "min": 20.75,
+          "p50": 318.25,
+          "p90": 1305.15,
+          "p95": 1883.96,
+          "p99": 4237.76,
+          "max": 8191.75,
+          "mean": 585.69
+        },
+        "char_threshold_exceedances": {
+          "2000": {
+            "count": 60,
+            "percent": 30.0
+          },
+          "4000": {
+            "count": 29,
+            "percent": 14.5
+          },
+          "8000": {
+            "count": 9,
+            "percent": 4.5
+          },
+          "16000": {
+            "count": 4,
+            "percent": 2.0
+          },
+          "32000": {
+            "count": 1,
+            "percent": 0.5
+          },
+          "64000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "128000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "line_threshold_exceedances": {
+          "100": {
+            "count": 40,
+            "percent": 20.0
+          },
+          "200": {
+            "count": 15,
+            "percent": 7.5
+          },
+          "500": {
+            "count": 5,
+            "percent": 2.5
+          },
+          "1000": {
+            "count": 1,
+            "percent": 0.5
+          },
+          "2000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "estimated_token_threshold_exceedances": {
+          "1000": {
+            "count": 29,
+            "percent": 14.5
+          },
+          "2000": {
+            "count": 9,
+            "percent": 4.5
+          },
+          "4000": {
+            "count": 4,
+            "percent": 2.0
+          },
+          "8000": {
+            "count": 1,
+            "percent": 0.5
+          },
+          "16000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "32000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "records_at_excel_cell_limit": 1,
+        "max_record": {
+          "idx": 8675,
+          "chars": 32767,
+          "lines": 966
+        }
+      },
+      "paired_fixed": {
+        "n": 200,
+        "func_body_chars": {
+          "count": 200,
+          "min": 91,
+          "p50": 1294.5,
+          "p90": 4729.0,
+          "p95": 8153.95,
+          "p99": 17016.06,
+          "max": 32767,
+          "mean": 2382.07
+        },
+        "func_body_lines": {
+          "count": 200,
+          "min": 4,
+          "p50": 43.5,
+          "p90": 174.2,
+          "p95": 266.8,
+          "p99": 626.43,
+          "max": 1015,
+          "mean": 82.63
+        },
+        "func_body_utf8_bytes": {
+          "count": 200,
+          "min": 91,
+          "p50": 1294.5,
+          "p90": 4729.0,
+          "p95": 8153.95,
+          "p99": 17016.06,
+          "max": 32767,
+          "mean": 2382.07
+        },
+        "estimated_tokens_chars_div4": {
+          "count": 200,
+          "min": 22.75,
+          "p50": 323.62,
+          "p90": 1182.25,
+          "p95": 2038.49,
+          "p99": 4254.01,
+          "max": 8191.75,
+          "mean": 595.52
+        },
+        "char_threshold_exceedances": {
+          "2000": {
+            "count": 61,
+            "percent": 30.5
+          },
+          "4000": {
+            "count": 28,
+            "percent": 14.0
+          },
+          "8000": {
+            "count": 11,
+            "percent": 5.5
+          },
+          "16000": {
+            "count": 4,
+            "percent": 2.0
+          },
+          "32000": {
+            "count": 1,
+            "percent": 0.5
+          },
+          "64000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "128000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "line_threshold_exceedances": {
+          "100": {
+            "count": 41,
+            "percent": 20.5
+          },
+          "200": {
+            "count": 16,
+            "percent": 8.0
+          },
+          "500": {
+            "count": 5,
+            "percent": 2.5
+          },
+          "1000": {
+            "count": 1,
+            "percent": 0.5
+          },
+          "2000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "estimated_token_threshold_exceedances": {
+          "1000": {
+            "count": 28,
+            "percent": 14.0
+          },
+          "2000": {
+            "count": 11,
+            "percent": 5.5
+          },
+          "4000": {
+            "count": 4,
+            "percent": 2.0
+          },
+          "8000": {
+            "count": 1,
+            "percent": 0.5
+          },
+          "16000": {
+            "count": 0,
+            "percent": 0.0
+          },
+          "32000": {
+            "count": 0,
+            "percent": 0.0
+          }
+        },
+        "records_at_excel_cell_limit": 1,
+        "max_record": {
+          "idx": 8676,
+          "chars": 32767,
+          "lines": 966
+        }
+      }
+    },
+    "source_truncation": {
+      "excel_cell_character_limit": 32767,
+      "records_at_limit": 5,
+      "records": [
+        {
+          "group": "independent",
+          "idx": 9991,
+          "label": "non_vulnerable",
+          "chars": 32767,
+          "lines": 1172,
+          "ends_with_closing_brace": false,
+          "last_non_whitespace_char": "r"
+        },
+        {
+          "group": "independent",
+          "idx": 8265,
+          "label": "non_vulnerable",
+          "chars": 32767,
+          "lines": 722,
+          "ends_with_closing_brace": false,
+          "last_non_whitespace_char": ";"
+        },
+        {
+          "group": "independent",
+          "idx": 7018,
+          "label": "vulnerable",
+          "chars": 32767,
+          "lines": 978,
+          "ends_with_closing_brace": false,
+          "last_non_whitespace_char": "*"
+        },
+        {
+          "group": "paired_vulnerable",
+          "idx": 8675,
+          "label": "vulnerable",
+          "chars": 32767,
+          "lines": 966,
+          "ends_with_closing_brace": false,
+          "last_non_whitespace_char": "=",
+          "pair_id": "8675:8676"
+        },
+        {
+          "group": "paired_fixed",
+          "idx": 8676,
+          "label": "non_vulnerable",
+          "chars": 32767,
+          "lines": 966,
+          "ends_with_closing_brace": false,
+          "last_non_whitespace_char": "=",
+          "pair_id": "8675:8676"
+        }
+      ],
+      "all_end_mid_function": true,
+      "interpretation": "5 条函数正文恰好为 32,767 字符，且均不以右花括号结束；32,767 是 Excel 单元格字符上限，说明源工作簿中函数正文已被截断。长度统计因此是截断后的下界。"
+    }
+  },
+  "cwe_audit": {
+    "normalization": "Split each cwe_list entry with regex CWE-\\\\d+; deduplicate within a function; preserve NVD-CWE placeholders; multi_label counts any two distinct labels.",
+    "groups": {
+      "independent_vulnerable": {
+        "functions": 160,
+        "functions_with_any_cwe": 160,
+        "functions_without_cwe": 0,
+        "distinct_numeric_cwe": 39,
+        "numeric_assignments": 163,
+        "placeholder_assignments": 10,
+        "total_label_assignments": 173,
+        "multi_label_functions": 10,
+        "numeric_multi_label_functions": 10,
+        "functions_with_placeholder_only": 10,
+        "mean_labels_per_function": 1.081,
+        "max_labels_per_function": 5,
+        "concatenated_entry_count": 10,
+        "functions_with_concatenated_entry": 10,
+        "numeric_counts": {
+          "CWE-119": 24,
+          "CWE-416": 23,
+          "CWE-787": 16,
+          "CWE-125": 15,
+          "CWE-476": 12,
+          "CWE-20": 11,
+          "CWE-399": 8,
+          "CWE-190": 6,
+          "CWE-264": 6,
+          "CWE-415": 4,
+          "CWE-120": 3,
+          "CWE-200": 3,
+          "CWE-362": 3,
+          "CWE-79": 2,
+          "CWE-254": 2,
+          "CWE-401": 2,
+          "CWE-59": 1,
+          "CWE-74": 1,
+          "CWE-122": 1,
+          "CWE-129": 1,
+          "CWE-189": 1,
+          "CWE-191": 1,
+          "CWE-193": 1,
+          "CWE-203": 1,
+          "CWE-287": 1,
+          "CWE-290": 1,
+          "CWE-295": 1,
+          "CWE-388": 1,
+          "CWE-434": 1,
+          "CWE-444": 1,
+          "CWE-552": 1,
+          "CWE-617": 1,
+          "CWE-672": 1,
+          "CWE-697": 1,
+          "CWE-732": 1,
+          "CWE-755": 1,
+          "CWE-770": 1,
+          "CWE-908": 1,
+          "CWE-1021": 1
+        },
+        "placeholder_counts": {
+          "NVD-CWE-noinfo": 7,
+          "NVD-CWE-Other": 3
+        }
+      },
+      "independent_non_vulnerable": {
+        "functions": 40,
+        "functions_with_any_cwe": 40,
+        "functions_without_cwe": 0,
+        "distinct_numeric_cwe": 25,
+        "numeric_assignments": 36,
+        "placeholder_assignments": 5,
+        "total_label_assignments": 41,
+        "multi_label_functions": 1,
+        "numeric_multi_label_functions": 1,
+        "functions_with_placeholder_only": 5,
+        "mean_labels_per_function": 1.025,
+        "max_labels_per_function": 2,
+        "concatenated_entry_count": 1,
+        "functions_with_concatenated_entry": 1,
+        "numeric_counts": {
+          "CWE-119": 6,
+          "CWE-476": 4,
+          "CWE-122": 2,
+          "CWE-200": 2,
+          "CWE-284": 2,
+          "CWE-20": 1,
+          "CWE-22": 1,
+          "CWE-120": 1,
+          "CWE-125": 1,
+          "CWE-126": 1,
+          "CWE-189": 1,
+          "CWE-254": 1,
+          "CWE-264": 1,
+          "CWE-276": 1,
+          "CWE-352": 1,
+          "CWE-358": 1,
+          "CWE-362": 1,
+          "CWE-401": 1,
+          "CWE-415": 1,
+          "CWE-772": 1,
+          "CWE-787": 1,
+          "CWE-843": 1,
+          "CWE-913": 1,
+          "CWE-1021": 1,
+          "CWE-1284": 1
+        },
+        "placeholder_counts": {
+          "NVD-CWE-noinfo": 4,
+          "NVD-CWE-Other": 1
+        }
+      },
+      "paired_vulnerable": {
+        "functions": 200,
+        "functions_with_any_cwe": 200,
+        "functions_without_cwe": 0,
+        "distinct_numeric_cwe": 39,
+        "numeric_assignments": 198,
+        "placeholder_assignments": 15,
+        "total_label_assignments": 213,
+        "multi_label_functions": 11,
+        "numeric_multi_label_functions": 11,
+        "functions_with_placeholder_only": 15,
+        "mean_labels_per_function": 1.065,
+        "max_labels_per_function": 4,
+        "concatenated_entry_count": 11,
+        "functions_with_concatenated_entry": 11,
+        "numeric_counts": {
+          "CWE-125": 29,
+          "CWE-119": 24,
+          "CWE-20": 20,
+          "CWE-476": 16,
+          "CWE-787": 15,
+          "CWE-416": 11,
+          "CWE-200": 10,
+          "CWE-362": 8,
+          "CWE-399": 8,
+          "CWE-190": 7,
+          "CWE-415": 6,
+          "CWE-79": 4,
+          "CWE-189": 4,
+          "CWE-264": 4,
+          "CWE-19": 2,
+          "CWE-120": 2,
+          "CWE-203": 2,
+          "CWE-284": 2,
+          "CWE-400": 2,
+          "CWE-401": 2,
+          "CWE-617": 2,
+          "CWE-22": 1,
+          "CWE-59": 1,
+          "CWE-78": 1,
+          "CWE-94": 1,
+          "CWE-113": 1,
+          "CWE-116": 1,
+          "CWE-122": 1,
+          "CWE-134": 1,
+          "CWE-252": 1,
+          "CWE-276": 1,
+          "CWE-285": 1,
+          "CWE-369": 1,
+          "CWE-404": 1,
+          "CWE-428": 1,
+          "CWE-494": 1,
+          "CWE-674": 1,
+          "CWE-681": 1,
+          "CWE-770": 1
+        },
+        "placeholder_counts": {
+          "NVD-CWE-noinfo": 9,
+          "NVD-CWE-Other": 6
+        }
+      },
+      "paired_fixed": {
+        "functions": 200,
+        "functions_with_any_cwe": 200,
+        "functions_without_cwe": 0,
+        "distinct_numeric_cwe": 39,
+        "numeric_assignments": 198,
+        "placeholder_assignments": 15,
+        "total_label_assignments": 213,
+        "multi_label_functions": 11,
+        "numeric_multi_label_functions": 11,
+        "functions_with_placeholder_only": 15,
+        "mean_labels_per_function": 1.065,
+        "max_labels_per_function": 4,
+        "concatenated_entry_count": 11,
+        "functions_with_concatenated_entry": 11,
+        "numeric_counts": {
+          "CWE-125": 29,
+          "CWE-119": 24,
+          "CWE-20": 20,
+          "CWE-476": 16,
+          "CWE-787": 15,
+          "CWE-416": 11,
+          "CWE-200": 10,
+          "CWE-362": 8,
+          "CWE-399": 8,
+          "CWE-190": 7,
+          "CWE-415": 6,
+          "CWE-79": 4,
+          "CWE-189": 4,
+          "CWE-264": 4,
+          "CWE-19": 2,
+          "CWE-120": 2,
+          "CWE-203": 2,
+          "CWE-284": 2,
+          "CWE-400": 2,
+          "CWE-401": 2,
+          "CWE-617": 2,
+          "CWE-22": 1,
+          "CWE-59": 1,
+          "CWE-78": 1,
+          "CWE-94": 1,
+          "CWE-113": 1,
+          "CWE-116": 1,
+          "CWE-122": 1,
+          "CWE-134": 1,
+          "CWE-252": 1,
+          "CWE-276": 1,
+          "CWE-285": 1,
+          "CWE-369": 1,
+          "CWE-404": 1,
+          "CWE-428": 1,
+          "CWE-494": 1,
+          "CWE-674": 1,
+          "CWE-681": 1,
+          "CWE-770": 1
+        },
+        "placeholder_counts": {
+          "NVD-CWE-noinfo": 9,
+          "NVD-CWE-Other": 6
+        }
+      }
+    },
+    "paired_identity": {
+      "pairs_with_identical_cwe_list": 200,
+      "pairs_with_identical_cve_list": 200,
+      "note": "The fixed member repeats the vulnerable member's CWE/CVE metadata; a pair contributes one vulnerability annotation, not two."
+    },
+    "cve_presence": {
+      "independent_all": {
+        "functions": 200,
+        "functions_with_cve": 200,
+        "distinct_cves": 240,
+        "multi_cve_functions": 10,
+        "concatenated_entry_count": 10
+      },
+      "paired_vulnerable": {
+        "functions": 200,
+        "functions_with_cve": 200,
+        "distinct_cves": 211,
+        "multi_cve_functions": 10,
+        "concatenated_entry_count": 10
+      },
+      "paired_fixed": {
+        "functions": 200,
+        "functions_with_cve": 200,
+        "distinct_cves": 211,
+        "multi_cve_functions": 10,
+        "concatenated_entry_count": 10
+      }
+    }
+  },
+  "warnings": [
+    {
+      "severity": "high",
+      "id": "context_label_artifact",
+      "message": "独立集 40/40 条非漏洞样本的 context 完全相同且六个字段全为 null；160/160 条漏洞样本的 context 含 array(...) 注释载荷。若把原始 context 放入提示词，标签可由序列化格式和是否存在注释直接判断；配对集内 context 200/200 相同，不能用于区分对内的漏洞/修复版本。"
+    },
+    {
+      "severity": "high",
+      "id": "fixed_func_idx_label_artifact",
+      "message": "独立集 fixed_func_idx 非空为 143/160 条漏洞样本、0/40 条非漏洞样本；该字段的存在性本身高度指示标签。任何模型输入都应排除此字段。"
+    },
+    {
+      "severity": "high",
+      "id": "source_truncation_at_excel_limit",
+      "message": "5 条函数正文恰好 32,767 字符，对应 Excel 单元格上限，且均在函数中间结束。这些样本的代码长度和完整性已被源数据限制，不能当作完整函数评估。"
+    },
+    {
+      "severity": "medium",
+      "id": "cwe_cve_metadata_not_label_specific",
+      "message": "40/40 条独立集非漏洞样本也带有非空 cwe_list 和 cve_list；配对集中漏洞/修复版本的 cwe_list、cve_list 各 200/200 相同。CWE/CVE 是源 CVE 的溯源元数据，不是该函数是否漏洞的标签特征，配对集也不能按 400 条独立 CWE 观测重复计数。"
+    },
+    {
+      "severity": "medium",
+      "id": "prompt_length_risk",
+      "message": "独立集 73/200 条超过 2,000 字符，14/200 条超过 8,000 字符；配对漏洞版本 9 条、修复版本 11 条超过 8,000 字符。按 4 字符≈1 token 的粗略换算仅作提示，实际截断风险需用具体模型 tokenizer 复核。"
+    },
+    {
+      "severity": "medium",
+      "id": "project_concentration",
+      "message": "独立集前两大项目为 linux 和 Chrome，占 41.5%；配对集前两大项目占 39.0%。项目级泛化结论需谨慎。"
+    },
+    {
+      "severity": "low",
+      "id": "field_completeness",
+      "message": "16 个字段在 600 条记录中均存在；全部记录中 commit_message 为 null 1 条（位于独立集），changed_lines 为空 21 条，changed_statements 为空 39 条；context 的 Explanation 字段在 600 条记录中全部为 null。"
+    },
+    {
+      "severity": "info",
+      "id": "paired_order_is_a_dataset_artifact",
+      "message": "配对 JSON 的顺序固定为 (vulnerable, fixed)。按槽位预测可得到 100% 指标，但这是数据构造泄漏而非检测能力；报告中必须与真实方法分开。"
+    }
+  ]
+}

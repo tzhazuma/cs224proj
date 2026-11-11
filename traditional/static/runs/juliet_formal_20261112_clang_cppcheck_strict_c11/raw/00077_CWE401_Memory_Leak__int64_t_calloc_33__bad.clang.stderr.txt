@@ -1,0 +1,25 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_33.cpp:39:19: warning: Value stored to 'data' during its initialization is never read [deadcode.DeadStores]
+   39 |         int64_t * data = dataRef;
+      |                   ^~~~   ~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_33.cpp:39:19: note: Value stored to 'data' during its initialization is never read
+   39 |         int64_t * data = dataRef;
+      |                   ^~~~   ~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_33.cpp:43:1: warning: Potential leak of memory pointed to by 'data' [unix.Malloc]
+   43 | }
+      | ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_33.cpp:115:5: note: Calling 'bad'
+  115 |     bad();
+      |     ^~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_33.cpp:33:23: note: Memory is allocated
+   33 |     data = (int64_t *)calloc(100, sizeof(int64_t));
+      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_33.cpp:34:9: note: Assuming 'data' is not equal to NULL
+   34 |     if (data == NULL) {exit(-1);}
+      |         ^~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_33.cpp:34:5: note: Taking false branch
+   34 |     if (data == NULL) {exit(-1);}
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_33.cpp:43:1: note: Potential leak of memory pointed to by 'data'
+   43 | }
+      | ^
+2 warnings generated.

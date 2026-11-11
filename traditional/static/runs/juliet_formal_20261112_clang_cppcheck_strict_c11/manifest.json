@@ -1,0 +1,68 @@
+{
+  "schema_version": "static-cwe401-v1",
+  "generated_at": "2026-11-11T18:04:18.311+00:00",
+  "command": "/usr/bin/python3 /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/static_adapter.py --input juliet/manifest.json --out traditional/static/runs/juliet_formal_20261112_clang_cppcheck --tool both --cppcheck-bin /tmp/cppcheck_probe/cppcheck --include-dir juliet/raw/testcasesupport --assume-cwe CWE-401 --clang-arg=-include --clang-arg=alloca.h --timeout 120 --jobs 8 --dataset-name juliet-cwe401-v1.3-subset-v1",
+  "adapter": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/static_adapter.py",
+    "sha256": "8cf96ee2e2adc6bb1d50e6aa6f04d13d949482afa6afe6aa52a679a3cf5acd4c"
+  },
+  "input": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/manifest.json",
+    "sha256": "7a2253326498adb3eb0deb5d1b9805e4e57b5ae3ce84f1f24fc69852d5753ff2",
+    "bytes": 818478
+  },
+  "outputs": {
+    "predictions.jsonl": {
+      "sha256": "4179b39c24b8087da463ba20d290bd5d4dc7104bc78f897dfe113f6e5ed4aeda",
+      "bytes": 1580267
+    },
+    "metrics.json": {
+      "sha256": "f2d47a2ec02e64f0d367a4aae49e336af3a9eb80fc6ab52fe57a2cbe411c68c7",
+      "bytes": 23045
+    },
+    "metrics.md": {
+      "sha256": "1ae49f6d4678344a1a2d45acbb4a131fceeb401d82d387cdad9ee504277b5c6a",
+      "bytes": 6006
+    }
+  },
+  "tools": {
+    "clang": {
+      "available": true,
+      "binary": "/usr/bin/clang",
+      "version": "Ubuntu clang version 22.1.8 (1ubuntu1)",
+      "environment_errors": []
+    },
+    "cppcheck": {
+      "available": true,
+      "binary": "/tmp/cppcheck_probe/cppcheck",
+      "version": "Cppcheck 2.21.0",
+      "environment_errors": []
+    }
+  },
+  "settings": {
+    "tools": [
+      "clang",
+      "cppcheck"
+    ],
+    "missing_tools": [],
+    "std_c": "c11",
+    "std_cxx": "c++17",
+    "timeout_seconds": 120.0,
+    "jobs": 8,
+    "include_dirs": [
+      "juliet/raw/testcasesupport"
+    ],
+    "defines": [],
+    "clang_args": [
+      "-include",
+      "alloca.h"
+    ],
+    "cppcheck_args": [],
+    "cppcheck_force": false,
+    "include_external": false,
+    "filter_cwe": null,
+    "assume_cwe": "CWE-401",
+    "only_label": null,
+    "limit": null
+  }
+}

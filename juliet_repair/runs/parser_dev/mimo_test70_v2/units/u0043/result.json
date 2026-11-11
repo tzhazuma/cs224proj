@@ -1,0 +1,97 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__new_char_31.cpp"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 0,
+        "completion_tokens": 198,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.00010290000000000001,
+        "prompt_tokens": 339
+      },
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.019
+        },
+        "strict_evaluable": true,
+        "strict_pass": true
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "The inner scope's `data` pointer (a copy of the allocated pointer) is now deleted before going out of scope, freeing the single `new char` allocation while preserving the printed output and function signature.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 198,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.0001029,
+          "billing_source": "go",
+          "list_cost": 0.0001029,
+          "tokens": {
+            "cache_read": 0,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 339,
+            "output": 198,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 339,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 537
+      },
+      "usage_chars": 645
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 0,
+  "changed_paths": [
+    "CWE401_Memory_Leak__new_char_31.cpp"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 198,
+  "cost_complete": true,
+  "cost_usd_sum": 0.0001029,
+  "explanation_present": true,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__new_char_31",
+  "language": "cpp",
+  "last_attempt": 1,
+  "leak_removed": true,
+  "model": "mimo-v2.6-flash",
+  "model_alias": "mimo",
+  "prompt_tokens_sum": 339,
+  "reevaluated_at_utc": "2026-11-11T19:27:14Z",
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "selection_reason": "latest_observable_pass",
+  "strict_evaluable": true,
+  "strict_pass": true,
+  "unit_id": "CWE401_Memory_Leak__new_char_31__bad",
+  "unit_key": "u0043"
+}

@@ -1,0 +1,9 @@
+--- a/CWE401_Memory_Leak__int64_t_calloc_01.c
++++ b/CWE401_Memory_Leak__int64_t_calloc_01.c
+@@ -14,5 +14,5 @@
+     data[0] = 5LL;
+     printLongLongLine(data[0]);
+ 
+-    ;
++    free(data);
+ }

@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:35.210+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0d-f40f-7e8f-8ed4-61b245617c7c"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.551274936995469,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-8713b5e4736d4221b36a4d5fd1c34d10\",\"object\":\"chat.completion\",\"created\":1794424829,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int_realloc_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__int_realloc_01_bad()\\\\n{\\\\n    int * data;\\\\n    data = NULL;\\\\n\\\\n    data = (int *)realloc(data, 100*sizeof(int));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5;\\\\n    printIntLine(data[0]);\\\\n\\\\n    free(data);\\\\n    ;\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added free(data) after the last use to release the heap block allocated by realloc, preserving the printed output and return behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":356,\"completion_tokens\":183,\"total_tokens\":539,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00014438,\"allowance\":0.00008663,\"tokens\":{\"input\":228,\"output\":183,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:28.658+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int_realloc_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__int_realloc_01_bad()\\n{\\n    int * data;\\n    data = NULL;\\n\\n    data = (int *)realloc(data, 100*sizeof(int));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5;\\n    printIntLine(data[0]);\\n\\n    free(data);\\n    ;\\n}\\n\"}], \"explanation\": \"Added free(data) after the last use to release the heap block allocated by realloc, preserving the printed output and return behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 183,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00028876799999999996,
+    "prompt_tokens": 356
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.551274936995469,
+  "response_meta": {
+    "content_chars": 534,
+    "created": 1794424829,
+    "finish_reason": "stop",
+    "id": "chatcmpl-8713b5e4736d4221b36a4d5fd1c34d10",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0020",
+  "usage": {
+    "completion_tokens": 183,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 8.663e-05,
+      "billing_source": "go",
+      "list_cost": 0.00014438,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 228,
+        "output": 183,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 356,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 539
+  },
+  "wall_seconds": 6.551313047995791
+}

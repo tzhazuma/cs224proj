@@ -1,0 +1,12 @@
+--- a/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp
++++ b/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp
+@@ -21,7 +21,8 @@
+     {
+         twoIntsStruct * data = dataRef;
+ 
+-        ;
++        free(data);
++        data = NULL;
+     }
+ }
+ 

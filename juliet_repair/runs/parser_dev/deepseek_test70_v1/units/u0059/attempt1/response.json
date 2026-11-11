@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:30.896+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-c47f-7397-a4ad-e3e494da47c8"
+      },
+      "http_status": 200,
+      "latency_seconds": 8.895390534991748,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-9d1ea0671e6d48659bc7ba978dbda32b\",\"object\":\"chat.completion\",\"created\":1794424882,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__twoIntsStruct_malloc_68a.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\ntwoIntsStruct * CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink();\\\\n\\\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68_bad()\\\\n{\\\\n    twoIntsStruct * data;\\\\n    data = NULL;\\\\n\\\\n    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0].intOne = 0;\\\\n    data[0].intTwo = 0;\\\\n    printStructLine(&data[0]);\\\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData = data;\\\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink();\\\\n    free(data);\\\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData = NULL;\\\\n}\\\\n\\\"}, {\\\"path\\\": \\\"CWE401_Memory_Leak__twoIntsStruct_malloc_68b.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nextern twoIntsStruct * CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink()\\\\n{\\\\n    twoIntsStruct * data = CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\\\n\\\\n    ;\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The malloc'd buffer was stored in the global and never freed. Added free(data) after the sink call in the bad() function (and cleared the global) so the allocation is released while preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":607,\"completion_tokens\":501,\"total_tokens\":1108,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00037283,\"allowance\":0.0002237,\"tokens\":{\"input\":479,\"output\":501,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:22.000+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__twoIntsStruct_malloc_68a.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\ntwoIntsStruct * CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\n\\n\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink();\\n\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68_bad()\\n{\\n    twoIntsStruct * data;\\n    data = NULL;\\n\\n    data = (twoIntsStruct *)malloc(100*sizeof(twoIntsStruct));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0].intOne = 0;\\n    data[0].intTwo = 0;\\n    printStructLine(&data[0]);\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData = data;\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink();\\n    free(data);\\n    CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData = NULL;\\n}\\n\"}, {\"path\": \"CWE401_Memory_Leak__twoIntsStruct_malloc_68b.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nextern twoIntsStruct * CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\n\\n\\nvoid CWE401_Memory_Leak__twoIntsStruct_malloc_68b_badSink()\\n{\\n    twoIntsStruct * data = CWE401_Memory_Leak__twoIntsStruct_malloc_68_badData;\\n\\n    ;\\n}\\n\"}], \"explanation\": \"The malloc'd buffer was stored in the global and never freed. Added free(data) after the sink call in the bad() function (and cleared the global) so the allocation is released while preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 501,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.0007456679999999999,
+    "prompt_tokens": 607
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 8.895390534991748,
+  "response_meta": {
+    "content_chars": 1387,
+    "created": 1794424882,
+    "finish_reason": "stop",
+    "id": "chatcmpl-9d1ea0671e6d48659bc7ba978dbda32b",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0059",
+  "usage": {
+    "completion_tokens": 501,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.0002237,
+      "billing_source": "go",
+      "list_cost": 0.00037283,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 479,
+        "output": 501,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 607,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 1108
+  },
+  "wall_seconds": 8.895416439001565
+}

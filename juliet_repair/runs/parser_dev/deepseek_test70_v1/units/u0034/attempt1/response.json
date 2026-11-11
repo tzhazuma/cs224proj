@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:55.413+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-29ad-79d0-b678-0ebd94da841e"
+      },
+      "http_status": 200,
+      "latency_seconds": 13.012773260008544,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-2ee01439a2284d648be1f815f67246ab\",\"object\":\"chat.completion\",\"created\":1794424842,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_int64_t_31.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_int64_t_31\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    int64_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = new int64_t[100];\\\\n\\\\n    data[0] = 5LL;\\\\n    printLongLongLine(data[0]);\\\\n    {\\\\n        int64_t * dataCopy = data;\\\\n        int64_t * data = dataCopy;\\\\n\\\\n        ;\\\\n    }\\\\n    delete[] data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The array allocated with new[] was never freed. Added delete[] data at the end of bad() after the copy block, preserving the printed output and behavior while eliminating the memory leak.\\\"}\"}}],\"usage\":{\"prompt_tokens\":376,\"completion_tokens\":218,\"total_tokens\":594,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00016838,\"allowance\":0.00010103,\"tokens\":{\"input\":248,\"output\":218,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:42.401+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_array_int64_t_31.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_array_int64_t_31\\n{\\n\\n\\nvoid bad()\\n{\\n    int64_t * data;\\n    data = NULL;\\n\\n    data = new int64_t[100];\\n\\n    data[0] = 5LL;\\n    printLongLongLine(data[0]);\\n    {\\n        int64_t * dataCopy = data;\\n        int64_t * data = dataCopy;\\n\\n        ;\\n    }\\n    delete[] data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The array allocated with new[] was never freed. Added delete[] data at the end of bad() after the copy block, preserving the printed output and behavior while eliminating the memory leak.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 218,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000336768,
+    "prompt_tokens": 376
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 13.012773260008544,
+  "response_meta": {
+    "content_chars": 672,
+    "created": 1794424842,
+    "finish_reason": "stop",
+    "id": "chatcmpl-2ee01439a2284d648be1f815f67246ab",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0034",
+  "usage": {
+    "completion_tokens": 218,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00010103,
+      "billing_source": "go",
+      "list_cost": 0.00016838,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 248,
+        "output": 218,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 376,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 594
+  },
+  "wall_seconds": 13.012803228004486
+}

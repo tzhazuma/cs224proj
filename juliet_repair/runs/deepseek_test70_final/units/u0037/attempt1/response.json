@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:37.506+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-39a5-7e32-8490-c98ab0bca096"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.738064614997711,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-8e9f6187dbb147b1acc3ecc68fe55a10\",\"object\":\"chat.completion\",\"created\":1794425371,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_twointsStruct_01.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_twointsStruct_01\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    twoIntsStruct * data;\\\\n    data = NULL;\\\\n\\\\n    data = new twoIntsStruct[100];\\\\n\\\\n    data[0].intOne = 0;\\\\n    data[0].intTwo = 0;\\\\n    printStructLine(&data[0]);\\\\n\\\\n    ;\\\\n\\\\n    delete[] data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added delete[] data at the end of bad() to free the heap array allocated with new[], preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":366,\"completion_tokens\":195,\"total_tokens\":561,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00015308,\"allowance\":0.00009185,\"tokens\":{\"input\":238,\"output\":195,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:30.767+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_array_twointsStruct_01.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_array_twointsStruct_01\\n{\\n\\n\\nvoid bad()\\n{\\n    twoIntsStruct * data;\\n    data = NULL;\\n\\n    data = new twoIntsStruct[100];\\n\\n    data[0].intOne = 0;\\n    data[0].intTwo = 0;\\n    printStructLine(&data[0]);\\n\\n    ;\\n\\n    delete[] data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added delete[] data at the end of bad() to free the heap array allocated with new[], preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 195,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000306168,
+    "prompt_tokens": 366
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.738064614997711,
+  "response_meta": {
+    "content_chars": 578,
+    "created": 1794425371,
+    "finish_reason": "stop",
+    "id": "chatcmpl-8e9f6187dbb147b1acc3ecc68fe55a10",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0037",
+  "usage": {
+    "completion_tokens": 195,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 9.185e-05,
+      "billing_source": "go",
+      "list_cost": 0.00015308,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 238,
+        "output": 195,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 366,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 561
+  },
+  "wall_seconds": 6.7380919869901845
+}

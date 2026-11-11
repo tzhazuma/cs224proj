@@ -1,0 +1,30 @@
+% --- Table: tab:ind-results (D_ind detection, valid-only) ---
+M1 零样本直接判定 & 0.826 & 0.297 & 0.437 & 38.8 & 75.0 & 52.3 & 0.041 & 0.383 & 100.0\\
+M2 固定少样本 & 0.837 & 0.320 & 0.463 & 40.6 & 75.0 & 53.5 & 0.061 & 0.399 & 100.0\\
+M3 上下文增强 & 0.812 & 0.305 & 0.443 & 38.8 & 71.9 & 51.2 & 0.020 & 0.381 & 100.0\\
+
+% --- Table: tab:pair-detection (D_pair detection, valid-only) ---
+M1 零样本直接判定 & 0.586 & 0.361 & 0.447 & 74.4 & 74.4 & 55.3 & 100.0\\
+M2 固定少样本 & 0.560 & 0.361 & 0.439 & 71.7 & 71.7 & 53.9 & 100.0\\
+M3 上下文增强 & 0.587 & 0.394 & 0.472 & 72.2 & 72.2 & 55.8 & 100.0\\
+
+% --- Table: tab:pair-joint (D_pair joint discrimination) ---
+M1 零样本直接判定 & 21 & 44 & 113 & 2 & 0.117 & 0.117 & 180/180 (100.0)\\
+M2 固定少样本 & 16 & 49 & 113 & 2 & 0.089 & 0.089 & 180/180 (100.0)\\
+M3 上下文增强 & 22 & 49 & 108 & 1 & 0.122 & 0.122 & 180/180 (100.0)\\
+
+% --- Table: tab:repair (repair structural proxies; merged 308 vulnerable versions) ---
+M1 零样本直接判定 & 84.4 & 99.6 & 80.4 & 80.0 & 1.7 & 1.7 & 180\\
+M2 固定少样本 & 99.0 & 99.0 & 62.6 & 62.0 & 5.0 & 5.0 & 180\\
+M3 上下文增强 & 83.4 & 99.6 & 83.3 & 82.9 & 2.2 & 3.9 & 180\\
+
+% --- Table: tab:cost (from results.jsonl, task-level aggregation) ---
+% cost_usd comes from response.cost.cost_usd; allowance is usage.opencode.allowance
+% (Go-plan quota, NOT USD cost and not included in cost_usd).
+% The table's 无效率 column is schema-invalid/API-error percentages.
+M1 零样本直接判定 & 492158/48053 & 283000/296145 & 0.645585 & 0.1899 & 6.20 & 19.06 & 5.8/0.0\\
+% M1 零样本直接判定 allowance_quota_usd=0.191327 (not cost_usd)
+M2 固定少样本 & 1301278/34377 & 1172812/289920 & 1.131383 & 0.3328 & 5.80 & 17.87 & 0.4/0.0\\
+% M2 固定少样本 allowance_quota_usd=0.182808 (not cost_usd)
+M3 上下文增强 & 528578/47143 & 305069/296321 & 0.662251 & 0.1948 & 6.25 & 19.99 & 6.2/0.0\\
+% M3 上下文增强 allowance_quota_usd=0.195458 (not cost_usd)

@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:54.985+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-8724-7f19-81f0-eda4652b0de6"
+      },
+      "http_status": 200,
+      "latency_seconds": 4.386646895000013,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794425391-BwoIu5DHUVf4JurvYQrX\",\"object\":\"chat.completion\",\"created\":1794425391,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_int64_t_54e.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int64_t_54\\\\n{\\\\n\\\\n\\\\nvoid badSink_e(int64_t * data)\\\\n{\\\\n    delete data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The allocated int64_t is passed through the sink chain but never freed. Added `delete data;` in the final sink (badSink_e) to release the memory while preserving all printed output and entry points.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":708,\"completion_tokens\":151,\"total_tokens\":859,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0001414,\"allowance\":0.0001414,\"tokens\":{\"input\":708,\"output\":151,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:50.599+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_int64_t_54e.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_int64_t_54\\n{\\n\\n\\nvoid badSink_e(int64_t * data)\\n{\\n    delete data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The allocated int64_t is passed through the sink chain but never freed. Added `delete data;` in the final sink (badSink_e) to release the memory while preserving all printed output and entry points.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 151,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.0001414,
+    "prompt_tokens": 708
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 4.386646895000013,
+  "response_meta": {
+    "content_chars": 465,
+    "created": 1794425391,
+    "finish_reason": "stop",
+    "id": "gen-1794425391-BwoIu5DHUVf4JurvYQrX",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0046",
+  "usage": {
+    "completion_tokens": 151,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.0001414,
+      "billing_source": "go",
+      "list_cost": 0.0001414,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 708,
+        "output": 151,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 708,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 859
+  },
+  "wall_seconds": 4.386676050999085
+}

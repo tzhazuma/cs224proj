@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:30:02.160+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc16-80d2-7959-9dde-7d844c341326"
+      },
+      "http_status": 200,
+      "latency_seconds": 13.240392356994562,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-189966d0cb74482bbb0099a3279f4ebe\",\"object\":\"chat.completion\",\"created\":1794425389,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_int_22a.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int_22\\\\n{\\\\n\\\\n\\\\nint badGlobal = 0;\\\\n\\\\nvoid badSink(int * data);\\\\n\\\\nvoid bad()\\\\n{\\\\n    int * data;\\\\n    data = NULL;\\\\n\\\\n    data = new int;\\\\n\\\\n    *data = 5;\\\\n    printIntLine(*data);\\\\n    badGlobal = 1;\\\\n    badSink(data);\\\\n    delete data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}, {\\\"path\\\": \\\"CWE401_Memory_Leak__new_int_22b.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int_22\\\\n{\\\\n\\\\n\\\\nextern int badGlobal;\\\\n\\\\nvoid badSink(int * data)\\\\n{\\\\n    if(badGlobal)\\\\n    {\\\\n\\\\n        ;\\\\n    }\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The heap allocation in bad() was never freed. Added delete data after badSink(data) so the memory is released while preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":440,\"completion_tokens\":303,\"total_tokens\":743,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00022898,\"allowance\":0.00013739,\"tokens\":{\"input\":312,\"output\":303,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:48.920+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_int_22a.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_int_22\\n{\\n\\n\\nint badGlobal = 0;\\n\\nvoid badSink(int * data);\\n\\nvoid bad()\\n{\\n    int * data;\\n    data = NULL;\\n\\n    data = new int;\\n\\n    *data = 5;\\n    printIntLine(*data);\\n    badGlobal = 1;\\n    badSink(data);\\n    delete data;\\n}\\n\\n\\n}\\n\"}, {\"path\": \"CWE401_Memory_Leak__new_int_22b.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_int_22\\n{\\n\\n\\nextern int badGlobal;\\n\\nvoid badSink(int * data)\\n{\\n    if(badGlobal)\\n    {\\n\\n        ;\\n    }\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The heap allocation in bad() was never freed. Added delete data after badSink(data) so the memory is released while preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 303,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00045796799999999995,
+    "prompt_tokens": 440
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 13.240392356994562,
+  "response_meta": {
+    "content_chars": 867,
+    "created": 1794425389,
+    "finish_reason": "stop",
+    "id": "chatcmpl-189966d0cb74482bbb0099a3279f4ebe",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0048",
+  "usage": {
+    "completion_tokens": 303,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00013739,
+      "billing_source": "go",
+      "list_cost": 0.00022898,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 312,
+        "output": 303,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 440,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 743
+  },
+  "wall_seconds": 13.240431186990463
+}

@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:20.810+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-b491-7361-99e3-4d997a8a6dfe"
+      },
+      "http_status": 200,
+      "latency_seconds": 3.4258471430075588,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424878-KtfAWIaOt0rELVv6a8ci\",\"object\":\"chat.completion\",\"created\":1794424878,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__char_realloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__char_realloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    char * data;\\\\n    char * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (char *)realloc(data, 100*sizeof(char));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    strcpy(data, \\\\\\\"A String\\\\\\\");\\\\n    printLine(data);\\\\n    {\\\\n        char * data = dataRef;\\\\n\\\\n        free(data);\\\\n        data = NULL;\\\\n    }\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\", \\\"content_note\\\": \\\"\\\"}], \\\"explanation\\\": \\\"The inner block's local copy of the pointer was never freed, leaking the 100-byte buffer allocated by realloc. Added free(data) (and set to NULL) so the allocated memory is released while preserving output and behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":363,\"completion_tokens\":241,\"total_tokens\":604,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":128,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00010074,\"allowance\":0.00010074,\"tokens\":{\"input\":235,\"output\":241,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:17.384+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__char_realloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__char_realloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    char * data;\\n    char * &dataRef = data;\\n    data = NULL;\\n\\n    data = (char *)realloc(data, 100*sizeof(char));\\n    if (data == NULL) {exit(-1);}\\n\\n    strcpy(data, \\\"A String\\\");\\n    printLine(data);\\n    {\\n        char * data = dataRef;\\n\\n        free(data);\\n        data = NULL;\\n    }\\n}\\n\\n\\n}\\n\", \"content_note\": \"\"}], \"explanation\": \"The inner block's local copy of the pointer was never freed, leaking the 100-byte buffer allocated by realloc. Added free(data) (and set to NULL) so the allocated memory is released while preserving output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 241,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00010073840000000001,
+    "prompt_tokens": 363
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 3.4258471430075588,
+  "response_meta": {
+    "content_chars": 772,
+    "created": 1794424878,
+    "finish_reason": "stop",
+    "id": "gen-1794424878-KtfAWIaOt0rELVv6a8ci",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0006",
+  "usage": {
+    "completion_tokens": 241,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00010074,
+      "billing_source": "go",
+      "list_cost": 0.00010074,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 235,
+        "output": 241,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 363,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 128
+    },
+    "total_tokens": 604
+  },
+  "wall_seconds": 3.4258759780059336
+}

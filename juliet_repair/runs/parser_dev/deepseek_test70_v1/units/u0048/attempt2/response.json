@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:20.811+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-a529-7987-a03d-eac6f148f008"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.829758571999264,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-a80ddea25dda4dcc991b880fcc59d28a\",\"object\":\"chat.completion\",\"created\":1794424874,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_int_22a.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_int_22\\\\n{\\\\n\\\\n\\\\nint badGlobal = 0;\\\\n\\\\nvoid badSink(int * data);\\\\n\\\\nvoid bad()\\\\n{\\\\n    int * data;\\\\n    data = NULL;\\\\n\\\\n    data = new int;\\\\n\\\\n    *data = 5;\\\\n    printIntLine(*data);\\\\n    badGlobal = 1;\\\\n    badSink(data);\\\\n    delete data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The heap allocation in bad() was never freed. Added delete data after badSink(data) so the memory is released while preserving the printed output and behavior. Only the file containing the allocation needed changing.\\\"}\"}}],\"usage\":{\"prompt_tokens\":788,\"completion_tokens\":207,\"total_tokens\":995,\"prompt_tokens_details\":{\"cached_tokens\":256},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00020477,\"allowance\":0.00012286,\"tokens\":{\"input\":532,\"output\":207,\"reasoning\":0,\"cache_read\":256,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:13.981+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_int_22a.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_int_22\\n{\\n\\n\\nint badGlobal = 0;\\n\\nvoid badSink(int * data);\\n\\nvoid bad()\\n{\\n    int * data;\\n    data = NULL;\\n\\n    data = new int;\\n\\n    *data = 5;\\n    printIntLine(*data);\\n    badGlobal = 1;\\n    badSink(data);\\n    delete data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The heap allocation in bad() was never freed. Added delete data after badSink(data) so the memory is released while preserving the printed output and behavior. Only the file containing the allocation needed changing.\"}",
+  "cost": {
+    "cached_prompt_tokens": 256,
+    "completion_tokens": 207,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00040953599999999995,
+    "prompt_tokens": 788
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.829758571999264,
+  "response_meta": {
+    "content_chars": 648,
+    "created": 1794424874,
+    "finish_reason": "stop",
+    "id": "chatcmpl-a80ddea25dda4dcc991b880fcc59d28a",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0048",
+  "usage": {
+    "completion_tokens": 207,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00012286,
+      "billing_source": "go",
+      "list_cost": 0.00020477,
+      "tokens": {
+        "cache_read": 256,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 532,
+        "output": 207,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 788,
+    "prompt_tokens_details": {
+      "cached_tokens": 256
+    },
+    "total_tokens": 995
+  },
+  "wall_seconds": 6.8297788799973205
+}

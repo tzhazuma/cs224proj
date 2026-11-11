@@ -1,0 +1,11 @@
+--- a/CWE401_Memory_Leak__new_int_72a.cpp
++++ b/CWE401_Memory_Leak__new_int_72a.cpp
+@@ -26,6 +26,8 @@
+     dataVector.insert(dataVector.end(), 1, data);
+     dataVector.insert(dataVector.end(), 1, data);
+     badSink(dataVector);
++
++    delete data;
+ }
+ 
+ 

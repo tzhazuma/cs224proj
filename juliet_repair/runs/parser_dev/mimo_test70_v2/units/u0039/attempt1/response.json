@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:22:18.470+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0f-4489-7540-b7b9-427796a4285d"
+      },
+      "http_status": 200,
+      "latency_seconds": 23.662719507003203,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424915-3ZsxT3xtMFH225TaycNf\",\"object\":\"chat.completion\",\"created\":1794424915,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_wchar_t_01.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_01\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    wchar_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = new wchar_t[100];\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n\\\\n    delete[] data;\\\\n    data = NULL;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added delete[] data after use to free the dynamically allocated wchar_t array, eliminating the memory leak while preserving output and behavior.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":335,\"completion_tokens\":180,\"total_tokens\":515,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":320,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0000534,\"allowance\":0.0000534,\"tokens\":{\"input\":15,\"output\":180,\"reasoning\":0,\"cache_read\":320,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:54.808+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_array_wchar_t_01.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_01\\n{\\n\\n\\nvoid bad()\\n{\\n    wchar_t * data;\\n    data = NULL;\\n\\n    data = new wchar_t[100];\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n\\n    delete[] data;\\n    data = NULL;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added delete[] data after use to free the dynamically allocated wchar_t array, eliminating the memory leak while preserving output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 320,
+    "completion_tokens": 180,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 5.339600000000001e-05,
+    "prompt_tokens": 335
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 23.662719507003203,
+  "response_meta": {
+    "content_chars": 554,
+    "created": 1794424915,
+    "finish_reason": "stop",
+    "id": "gen-1794424915-3ZsxT3xtMFH225TaycNf",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0039",
+  "usage": {
+    "completion_tokens": 180,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 5.34e-05,
+      "billing_source": "go",
+      "list_cost": 5.34e-05,
+      "tokens": {
+        "cache_read": 320,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 15,
+        "output": 180,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 335,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 320
+    },
+    "total_tokens": 515
+  },
+  "wall_seconds": 23.662750787989353
+}

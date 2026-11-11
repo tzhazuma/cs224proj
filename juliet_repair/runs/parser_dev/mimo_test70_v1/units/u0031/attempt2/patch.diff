@@ -1,0 +1,12 @@
+--- a/CWE401_Memory_Leak__new_array_char_01.cpp
++++ b/CWE401_Memory_Leak__new_array_char_01.cpp
+@@ -16,6 +16,9 @@
+     strcpy(data, "A String");
+     printLine(data);
+ 
++    delete [] data;
++    data = NULL;
++
+     ;
+ }
+ 

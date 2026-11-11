@@ -1,0 +1,94 @@
+{
+  "api_key_value_stored": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "changed_paths": [
+        "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01.c"
+      ],
+      "cost": {
+        "cached_prompt_tokens": 128,
+        "completion_tokens": 342,
+        "cost_basis": "input_output_prices",
+        "cost_usd": 0.000508668,
+        "prompt_tokens": 453
+      },
+      "error": null,
+      "evaluation": {
+        "behavior_observable": true,
+        "behavior_preserved": true,
+        "compile_pass": true,
+        "leak_removed": true,
+        "run": {
+          "leak_detected": false,
+          "other_asan_error": false,
+          "returncode": 0,
+          "summary": null,
+          "timed_out": false,
+          "wall_seconds": 0.017
+        },
+        "strict_evaluable": false,
+        "strict_pass": false
+      },
+      "explanation_present": true,
+      "parse_error": null,
+      "parsed_explanation": "The original code overwrote the only pointer to the malloc'd block with the result of realloc. If realloc failed (returned NULL), the original block leaked. The fix stores realloc's result in a temporary pointer, only replacing data on success, and always frees the (possibly original) block afterward, preserving the same printed output and behavior.",
+      "schema_strict": true,
+      "status": "ok",
+      "usage": {
+        "completion_tokens": 342,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "allowance": 0.0001526,
+          "billing_source": "go",
+          "list_cost": 0.00025433,
+          "tokens": {
+            "cache_read": 128,
+            "cache_write_1h": 0,
+            "cache_write_5m": 0,
+            "input": 325,
+            "output": 342,
+            "reasoning": 0
+          }
+        },
+        "prompt_tokens": 453,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "total_tokens": 795
+      },
+      "usage_chars": 1175
+    }
+  ],
+  "behavior_observable": true,
+  "behavior_preserved": true,
+  "cached_prompt_tokens_sum": 128,
+  "changed_paths": [
+    "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01.c"
+  ],
+  "compile_pass": true,
+  "completion_tokens_sum": 342,
+  "cost_complete": true,
+  "cost_usd_sum": 0.00050867,
+  "explanation_present": true,
+  "final_attempt": 1,
+  "final_parse_error": null,
+  "group_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01",
+  "language": "c",
+  "last_attempt": 1,
+  "leak_removed": true,
+  "model": "deepseek-v4.1-flash",
+  "model_alias": "deepseek",
+  "prompt_tokens_sum": 453,
+  "reevaluated_at_utc": "2026-11-11T19:23:32Z",
+  "schema": "juliet-repair-result-v1",
+  "schema_strict": true,
+  "selection_reason": "latest_observable_pass",
+  "strict_evaluable": false,
+  "strict_pass": false,
+  "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad",
+  "unit_key": "u0027"
+}

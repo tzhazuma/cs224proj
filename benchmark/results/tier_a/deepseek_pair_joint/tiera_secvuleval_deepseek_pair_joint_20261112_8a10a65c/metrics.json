@@ -1,0 +1,195 @@
+{
+  "schema_version": "benchmark-metrics-v1",
+  "run_id": "tiera_secvuleval_deepseek_pair_joint_20261112_8a10a65c",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "generated_at": "2026-11-11T21:37:20Z",
+  "settings": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "confidence": 0.95,
+    "cluster_unit": "record.cluster_id",
+    "coverage_threshold": 0.8,
+    "strict_policy": "non-ok records count as errors in strict_accuracy; valid-only metrics exclude them"
+  },
+  "tasks": {
+    "pair_detection": {
+      "n_pairs": 180,
+      "valid_pairs": 180,
+      "invalid_pairs": 0,
+      "coverage": 1.0,
+      "invalid_rate": 0.0,
+      "joint_correct_valid_pairs": 138,
+      "joint_correct_all_pairs": 138,
+      "joint_accuracy_valid_pairs": 0.7666666666666667,
+      "joint_accuracy_all_pairs": 0.7666666666666667,
+      "joint_categories": {
+        "vulnerable_detected_fixed_clean": 138,
+        "both_flagged": 0,
+        "both_clean": 0,
+        "vulnerable_missed_fixed_flagged": 42
+      },
+      "joint_rates_valid_pairs": {
+        "vulnerable_detected_fixed_clean": 0.7666666666666667,
+        "both_flagged": 0.0,
+        "both_clean": 0.0,
+        "vulnerable_missed_fixed_flagged": 0.23333333333333334
+      },
+      "consistent": 180,
+      "swapped": 42,
+      "consistent_rate": 1.0,
+      "swapped_rate": 0.23333333333333334,
+      "both_vulnerable_rate": 0.0,
+      "both_safe_rate": 0.0,
+      "wilson": {
+        "joint_accuracy_valid_pairs": {
+          "successes": 138,
+          "total": 180,
+          "estimate": 0.7666666666666667,
+          "low": 0.6997021803760345,
+          "high": 0.8224868873991052,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "joint_accuracy_all_pairs": {
+          "successes": 138,
+          "total": 180,
+          "estimate": 0.7666666666666667,
+          "low": 0.6997021803760345,
+          "high": 0.8224868873991052,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "coverage": {
+          "successes": 180,
+          "total": 180,
+          "estimate": 1.0,
+          "low": 0.979104502078387,
+          "high": 0.9999999999999999,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "consistent_rate": {
+          "successes": 180,
+          "total": 180,
+          "estimate": 1.0,
+          "low": 0.979104502078387,
+          "high": 0.9999999999999999,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "swapped_rate": {
+          "successes": 42,
+          "total": 180,
+          "estimate": 0.23333333333333334,
+          "low": 0.17751311260089478,
+          "high": 0.3002978196239655,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "both_vulnerable_rate": {
+          "successes": 0,
+          "total": 180,
+          "estimate": 0.0,
+          "low": 1.734723475976807e-18,
+          "high": 0.020895497921613042,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        },
+        "both_safe_rate": {
+          "successes": 0,
+          "total": 180,
+          "estimate": 0.0,
+          "low": 1.734723475976807e-18,
+          "high": 0.020895497921613042,
+          "confidence": 0.95,
+          "z": 1.9599639845400536,
+          "method": "wilson"
+        }
+      },
+      "missing_pairs": 0,
+      "by_status": {
+        "ok": 360
+      },
+      "bootstrap": {
+        "joint_accuracy_valid_pairs": {
+          "ci_low": 0.7055555555555556,
+          "ci_high": 0.8222222222222222,
+          "bootstrap_median": 0.7666666666666667,
+          "bootstrap_mean": 0.7661777777777777,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "joint_accuracy_all_pairs": {
+          "ci_low": 0.7055555555555556,
+          "ci_high": 0.8222222222222222,
+          "bootstrap_median": 0.7666666666666667,
+          "bootstrap_mean": 0.7661777777777777,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "coverage": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cluster_count": 180
+    }
+  },
+  "cost": {
+    "currency": "USD",
+    "usd_known_sum": 0.153593052,
+    "usd_unknown_records": 0,
+    "usd_complete": true,
+    "wall_s_sum": 1156.6566243521374,
+    "cpu_s_sum": null,
+    "peak_rss_mb_max": null,
+    "prompt_tokens_sum": 431045,
+    "completion_tokens_sum": 30080,
+    "cached_prompt_tokens_sum": 40192,
+    "latency_ms_p50": 6275.203033001162,
+    "latency_ms_p95": 8031.902027755128,
+    "latency_samples": 180,
+    "cost_basis_counts": {
+      "api_price": 360
+    },
+    "cost_per_100_units_usd": 0.08532947333333334,
+    "wall_s_per_100_units": 642.5870135289653,
+    "cost_per_true_positive_usd": null
+  },
+  "counts": {
+    "records": 360,
+    "planned_units": 360,
+    "by_task": {
+      "pair_detection": 360
+    },
+    "by_status": {
+      "ok": 360
+    },
+    "missing_units": 0
+  },
+  "provenance": {
+    "run_manifest_sha256": "39ceed1c768c4047ba8df1c7929574d67f3f7518abc0ddc416713ddaee50517c",
+    "predictions_sha256": "0a83cb6efdcc2ce054ee1069f2e6584084d583c5d9446895ea849a5834d248bb"
+  },
+  "notes": [
+    "Tasks and tiers are not pooled into a single score.",
+    "Detection and pair metrics use valid predictions only; strict accuracy is separate.",
+    "Leak clean predictions below the coverage threshold are inconclusive, not true negatives.",
+    "Cost is a known-sum plus unknown count, never an imputed total."
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "rerun_id": "20261112_analysis_path_fix",
+  "purpose": "Fix audit L4: regenerate analysis/aggregation.{json,md} under the renamed repository root so provenance paths exist. Numbers must not change.",
+  "created_at_utc": "2026-11-11T20:50:23.287908+00:00",
+  "previous_root": "/mnt/c/Users/tzh03/Downloads/zy",
+  "current_root": "/mnt/c/Users/tzh03/Downloads/cs224proj",
+  "python": "3.14.8",
+  "generated_at_utc": "2026-11-11T20:46:13Z",
+  "command": [
+    "python3",
+    "analysis/analyze_runs.py",
+    "--runs-root",
+    "runner/runs",
+    "--run",
+    "runner/runs/dev_pilot_context_independent",
+    "--run",
+    "runner/runs/dev_pilot_context_pairs",
+    "--run",
+    "runner/runs/dev_pilot_direct_independent",
+    "--run",
+    "runner/runs/dev_pilot_direct_pairs",
+    "--run",
+    "runner/runs/dev_pilot_few-shot_independent",
+    "--run",
+    "runner/runs/dev_pilot_few-shot_pairs",
+    "--run",
+    "runner/runs/pilot_direct_detection_1",
+    "--run",
+    "runner/runs/pilot_direct_detection_nothink_1",
+    "--run",
+    "runner/runs/test_v1_context_independent",
+    "--run",
+    "runner/runs/test_v1_context_pairs",
+    "--run",
+    "runner/runs/test_v1_direct_independent",
+    "--run",
+    "runner/runs/test_v1_direct_pairs",
+    "--run",
+    "runner/runs/test_v1_few-shot_independent",
+    "--run",
+    "runner/runs/test_v1_few-shot_pairs",
+    "--bootstrap",
+    "10000",
+    "--seed",
+    "42"
+  ],
+  "scope": {
+    "runs_root": "runner/runs",
+    "discovered_run_dirs": 14,
+    "included_runs": 6,
+    "skipped_runs": 8,
+    "groups": [
+      "independent|both|deepseek-v4.1-flash|bc83af633299",
+      "pairs|both|deepseek-v4.1-flash|21218fd8db79"
+    ],
+    "note": "The 14 run directories are the exact input set of the pre-rerun aggregation (6 frozen DeepSeek test runs + 8 partial dev/pilot runs that are skipped). Twelve MiMo runs were added to runner/runs after the original aggregation; they are intentionally excluded so this artifact stays the six-DeepSeek-run analysis. Cross-model comparison lives in analysis/model_comparison.*."
+  },
+  "artifacts": {
+    "analysis/aggregation.json": "4892fc54730545783878f9eda36a9ce4fbf93112071cd056c39a36b326e51b28",
+    "analysis/aggregation.md": "bc728011faa17f7b0070626415d8e952e210784baef1688ebf5093d1a6c2d1bc",
+    "analysis/repro_20261112/aggregation.json": "4892fc54730545783878f9eda36a9ce4fbf93112071cd056c39a36b326e51b28",
+    "analysis/repro_20261112/aggregation.md": "bc728011faa17f7b0070626415d8e952e210784baef1688ebf5093d1a6c2d1bc",
+    "analysis/repro_20261112/pre_rerun_aggregation.json": "80368ce49d0309c04f8c70116afd88010b93a8ae420e22b5e3e63637c65d0325",
+    "analysis/repro_20261112/pre_rerun_aggregation.md": "93cbe6b4565461562532b9530e1a0e845865f569dbe142b1d59607c6f14dd6f5",
+    "raw_generated_aggregation.md.sha256": "3afcae3539fe0cd86468c5f7ce638e9b69210ee9464822333d482b47dd0f8dbc"
+  },
+  "post_edits": [
+    "analysis/aggregation.md section 5: replaced the two hardcoded /Downloads/zy roots with the current root.",
+    "The renderer in analysis/analyze_runs.py still hardcodes /mnt/c/Users/tzh03/Downloads/zy at lines 3147 and 3159; it was not modified because it is outside this task's file scope. Regenerating the Markdown will reintroduce the stale root until that file is fixed."
+  ],
+  "verification": {
+    "json_structural_diff_vs_pre_rerun_after_path_normalization": 0,
+    "json_diff_ignores": [
+      "generated_at_utc"
+    ],
+    "md_diff_vs_pre_rerun": "only generated_at_utc and the two section-5 root strings",
+    "deterministic_second_rerun_json_identical": true,
+    "stale_root_occurrences": {
+      "analysis/aggregation.json": 0,
+      "analysis/aggregation.md": 0
+    },
+    "audit_L4_mimic": {
+      "run_paths": 14,
+      "missing": [],
+      "dataset_root": "/mnt/c/Users/tzh03/Downloads/cs224proj/datasets",
+      "dataset_paths_exist": true
+    },
+    "status": "ok"
+  }
+}

@@ -1,0 +1,46 @@
+# Normalize editable text to LF in the repository.
+* text=auto eol=lf
+
+# Machine-readable artifacts are byte-hashed in manifests and run records.
+# Disable EOL conversion so a checkout does not change their SHA-256.
+*.json -text
+*.jsonl -text
+*.csv -text
+*.tsv -text
+# Keep textual diffs for review even though EOL conversion is disabled.
+*.json diff
+*.jsonl diff
+*.csv diff
+*.tsv diff
+
+# Explicit text types (readable diffs, LF in the repository)
+*.py text eol=lf
+*.md text eol=lf
+*.tex text eol=lf
+*.bib text eol=lf
+*.sh text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.cpp text eol=lf
+*.hpp text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.txt text eol=lf
+
+# Binary assets: no diff, no merge, no EOL conversion
+*.pdf binary
+*.xlsx binary
+*.zip binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.docx binary
+*.pptx binary

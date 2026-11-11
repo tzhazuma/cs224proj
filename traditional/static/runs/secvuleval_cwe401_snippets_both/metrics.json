@@ -1,0 +1,401 @@
+{
+  "schema_version": "static-cwe401-metrics-v1",
+  "generated_at": "2026-11-11T18:22:54.132+00:00",
+  "started_at": "2026-11-11T18:22:53.849+00:00",
+  "wall_seconds": 0.28286330999981146,
+  "dataset": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/datasets/independent_200.json",
+    "sha256": "055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d",
+    "bytes": 1106950,
+    "name": null,
+    "n_input": 200,
+    "n_selected": 3,
+    "n_labelled": 3,
+    "label_counts": {
+      "vulnerable": 2,
+      "non_vulnerable": 1
+    },
+    "language_counts": {
+      "cpp": 1,
+      "c": 2
+    },
+    "filter_counts": {
+      "filtered_out_missing_cwe": 15,
+      "filtered_out_other_cwe": 182,
+      "selected": 3,
+      "input_records": 200
+    },
+    "filter_cwe": "CWE-401"
+  },
+  "settings": {
+    "tools": [
+      "clang",
+      "cppcheck"
+    ],
+    "missing_tools": [],
+    "std_c": "c11",
+    "std_cxx": "c++17",
+    "timeout_seconds": 120.0,
+    "jobs": 2,
+    "include_dirs": [],
+    "defines": [],
+    "clang_args": [],
+    "cppcheck_args": [],
+    "cppcheck_force": false,
+    "include_external": false,
+    "filter_cwe": "CWE-401",
+    "assume_cwe": null,
+    "only_label": null,
+    "limit": null
+  },
+  "tool_info": {
+    "clang": {
+      "available": true,
+      "binary": "/usr/bin/clang",
+      "version": "Ubuntu clang version 22.1.8 (1ubuntu1)",
+      "environment_errors": []
+    },
+    "cppcheck": {
+      "available": true,
+      "binary": "/tmp/cppcheck_probe/cppcheck",
+      "version": "Cppcheck 2.21.0",
+      "environment_errors": []
+    }
+  },
+  "tools": {
+    "clang": {
+      "tool": "clang",
+      "method": "clang-static-analyzer",
+      "available": true,
+      "version": "Ubuntu clang version 22.1.8 (1ubuntu1)",
+      "binary": "/usr/bin/clang",
+      "runs": 3,
+      "labelled": 3,
+      "evaluable": 0,
+      "coverage_labelled": 0.0,
+      "status_counts": {
+        "compile_error": 3
+      },
+      "confusion_evaluable": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0,
+        "unlabelled": 0
+      },
+      "metrics_evaluable": {
+        "n": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": null,
+        "accuracy": null,
+        "f1_vulnerable": null,
+        "f1_non_vulnerable": null,
+        "macro_f1": null,
+        "balanced_accuracy": null,
+        "mcc": null,
+        "wilson_95": {
+          "precision": null,
+          "recall": null,
+          "specificity": null,
+          "accuracy": null
+        }
+      },
+      "confusion_end_to_end": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 1,
+        "fn": 2,
+        "unlabelled": 0
+      },
+      "metrics_end_to_end": {
+        "n": 3,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "accuracy": 0.3333333333333333,
+        "f1_vulnerable": 0.0,
+        "f1_non_vulnerable": 0.5,
+        "macro_f1": 0.25,
+        "balanced_accuracy": 0.5,
+        "mcc": null,
+        "wilson_95": {
+          "precision": null,
+          "recall": {
+            "low": 0.0,
+            "high": 0.6576197724933469,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.20654931437723745,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.06149194472039621,
+            "high": 0.7923403991979522,
+            "confidence": 0.95
+          }
+        }
+      },
+      "by_language": {},
+      "by_split": {},
+      "diagnostics": {
+        "total": 0,
+        "cwe401": 0,
+        "samples_with_cwe401": 0,
+        "by_rule": {},
+        "by_cwe401_rule": {}
+      },
+      "timing": {
+        "n": 3,
+        "total_seconds": 0.08769473902066238,
+        "mean_seconds": 0.029231579673554126,
+        "median_seconds": 0.02949932700721547,
+        "p95_seconds": 0.030362105011590756,
+        "max_seconds": 0.030362105011590756
+      },
+      "error_examples": [
+        "17743: /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00117_17743.cpp:1:32: error: unknown type name 'LST_HEAD'",
+        "17743: /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00117_17743.cpp:1:1: error: a type specifier is required for all declarations",
+        "17743: /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00117_17743.cpp:3:5: error: unknown type name 'PRV_PRESENTATIONCONTEXTITEM'",
+        "17743: /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00117_17743.cpp:5:5: error: unknown type name 'DUL_SUBITEM'",
+        "17743: /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00117_17743.cpp:8:15: error: use of undeclared identifier 'NULL'",
+        "17743: /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00117_17743.cpp:11:15: error: use of undeclared identifier 'PRV_PRESENTATIONCONTEXTITEM'",
+        "17743: /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00117_17743.cpp:11:43: error: expected expression",
+        "17743: /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00117_17743.cpp:12:22: error: use of undeclared identifier 'NULL'",
+        "17743: /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00117_17743.cpp:13:20: error: use of undeclared identifier 'DUL_SUBITEM'",
+        "17743: /mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/runs/secvuleval_cwe401_snippets_both/work/00117_17743.cpp:13:32: error: expected expression"
+      ],
+      "environment_errors": []
+    },
+    "cppcheck": {
+      "tool": "cppcheck",
+      "method": "cppcheck",
+      "available": true,
+      "version": "Cppcheck 2.21.0",
+      "binary": "/tmp/cppcheck_probe/cppcheck",
+      "runs": 3,
+      "labelled": 3,
+      "evaluable": 2,
+      "coverage_labelled": 0.6666666666666666,
+      "status_counts": {
+        "compile_error": 1,
+        "ok": 2
+      },
+      "confusion_evaluable": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 1,
+        "fn": 1,
+        "unlabelled": 0
+      },
+      "metrics_evaluable": {
+        "n": 2,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "accuracy": 0.5,
+        "f1_vulnerable": 0.0,
+        "f1_non_vulnerable": 0.6666666666666666,
+        "macro_f1": 0.3333333333333333,
+        "balanced_accuracy": 0.5,
+        "mcc": null,
+        "wilson_95": {
+          "precision": null,
+          "recall": {
+            "low": 0.0,
+            "high": 0.7934506856227626,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.20654931437723745,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.09453120573423074,
+            "high": 0.9054687942657693,
+            "confidence": 0.95
+          }
+        }
+      },
+      "confusion_end_to_end": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 1,
+        "fn": 2,
+        "unlabelled": 0
+      },
+      "metrics_end_to_end": {
+        "n": 3,
+        "precision": null,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "accuracy": 0.3333333333333333,
+        "f1_vulnerable": 0.0,
+        "f1_non_vulnerable": 0.5,
+        "macro_f1": 0.25,
+        "balanced_accuracy": 0.5,
+        "mcc": null,
+        "wilson_95": {
+          "precision": null,
+          "recall": {
+            "low": 0.0,
+            "high": 0.6576197724933469,
+            "confidence": 0.95
+          },
+          "specificity": {
+            "low": 0.20654931437723745,
+            "high": 1.0,
+            "confidence": 0.95
+          },
+          "accuracy": {
+            "low": 0.06149194472039621,
+            "high": 0.7923403991979522,
+            "confidence": 0.95
+          }
+        }
+      },
+      "by_language": {
+        "c": {
+          "confusion": {
+            "tp": 0,
+            "fp": 0,
+            "tn": 1,
+            "fn": 1,
+            "unlabelled": 0
+          },
+          "metrics": {
+            "n": 2,
+            "precision": null,
+            "recall": 0.0,
+            "specificity": 1.0,
+            "accuracy": 0.5,
+            "f1_vulnerable": 0.0,
+            "f1_non_vulnerable": 0.6666666666666666,
+            "macro_f1": 0.3333333333333333,
+            "balanced_accuracy": 0.5,
+            "mcc": null,
+            "wilson_95": {
+              "precision": null,
+              "recall": {
+                "low": 0.0,
+                "high": 0.7934506856227626,
+                "confidence": 0.95
+              },
+              "specificity": {
+                "low": 0.20654931437723745,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "accuracy": {
+                "low": 0.09453120573423074,
+                "high": 0.9054687942657693,
+                "confidence": 0.95
+              }
+            }
+          }
+        }
+      },
+      "by_split": {
+        "None": {
+          "confusion": {
+            "tp": 0,
+            "fp": 0,
+            "tn": 1,
+            "fn": 1,
+            "unlabelled": 0
+          },
+          "metrics": {
+            "n": 2,
+            "precision": null,
+            "recall": 0.0,
+            "specificity": 1.0,
+            "accuracy": 0.5,
+            "f1_vulnerable": 0.0,
+            "f1_non_vulnerable": 0.6666666666666666,
+            "macro_f1": 0.3333333333333333,
+            "balanced_accuracy": 0.5,
+            "mcc": null,
+            "wilson_95": {
+              "precision": null,
+              "recall": {
+                "low": 0.0,
+                "high": 0.7934506856227626,
+                "confidence": 0.95
+              },
+              "specificity": {
+                "low": 0.20654931437723745,
+                "high": 1.0,
+                "confidence": 0.95
+              },
+              "accuracy": {
+                "low": 0.09453120573423074,
+                "high": 0.9054687942657693,
+                "confidence": 0.95
+              }
+            }
+          }
+        }
+      },
+      "diagnostics": {
+        "total": 2,
+        "cwe401": 0,
+        "samples_with_cwe401": 0,
+        "by_rule": {
+          "syntaxError": 1,
+          "returnImplicitInt": 1
+        },
+        "by_cwe401_rule": {}
+      },
+      "timing": {
+        "n": 3,
+        "total_seconds": 0.057152180990669876,
+        "mean_seconds": 0.01905072699688996,
+        "median_seconds": 0.01838026600307785,
+        "p95_seconds": 0.023997355994652025,
+        "max_seconds": 0.023997355994652025
+      },
+      "error_examples": [
+        "17743: syntaxError: syntax error"
+      ],
+      "environment_errors": []
+    }
+  },
+  "target_cwe": "CWE-401",
+  "rule_mapping": {
+    "clang": {
+      "checkers": [
+        "alpha.unix.MallocWithAnnotations",
+        "cplusplus.NewDeleteLeaks",
+        "unix.Malloc"
+      ],
+      "message_rule": "checker-specific leak phrase (leak of memory)"
+    },
+    "cppcheck": {
+      "ids": [
+        "memleak",
+        "memleakOnRealloc"
+      ],
+      "cwe_attribute": "401"
+    }
+  },
+  "environment": {
+    "python": "3.14.8",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+    "hostname": "ThinkBook16plus"
+  },
+  "limitations": [
+    "Static analysis needs a parsable translation unit; isolated function snippets often fail to compile.",
+    "A file-level label attributes any leak in the file to the sample; use line ranges or per-function units for function-level claims.",
+    "Clang text diagnostics are parsed from stdout/stderr; raw output is retained for audit.",
+    "Only CWE-401 leak diagnostics are mapped; other memory errors are recorded but not counted."
+  ],
+  "errors": {
+    "per_tool": {
+      "clang": [],
+      "cppcheck": []
+    }
+  }
+}

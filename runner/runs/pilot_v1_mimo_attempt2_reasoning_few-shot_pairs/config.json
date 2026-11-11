@@ -1,0 +1,54 @@
+{
+  "api": {
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "input_price_usd_per_1m": 0.14,
+    "max_attempts": 3,
+    "max_tokens": 8192,
+    "max_tokens_field": "max_completion_tokens",
+    "model": "mimo-v2.6-flash",
+    "output_price_usd_per_1m": 0.28,
+    "response_format": "json_object",
+    "temperature": 0.0,
+    "thinking": "disabled",
+    "timeout_seconds": 420.0,
+    "user_agent": "secvul-eval-runner/1.0"
+  },
+  "api_key_env": "OPENCODE_API_KEY",
+  "concurrency": 8,
+  "config_fingerprint": "1f37b9ab8abf57a0386f633662ec707ec617abd49ddb0056a654aa3ac63b7fbe",
+  "dataset_path": "splits/pilot_pairs_18.json",
+  "dataset_sha256": "e237137718a973af0a1c9cde1fc7ecf594b51feb6ce5600f5a47894f29e54747",
+  "dataset_type": "pairs",
+  "dataset_units": 18,
+  "dev_examples": {
+    "detection_example_ids": [
+      "det-dev-9493",
+      "det-dev-17182",
+      "det-dev-11371",
+      "det-dev-6620"
+    ],
+    "path": "splits/dev_examples_fewshot.json",
+    "repair_example_ids": [
+      "repair-dev-19988-19989",
+      "repair-dev-7686-7683"
+    ],
+    "sha256": "466b8a305013c06983cab010a4f8cdc0e50d9d5bb91346cb462aae7779673852",
+    "source": "SecVulEval dev split (secvul-split-v1), sampled from datasets/independent_200.json and datasets/vulnerable_fixed_200_pairs.json"
+  },
+  "dry_run": false,
+  "expected_requests": 9,
+  "limit": 3,
+  "partial": true,
+  "prompt_version": "secvul-prompt-2026-11-11.1",
+  "refresh": false,
+  "retry_invalid": false,
+  "reuse_cached_errors": false,
+  "runner_version": "1.0.0",
+  "selected_units": 3,
+  "strategy": "few-shot",
+  "task": "both"
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "reference_baseline": true,
+  "is_llm": false,
+  "seed": 42,
+  "sources": {
+    "splits/test_detection_160.json": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "splits/test_pairs_180.json": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d"
+  },
+  "independent": {
+    "always_vulnerable": {
+      "tp": 128,
+      "fp": 32,
+      "tn": 0,
+      "fn": 0,
+      "accuracy": 0.8,
+      "precision": 0.8,
+      "recall": 1.0,
+      "f1": 0.8888888888888888,
+      "specificity": 0.0
+    },
+    "always_non_vulnerable": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 32,
+      "fn": 128,
+      "accuracy": 0.2,
+      "precision": null,
+      "recall": 0.0,
+      "f1": 0.0,
+      "specificity": 1.0
+    }
+  },
+  "pairs": {
+    "always_vulnerable": {
+      "tp": 180,
+      "fp": 180,
+      "tn": 0,
+      "fn": 0,
+      "accuracy": 0.5,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "specificity": 0.0
+    },
+    "always_non_vulnerable": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 180,
+      "fn": 180,
+      "accuracy": 0.5,
+      "precision": null,
+      "recall": 0.0,
+      "f1": 0.0,
+      "specificity": 1.0
+    },
+    "random_one_vulnerable_per_pair": {
+      "tp": 101,
+      "fp": 79,
+      "tn": 101,
+      "fn": 79,
+      "accuracy": 0.5611111111111111,
+      "precision": 0.5611111111111111,
+      "recall": 0.5611111111111111,
+      "f1": 0.5611111111111111,
+      "specificity": 0.5611111111111111,
+      "joint_correct": 101,
+      "joint_accuracy": 0.5611111111111111
+    },
+    "constant_joint_accuracy": 0.0
+  }
+}

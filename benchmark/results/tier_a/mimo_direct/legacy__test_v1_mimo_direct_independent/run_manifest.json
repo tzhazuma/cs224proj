@@ -1,0 +1,105 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "legacy__test_v1_mimo_direct_independent",
+  "created_at": "2026-11-11T19:17:58Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": 160,
+    "label_counts": {
+      "functions": 160,
+      "non_vulnerable": 32,
+      "units": 160,
+      "vulnerable": 128
+    }
+  },
+  "method": {
+    "method_id": "llm.mimo.direct",
+    "family": "llm",
+    "name": "MiMo-V2.6-Flash / direct",
+    "strategy": "direct",
+    "prompt_version": "secvul-prompt-2026-11-11.1",
+    "config_sha256": "cd42cc4700b0b3d1ae04f8762881a80b5ec7435016b576f74cd62f34c60c31cb",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_completion_tokens",
+        "thinking": "disabled",
+        "reasoning_effort": "none",
+        "response_format": "json_object",
+        "timeout_seconds": 300.0
+      },
+      "pricing_usd_per_1m": {
+        "input": 0.14,
+        "output": 0.28,
+        "cached_input": 0.0028
+      },
+      "price_snapshot": null
+    },
+    "tool": null
+  },
+  "execution": {
+    "started_at": "2026-11-11T18:20:39.482+00:00",
+    "finished_at": "2026-11-11T18:27:01.423+00:00",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 16,
+    "command": null,
+    "command_sha256": null,
+    "environment": {
+      "python_version": "3.14.8",
+      "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44"
+    }
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": "metrics.json",
+    "validation": null,
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "3613826b930a84475702f91f1ec496e841d04a16cfc1a7221b9e9dea4743e327",
+    "source_results_sha256": "055fe53fbbacdb4f25b8f355e7ff20ca08973e02cae6fdc4a435c3e189f79ea7",
+    "source_metrics_sha256": "c5db2537adc0e365a3999565235cdb49998663fbcb8286c5e7f1864b054a953e"
+  },
+  "legacy_import": {
+    "source_run_dir": "/mnt/c/Users/tzh03/Downloads/cs224proj/runner/runs/test_v1_mimo_direct_independent",
+    "source_results_sha256": "055fe53fbbacdb4f25b8f355e7ff20ca08973e02cae6fdc4a435c3e189f79ea7",
+    "conversion_tool": "bench-import-legacy-1.0.1",
+    "derived_not_rerun": true,
+    "repair_records_omitted": 128,
+    "omitted_task_counts": {
+      "repair": 128
+    },
+    "full_run_cost_usd": 0.07260122240000001,
+    "full_run_requests": 288,
+    "model_id": "mimo-v2.6-flash",
+    "model_family": "mimo",
+    "strategy": "direct"
+  },
+  "notes": [
+    "Derived from an existing runner run; no model call and no prediction change.",
+    "Repair records are omitted; this run is for the v1 detection/pair benchmark only.",
+    "Legacy metrics are valid-only; the unified metrics recompute both valid-only and strict views.",
+    "Cost sums on this run cover the imported task only; full_run_cost_usd preserves the original run total.",
+    "MiMo uses reasoning_effort=none with max_completion_tokens on OpenCode Go; this is a model/configuration difference from the DeepSeek non-thinking runs."
+  ]
+}

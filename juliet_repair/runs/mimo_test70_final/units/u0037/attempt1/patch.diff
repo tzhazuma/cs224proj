@@ -1,0 +1,12 @@
+--- a/CWE401_Memory_Leak__new_array_twointsStruct_01.cpp
++++ b/CWE401_Memory_Leak__new_array_twointsStruct_01.cpp
+@@ -17,7 +17,8 @@
+     data[0].intTwo = 0;
+     printStructLine(&data[0]);
+ 
+-    ;
++    delete [] data;
++    data = NULL;
+ }
+ 
+ 

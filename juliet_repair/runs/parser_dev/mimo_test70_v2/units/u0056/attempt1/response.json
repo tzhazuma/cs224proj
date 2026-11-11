@@ -1,0 +1,73 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:22:44.774+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0f-d923-788d-b185-4a441ed2181e"
+      },
+      "http_status": 200,
+      "latency_seconds": 11.920415102009429,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"gen-1794424953-BR8vekPQK0Rwlz9kFiK0\",\"object\":\"chat.completion\",\"created\":1794424953,\"model\":\"mimo-v2.6-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"logprobs\":null,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__twoIntsStruct_calloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__twoIntsStruct_calloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    twoIntsStruct * data;\\\\n    twoIntsStruct * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (twoIntsStruct *)calloc(100, sizeof(twoIntsStruct));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0].intOne = 0;\\\\n    data[0].intTwo = 0;\\\\n    printStructLine(&data[0]);\\\\n    {\\\\n        twoIntsStruct * data = dataRef;\\\\n\\\\n        free(data);\\\\n    }\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The inner scope's local `data` pointer shadows the outer one and is never freed, leaking the calloc'd buffer. Added `free(data)` before the scope ends so the allocated memory is released while preserving the printed output and control flow.\\\"}\",\"refusal\":null,\"reasoning\":null}}],\"usage\":{\"prompt_tokens\":405,\"completion_tokens\":270,\"total_tokens\":675,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_write_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.0001323,\"allowance\":0.0001323,\"tokens\":{\"input\":405,\"output\":270,\"reasoning\":0,\"cache_read\":0,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:22:32.853+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__twoIntsStruct_calloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__twoIntsStruct_calloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    twoIntsStruct * data;\\n    twoIntsStruct * &dataRef = data;\\n    data = NULL;\\n\\n    data = (twoIntsStruct *)calloc(100, sizeof(twoIntsStruct));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0].intOne = 0;\\n    data[0].intTwo = 0;\\n    printStructLine(&data[0]);\\n    {\\n        twoIntsStruct * data = dataRef;\\n\\n        free(data);\\n    }\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The inner scope's local `data` pointer shadows the outer one and is never freed, leaking the calloc'd buffer. Added `free(data)` before the scope ends so the allocated memory is released while preserving the printed output and control flow.\"}",
+  "cost": {
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 270,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00013230000000000002,
+    "prompt_tokens": 405
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 11.920415102009429,
+  "response_meta": {
+    "content_chars": 833,
+    "created": 1794424953,
+    "finish_reason": "stop",
+    "id": "gen-1794424953-BR8vekPQK0Rwlz9kFiK0",
+    "model": "mimo-v2.6-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0056",
+  "usage": {
+    "completion_tokens": 270,
+    "completion_tokens_details": {
+      "audio_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.0001323,
+      "billing_source": "go",
+      "list_cost": 0.0001323,
+      "tokens": {
+        "cache_read": 0,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 405,
+        "output": 270,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 405,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "total_tokens": 675
+  },
+  "wall_seconds": 11.920439947993145
+}

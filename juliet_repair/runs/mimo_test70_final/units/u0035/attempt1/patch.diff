@@ -1,0 +1,12 @@
+--- a/CWE401_Memory_Leak__new_array_int_01.cpp
++++ b/CWE401_Memory_Leak__new_array_int_01.cpp
+@@ -16,7 +16,8 @@
+     data[0] = 5;
+     printIntLine(data[0]);
+ 
+-    ;
++    delete [] data;
++    data = NULL;
+ }
+ 
+ 

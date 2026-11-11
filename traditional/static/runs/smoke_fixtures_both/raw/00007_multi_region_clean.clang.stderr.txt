@@ -1,0 +1,25 @@
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/multi_region.c:11:9: warning: Potential leak of memory pointed to by 'values' [unix.Malloc]
+   11 |         return values[0];
+      |         ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/multi_region.c:32:12: note: Calling 'leak_region'
+   32 |     return leak_region(argc) + clean_region(argc);
+      |            ^~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/multi_region.c:5:26: note: Memory is allocated
+    5 |     int *values = (int *)malloc(4 * sizeof(int));
+      |                          ^~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/multi_region.c:6:9: note: Assuming 'values' is not equal to NULL
+    6 |     if (values == NULL) {
+      |         ^~~~~~~~~~~~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/multi_region.c:6:5: note: Taking false branch
+    6 |     if (values == NULL) {
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/multi_region.c:10:9: note: 'argc' is > 0
+   10 |     if (argc > 0) {
+      |         ^~~~
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/multi_region.c:10:5: note: Taking true branch
+   10 |     if (argc > 0) {
+      |     ^
+/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/static/fixtures/multi_region.c:11:9: note: Potential leak of memory pointed to by 'values'
+   11 |         return values[0];
+      |         ^
+1 warning generated.

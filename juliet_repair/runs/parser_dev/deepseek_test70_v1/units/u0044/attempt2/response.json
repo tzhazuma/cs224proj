@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:17.882+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-9302-7a49-8f4c-d6c912ebdeec"
+      },
+      "http_status": 200,
+      "latency_seconds": 8.531192433001706,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-9eaa2c60e276405fbbeb3e17a88ae1e4\",\"object\":\"chat.completion\",\"created\":1794424869,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_char_72a.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n#include <vector>\\\\n\\\\n#include <wchar.h>\\\\n\\\\nusing namespace std;\\\\n\\\\nnamespace CWE401_Memory_Leak__new_char_72\\\\n{\\\\n\\\\n\\\\nvoid badSink(vector<char *> dataVector);\\\\n\\\\nvoid bad()\\\\n{\\\\n    char * data;\\\\n    vector<char *> dataVector;\\\\n    data = NULL;\\\\n\\\\n    data = new char;\\\\n\\\\n    *data = 'A';\\\\n    printHexCharLine(*data);\\\\n\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    dataVector.insert(dataVector.end(), 1, data);\\\\n    badSink(dataVector);\\\\n\\\\n    delete data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The bad() function allocated a char with new and never freed it. Added a matching delete after badSink is called, preserving the printed output and behavior while eliminating the memory leak. Only the file containing the allocation was changed.\\\"}\"}}],\"usage\":{\"prompt_tokens\":907,\"completion_tokens\":268,\"total_tokens\":1175,\"prompt_tokens_details\":{\"cached_tokens\":256},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00025922,\"allowance\":0.00015553,\"tokens\":{\"input\":651,\"output\":268,\"reasoning\":0,\"cache_read\":256,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:09.351+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_char_72a.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n#include <vector>\\n\\n#include <wchar.h>\\n\\nusing namespace std;\\n\\nnamespace CWE401_Memory_Leak__new_char_72\\n{\\n\\n\\nvoid badSink(vector<char *> dataVector);\\n\\nvoid bad()\\n{\\n    char * data;\\n    vector<char *> dataVector;\\n    data = NULL;\\n\\n    data = new char;\\n\\n    *data = 'A';\\n    printHexCharLine(*data);\\n\\n    dataVector.insert(dataVector.end(), 1, data);\\n    dataVector.insert(dataVector.end(), 1, data);\\n    dataVector.insert(dataVector.end(), 1, data);\\n    badSink(dataVector);\\n\\n    delete data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The bad() function allocated a char with new and never freed it. Added a matching delete after badSink is called, preserving the printed output and behavior while eliminating the memory leak. Only the file containing the allocation was changed.\"}",
+  "cost": {
+    "cached_prompt_tokens": 256,
+    "completion_tokens": 268,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.0005184359999999999,
+    "prompt_tokens": 907
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 8.531192433001706,
+  "response_meta": {
+    "content_chars": 897,
+    "created": 1794424869,
+    "finish_reason": "stop",
+    "id": "chatcmpl-9eaa2c60e276405fbbeb3e17a88ae1e4",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0044",
+  "usage": {
+    "completion_tokens": 268,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00015553,
+      "billing_source": "go",
+      "list_cost": 0.00025922,
+      "tokens": {
+        "cache_read": 256,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 651,
+        "output": 268,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 907,
+    "prompt_tokens_details": {
+      "cached_tokens": 256
+    },
+    "total_tokens": 1175
+  },
+  "wall_seconds": 8.531227692001266
+}

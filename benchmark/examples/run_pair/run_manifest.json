@@ -1,0 +1,73 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "example_pair_v1",
+  "created_at": "2026-11-12T00:00:00Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "pair_detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-demo-pairs",
+    "split_id": "test",
+    "path": "examples/run_pair/predictions.jsonl",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "unit_manifest": null,
+    "unit_count": 2,
+    "group_count": 1,
+    "label_counts": {
+      "vulnerable": 1,
+      "non_vulnerable": 1
+    }
+  },
+  "method": {
+    "method_id": "llm.example.direct",
+    "family": "llm",
+    "name": "Example LLM / direct",
+    "strategy": "direct",
+    "model": {
+      "model_id": "example-model",
+      "family": "example",
+      "provider": "example-provider",
+      "endpoint": "https://example.invalid/v1",
+      "version": "0",
+      "context_window": 8192,
+      "tokenizer": "example",
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 128
+      },
+      "price_snapshot": "synthetic"
+    },
+    "tool": null,
+    "config_sha256": null
+  },
+  "execution": {
+    "started_at": "2026-11-12T00:00:00Z",
+    "finished_at": "2026-11-12T00:00:00Z",
+    "status": "completed",
+    "planned_units": 2,
+    "recorded_units": 2,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {
+      "synthetic": true
+    }
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": null,
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "5b5ef94e42c1b3089cc4151fbf58defad1a01cb4fe6ff13da96598ccb112218f"
+  },
+  "legacy_import": null,
+  "notes": [
+    "synthetic schema example; not an experimental result"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:37.090+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-eba4-77d4-8402-7e7172e8ef9a"
+      },
+      "http_status": 200,
+      "latency_seconds": 5.045037855990813,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-22c51edf58314867ad1cdd1913091d2d\",\"object\":\"chat.completion\",\"created\":1794424892,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__wchar_t_realloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__wchar_t_realloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    wchar_t * data;\\\\n    wchar_t * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (wchar_t *)realloc(data, 100*sizeof(wchar_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n    {\\\\n        wchar_t * data = dataRef;\\\\n\\\\n        ;\\\\n    }\\\\n    free(data);\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The heap buffer allocated with realloc was never freed. Added free(data) at the end of bad() to release the memory while preserving all printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":398,\"completion_tokens\":240,\"total_tokens\":638,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00018488,\"allowance\":0.00011093,\"tokens\":{\"input\":270,\"output\":240,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:32.044+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__wchar_t_realloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__wchar_t_realloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    wchar_t * data;\\n    wchar_t * &dataRef = data;\\n    data = NULL;\\n\\n    data = (wchar_t *)realloc(data, 100*sizeof(wchar_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n    {\\n        wchar_t * data = dataRef;\\n\\n        ;\\n    }\\n    free(data);\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The heap buffer allocated with realloc was never freed. Added free(data) at the end of bad() to release the memory while preserving all printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 240,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00036976800000000003,
+    "prompt_tokens": 398
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 5.045037855990813,
+  "response_meta": {
+    "content_chars": 705,
+    "created": 1794424892,
+    "finish_reason": "stop",
+    "id": "chatcmpl-22c51edf58314867ad1cdd1913091d2d",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0070",
+  "usage": {
+    "completion_tokens": 240,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00011093,
+      "billing_source": "go",
+      "list_cost": 0.00018488,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 270,
+        "output": 240,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 398,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 638
+  },
+  "wall_seconds": 5.045062542005326
+}

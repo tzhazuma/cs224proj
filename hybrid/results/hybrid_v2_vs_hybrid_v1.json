@@ -1,0 +1,626 @@
+{
+  "schema_version": "hybrid-version-compare-v1",
+  "generated_at_utc": "2026-11-11T21:04:31.837641+00:00",
+  "v1_run_id": "hybrid_v1",
+  "v2_run_id": "hybrid_v2",
+  "v1_units_sha256": "f01db633e971b334075faa570418bf86b182046b6c8d47d75508559cb9d73e83",
+  "v2_units_sha256": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6",
+  "changed_source_units": [
+    "CWE401_Memory_Leak__int_malloc_22__good",
+    "CWE401_Memory_Leak__malloc_realloc_int64_t_09__good",
+    "CWE401_Memory_Leak__new_array_char_22__good",
+    "CWE401_Memory_Leak__new_array_int_22__good",
+    "CWE401_Memory_Leak__new_int_22__good",
+    "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good"
+  ],
+  "changed_source_count": 6,
+  "rows": [
+    {
+      "model": "deepseek",
+      "method": "direct",
+      "n": 140,
+      "v1_accuracy": 0.9642857142857143,
+      "v2_accuracy": 0.9642857142857143,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "v1_correct": 135,
+      "v2_correct": 135,
+      "mcnemar": {
+        "a_right_b_wrong": 0,
+        "a_wrong_b_right": 0,
+        "discordant": 0,
+        "p_value_exact": 1.0
+      },
+      "v1_valid": 140,
+      "v2_valid": 140,
+      "v1_right_v2_wrong": 0,
+      "v1_wrong_v2_right": 0,
+      "v1_usage": {
+        "prompt_tokens": 78097,
+        "completion_tokens": 6837,
+        "list_cost_usd": 0.020569692,
+        "allowance_usd": 0.00617079
+      },
+      "v2_usage": {
+        "prompt_tokens": 78091,
+        "completion_tokens": 6892,
+        "list_cost_usd": 0.010185234,
+        "allowance_usd": 0.00611102
+      },
+      "v1_prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+      "v2_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2"
+    },
+    {
+      "model": "deepseek",
+      "method": "static",
+      "n": 140,
+      "v1_accuracy": 0.9642857142857143,
+      "v2_accuracy": 0.9642857142857143,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "v1_correct": 135,
+      "v2_correct": 135,
+      "mcnemar": {
+        "a_right_b_wrong": 0,
+        "a_wrong_b_right": 0,
+        "discordant": 0,
+        "p_value_exact": 1.0
+      },
+      "v1_valid": 140,
+      "v2_valid": 140,
+      "v1_right_v2_wrong": 0,
+      "v1_wrong_v2_right": 0,
+      "v1_usage": {
+        "prompt_tokens": 103764,
+        "completion_tokens": 6964,
+        "list_cost_usd": 0.0234924,
+        "allowance_usd": 0.00704755
+      },
+      "v2_usage": {
+        "prompt_tokens": 103758,
+        "completion_tokens": 7064,
+        "list_cost_usd": 0.011730036,
+        "allowance_usd": 0.00703785
+      },
+      "v1_prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+      "v2_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2"
+    },
+    {
+      "model": "deepseek",
+      "method": "dynamic",
+      "n": 140,
+      "v1_accuracy": 0.9928571428571429,
+      "v2_accuracy": 0.9714285714285714,
+      "delta": -0.02142857142857143,
+      "delta_ci95": [
+        -0.050000000000000044,
+        0.0
+      ],
+      "v1_correct": 139,
+      "v2_correct": 136,
+      "mcnemar": {
+        "a_right_b_wrong": 0,
+        "a_wrong_b_right": 3,
+        "discordant": 3,
+        "p_value_exact": 0.25
+      },
+      "v1_valid": 140,
+      "v2_valid": 140,
+      "v1_right_v2_wrong": 3,
+      "v1_wrong_v2_right": 0,
+      "v1_usage": {
+        "prompt_tokens": 98189,
+        "completion_tokens": 7138,
+        "list_cost_usd": 0.022894236,
+        "allowance_usd": 0.00686811
+      },
+      "v2_usage": {
+        "prompt_tokens": 98183,
+        "completion_tokens": 7211,
+        "list_cost_usd": 0.011471202,
+        "allowance_usd": 0.00688256
+      },
+      "v1_prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+      "v2_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2"
+    },
+    {
+      "model": "deepseek",
+      "method": "combined",
+      "n": 140,
+      "v1_accuracy": 1.0,
+      "v2_accuracy": 0.9714285714285714,
+      "delta": -0.02857142857142857,
+      "delta_ci95": [
+        -0.05714285714285716,
+        -0.0071428571428571175
+      ],
+      "v1_correct": 140,
+      "v2_correct": 136,
+      "mcnemar": {
+        "a_right_b_wrong": 0,
+        "a_wrong_b_right": 4,
+        "discordant": 4,
+        "p_value_exact": 0.125
+      },
+      "v1_valid": 140,
+      "v2_valid": 140,
+      "v1_right_v2_wrong": 4,
+      "v1_wrong_v2_right": 0,
+      "v1_usage": {
+        "prompt_tokens": 115596,
+        "completion_tokens": 7182,
+        "list_cost_usd": 0.029260464,
+        "allowance_usd": 0.00877799
+      },
+      "v2_usage": {
+        "prompt_tokens": 115590,
+        "completion_tokens": 7228,
+        "list_cost_usd": 0.011890979999999999,
+        "allowance_usd": 0.00713438
+      },
+      "v1_prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+      "v2_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2"
+    },
+    {
+      "model": "deepseek",
+      "method": "shuffled",
+      "n": 140,
+      "v1_accuracy": 0.9642857142857143,
+      "v2_accuracy": 0.9571428571428572,
+      "delta": -0.007142857142857143,
+      "delta_ci95": [
+        -0.0357142857142857,
+        0.014285714285714346
+      ],
+      "v1_correct": 135,
+      "v2_correct": 134,
+      "mcnemar": {
+        "a_right_b_wrong": 1,
+        "a_wrong_b_right": 2,
+        "discordant": 3,
+        "p_value_exact": 1.0
+      },
+      "v1_valid": 140,
+      "v2_valid": 140,
+      "v1_right_v2_wrong": 2,
+      "v1_wrong_v2_right": 1,
+      "v1_usage": {
+        "prompt_tokens": 115596,
+        "completion_tokens": 7228,
+        "list_cost_usd": 0.022316112,
+        "allowance_usd": 0.00669461
+      },
+      "v2_usage": {
+        "prompt_tokens": 115590,
+        "completion_tokens": 7297,
+        "list_cost_usd": 0.010859868,
+        "allowance_usd": 0.00651569
+      },
+      "v1_prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+      "v2_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2"
+    },
+    {
+      "model": "mimo",
+      "method": "direct",
+      "n": 140,
+      "v1_accuracy": 0.9642857142857143,
+      "v2_accuracy": 0.9714285714285714,
+      "delta": 0.007142857142857143,
+      "delta_ci95": [
+        0.0,
+        0.021428571428571463
+      ],
+      "v1_correct": 135,
+      "v2_correct": 136,
+      "mcnemar": {
+        "a_right_b_wrong": 1,
+        "a_wrong_b_right": 0,
+        "discordant": 1,
+        "p_value_exact": 1.0
+      },
+      "v1_valid": 140,
+      "v2_valid": 140,
+      "v1_right_v2_wrong": 0,
+      "v1_wrong_v2_right": 1,
+      "v1_usage": {
+        "prompt_tokens": 77416,
+        "completion_tokens": 6477,
+        "list_cost_usd": 0.006470116800000001,
+        "allowance_usd": 0.00647005
+      },
+      "v2_usage": {
+        "prompt_tokens": 77410,
+        "completion_tokens": 6557,
+        "list_cost_usd": 0.0047179552,
+        "allowance_usd": 0.0047177
+      },
+      "v1_prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+      "v2_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2"
+    },
+    {
+      "model": "mimo",
+      "method": "static",
+      "n": 140,
+      "v1_accuracy": 0.9714285714285714,
+      "v2_accuracy": 0.9642857142857143,
+      "delta": -0.007142857142857143,
+      "delta_ci95": [
+        -0.021428571428571463,
+        0.0
+      ],
+      "v1_correct": 136,
+      "v2_correct": 135,
+      "mcnemar": {
+        "a_right_b_wrong": 0,
+        "a_wrong_b_right": 1,
+        "discordant": 1,
+        "p_value_exact": 1.0
+      },
+      "v1_valid": 140,
+      "v2_valid": 140,
+      "v1_right_v2_wrong": 1,
+      "v1_wrong_v2_right": 0,
+      "v1_usage": {
+        "prompt_tokens": 102773,
+        "completion_tokens": 6617,
+        "list_cost_usd": 0.014098464800000002,
+        "allowance_usd": 0.01409857
+      },
+      "v2_usage": {
+        "prompt_tokens": 102767,
+        "completion_tokens": 6601,
+        "list_cost_usd": 0.0062870136,
+        "allowance_usd": 0.00628686
+      },
+      "v1_prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+      "v2_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2"
+    },
+    {
+      "model": "mimo",
+      "method": "dynamic",
+      "n": 140,
+      "v1_accuracy": 0.9642857142857143,
+      "v2_accuracy": 0.95,
+      "delta": -0.014285714285714285,
+      "delta_ci95": [
+        -0.03571428571428581,
+        0.0
+      ],
+      "v1_correct": 135,
+      "v2_correct": 133,
+      "mcnemar": {
+        "a_right_b_wrong": 0,
+        "a_wrong_b_right": 2,
+        "discordant": 2,
+        "p_value_exact": 0.5
+      },
+      "v1_valid": 140,
+      "v2_valid": 140,
+      "v1_right_v2_wrong": 2,
+      "v1_wrong_v2_right": 0,
+      "v1_usage": {
+        "prompt_tokens": 97264,
+        "completion_tokens": 6639,
+        "list_cost_usd": 0.013544104000000001,
+        "allowance_usd": 0.01354424
+      },
+      "v2_usage": {
+        "prompt_tokens": 97258,
+        "completion_tokens": 6631,
+        "list_cost_usd": 0.0057348928,
+        "allowance_usd": 0.00573469
+      },
+      "v1_prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+      "v2_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2"
+    },
+    {
+      "model": "mimo",
+      "method": "combined",
+      "n": 140,
+      "v1_accuracy": 0.9857142857142858,
+      "v2_accuracy": 0.9714285714285714,
+      "delta": -0.014285714285714285,
+      "delta_ci95": [
+        -0.03571428571428581,
+        0.0
+      ],
+      "v1_correct": 138,
+      "v2_correct": 136,
+      "mcnemar": {
+        "a_right_b_wrong": 0,
+        "a_wrong_b_right": 2,
+        "discordant": 2,
+        "p_value_exact": 0.5
+      },
+      "v1_valid": 140,
+      "v2_valid": 140,
+      "v1_right_v2_wrong": 2,
+      "v1_wrong_v2_right": 0,
+      "v1_usage": {
+        "prompt_tokens": 114501,
+        "completion_tokens": 6675,
+        "list_cost_usd": 0.011963319200000001,
+        "allowance_usd": 0.01196326
+      },
+      "v2_usage": {
+        "prompt_tokens": 114495,
+        "completion_tokens": 6700,
+        "list_cost_usd": 0.0048131272000000004,
+        "allowance_usd": 0.00481298
+      },
+      "v1_prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+      "v2_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2"
+    },
+    {
+      "model": "mimo",
+      "method": "shuffled",
+      "n": 140,
+      "v1_accuracy": 0.9642857142857143,
+      "v2_accuracy": 0.95,
+      "delta": -0.014285714285714285,
+      "delta_ci95": [
+        -0.03571428571428581,
+        0.0
+      ],
+      "v1_correct": 135,
+      "v2_correct": 133,
+      "mcnemar": {
+        "a_right_b_wrong": 0,
+        "a_wrong_b_right": 2,
+        "discordant": 2,
+        "p_value_exact": 0.5
+      },
+      "v1_valid": 140,
+      "v2_valid": 140,
+      "v1_right_v2_wrong": 2,
+      "v1_wrong_v2_right": 0,
+      "v1_usage": {
+        "prompt_tokens": 114501,
+        "completion_tokens": 6727,
+        "list_cost_usd": 0.009255831200000002,
+        "allowance_usd": 0.00925563
+      },
+      "v2_usage": {
+        "prompt_tokens": 114495,
+        "completion_tokens": 6820,
+        "list_cost_usd": 0.004644768800000001,
+        "allowance_usd": 0.00464462
+      },
+      "v1_prompt_version": "hybrid-juliet-llm-binary-2026-11-12.1",
+      "v2_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2"
+    }
+  ],
+  "pooled": [
+    {
+      "model": "deepseek",
+      "runs": 5,
+      "v1_accuracy": 0.9771428571428571,
+      "v2_accuracy": 0.9657142857142857,
+      "delta": -0.011428571428571344
+    },
+    {
+      "model": "mimo",
+      "runs": 5,
+      "v1_accuracy": 0.97,
+      "v2_accuracy": 0.9614285714285714,
+      "delta": -0.008571428571428563
+    },
+    {
+      "model": "all",
+      "runs": 10,
+      "v1_accuracy": 0.9735714285714285,
+      "v2_accuracy": 0.9635714285714285,
+      "delta": -0.010000000000000009
+    }
+  ],
+  "flips": [
+    {
+      "model": "deepseek",
+      "method": "dynamic",
+      "unit_id": "CWE401_Memory_Leak__new_array_char_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "deepseek",
+      "method": "dynamic",
+      "unit_id": "CWE401_Memory_Leak__new_array_int_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "deepseek",
+      "method": "dynamic",
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "deepseek",
+      "method": "combined",
+      "unit_id": "CWE401_Memory_Leak__int_malloc_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "deepseek",
+      "method": "combined",
+      "unit_id": "CWE401_Memory_Leak__new_array_char_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "deepseek",
+      "method": "combined",
+      "unit_id": "CWE401_Memory_Leak__new_array_int_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "deepseek",
+      "method": "combined",
+      "unit_id": "CWE401_Memory_Leak__new_int_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "deepseek",
+      "method": "shuffled",
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_09__good",
+      "label": "good",
+      "v1_predicted_label": "vulnerable",
+      "v2_predicted_label": "not_vulnerable",
+      "v1_correct": false,
+      "v2_correct": true,
+      "source_changed": true
+    },
+    {
+      "model": "deepseek",
+      "method": "shuffled",
+      "unit_id": "CWE401_Memory_Leak__new_array_int_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "deepseek",
+      "method": "shuffled",
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "mimo",
+      "method": "direct",
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int_01__bad",
+      "label": "bad",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": false,
+      "v2_correct": true,
+      "source_changed": false
+    },
+    {
+      "model": "mimo",
+      "method": "static",
+      "unit_id": "CWE401_Memory_Leak__new_array_char_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "mimo",
+      "method": "dynamic",
+      "unit_id": "CWE401_Memory_Leak__int_malloc_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "mimo",
+      "method": "dynamic",
+      "unit_id": "CWE401_Memory_Leak__new_array_char_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "mimo",
+      "method": "combined",
+      "unit_id": "CWE401_Memory_Leak__new_array_char_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "mimo",
+      "method": "combined",
+      "unit_id": "CWE401_Memory_Leak__new_array_int_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "mimo",
+      "method": "shuffled",
+      "unit_id": "CWE401_Memory_Leak__new_array_char_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    },
+    {
+      "model": "mimo",
+      "method": "shuffled",
+      "unit_id": "CWE401_Memory_Leak__new_array_int_22__good",
+      "label": "good",
+      "v1_predicted_label": "not_vulnerable",
+      "v2_predicted_label": "vulnerable",
+      "v1_correct": true,
+      "v2_correct": false,
+      "source_changed": true
+    }
+  ],
+  "flip_counts": {
+    "v1_right_v2_wrong": 16,
+    "v1_wrong_v2_right": 2
+  }
+}

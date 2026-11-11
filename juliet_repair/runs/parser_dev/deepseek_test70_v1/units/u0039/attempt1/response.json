@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:20:55.203+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-2d7f-7a69-94f5-5b1d084879f7"
+      },
+      "http_status": 200,
+      "latency_seconds": 11.879899432009552,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-9736352b71374bad8a9936ed05cee634\",\"object\":\"chat.completion\",\"created\":1794424843,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__new_array_wchar_t_01.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_01\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    wchar_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = new wchar_t[100];\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n\\\\n    delete [] data;\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added `delete [] data;` after the last use of the heap-allocated array to free the memory, preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":350,\"completion_tokens\":180,\"total_tokens\":530,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00014168,\"allowance\":0.00008501,\"tokens\":{\"input\":222,\"output\":180,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:20:43.324+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__new_array_wchar_t_01.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__new_array_wchar_t_01\\n{\\n\\n\\nvoid bad()\\n{\\n    wchar_t * data;\\n    data = NULL;\\n\\n    data = new wchar_t[100];\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n\\n    delete [] data;\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"Added `delete [] data;` after the last use of the heap-allocated array to free the memory, preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 180,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.000283368,
+    "prompt_tokens": 350
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 11.879899432009552,
+  "response_meta": {
+    "content_chars": 527,
+    "created": 1794424843,
+    "finish_reason": "stop",
+    "id": "chatcmpl-9736352b71374bad8a9936ed05cee634",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0039",
+  "usage": {
+    "completion_tokens": 180,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 8.501e-05,
+      "billing_source": "go",
+      "list_cost": 0.00014168,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 222,
+        "output": 180,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 350,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 530
+  },
+  "wall_seconds": 11.879935524004395
+}

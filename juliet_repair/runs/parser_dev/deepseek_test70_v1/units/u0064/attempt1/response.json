@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:21:34.250+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc0e-d555-7c39-89c0-ca0534d8bfda"
+      },
+      "http_status": 200,
+      "latency_seconds": 7.908020909992047,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-72aba9885c4742a18634fc04735c4fbb\",\"object\":\"chat.completion\",\"created\":1794424886,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__wchar_t_calloc_33.cpp\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\nnamespace CWE401_Memory_Leak__wchar_t_calloc_33\\\\n{\\\\n\\\\n\\\\nvoid bad()\\\\n{\\\\n    wchar_t * data;\\\\n    wchar_t * &dataRef = data;\\\\n    data = NULL;\\\\n\\\\n    data = (wchar_t *)calloc(100, sizeof(wchar_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    wcscpy(data, L\\\\\\\"A String\\\\\\\");\\\\n    printWLine(data);\\\\n    {\\\\n        wchar_t * data = dataRef;\\\\n\\\\n        ;\\\\n    }\\\\n    free(data);\\\\n}\\\\n\\\\n\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"The calloc-allocated buffer was never freed. Added free(data) at the end of bad() to release the memory while preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":396,\"completion_tokens\":238,\"total_tokens\":634,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00018338,\"allowance\":0.00011003,\"tokens\":{\"input\":268,\"output\":238,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:21:26.342+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__wchar_t_calloc_33.cpp\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\nnamespace CWE401_Memory_Leak__wchar_t_calloc_33\\n{\\n\\n\\nvoid bad()\\n{\\n    wchar_t * data;\\n    wchar_t * &dataRef = data;\\n    data = NULL;\\n\\n    data = (wchar_t *)calloc(100, sizeof(wchar_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    wcscpy(data, L\\\"A String\\\");\\n    printWLine(data);\\n    {\\n        wchar_t * data = dataRef;\\n\\n        ;\\n    }\\n    free(data);\\n}\\n\\n\\n}\\n\"}], \"explanation\": \"The calloc-allocated buffer was never freed. Added free(data) at the end of bad() to release the memory while preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 238,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00036676799999999996,
+    "prompt_tokens": 396
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 7.908020909992047,
+  "response_meta": {
+    "content_chars": 686,
+    "created": 1794424886,
+    "finish_reason": "stop",
+    "id": "chatcmpl-72aba9885c4742a18634fc04735c4fbb",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0064",
+  "usage": {
+    "completion_tokens": 238,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 0.00011003,
+      "billing_source": "go",
+      "list_cost": 0.00018338,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 268,
+        "output": 238,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 396,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 634
+  },
+  "wall_seconds": 7.908048005003366
+}

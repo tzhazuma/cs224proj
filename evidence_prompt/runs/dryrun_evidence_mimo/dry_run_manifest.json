@@ -1,0 +1,176 @@
+{
+  "api_key_required": false,
+  "artifact": "evidence_prompt_dry_run",
+  "authorization_header_included_in_file": false,
+  "config": {
+    "api": {
+      "backoff_base_seconds": 1.5,
+      "backoff_cap_seconds": 30.0,
+      "base_url": "https://opencode.ai/zen/go/v1",
+      "cached_input_price_usd_per_1m": 0.0028,
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "input_price_usd_per_1m": 0.14,
+      "max_attempts": 3,
+      "max_tokens": 8192,
+      "max_tokens_field": "max_completion_tokens",
+      "model": "mimo-v2.6-flash",
+      "output_price_usd_per_1m": 0.28,
+      "reasoning_effort": "none",
+      "response_format": "json_object",
+      "temperature": 0.0,
+      "thinking": "disabled",
+      "timeout_seconds": 300.0,
+      "user_agent": "secvul-eval-runner/1.0"
+    },
+    "api_key_env": "OPENCODE_API_KEY",
+    "concurrency": 16,
+    "config_fingerprint": "0daedca301b1ca1b0438f3b11f7d8600786a9b201b1f29e3187ea45562721510",
+    "context_used": false,
+    "dataset_path": "splits/test_detection_160.json",
+    "dataset_sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "dataset_type": "independent",
+    "dataset_units": 160,
+    "dry_run": true,
+    "expected_requests": 160,
+    "input_fields": [
+      "func_body"
+    ],
+    "limit": 0,
+    "package": "evidence_prompt",
+    "package_version": "1.0.0",
+    "partial": false,
+    "prompt_version": "secvul-evidence-prompt-2026-11-12.1",
+    "refresh": false,
+    "resume": false,
+    "retry_invalid": false,
+    "reuse_cached_errors": false,
+    "runner_version": "1.0.0",
+    "selected_units": 160,
+    "strategy": "evidence",
+    "task": "detection",
+    "template_sha256": "a91bda673c2ae8c4b0924c85adeee9ca3ca5bf50616227fe4ae261826f20e2f3"
+  },
+  "created_at": "2026-11-11T19:14:23.731+00:00",
+  "dataset": {
+    "full_label_counts": {
+      "functions": 160,
+      "non_vulnerable": 32,
+      "units": 160,
+      "vulnerable": 128
+    },
+    "metadata": {
+      "constraints": [
+        "At most one function per (project, commit_id)",
+        "No vulnerable/fixed pair within samples",
+        "Negative samples are not the fixed_func_idx target of any vulnerable source row"
+      ],
+      "cross_dataset_isolation": "No shared source idx or (project, commit_id) group",
+      "dataset_type": "independent_functions",
+      "excluded_malformed_rows": [
+        {
+          "idx": 3510,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9418,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9578,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10195,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10196,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 16033,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 18071,
+          "reason": "changed_statements is not a valid serialized list"
+        }
+      ],
+      "field_encoding": {
+        "context": "Original workbook string, not evaluated",
+        "json_arrays": [
+          "changed_lines",
+          "changed_statements",
+          "cve_list",
+          "cwe_list"
+        ]
+      },
+      "non_vulnerable_count": 32,
+      "sample_count": 160,
+      "sampling": "Shuffle source rows with random.Random(seed); keep at most one item per project+commit. Select pairs first.",
+      "schema_version": 1,
+      "seed": 42,
+      "source_file": "SecVulEval.xlsx",
+      "source_label_counts": {
+        "False": 14442,
+        "True": 10998
+      },
+      "source_rows": 25440,
+      "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+      "source_sheet": "train",
+      "split": {
+        "manifest": "splits/split_v1.json",
+        "protocol": "research/evaluation_protocol.md#4",
+        "role": "test",
+        "seed": 42,
+        "source_dataset": "datasets/independent_200.json",
+        "source_dataset_sha256": "055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d",
+        "split_id": "secvul-split-v1",
+        "task": "detection"
+      },
+      "usable_rows": 25433,
+      "vulnerable_count": 128
+    },
+    "path": "splits/test_detection_160.json",
+    "selected_label_counts": {
+      "functions": 160,
+      "non_vulnerable": 32,
+      "units": 160,
+      "vulnerable": 128
+    },
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "type": "independent"
+  },
+  "dry_run": true,
+  "experimental_results": false,
+  "no_api_calls": true,
+  "out_dir": "/mnt/c/Users/tzh03/Downloads/cs224proj/evidence_prompt/runs/dryrun_evidence_mimo",
+  "prompt_audit": {
+    "all_only_source_variable": true,
+    "all_source_reconstructed": true,
+    "forbidden_template_tokens_present": [],
+    "line_count_max": 1172,
+    "line_count_mean": 88.48125,
+    "line_count_min": 3,
+    "prompt_chars_max": 43675,
+    "prompt_chars_mean": 6150.975,
+    "prompt_chars_min": 2779,
+    "requests": 160
+  },
+  "request_count": 160,
+  "requests_file": "dry_run_requests.jsonl",
+  "requests_sha256": "5a9fda966a4ac8592ba82fa9e925a68e61605a9f26b16e8cd661a3d729639cd3",
+  "schema_version": 1,
+  "session": {
+    "header": "x-opencode-session",
+    "is_secret": false,
+    "note": "Random per-run identifier used only for OpenCode Go request routing and prompt-cache affinity. It is not an API key; Authorization is never written to run artifacts.",
+    "sha256": "1bd026c70e0b420bb7a23c8b174b0f114b12d8075bfa7f337266a39459afa6f6",
+    "source": "generated_for_dry_run",
+    "value": "ses_3e7e948f7ea4592e0a10055acea057ab"
+  },
+  "warnings": [
+    "DRY RUN ONLY: no model API was called and no predictions were produced.",
+    "The request file contains prompts and source code, but no API key and no labels."
+  ]
+}

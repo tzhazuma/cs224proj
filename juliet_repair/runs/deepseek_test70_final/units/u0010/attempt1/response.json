@@ -1,0 +1,70 @@
+{
+  "api_key_value_stored": false,
+  "attempt": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-11T19:29:12.749+00:00",
+      "headers": {
+        "content-type": "application/json",
+        "x-opencode-log-id": "01a1cc15-d8eb-799a-9c57-1f7aa062a12c"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.7339279989973875,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"chatcmpl-a3734fd4922843ddb9a08a0d2f41162a\",\"object\":\"chat.completion\",\"created\":1794425346,\"model\":\"deepseek-v4.1-flash\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"files\\\": [{\\\"path\\\": \\\"CWE401_Memory_Leak__int64_t_malloc_01.c\\\", \\\"content\\\": \\\"#include \\\\\\\"std_testcase.h\\\\\\\"\\\\n\\\\n#include <wchar.h>\\\\n\\\\n\\\\nvoid CWE401_Memory_Leak__int64_t_malloc_01_bad()\\\\n{\\\\n    int64_t * data;\\\\n    data = NULL;\\\\n\\\\n    data = (int64_t *)malloc(100*sizeof(int64_t));\\\\n    if (data == NULL) {exit(-1);}\\\\n\\\\n    data[0] = 5LL;\\\\n    printLongLongLine(data[0]);\\\\n\\\\n    free(data);\\\\n}\\\\n\\\"}], \\\"explanation\\\": \\\"Added free(data) at the end of the function to release the heap allocation, preserving the printed output and behavior.\\\"}\"}}],\"usage\":{\"prompt_tokens\":367,\"completion_tokens\":185,\"total_tokens\":552,\"prompt_tokens_details\":{\"cached_tokens\":128},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"cost\":0,\"opencode\":{\"billing_source\":\"go\",\"list_cost\":0.00014723,\"allowance\":0.00008834,\"tokens\":{\"input\":239,\"output\":185,\"reasoning\":0,\"cache_read\":128,\"cache_write_5m\":0,\"cache_write_1h\":0}}}}",
+      "started_at": "2026-11-11T19:29:06.015+00:00"
+    }
+  ],
+  "content": "{\"files\": [{\"path\": \"CWE401_Memory_Leak__int64_t_malloc_01.c\", \"content\": \"#include \\\"std_testcase.h\\\"\\n\\n#include <wchar.h>\\n\\n\\nvoid CWE401_Memory_Leak__int64_t_malloc_01_bad()\\n{\\n    int64_t * data;\\n    data = NULL;\\n\\n    data = (int64_t *)malloc(100*sizeof(int64_t));\\n    if (data == NULL) {exit(-1);}\\n\\n    data[0] = 5LL;\\n    printLongLongLine(data[0]);\\n\\n    free(data);\\n}\\n\"}], \"explanation\": \"Added free(data) at the end of the function to release the heap allocation, preserving the printed output and behavior.\"}",
+  "cost": {
+    "cached_prompt_tokens": 128,
+    "completion_tokens": 185,
+    "cost_basis": "input_output_prices",
+    "cost_usd": 0.00029446800000000004,
+    "prompt_tokens": 367
+  },
+  "error": null,
+  "http_status": 200,
+  "request_latency_seconds": 6.7339279989973875,
+  "response_meta": {
+    "content_chars": 530,
+    "created": 1794425346,
+    "finish_reason": "stop",
+    "id": "chatcmpl-a3734fd4922843ddb9a08a0d2f41162a",
+    "model": "deepseek-v4.1-flash",
+    "reasoning_chars": 0,
+    "reasoning_content_chars": 0,
+    "reasoning_tokens": 0,
+    "system_fingerprint": null
+  },
+  "schema": "juliet-repair-response-v1",
+  "status": "ok",
+  "unit_key": "u0010",
+  "usage": {
+    "completion_tokens": 185,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "cost": 0,
+    "opencode": {
+      "allowance": 8.834e-05,
+      "billing_source": "go",
+      "list_cost": 0.00014723,
+      "tokens": {
+        "cache_read": 128,
+        "cache_write_1h": 0,
+        "cache_write_5m": 0,
+        "input": 239,
+        "output": 185,
+        "reasoning": 0
+      }
+    },
+    "prompt_tokens": 367,
+    "prompt_tokens_details": {
+      "cached_tokens": 128
+    },
+    "total_tokens": 552
+  },
+  "wall_seconds": 6.73395140300272
+}

@@ -1,0 +1,203 @@
+{
+  "cases_file": "cases.jsonl",
+  "cases_sha256": "cc8db43b84f5eb106461cea6d86ac2b9934173c7ea5fe4abfb36690af1a7bc42",
+  "combined": {
+    "accuracy": 0.942684766214178,
+    "f1": 0.939180537772087,
+    "fn": 190,
+    "fp": 0,
+    "fpr": 0.0,
+    "fpr_ci95": [
+      0.0,
+      0.0023116523259497177
+    ],
+    "n": 3315,
+    "n_decisive": 3315,
+    "n_labeled": 3316,
+    "precision": 1.0,
+    "recall": 0.8853349426674714,
+    "recall_ci95": [
+      0.8690941288470253,
+      0.8997931629934488
+    ],
+    "specificity": 1.0,
+    "tn": 1658,
+    "tp": 1467
+  },
+  "config": {
+    "asan_options_extra": "",
+    "compile_timeout_s": 120.0,
+    "detectors": [
+      "asan",
+      "valgrind"
+    ],
+    "dry_run": false,
+    "extra_cflags": [],
+    "extra_ldflags": [],
+    "filter_text": null,
+    "jobs": 8,
+    "max_cases": null,
+    "rel_root": "/mnt/c/Users/tzh03/Downloads/cs224proj",
+    "valgrind_extra_args": [],
+    "valgrind_timeout_factor": 3.0
+  },
+  "counts": {
+    "labels": {
+      "0": 1658,
+      "1": 1658
+    },
+    "n_cases": 3316,
+    "n_decisive": 3315,
+    "n_inconclusive": 1,
+    "n_labeled": 3316,
+    "outcomes": {
+      "clean": 1848,
+      "inconclusive": 1,
+      "leak": 1467
+    },
+    "runtime_classes": {
+      "exited_nonzero": 1448,
+      "exited_zero": 1868
+    }
+  },
+  "detectors": {
+    "asan": {
+      "accuracy": 0.9365558912386707,
+      "f1": 0.9321266968325792,
+      "fn": 210,
+      "fp": 0,
+      "fpr": 0.0,
+      "fpr_ci95": [
+        0.0,
+        0.0023116523259497177
+      ],
+      "n": 3310,
+      "n_cases": 3316,
+      "n_decisive": 3310,
+      "n_labeled": 3316,
+      "precision": 1.0,
+      "recall": 0.8728813559322034,
+      "recall_ci95": [
+        0.8559483546134767,
+        0.8880841663716224
+      ],
+      "specificity": 1.0,
+      "status_counts": {
+        "clean": 1868,
+        "inconclusive": 6,
+        "leak": 1442
+      },
+      "tn": 1658,
+      "tp": 1442
+    },
+    "valgrind": {
+      "accuracy": 0.9431164901664145,
+      "f1": 0.93947198969736,
+      "fn": 188,
+      "fp": 0,
+      "fpr": 0.0,
+      "fpr_ci95": [
+        0.0,
+        0.0023116523259497177
+      ],
+      "n": 3305,
+      "n_cases": 3316,
+      "n_decisive": 3305,
+      "n_labeled": 3316,
+      "precision": 1.0,
+      "recall": 0.8858530661809351,
+      "recall_ci95": [
+        0.8695892265859543,
+        0.9003211027878634
+      ],
+      "specificity": 1.0,
+      "status_counts": {
+        "clean": 1846,
+        "inconclusive": 11,
+        "leak": 1459
+      },
+      "tn": 1658,
+      "tp": 1459
+    }
+  },
+  "finished_at_utc": "2026-11-11T18:13:31Z",
+  "generated_at_utc": "2026-11-11T17:56:59Z",
+  "input": {
+    "kind": "juliet",
+    "n_discovered": 3316,
+    "provenance_path": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/provenance.json",
+    "provenance_sha256": "cba2d7c7466ce72afecf1973214af645e5c860e9b7378ccdd5bc4a866d3ef82e",
+    "root": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak",
+    "support_dir": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport"
+  },
+  "kind": "traditional_dynamic_cwe401_run",
+  "label_rule": "Ground truth comes from the manifest or from Juliet's preprocessor build variant. Predictions come only from runtime LeakSanitizer/Valgrind evidence; function names are not used as labels.",
+  "limitations": [
+    "Dynamic analysis only observes executed paths; untriggered branches are not evaluated.",
+    "LeakSanitizer and Valgrind may disagree on reachability and leak kind.",
+    "Juliet w32 cases are excluded; wchar_t cases are included unless excluded by the caller.",
+    "No fault injection is used; leaks that require an allocation failure (e.g. realloc failure) may not be triggered."
+  ],
+  "metrics_file": "metrics.json",
+  "metrics_sha256": "2983fd804329ce86bbdb43a9335a0562b1c2b808b73dd0d8de245c0cb98ac038",
+  "n_cases": 3316,
+  "n_results": 3316,
+  "partial_file": "results.partial.jsonl",
+  "project_root": "/mnt/c/Users/tzh03/Downloads/cs224proj",
+  "results_file": "results.jsonl",
+  "results_sha256": "405381672467c146ac9e183f427be27fbff677be26844b6782d28a0f02218f64",
+  "run_dir": "/mnt/c/Users/tzh03/Downloads/cs224proj/traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind",
+  "run_id": "cwe401_juliet_v1_3_asan_valgrind",
+  "schema_version": "dynamic-cwe401/1.0",
+  "tool_check": {
+    "asan": {
+      "available": true,
+      "build_exit_code": 0,
+      "build_stderr": "",
+      "clean_detected": true,
+      "clean_exit_code": 0,
+      "evidence_excerpt": "==104545==ERROR: LeakSanitizer: detected memory leaks\nDirect leak of 32 byte(s) in 1 object(s) allocated from:\nSUMMARY: AddressSanitizer: 32 byte(s) leaked in 1 allocation(s).",
+      "exit_code": 23,
+      "leak_detected": true,
+      "leak_exit_code": 23,
+      "leaked_bytes": 32,
+      "timed_out": false
+    },
+    "cc": {
+      "path": "/usr/bin/gcc",
+      "version": "gcc (Ubuntu 15.3.0-4ubuntu1) 15.3.0"
+    },
+    "cxx": {
+      "path": "/usr/bin/g++",
+      "version": "g++ (Ubuntu 15.3.0-4ubuntu1) 15.3.0"
+    },
+    "ok": true,
+    "platform": "Linux 6.18.58.1-microsoft-standard-WSL2",
+    "python": "3.14.8",
+    "valgrind": {
+      "available": true,
+      "definite_bytes": 32,
+      "evidence_excerpt": "Leak_DefinitelyLost: 32 bytes in 1 blocks are definitely lost in loss record 1 of 1",
+      "exit_code": 99,
+      "leak_detected": true,
+      "parse_error": null,
+      "path": "/tmp/valgrind-root/usr/bin/valgrind",
+      "timed_out": false,
+      "version": "valgrind-3.27.1"
+    }
+  },
+  "toolchain": {
+    "cc": {
+      "path": "/usr/bin/gcc",
+      "version": "gcc (Ubuntu 15.3.0-4ubuntu1) 15.3.0"
+    },
+    "cxx": {
+      "path": "/usr/bin/g++",
+      "version": "g++ (Ubuntu 15.3.0-4ubuntu1) 15.3.0"
+    },
+    "valgrind": {
+      "path": "/tmp/valgrind-root/usr/bin/valgrind",
+      "version": "valgrind-3.27.1"
+    }
+  }
+}

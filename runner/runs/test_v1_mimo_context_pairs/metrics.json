@@ -1,0 +1,367 @@
+{
+  "context": {
+    "empty_requests": 12,
+    "nonempty_requests": 528,
+    "parse_failures": 0,
+    "requests": 540,
+    "section_item_totals": {
+      "Execution Environment": 24,
+      "External Function": 993,
+      "Function Argument": 264,
+      "Globals": 639,
+      "Type Execution Declaration": 507
+    },
+    "warning": "Context availability itself may be correlated with the label in this dataset; report non-empty/empty subgroups rather than treating L3 as a pure prompt effect."
+  },
+  "cost": {
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cost_bases": [
+      "input_output_prices"
+    ],
+    "currency": "USD",
+    "input_price_usd_per_1m": 0.14,
+    "known_cost_usd": 0.117203492,
+    "output_price_usd_per_1m": 0.28,
+    "pricing_configured": true,
+    "total_cost_usd": 0.117203492,
+    "unknown_cost_records": 0
+  },
+  "counts": {
+    "api_attempts": 540,
+    "by_status": {
+      "invalid": 17,
+      "ok": 523
+    },
+    "by_task": {
+      "detection": 360,
+      "repair": 180
+    },
+    "cache_hits": 0,
+    "complete_planned_requests": true,
+    "expected_requests": 540,
+    "missing_requests": 0,
+    "records": 540,
+    "retries": 0
+  },
+  "detection": {
+    "api_errors": 0,
+    "average_confidence": 0.785362318841,
+    "by_label": {
+      "non_vulnerable": {
+        "api_errors": 0,
+        "detection_rate": null,
+        "false_positive_rate": 0.2558139534883721,
+        "predicted_vulnerable": 44,
+        "predicted_vulnerable_rate": 0.2558139534883721,
+        "requested": 180,
+        "schema_invalid": 8,
+        "valid_predictions": 172
+      },
+      "vulnerable": {
+        "api_errors": 0,
+        "detection_rate": 0.3468208092485549,
+        "false_positive_rate": null,
+        "predicted_vulnerable": 60,
+        "predicted_vulnerable_rate": 0.3468208092485549,
+        "requested": 180,
+        "schema_invalid": 7,
+        "valid_predictions": 173
+      }
+    },
+    "by_side": {
+      "fixed": {
+        "api_errors": 0,
+        "predicted_vulnerable": 44,
+        "predicted_vulnerable_rate": 0.2558139534883721,
+        "requested": 180,
+        "schema_invalid": 8,
+        "valid_predictions": 172
+      },
+      "vulnerable": {
+        "api_errors": 0,
+        "predicted_vulnerable": 60,
+        "predicted_vulnerable_rate": 0.3468208092485549,
+        "requested": 180,
+        "schema_invalid": 7,
+        "valid_predictions": 173
+      }
+    },
+    "confusion": {
+      "fn": 113,
+      "fp": 44,
+      "tn": 128,
+      "tp": 60
+    },
+    "coverage": 0.9583333333333334,
+    "invalid_rate": 0.041666666666666664,
+    "metrics_valid_only": {
+      "accuracy": 0.5449275362318841,
+      "balanced_accuracy": 0.5455034278800914,
+      "f1": 0.4332129963898917,
+      "mcc": 0.09915992601434034,
+      "precision": 0.5769230769230769,
+      "predicted_positive_rate": 0.30144927536231886,
+      "recall": 0.3468208092485549,
+      "specificity": 0.7441860465116279
+    },
+    "requested": 360,
+    "schema_invalid": 15,
+    "strict_accuracy_all_samples": 0.5222222222222223,
+    "strict_correct_all_samples": 188,
+    "valid_predictions": 345
+  },
+  "failures": {
+    "error_types": {},
+    "examples": [
+      {
+        "error": "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerative'])",
+        "sample_id": "pair:8565:8566:vulnerable",
+        "status": "invalid",
+        "task": "detection"
+      },
+      {
+        "error": "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])",
+        "sample_id": "pair:12528:12525:fixed",
+        "status": "invalid",
+        "task": "detection"
+      },
+      {
+        "error": "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])",
+        "sample_id": "pair:20003:20004:vulnerable",
+        "status": "invalid",
+        "task": "detection"
+      },
+      {
+        "error": "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])",
+        "sample_id": "pair:20003:20004:fixed",
+        "status": "invalid",
+        "task": "detection"
+      },
+      {
+        "error": "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])",
+        "sample_id": "pair:17834:17837:fixed",
+        "status": "invalid",
+        "task": "detection"
+      }
+    ],
+    "schema_invalid_reasons": {
+      "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerability'])": 14,
+      "detection JSON keys mismatch (missing=['is_vulnerable'], extra=['is_vulnerative'])": 1,
+      "invalid JSON: Unterminated string starting at: line 1 column 20 (char 19)": 2
+    }
+  },
+  "latency": {
+    "max_request_latency_seconds": 165.39683817399782,
+    "mean_request_latency_seconds": 9.402375771459575,
+    "p50_request_latency_seconds": 5.015349959001469,
+    "p95_request_latency_seconds": 29.798502581108817,
+    "records_with_latency": 540,
+    "total_request_latency_seconds": 5077.28291658817,
+    "total_wall_seconds": 5077.3002062529995
+  },
+  "notes": [
+    "Detection confusion uses only schema-valid predictions. strict_accuracy_all_samples counts schema-invalid and API-error records as incorrect.",
+    "Repair scores are structural proxies (complete function and changed text); they do not prove that a vulnerability was removed or that behaviour was preserved.",
+    "usage.opencode from the provider is preserved in each record's usage. opencode.allowance is Go-plan usage in USD and is summed separately; it is never used as cost_usd. cost_usd still comes only from explicit price arguments."
+  ],
+  "pair_joint": {
+    "coverage": 0.9222222222222223,
+    "definition": "A pair is handled correctly only when the vulnerable side is predicted vulnerable and its fixed side is predicted non-vulnerable.",
+    "discrimination_accuracy_all_pairs": 0.10555555555555556,
+    "discrimination_accuracy_valid_pairs": 0.1144578313253012,
+    "invalid_pairs": 14,
+    "joint_categories": {
+      "both_clean": 106,
+      "both_flagged": 38,
+      "vulnerable_detected_fixed_clean": 19,
+      "vulnerable_missed_fixed_flagged": 3
+    },
+    "joint_rates_valid_pairs": {
+      "both_clean": 0.6385542168674698,
+      "both_flagged": 0.2289156626506024,
+      "vulnerable_detected_fixed_clean": 0.1144578313253012,
+      "vulnerable_missed_fixed_flagged": 0.018072289156626505
+    },
+    "matrix": {
+      "vulnerable_side_predicted_clean": {
+        "fixed_side_predicted_clean": 106,
+        "fixed_side_predicted_vulnerable": 3
+      },
+      "vulnerable_side_predicted_vulnerable": {
+        "fixed_side_predicted_clean": 19,
+        "fixed_side_predicted_vulnerable": 38
+      }
+    },
+    "pairs_requested": 180,
+    "valid_pairs": 166
+  },
+  "repair": {
+    "api_errors": 0,
+    "changed_from_input": 144,
+    "changed_from_input_rate_of_schema_valid": 0.8089887640449438,
+    "complete_and_changed": 143,
+    "complete_and_changed_rate_of_schema_valid": 0.8033707865168539,
+    "complete_function": 177,
+    "complete_function_rate_of_all": 0.9833333333333333,
+    "complete_function_rate_of_schema_valid": 0.9943820224719101,
+    "definition": "complete_function and changed_from_input are structural proxies only. Reference matches use normalised text equality and are not a correctness or security-equivalence oracle.",
+    "exact_match_reference_fixed": 5,
+    "exact_match_reference_fixed_rate": 0.028089887640449437,
+    "reference_fixed_available": 178,
+    "requested": 180,
+    "schema_invalid": 2,
+    "schema_valid": 178,
+    "schema_valid_rate": 0.9888888888888889,
+    "whitespace_collapsed_match_reference_fixed": 5,
+    "whitespace_collapsed_match_reference_fixed_rate": 0.028089887640449437
+  },
+  "run": {
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "completed_at": "2026-11-11T19:02:02.239+00:00",
+    "config_fingerprint": "cb4df7296c60395d2d223a507cbba1210d0bfa05753de66667a3da1bba9ebe27",
+    "dataset_label_counts": {
+      "functions": 360,
+      "non_vulnerable": 180,
+      "units": 180,
+      "vulnerable": 180
+    },
+    "dataset_metadata": {
+      "constraints": [
+        "vulnerable.fixed_func_idx == fixed.idx",
+        "Same project, commit_id, filepath and func_name within each pair",
+        "Vulnerable label true, fixed label false, different function bodies",
+        "At most one pair per (project, commit_id)"
+      ],
+      "cross_dataset_isolation": "No shared source idx or (project, commit_id) group",
+      "dataset_type": "vulnerable_fixed_pairs",
+      "eligible_pair_count": 10004,
+      "excluded_malformed_rows": [
+        {
+          "idx": 3510,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9418,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9578,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10195,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10196,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 16033,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 18071,
+          "reason": "changed_statements is not a valid serialized list"
+        }
+      ],
+      "field_encoding": {
+        "context": "Original workbook string, not evaluated",
+        "json_arrays": [
+          "changed_lines",
+          "changed_statements",
+          "cve_list",
+          "cwe_list"
+        ]
+      },
+      "function_count": 360,
+      "pair_count": 180,
+      "rejected_pair_counts": {
+        "missing_or_malformed_fixed_version": 975,
+        "unchanged_function_body": 15
+      },
+      "sampling": "Shuffle source rows with random.Random(seed); keep at most one item per project+commit. Select pairs first.",
+      "schema_version": 1,
+      "seed": 42,
+      "source_file": "SecVulEval.xlsx",
+      "source_label_counts": {
+        "False": 14442,
+        "True": 10998
+      },
+      "source_rows": 25440,
+      "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+      "source_sheet": "train",
+      "split": {
+        "manifest": "splits/split_v1.json",
+        "protocol": "research/evaluation_protocol.md#4",
+        "role": "test",
+        "seed": 42,
+        "source_dataset": "datasets/vulnerable_fixed_200_pairs.json",
+        "source_dataset_sha256": "7028b98d6f2c13b960bd08dd2e737e2ba61732b89dba03e3f173fe44c27214d5",
+        "split_id": "secvul-split-v1",
+        "task": "pairs"
+      },
+      "usable_rows": 25433
+    },
+    "dataset_path": "splits/test_pairs_180.json",
+    "dataset_sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "dataset_type": "pairs",
+    "dataset_units": 180,
+    "dev_examples": null,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "expected_by_task": {
+      "detection": 360,
+      "repair": 180,
+      "requests": 540
+    },
+    "expected_requests": 540,
+    "httpx_version": "0.28.1",
+    "input_price_usd_per_1m": 0.14,
+    "limit": 0,
+    "max_tokens": 8192,
+    "max_tokens_field": "max_completion_tokens",
+    "model": "mimo-v2.6-flash",
+    "notes": [
+      "No API key or Authorization header is stored in run artifacts.",
+      "Prompts contain function source and, for context strategy, sanitised context only."
+    ],
+    "output_price_usd_per_1m": 0.28,
+    "partial": false,
+    "pricing_configured": true,
+    "prompt_version": "secvul-prompt-2026-11-11.1",
+    "python_version": "3.14.8",
+    "reasoning_effort": "none",
+    "response_format": "json_object",
+    "run_id": "test_v1_mimo_context_pairs",
+    "run_label": "split-v1-frozen-test-mimo",
+    "runner_version": "1.0.0",
+    "selected_label_counts": {
+      "functions": 360,
+      "non_vulnerable": 180,
+      "units": 180,
+      "vulnerable": 180
+    },
+    "selected_units": 180,
+    "started_at": "2026-11-11T18:54:17.244+00:00",
+    "strategy": "context",
+    "task": "both",
+    "temperature": 0.0,
+    "thinking": "disabled"
+  },
+  "schema_version": 1,
+  "usage": {
+    "cached_prompt_tokens_known_sum": 37440,
+    "completion_tokens_known_sum": 191801,
+    "opencode_allowance_known_sum_usd": 0.11720381,
+    "opencode_allowance_records": 540,
+    "opencode_billing_sources": {
+      "go": 540
+    },
+    "prompt_tokens_known_sum": 490257,
+    "reasoning_tokens_known_sum": 0,
+    "records_missing_usage": 0,
+    "records_with_opencode_usage": 540,
+    "total_tokens_known_sum": 682058
+  }
+}
