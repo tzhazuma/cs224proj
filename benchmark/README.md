@@ -183,7 +183,7 @@ python3 benchmark/tools/bench_compare.py \
 
 ```bash
 wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/cs224proj && \
-python3 benchmark/tools/bench_import_round2.py --measure'
+python3 benchmark/tools/bench_import_round2.py --measure --force'
 ```
 
 生成最终统一 leaderboard 与 JSON（会重新计算所有 run 的指标和配对统计）：
@@ -280,7 +280,7 @@ B1/B2/B3 已完成正式 run（见 `results/tier_b_leaderboard.md`）。Round-2 
 | Repair 审计 | 70/70 编译、70/70 LSan 干净、70/70 行为保持；58/58 可观测 strict pass；12 个 not_applicable 不入分母 |
 | 最终 Leaderboard | `LEADERBOARD.md` + `final_summary.json`；34 个 canonical run；11 个 superseded 历史 run 明确排除；Tier A/B 分开，无跨层池化 |
 
-注意：Tier A 旧 run 的 metrics 是 valid-only；统一指标重算的 valid-only 与旧值一致，strict 是新视图。Tier B 动态没有覆盖率 instrumentation，operational 与 conservative 两视图不能混用。Round-2 的 evidence/pair-joint/hybrid/LLM/repair 是真实调用的只读导入，不是重新运行。
+注意：Tier A 旧 run 的 metrics 是 valid-only；统一指标重算的 valid-only 与旧值一致，strict 是新视图。Tier B 动态没有覆盖率 instrumentation，operational 与 conservative 两视图不能混用。Round-2 的 evidence/pair-joint/hybrid v2/LLM postleakfix/repair 是真实调用的只读导入，不是重新运行。
 
 ---
 

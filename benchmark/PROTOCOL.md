@@ -757,7 +757,7 @@ python3 benchmark/tools/bench_compare.py --run-a <runA> --run-b <runB>
 # 旧 run 派生（不改原文件）
 python3 benchmark/tools/bench_import_legacy.py --run-dir runner/runs/test_v1_direct_independent
 # round-2 只读导入 + 校验 + 指标
-python3 benchmark/tools/bench_import_round2.py --measure
+python3 benchmark/tools/bench_import_round2.py --measure --force
 # 最终统一汇总
 python3 benchmark/tools/bench_final_summary.py
 # 工具自检（合成 fixture）

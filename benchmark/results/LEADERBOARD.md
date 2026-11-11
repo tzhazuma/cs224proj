@@ -1,6 +1,6 @@
 # Unified benchmark leaderboard — final integration
 
-- generated: `2026-11-11T21:39:28Z`
+- generated: `2026-11-11T21:44:49Z`
 - protocol: `1.0.0`; builder: `bench_final_summary.py`
 - runs: 34 canonical runs (Tier A 16, Tier B 18); 11 superseded historical runs excluded
 - **Canonical Tier B hybrid = `hybrid_v2` (leak-fixed inputs).** `hybrid_v1` is leakage-sensitive and does not appear in any main table.
@@ -171,7 +171,7 @@ Direction: `method - direct`; positive means the evidence condition is higher. H
 | combined - direct: mimo | 140 | 0.0000 | [-0.0209, 0.0211] | +0.00 pp | 1/1 | 1.0000 | 1.0000 | `B-HYBRID-MIMO` (m=4) |
 | shuffled - direct: mimo | 140 | -0.0215 | [-0.0454, 0.0000] | -2.14 pp | 0/3 | 0.2500 | 1.0000 | `B-HYBRID-MIMO` (m=4) |
 
-The combined condition adds one unit over direct for DeepSeek (136 vs 135) and zero for MiMo (136 vs 136); no evidence row survives Holm. The shuffled placebo is the content/length control: it changes aggregate accuracy by at most one unit and flips individual predictions in both directions.
+The combined condition adds one unit over direct for DeepSeek (136 vs 135) and zero for MiMo (136 vs 136); no evidence row survives Holm. The shuffled placebo is the content/length control: it changes aggregate accuracy by up to three units and flips individual predictions in both directions.
 
 ### 3.3 Hybrid combined vs static/dynamic tools
 

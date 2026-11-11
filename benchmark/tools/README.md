@@ -52,7 +52,7 @@ for d in benchmark/results/tier_b/juliet_cwe401/*/*/; do
 done
 
 # 8) round-2 导入 + 校验 + 指标
-python3 benchmark/tools/bench_import_round2.py --measure
+python3 benchmark/tools/bench_import_round2.py --measure --force
 
 # 9) 最终统一 leaderboard（推荐入口）
 python3 benchmark/tools/bench_final_summary.py

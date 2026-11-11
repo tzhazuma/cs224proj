@@ -1550,7 +1550,7 @@ def build_markdown(summary: Mapping[str, Any]) -> str:
         "",
         "The combined condition adds one unit over direct for DeepSeek (136 vs 135) and zero for MiMo (136 vs 136); "
         "no evidence row survives Holm. The shuffled placebo is the content/length control: it changes aggregate accuracy by "
-        "at most one unit and flips individual predictions in both directions.",
+        "up to three units and flips individual predictions in both directions.",
         "",
         "### 3.3 Hybrid combined vs static/dynamic tools",
         "",

@@ -32,7 +32,7 @@ Tier A 的 `legacy__*` 目录是 `bench_import_legacy.py` 生成的**派生**视
 
 ## 不可变规则
 
-1. `run_manifest.json` 与 `predictions.jsonl` 生成后只读；修正错误必须新建 run，并在 `notes` 说明。
+1. `run_manifest.json` 与 `predictions.jsonl` 生成后只读；修正错误必须新建 run，并在 `notes` 说明。被取代的 run 只能整体移动到 `superseded/`，文件内容不得改写，且不再进入主表。
 2. `metrics.json` 可以由 `bench_metrics.py` 重算（`--force`），但它只是派生视图；原始预测不变。
 3. 不允许把 mock、fixture、dry-run 写入 `results/`。`examples/` 的合成样例不是结果。
 4. 不允许为了指标好看而删除失败记录；失败必须保留 `status != "ok"` 和 `error`。
