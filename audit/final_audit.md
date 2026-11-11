@@ -1,6 +1,6 @@
 # Final quality and leakage audit
 
-Generated: 2026-11-11T21:38:25.431016+00:00 (UTC)  
+Generated: 2026-11-11T21:45:48.827359+00:00 (UTC)  
 Overall: **PASS_WITH_WARNINGS**  
 Checks: 58 PASS, 0 FAIL, 3 WARN, 1 INFO.
 
@@ -80,7 +80,7 @@ superseded, leak-observable contrast and are checked as such.
 | L3 | preserve | **PASS** | Legacy results predate all new experiment files on disk | Newest legacy DeepSeek file 2026-11-11T12:05:01.723998+00:00 <= earliest new-experiment file 2026-11-11T19:13:10.921222+00:00. |
 | L4 | preserve | **PASS** | Derived analysis uses a reproducible repository path | analysis/aggregation.json references 14 run paths, all under the current repository root; datasets root is /mnt/c/Users/tzh03/Downloads/cs224proj/datasets. |
 | L5 | preserve | **PASS** | Frozen v1 artifacts are retained as the superseded leak contrast | v1 is preserved and untouched: 140 inputs match the archived pre-leakfix build, 10/10 v1 runs are complete, and the 2 pre-fix juliet_llm runs plus 2 superseded post-fix runs remain on disk. |
-| M1 | claims | **PASS** | Hybrid v2 report numbers match the artifacts | REPORT_V2 headline percentages recompute from hybrid_v2_metrics for all 10 model/method cells; the matrix is labelled 1400 real requests. |
+| M1 | claims | **PASS** | Hybrid v2 report numbers match the artifacts | REPORT_V2 headline percentages and per-model costs recompute from hybrid_v2_metrics; the matrix is labelled 1400 real requests. |
 | M2 | claims | **PASS** | Pair report numbers match the artifacts | Pair report states 138/180 (76.67%), 156/180 (86.67%), and the 74.44% length heuristic. |
 | M3 | claims | **PASS** | Repair report carries the recomputed headline numbers | Repair README carries the 58/58 headline, 70 calls, and the corrected all-in $0.082550. |
 | M4 | claims | **PASS** | juliet_llm report numbers match the postleakfix artifact | juliet_llm README carries the postleakfix 140/140, accuracy 0.9500, F1 0.9510, MCC 0.9008, cost $0.003180, and keeps the pre-fix 0.9571. |

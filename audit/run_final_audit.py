@@ -2276,11 +2276,19 @@ def check_hybrid_report_claims() -> None:
             problems.append("missing 1400 real requests")
         if "hybrid_v2" not in text:
             problems.append("missing hybrid_v2 label")
+        costs = {}
+        for model in ("deepseek", "mimo"):
+            total = sum(float(metrics["runs"][f"{model}/{method}"]["usage"]["cost_usd_sum"])
+                        for method in hybrid_prompts.METHODS)
+            shown = f"{total:.6f}"
+            costs[model] = shown
+            if shown not in text:
+                problems.append(f"{model}: missing cost {shown}")
         ok = not problems
         return (
             "PASS" if ok else "FAIL",
-            "REPORT_V2 headline percentages recompute from hybrid_v2_metrics for all 10 model/method cells; the matrix is labelled 1400 real requests." if ok else "; ".join(problems),
-            {"checked": checked, "problems": problems},
+            "REPORT_V2 headline percentages and per-model costs recompute from hybrid_v2_metrics; the matrix is labelled 1400 real requests." if ok else "; ".join(problems),
+            {"checked": checked, "costs": costs, "problems": problems},
         )
 
     run_check("M1", "claims", "Hybrid v2 report numbers match the artifacts", fn)
