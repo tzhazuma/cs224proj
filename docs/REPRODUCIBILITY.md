@@ -38,7 +38,7 @@ Cppcheck/Valgrind 不要求 root 安装；`traditional/static/README.md` §1 和
 ### 2.1 仓库本身
 
 ```bash
-git clone <your-private-repo-url> cs224proj
+git clone https://github.com/tzhazuma/cs224proj.git cs224proj
 cd cs224proj
 ```
 
@@ -203,7 +203,7 @@ grep -rIl -E 'sk-[A-Za-z0-9_-]{16,}|Bearer [A-Za-z0-9._-]{20,}' \
 
 ### 4.4 最终质量/泄漏审计
 
-`audit/final_audit.md` 是只读综合审计。**最新重跑（2026-11-11T21:30:46Z）为 58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`，must-fix 为空。** 5 个原 must-fix 均已关闭：
+`audit/final_audit.md` 是只读综合审计。**最新重跑（2026-11-11T21:45:48Z）为 58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`，must-fix 为空。** 5 个原 must-fix 均已关闭：
 
 - **C3/D6**：`juliet_llm/cleaning.py` 已把 `benign`/`fixed`/`safe`/`clean` 纳入标识符与字符串清洗，prompt 版本升到 `juliet-llm-binary-2026-11-12.2`；`juliet_llm/build/audit_report.md` 的 11 类禁用 token 计数全为 0，`hybrid/inputs_v2` 的 700 条模板 / 1,400 条 run-level prompt 审计通过；v1 hybrid 的 6 个 test good 与 juliet_llm v1 的 8/200 全部保留为泄漏对照。
 - **I3**：repair all-in 统一为 `$0.082550`（headline `$0.032831`；含 `parser_dev/mimo_test70_v1` 的 `$0.005034`），审计重算 delta `-0.000000318`。
@@ -473,13 +473,17 @@ python3 -m repair_eval build \
 ## 8. 报告与 PDF
 
 ```bash
-python3 report/scripts/check_tex.py          # 静态检查
+python3 report/scripts/check_tex.py          # 基础版静态检查
+python3 report/scripts/check_extended.py     # 扩展版静态检查
 # 若本机有 Tectonic：
+/tmp/secvul-tectonic/tectonic -X compile report/report_extended_zh.tex --outdir report --keep-intermediates
+pdfinfo report/report_extended_zh.pdf | grep '^Pages'
+
 /tmp/secvul-tectonic/tectonic -X compile report/report_zh.tex --outdir report --keep-intermediates
-pdfinfo report/report_zh.pdf | head -5
+pdfinfo report/report_zh.pdf | grep '^Pages'
 ```
 
-预期：`Pages: 17`，无 unresolved references/citations，无缺字。报告源稿中的唯一 `TODO` 是作者/单位信息，不是结果占位。
+预期：扩展版 `report_extended_zh.pdf` 为 **27 页**，基础版 `report_zh.pdf` 为 **17 页**；无 unresolved references/citations，无缺字。报告源稿中的唯一 `TODO` 是作者/单位信息，不是结果占位。
 
 ---
 
@@ -494,7 +498,7 @@ pdfinfo report/report_zh.pdf | head -5
 - [ ] `git status` 中没有 `juliet/raw/`、`juliet/cache/`、`juliet/build/`、`traditional/dynamic/runs/*/cases/`、`**/runs/*/cache/`、`__pycache__/`。
 - [ ] `git ls-files` 中没有 >100 MB 文件；本地 `juliet/cache` 的 146 MB 归档是未跟踪缓存，`find` 会看到但不应被提交。
 - [ ] secret scan 无 `sk-...` / `Bearer ...` / `api_key` 值泄漏；`repair_eval/packages/*/private/` 未被跟踪。
-- [ ] `report/report_zh.pdf` 可打开，`pdfinfo` 显示 17 页。
+- [ ] `report/report_extended_zh.pdf` 可打开，`pdfinfo` 显示 27 页；基础版 `report/report_zh.pdf` 为 17 页。
 - [ ] `audit/final_audit.md` 为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO**、Overall `PASS_WITH_WARNINGS`；C3/D6/I3/I5/L4 已关闭，B5/D5/F4 的 WARN 说明保留。
 - [ ] `benchmark/results/tier_a_leaderboard.md`、`tier_b_leaderboard.md` 与 `tier_a_summary.json`、`tier_b_summary.json` 时间戳/内容一致。
 - [ ] 没有把 Tier A 与 Tier B 的数字合并成“总排行榜”。
@@ -551,5 +555,5 @@ pdfinfo report/report_zh.pdf | head -5
 | 传统静态 | `traditional/static/runs/*/metrics.json`、`metrics.md` |
 | 传统动态 | `traditional/dynamic/runs/*/metrics.json`、`metrics.md`、`results.jsonl` |
 | 最终审计 | `audit/final_audit.json`、`final_audit.md`（58 PASS / 0 FAIL / 3 WARN / 1 INFO，`PASS_WITH_WARNINGS`；见 §4.4） |
-| 报告 | `report/report_zh.tex`、`report_zh.pdf`、`results_summary.md` |
+| 报告 | `report/report_extended_zh.tex`、`report_extended_zh.pdf`（27 页）、`report/report_zh.tex`、`report_zh.pdf`（17 页）、`results_summary.md` |
 | 创新结论分级 | `research/innovation_findings.md` |

@@ -2,9 +2,9 @@
 
 本目录负责 CS224 SecVulEval 项目的**统计分析与自动填表准备**：读取 `runner/` 产出的真实运行目录，计算检测与配对指标、区间、McNemar/Holm 检验和 context 分层，并生成机器可读的 `aggregation.json` 与供报告使用的 `aggregation.md`。
 
-> **当前状态：没有真实模型运行结果。**
+> **当前状态：`status=ok`，正式聚合覆盖六个真实 DeepSeek 运行。**
 >
-> 真实 DeepSeek 调用因用户 OpenCode Go key 过期返回 401；本项目禁止用 mock、fixture 或估计值填充正式结果表。当前 `analysis/aggregation.json` 的 `status` 为 `no_real_runs`，包含分析配置、空运行清单、数据集上下文审计、M3 伪影风险与限制，不包含任何模型性能数值。
+> `analysis/aggregation.json` 聚合 `test_v1_{direct,few-shot,context}` × `{independent,pairs}` 六个 `deepseek-v4.1-flash` 运行（独立集 n=160、配对集 n=180；bootstrap 10,000、seed 42），另有 8 个 `dev_pilot_*` / `pilot_direct_detection_*` partial 运行按约定跳过（列入 `runs.skipped`）。MiMo 运行**不在本聚合口径内**：`runner/runs/` 中 6 个完整的 `test_v1_mimo_*` 会被默认扫描纳入、11 个 `pilot_v1_mimo_*` partial 会被跳过；跨模型比较见 `analysis/model_comparison.json` 与 `analysis/model_comparison.md`。
 >
 > 临时合成 fixture 只用于验证管线，运行后自动删除，不进入正式 aggregation，也不得引用为模型结果。
 
@@ -15,8 +15,8 @@
 | `analyze_runs.py` | 主分析脚本；发现运行目录、连接数据集、计算指标/区间/检验、生成 JSON+Markdown |
 | `stats.py` | 仅标准库的统计函数：Wilson、混淆矩阵、macro-F1、balanced accuracy、MCC、配对联合指标、精确 McNemar、Holm、cluster bootstrap |
 | `selftest.py` | 临时合成 fixture 的端到端自检；运行后清理临时目录 |
-| `aggregation.json` | 最近一次正式聚合结果；当前为 `no_real_runs` |
-| `aggregation.md` | 同一结果的中文可读版本；当前无性能表 |
+| `aggregation.json` | 最近一次正式聚合结果；当前 `status=ok`，六个 DeepSeek run、2 个 group |
+| `aggregation.md` | 同一结果的中文可读版本；含检测、配对、context 分层与 McNemar 表 |
 | `README.md` | 本文件 |
 
 脚本只使用 Python 标准库，不依赖 numpy/scipy/pandas；已在 WSL Python `3.14.8` 下验证。所有命令都应在 WSL 中执行，不要用 Windows Python 代替。
@@ -158,6 +158,8 @@
 
 ### 5.2 本数据的实际审计结果
 
+当前正式聚合的主表使用冻结拆分 `splits/test_detection_160.json`（160 单元）与 `splits/test_pairs_180.json`（180 对）；其 context 分层计数见 `aggregation.md` §2。下面两个表是母数据集 `datasets/` 的数据层审计。
+
 独立集 `independent_200.json`（200 条，160 漏洞 + 40 非漏洞）：
 
 | context 分层 | n | 漏洞 | 非漏洞 | P(漏洞\|分层) |
@@ -239,17 +241,31 @@
 - McNemar/Holm 表与 bootstrap 差值表；
 - 警告、复现命令、限制。
 
-当前 `aggregation.md` 没有性能表，因为 `status=no_real_runs`。
+当前 `aggregation.md` 含独立检测（Table 7）、配对联合/分侧（Table 9/8）、context 分层与 McNemar/Holm 表（`status=ok`）。
 
 ## 7. 用法
 
 ### 7.1 对真实运行目录生成正式聚合
 
+当前正式聚合的口径是六个 DeepSeek test 运行。复现命令（14 个输入目录，含 8 个会被跳过的 partial；在 WSL 中执行）：
+
 ```bash
-wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/zy && \
-python3 analysis/analyze_runs.py \
-  --runs-root runner/runs \
-  --bootstrap 10000 --seed 42'
+wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/cs224proj && \
+python3 analysis/analyze_runs.py --runs-root runner/runs --bootstrap 10000 --seed 42 \
+  --run runner/runs/dev_pilot_context_independent \
+  --run runner/runs/dev_pilot_context_pairs \
+  --run runner/runs/dev_pilot_direct_independent \
+  --run runner/runs/dev_pilot_direct_pairs \
+  --run runner/runs/dev_pilot_few-shot_independent \
+  --run runner/runs/dev_pilot_few-shot_pairs \
+  --run runner/runs/pilot_direct_detection_1 \
+  --run runner/runs/pilot_direct_detection_nothink_1 \
+  --run runner/runs/test_v1_context_independent \
+  --run runner/runs/test_v1_context_pairs \
+  --run runner/runs/test_v1_direct_independent \
+  --run runner/runs/test_v1_direct_pairs \
+  --run runner/runs/test_v1_few-shot_independent \
+  --run runner/runs/test_v1_few-shot_pairs'
 ```
 
 默认输出：
@@ -259,16 +275,7 @@ analysis/aggregation.json
 analysis/aggregation.md
 ```
 
-指定运行目录（可重复）：
-
-```bash
-wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/zy && \
-python3 analysis/analyze_runs.py \
-  --run runner/runs/independent_direct_both \
-  --run runner/runs/independent_few-shot_both \
-  --run runner/runs/independent_context_both \
-  --bootstrap 10000 --seed 42'
-```
+若只按 `--runs-root runner/runs` 扫描（不传 `--run`），`runner/runs/` 中 6 个完整的 `test_v1_mimo_*` 也会被纳入（2 模型 × 2 数据集 = 4 个 group），不再是当前六-run 口径；MiMo 的跨模型数字以 `analysis/model_comparison.json` / `.md` 为准。
 
 常用参数：
 
@@ -293,7 +300,7 @@ python3 analysis/analyze_runs.py \
 ### 7.2 自检（临时 fixture，自动清理）
 
 ```bash
-wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/zy && python3 analysis/selftest.py'
+wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/cs224proj && python3 analysis/selftest.py'
 ```
 
 自检在系统临时目录创建 6 个合成运行（独立/配对 × direct/few-shot/context），在 `finally` 中删除；不会写 `analysis/aggregation.*`。它验证：
@@ -330,15 +337,16 @@ All analysis self-tests passed; temporary fixtures were removed.
 
 - `python3 -m compileall -q analysis`：通过；
 - `python3 analysis/selftest.py`：通过（见上）；
-- `python3 analysis/analyze_runs.py`：在无真实 runs 时正常退出，生成 `status=no_real_runs` 的 JSON/Markdown；数据集审计显示独立集 context 风险 `high`、配对集 `low`，无任何模型性能数值；
-- `aggregation.json` 经 `json.load` 可解析；`aggregation.md` 的 3 个表格块列数一致；fixture 输出经 19 个表格块检查，0 个列数错误；
-- 正式 `aggregation.json` 中没有 `macro_f1`、`balanced_accuracy`、`mcc`、`joint_accuracy` 等性能键（已用 grep 核对），确认未被 fixture/mock 填充；
-- 额外用 6 个合成运行以正式默认 `--bootstrap 10000 --seed 42` 跑通：耗时约 24 秒，`valid_resamples=10000`，无异常，验证了完整重采样次数下的运行时间与稳定性；
-- 自检临时目录、`analysis/__pycache__` 与 `runner/secvul_runner/__pycache__` 均已清理。
+- 按 §7.1 的 14 个输入重跑正式聚合：`status=ok`，6 个运行入组、8 个 partial 跳过、2 个 group（independent / pairs），`bootstrap=10000`、`seed=42`；
+- provenance 全部指向当前仓库：`inputs.run_paths` 14 条、缺失 0；`datasets_root` 与 4 个数据集文件均存在；两个正式产物中不再含旧工作目录路径；
+- 数值不变：与重跑前备份（`analysis/repro_20261112/pre_rerun_aggregation.json`）比较，路径归一化并去掉 `generated_at_utc` 后逐字段无差异，六个 DeepSeek run 的检测/配对指标不变；
+- 固定 seed 确定性：同一命令输出到临时目录，JSON 与正式 `aggregation.json` 完全一致（仅 `generated_at_utc` 不同），`aggregation.md` 亦仅时间戳不同；
+- `aggregation.json` 经 `json.load` 可解析；`aggregation.md` 各表格块列数一致；
+- `aggregation.md` §5 的复现命令由脚本按 `PROJECT_ROOT` 动态生成，不再硬编码旧目录。
 
 ### 8.2 限制
 
-- **没有真实模型结果**：DeepSeek 调用因 key 过期返回 401；`aggregation.json` 当前不包含性能、成本或案例。不能把 fixture 数值写进报告。
+- **模型范围**：正式聚合只含六个 DeepSeek 运行；MiMo 运行（6 个完整 `test_v1_mimo_*` + 11 个 partial）不在其中，跨模型比较见 `analysis/model_comparison.json` / `.md`，两者不要混用。
 - **M3 混杂**：独立集 context 非空与标签高度相关；非空层单类别导致 macro-F1 不可定义。任何 M3 总体优势都不能单独归因于上下文推理。
 - **配对空分层很小**：只有 5 对空 context，分层差值不稳定；不要据此做强结论。
 - **Bootstrap 假设**：project cluster 把项目视为独立重采样单位；不保证对未见项目泛化；没有分层 unit bootstrap/BCa。
@@ -350,18 +358,11 @@ All analysis self-tests passed; temporary fixtures were removed.
 
 ## 9. 复现命令汇总
 
+1. 正式六-run 聚合：§7.1 的完整命令（14 个 `--run` 输入；`--bootstrap 10000 --seed 42`）。
+2. 自检（临时 fixture，自动清理）：
+
 ```bash
-# 1) 无真实 runs 时生成空聚合（当前状态）
-wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/zy && \
-python3 analysis/analyze_runs.py'
-
-# 2) 有真实 runs 后生成正式聚合
-wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/zy && \
-python3 analysis/analyze_runs.py \
-  --runs-root runner/runs \
-  --bootstrap 10000 --seed 42'
-
-# 3) 自检（临时 fixture，自动清理）
-wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/zy && \
-python3 analysis/selftest.py'
+wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/cs224proj && python3 analysis/selftest.py'
 ```
+
+3. 全部完整运行（含 MiMo，4 个 group）：从 §7.1 的命令中去掉全部 `--run`，只保留 `--runs-root runner/runs`；跨模型数字以 `analysis/model_comparison.*` 为准。

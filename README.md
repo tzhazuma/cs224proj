@@ -11,7 +11,7 @@
 
 > 所有报告数字都来自已落盘的运行产物；没有用 mock、fixture 或估计值填充正式结果表。`selftest` 和临时 fixture 只用于工具自检，不是实验结果。
 >
-> 最终只读审计：[`audit/final_audit.md`](audit/final_audit.md)，**2026-11-11T21:30:46Z 重跑：58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**。5 个 must-fix 均已关闭：C3/D6 由清洗器 prompt `.2` 与 `hybrid_v2` 修复，I3 的 repair all-in 改为 `$0.082550`，I5 按峰谷价 + `normalized` 口径解释，L4 的 `analysis/aggregation.json` 已用仓库内路径重生成；新增的 L5（v1 泄漏对照保留）与 I7（normalized 成本账）也通过。3 个 WARN（B5/D5/F4）见 §8。
+> 最终只读审计：[`audit/final_audit.md`](audit/final_audit.md)，**2026-11-11T21:45:48Z 重跑：58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**。5 个 must-fix 均已关闭：C3/D6 由清洗器 prompt `.2` 与 `hybrid_v2` 修复，I3 的 repair all-in 改为 `$0.082550`，I5 按峰谷价 + `normalized` 口径解释，L4 的 `analysis/aggregation.json` 已用仓库内路径重生成；新增的 L5（v1 泄漏对照保留）与 I7（normalized 成本账）也通过。3 个 WARN（B5/D5/F4）见 §8。
 
 ---
 
@@ -389,10 +389,11 @@ python3 qualitative/build_cases.py --check-only
 # 因此 verify 只应在保留 private/ 的原始工作区运行。
 python3 -m repair_eval verify --package repair_eval/packages/repair_blind_v1
 
+cd report && /tmp/secvul-tectonic/tectonic -X compile report_extended_zh.tex --outdir .
 cd report && /tmp/secvul-tectonic/tectonic -X compile report_zh.tex --outdir .
 ```
 
-报告 PDF 已提交在 `report/report_zh.pdf`（17 页，Tectonic 0.17.0）；重新编译需要 Tectonic 或 TeX Live。
+报告 PDF 已提交：扩展版 `report/report_extended_zh.pdf`（27 页，Tectonic 0.17.0，`pdfinfo` 实测）与基础版 `report/report_zh.pdf`（17 页，保留未改）。重新编译需要 Tectonic 或 TeX Live。
 
 更多环境细节、数据哈希、验收清单和已知坑见 [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md)。
 
@@ -404,7 +405,7 @@ cd report && /tmp/secvul-tectonic/tectonic -X compile report_zh.tex --outdir .
 - `runner` 和 `juliet_llm` 对响应体做 `sk-...` / `Bearer ...` 脱敏；`api.session` 记录非敏感的 `x-opencode-session` 随机值及其 SHA-256，不是密钥。
 - `.gitignore` 排除 `.env`、`creds/`、`credentials/`、`secrets/`、`*.key`、`*.pem`、`auth.json`、`opencode.json`、`*_api_key.json`、`repair_eval/packages/*/private/` 等。
 - 发布前请按 [`docs/SECURITY.md`](docs/SECURITY.md) 的清单做一次 secret scan 和文件体积检查。**不要把任何 key 粘进 issue、PR、commit message 或截图。**
-- GitHub 私有仓库发布步骤见 [`docs/GITHUB_RELEASE.md`](docs/GITHUB_RELEASE.md)：包含 `gh` 安装/校验、`git init`、暂存区体积与密钥扫描、`gh repo create cs224proj --private --source=. --remote=origin --push` 以及推送后验证。发布门禁是 `audit/final_audit.md` 的 FAIL=0（当前 58 PASS / 0 FAIL / 3 WARN / 1 INFO，`PASS_WITH_WARNINGS`）。
+- GitHub 私有仓库已创建并推送：<https://github.com/tzhazuma/cs224proj>（PRIVATE）。发布/重建步骤仍见 [`docs/GITHUB_RELEASE.md`](docs/GITHUB_RELEASE.md)：包含 `gh` 安装/校验、`git init`、暂存区体积与密钥扫描、`gh repo create cs224proj --private --source=. --remote=origin --push` 以及推送后验证；当前仓库不要重复执行 `gh repo create`。发布门禁是 `audit/final_audit.md` 的 FAIL=0（当前 58 PASS / 0 FAIL / 3 WARN / 1 INFO，`PASS_WITH_WARNINGS`）。
 - 本仓库不包含个人账号、cookie、SSH key 或云凭证；如果发现疑似泄漏，先轮换凭证，再清理历史。
 
 ---

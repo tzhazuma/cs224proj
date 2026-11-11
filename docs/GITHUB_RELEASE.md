@@ -1,20 +1,20 @@
 # GitHub 私有仓库发布指南（GITHUB_RELEASE）
 
-> 目标：把本目录作为 **GitHub 私有仓库 `cs224proj`** 发布。
+> 状态：本目录已作为 **GitHub 私有仓库 `cs224proj`** 发布：<https://github.com/tzhazuma/cs224proj>。下文保留从零重建/复现发布的完整步骤。
 > 运行环境：WSL Ubuntu 26.10 x86_64；项目根目录 `/mnt/c/Users/tzh03/Downloads/cs224proj`。
-> 预检日期：2026-11-12。本文是发布工具/命令文档，**不替代** `docs/SECURITY.md` 的威胁模型和 `docs/REPRODUCIBILITY.md` 的复现说明。
+> 首次预检日期：2026-11-12。本文是发布工具/命令文档，**不替代** `docs/SECURITY.md` 的威胁模型和 `docs/REPRODUCIBILITY.md` 的复现说明。
 >
 > 命令中的 `<owner>`、`<org>`、`<base-commit>`、`<your-name>`、`path/to/secret` 等是占位符，复制前必须替换成实际值。
 
 ## 0. 当前结论
 
-**发布状态：READY_TO_PUSH（最终审计 `PASS_WITH_WARNINGS`，0 FAIL；本次未执行 `git`/`gh`）。**
+**发布状态：PUBLISHED（私有仓库已创建并推送：<https://github.com/tzhazuma/cs224proj>）。**
 
-- `audit/final_audit.md`（2026-11-11T21:30:46Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**；must-fix 为空，发布门禁已通过（见 §2.1）。
-- 本地项目根目录目前**没有 `.git`**；本次预检**没有创建 GitHub 仓库，也没有 push**。
-- WSL 的 `PATH` 和常见安装路径中**没有 `gh`**；`~/.config/gh` 已有登录配置（本次只检查存在性，**没有读取或打印任何认证文件**）。
-- 官方 `gh` 二进制已在临时目录完成校验和运行验证（v2.103.3，SHA-256 通过，登录状态有效，SSH 到 GitHub 认证成功）；**没有安装到用户目录**，安装命令见第 4 节。
+- `audit/final_audit.md`（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**；must-fix 为空，发布门禁已通过（见 §2.1）。
+- 本地项目已经是 Git 仓库：`origin` 指向 `https://github.com/tzhazuma/cs224proj.git`，当前分支 `main` 跟踪 `origin/main`；本次文档同步**没有执行 `git commit`/`git push`，也没有执行 `gh`**。
+- `gh` 在首次预检时不在 `PATH`；`~/.config/gh` 已有登录配置（当时只检查存在性，**没有读取或打印任何认证文件**）。本次未重新验证 `gh` 安装状态；重建/换机时按第 4 节安装。
 - 按 `.gitignore` 估算的待发布内容：**约 7,969 个文件 / 248.1 MiB**；最大单文件 40,554,155 字节（`traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`），**没有 ≥100 MB 的文件**。这是 v2 后的估算，最终以暂存区 `git ls-files` 为准。
+- 本文保留从零重建/复现发布的完整步骤；**当前仓库已存在，不要重复执行 §8.2 的 `gh repo create`**。日常更新只需 `git add`/`commit`/`push`（按第 6 节检查后）。
 
 本文的命令全部在 **WSL** 中执行，不要用 Windows 的 Git Bash 初始化这个仓库，避免权限位和换行符混用。
 
@@ -39,7 +39,7 @@
 
 ### 2.1 Audit must-fix 清零
 
-最新审计（2026-11-11T21:30:46Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO**，Overall **`PASS_WITH_WARNINGS`**，must-fix 为空。原 5 个 must-fix 与新增检查的关闭证据如下：
+最新审计（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO**，Overall **`PASS_WITH_WARNINGS`**，must-fix 为空。原 5 个 must-fix 与新增检查的关闭证据如下：
 
 | ID | 区域 | 修复与证据 | 状态 |
 | --- | --- | --- | --- |
@@ -71,17 +71,18 @@ grep -n '^Checks:' audit/final_audit.md
 
 ---
 
-## 3. 环境预检（2026-11-12 实测）
+## 3. 环境预检（首次发布前 2026-11-12；仓库现已发布）
 
-| 检查项 | 本次结果 |
+| 检查项 | 结果 |
 | --- | --- |
 | WSL | Ubuntu 26.10，x86_64 |
 | `git` | 2.55.0 |
 | `curl` | 8.20.0 |
-| 项目根 `.git` | 不存在（尚未初始化） |
-| `gh` 在 `PATH` | 不存在 |
-| `gh` 常见路径 | `~/.local/bin/gh`、`~/bin/gh`、`/usr/local/bin/gh`、`/usr/bin/gh`、`/snap/bin/gh` 均不存在 |
-| `~/.config/gh` | 存在；本次只检查存在性，未读取内容 |
+| 项目根 `.git` | **存在**；当前分支 `main` 跟踪 `origin/main` |
+| `origin` | `https://github.com/tzhazuma/cs224proj.git` |
+| `gh` 在 `PATH` | 首次预检时不存在；本次文档同步未执行 `gh`，当前安装状态未重新验证 |
+| `gh` 常见路径 | 首次预检时 `~/.local/bin/gh`、`~/bin/gh`、`/usr/local/bin/gh`、`/usr/bin/gh`、`/snap/bin/gh` 均不存在 |
+| `~/.config/gh` | 存在；当时只检查存在性，未读取内容 |
 | 官方 gh 验证 | v2.103.3 tarball SHA-256 通过；临时目录运行正常；`gh auth status` 成功；`ssh -T git@github.com` 认证成功 |
 | Git 身份 | `user.name`、`user.email` 已设置（未打印具体值） |
 | `/mnt/c` 的 `core.filemode` | 自动探测为 `false`；本文仍显式设置 |
@@ -209,6 +210,8 @@ gh auth status --hostname github.com
 ---
 
 ## 5. 初始化 Git 并暂存
+
+> 状态：仓库已初始化并推送。本节仅用于从零重建/换机；已有 `.git` 时不要重新 `git init`，日常更新按第 6 节检查后 `git add`/`commit`/`push`。
 
 ### 5.1 初始化与本地配置
 
@@ -418,9 +421,9 @@ git rev-parse HEAD
 
 ---
 
-## 8. 创建私有仓库并首次推送
+## 8. 创建私有仓库并首次推送（当前已完成；以下仅从零重建）
 
-> 本节会**修改 GitHub 远端**。只在第 2、6、7 节全部通过后执行。本次预检没有执行本节。
+> 状态：**已完成**。私有仓库 <https://github.com/tzhazuma/cs224proj> 已创建并推送，`origin` 指向 `https://github.com/tzhazuma/cs224proj.git`。日常更新不要执行本节，只需 `git add`/`commit`/`push`；以下命令保留给灾备或从零重建。**当前仓库上不要执行 8.2 的 `gh repo create`**，否则会因 `origin` 已存在而失败或重复建库。
 
 ### 8.1 建库前预检
 
@@ -433,18 +436,18 @@ git remote -v
 if gh repo view cs224proj --json nameWithOwner,visibility,url 2>/dev/null; then
   echo "STOP: repository already exists"
 else
-  echo "repository not found (expected)"
+  echo "repository not found (rebuild-only)"
 fi
 ```
 
+- 当前状态：`gh repo view` 应显示仓库已存在（走 `STOP` 分支）；`origin` 已指向 `https://github.com/tzhazuma/cs224proj.git`。
 - 确认 `gh auth status` 的 active account 就是目标账号；如果不是，先切换账号，不要建到别人的名下。
-- `git status --porcelain` 必须为空。
+- 从零重建时 `git status --porcelain` 必须为空；当前仓库若有未提交的文档改动，先按维护者流程提交，不要直接重建。
 - 当前分支必须是 `main`；不是的话先 `git branch -M main`（仅在尚未推送时）。
-- `git remote -v` 应为空；已有 `origin` 就不要重复建库。
-- 若 `gh repo view` 显示仓库已存在，停止；不要覆盖或删除别人的仓库。改用现有仓库时，单独确认 remote 和权限。
+- **从零重建时** `git remote -v` 应为空；当前已有 `origin`，不要重复建库。
 - 若目标仓库在组织下，本节以及 8.3/8.4 中的 `cs224proj` 都要写成 `<org>/cs224proj`。
 
-### 8.2 创建私有仓库并推送
+### 8.2 创建私有仓库并推送（仅从零重建）
 
 个人账号下：
 
@@ -458,7 +461,7 @@ gh repo create cs224proj --private --source=. --remote=origin --push
 gh repo create <org>/cs224proj --private --source=. --remote=origin --push
 ```
 
-这条命令会：创建 **private** 仓库、把 `origin` 指向它、推送当前 `main`。不要加 `--public`；不要用 `--push` 之前跳过第 6 节。
+这条命令会：创建 **private** 仓库、把 `origin` 指向它、推送当前 `main`。不要加 `--public`；不要用 `--push` 之前跳过第 6 节。**当前仓库已存在，不要执行本节的 create。**
 
 ### 8.3 推送后验证
 
@@ -528,7 +531,7 @@ rm -rf "$TMP"
 
 ## 9. 发布记录
 
-发布完成后，在私有发布记录中保存以下字段（不要把 token、账号密码或认证文件内容写进去）：
+发布已完成。在私有发布记录中保存以下字段（不要把 token、账号密码或认证文件内容写进去）：
 
 ```bash
 date -u +%Y-%m-%dT%H:%M:%SZ
@@ -537,17 +540,19 @@ gh repo view cs224proj --json nameWithOwner,visibility,url,defaultBranchRef
 gh --version
 ```
 
-建议记录：
+当前记录：
 
 | 字段 | 值 |
 | --- | --- |
-| UTC 时间 | |
-| commit SHA | |
-| 仓库 URL | |
+| UTC 时间 | 2026-11-12（发布已完成；精确时间以 GitHub/commit 记录为准） |
+| commit SHA | 见仓库 `HEAD`（本文档不复制 SHA，避免与后续提交不一致） |
+| 仓库 URL | <https://github.com/tzhazuma/cs224proj> |
 | visibility | `PRIVATE` |
-| audit 时间 / Overall | |
-| gh 版本 | |
-| 操作者 | |
+| audit 时间 / Overall | 2026-11-11T21:45:48Z / `PASS_WITH_WARNINGS`（58 PASS / 0 FAIL / 3 WARN / 1 INFO） |
+| gh 版本 | 首次预检为 v2.103.3（临时目录校验；当前安装状态未重新验证） |
+| 操作者 | 仓库维护者 |
+
+标签（tag）、GitHub Release、Actions、制品上传不在本文范围；需要时另写流程，不要在本流程里顺带创建。
 
 标签（tag）、GitHub Release、Actions、制品上传不在本文范围；需要时另写流程，不要在本流程里顺带创建。
 
@@ -607,10 +612,10 @@ gh repo edit cs224proj --visibility private --accept-visibility-change-consequen
 
 ## 11. 最终检查清单
 
-- [ ] 最新 `audit/final_audit.md` 为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO**、Overall `PASS_WITH_WARNINGS`；C3/D6/I3/I5/L4 全部关闭
-- [ ] `audit/run_final_audit.py` 已按 `hybrid_v2` / `*_postleakfix` 官方产物运行（脚本已切到 v2，无需再改）
-- [ ] B5/D5/F4 等 WARN 的说明仍保留在报告中
-- [ ] `gh --version` 正常，`gh auth status` 返回 0
+- [x] 最新 `audit/final_audit.md` 为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO**、Overall `PASS_WITH_WARNINGS`；C3/D6/I3/I5/L4 全部关闭
+- [x] `audit/run_final_audit.py` 已按 `hybrid_v2` / `*_postleakfix` 官方产物运行（脚本已切到 v2，无需再改）
+- [x] B5/D5/F4 等 WARN 的说明仍保留在报告中
+- [ ] `gh --version` 正常，`gh auth status` 返回 0（本次未执行 `gh`，未重新验证）
 - [ ] SSH 或 HTTPS 至少一种推送方式可用
 - [ ] `git init -b main` 完成，`core.filemode=false`、`core.autocrlf=false`
 - [ ] `git add -n` 和 `git status --ignored` 没有缓存/私钥
@@ -618,12 +623,12 @@ gh repo edit cs224proj --visibility private --accept-visibility-change-consequen
 - [ ] 暂存区无密钥样式文件名/内容
 - [ ] `repair_eval/packages/*/private/` 未被跟踪
 - [ ] 没有大量 `100755`
-- [ ] commit 完成并记录 SHA
-- [ ] `gh repo create --private --source=. --remote=origin --push` 成功
-- [ ] `gh repo view` 显示 `PRIVATE`
-- [ ] `git remote -v` 的 URL 不含 token
-- [ ] `git status -sb` 显示 `main...origin/main`
-- [ ] 发布记录已填写
+- [x] commit 完成并推送；发布 URL 为 <https://github.com/tzhazuma/cs224proj>
+- [x] `gh repo create --private --source=. --remote=origin --push` 已完成（当前仓库不要重复执行）
+- [x] 仓库 visibility 记录为 `PRIVATE`
+- [x] `git remote -v` 的 URL 为 `https://github.com/tzhazuma/cs224proj.git`，不含 token
+- [x] `git status -sb` 显示 `main...origin/main`
+- [x] 发布记录已填写（§9）
 
 ---
 

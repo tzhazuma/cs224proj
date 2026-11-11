@@ -3144,7 +3144,7 @@ def render_markdown(aggregation: Mapping[str, Any]) -> str:
     lines.append("## 5. 复现命令")
     lines.append("")
     lines.append("```bash")
-    lines.append("wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/zy && \\")
+    lines.append(f"wsl bash -lc 'cd {PROJECT_ROOT} && \\")
     lines.append("python3 analysis/analyze_runs.py \\")
     lines.append("  --runs-root runner/runs \\")
     lines.append(
@@ -3156,7 +3156,7 @@ def render_markdown(aggregation: Mapping[str, Any]) -> str:
     lines.append("自检（临时合成 fixture，运行后自动删除，不写入正式结果）：")
     lines.append("")
     lines.append("```bash")
-    lines.append("wsl bash -lc 'cd /mnt/c/Users/tzh03/Downloads/zy && python3 analysis/selftest.py'")
+    lines.append(f"wsl bash -lc 'cd {PROJECT_ROOT} && python3 analysis/selftest.py'")
     lines.append("```")
     lines.append("")
 

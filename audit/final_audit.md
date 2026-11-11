@@ -1,6 +1,6 @@
 # Final quality and leakage audit
 
-Generated: 2026-11-11T21:45:48.827359+00:00 (UTC)  
+Generated: 2026-11-11T21:58:05.180132+00:00 (UTC)
 Overall: **PASS_WITH_WARNINGS**  
 Checks: 58 PASS, 0 FAIL, 3 WARN, 1 INFO.
 

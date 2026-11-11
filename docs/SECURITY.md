@@ -87,7 +87,7 @@ echo 'sk-...' > creds/opencode.json                    # 会进入文件/备份
 - `traditional/static` / `traditional/dynamic` 的 `results.jsonl`、`predictions.jsonl`、`metrics.json/md`、`manifest.json`、`cases.jsonl`；
 - `runner/runs/*/results.jsonl`、`requests.jsonl`、`metrics.json`、`manifest.json`；
 - `benchmark/results/**/*.json`、`*.md`、`*.jsonl`；
-- `report/report_zh.pdf`、`report_zh.tex`、`results_summary.md`；
+- `report/report_extended_zh.pdf`、`report_extended_zh.tex`（27 页），`report/report_zh.pdf`、`report_zh.tex`（17 页），`results_summary.md`；
 - `juliet_llm/build/`（prompt 输入与审计，不是编译产物）。
 
 ---
@@ -173,11 +173,14 @@ git check-ignore -v repair_eval/packages/repair_blind_v1/private/blind_key.json
 ### 4.6 检查 PDF/报告
 
 ```bash
+pdfinfo report/report_extended_zh.pdf | head -8
+pdffonts report/report_extended_zh.pdf | head
+
 pdfinfo report/report_zh.pdf | head -8
 pdffonts report/report_zh.pdf | head
 ```
 
-预期：17 页；字体嵌入；无缺字。报告正文不应包含 key、账号、内部 URL 凭证。
+预期：扩展版 27 页、基础版 17 页；字体嵌入；无缺字。报告正文不应包含 key、账号、内部 URL 凭证。
 
 ### 4.7 推送前最后一步
 
