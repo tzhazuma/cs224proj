@@ -1,6 +1,6 @@
 # Unified benchmark leaderboard — final integration
 
-- generated: `2026-11-11T21:31:43Z`
+- generated: `2026-11-11T21:39:28Z`
 - protocol: `1.0.0`; builder: `bench_final_summary.py`
 - runs: 34 canonical runs (Tier A 16, Tier B 18); 11 superseded historical runs excluded
 - **Canonical Tier B hybrid = `hybrid_v2` (leak-fixed inputs).** `hybrid_v1` is leakage-sensitive and does not appear in any main table.
@@ -10,7 +10,7 @@
 
 - **Tier A detection (160)**: evidence prompt raises macro-F1 from 0.3828 to 0.4223 for DeepSeek and from 0.3456 to 0.4067 for MiMo; the gain is mostly recall/operating-point shift, not a proven discrimination gain.
 - **Tier A pair-joint (180 forced choices)**: DeepSeek 76.67% (95% CI [0.706, 0.822]), MiMo 86.67% (95% CI [0.817, 0.917]). This is a forced binary task; do not compare it directly with side-wise DA.
-- **Tier B test 140**: best traditional tools are ASan/LSan and Valgrind at 0.9137 macro-F1; Clang SA is 0.8883 (4 compile errors); MiMo Xiaomi postleakfix LLM is 0.9500. Hybrid v2 combined reaches 0.9714 (DeepSeek, 136/140) and 0.9714 (MiMo, 136/140); the gain over direct is at most one unit and is not significant after Holm. The old v1 140/140 result is withdrawn as leakage-sensitive.
+- **Tier B test 140**: best traditional tools are ASan/LSan and Valgrind at 0.9137 macro-F1; Clang SA is 0.8883 (4 compile errors); MiMo Xiaomi postleakfix LLM is 0.9500. Hybrid v2 combined reaches 0.9714 (DeepSeek, 136/140) and 0.9714 (MiMo, 136/140); the gain over direct is at most one unit and is not significant after Holm. The old v1 perfect score is withdrawn as leakage-sensitive.
 - **Repair**: both models pass 58/58 observable units; the 12 LSan-unobservable units are excluded from the denominator.
 
 ## 1. Scope, datasets and denominators
@@ -306,7 +306,7 @@ Cost is a vector, not a score: API list price, local wall time, and peak RSS are
 - Dynamic clean is NO_LEAK_OBSERVED, not a verified true negative; the conservative view abstains on clean.
 - Hybrid v2 evidence gains over direct are at most one unit per model and are not significant after Holm; the shuffled placebo is used as the length/content control.
 - Hybrid v1 is leakage-sensitive (six good units still showed the literal 'Benign, fixed string') and is excluded from every main table; only v2 is canonical.
-- The Juliet MiMo LLM result is a Xiaomi official-endpoint fallback, not OpenCode Go; DeepSeek Juliet LLM is unavailable (401/402). Its cost is a reference-price computation because the endpoint returned no billing fields.
+- The Juliet MiMo LLM result uses the Xiaomi official endpoint (the OpenCode Go fallback), not OpenCode Go; DeepSeek Juliet LLM is unavailable (401/402). Its cost is a reference-price computation because the endpoint returned no billing fields.
 - Repair passes are reported only on 58 baseline-observable units; the 12 unobservable units cannot prove leak removal.
 - Single run per cell; no seed/run-to-run variance. Cost is list-price computation, not necessarily the actual bill.
 

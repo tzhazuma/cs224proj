@@ -29,7 +29,7 @@
 | Tier B 修复 | **done_frozen（条件口径）** | 70 bad；58 个 baseline 可观测单元 strict pass = 58/58；12 个不可观测单元不入分母 |
 | 新实验结果 | **有（本目录）** | 34 个 canonical run（Tier A 16、Tier B 18，含 2 repair）；另有 11 个以 `superseded/` 冻结保留、但不进入主表的历史 run |
 
-> `examples/` 是手写合成 fixture，只用于 schema 自检，**不是结果**。`results/` 下的 run 是真实产物的派生视图；Tier A legacy 没有重新调用模型，Tier B 传统工具没有重新运行；round-2 的 evidence/pair-joint/hybrid/LLM/repair 是真实调用的只读导入。**最终统一 leaderboard 是 [`results/LEADERBOARD.md`](results/LEADERBOARD.md)，机器可读结果是 [`results/final_summary.json`](results/final_summary.json)**；`tier_a_leaderboard.md` / `tier_b_leaderboard.md` 保留为整合前的详细视图。
+> `examples/` 是手写合成 fixture，只用于 schema 自检，**不是结果**。`results/` 下的 run 是真实产物的派生视图；Tier A legacy 没有重新调用模型，Tier B 传统工具没有重新运行；round-2 的 evidence/pair-joint/hybrid v2/LLM postleakfix/repair 是真实调用的只读导入。**最终统一 leaderboard 是 [`results/LEADERBOARD.md`](results/LEADERBOARD.md)，机器可读结果是 [`results/final_summary.json`](results/final_summary.json)**；`tier_a_leaderboard.md` / `tier_b_leaderboard.md` 保留为整合前的详细视图。
 
 ---
 
@@ -256,7 +256,7 @@ B1/B2/B3 已完成正式 run（见 `results/tier_b_leaderboard.md`）。Round-2 
 
 ## 9. 已做的验证（真实执行）
 
-本轮 benchmark 本身没有调用模型或重跑静态/动态工具；Tier A legacy 派生自 `runner/runs/test_v1_*`，Tier B 传统工具派生自 `traditional/static` 与 `traditional/dynamic`，round-2 的 evidence/pair-joint/hybrid/LLM/repair 则是真实调用的只读导入。
+本轮 benchmark 本身没有调用模型或重跑静态/动态工具；Tier A legacy 派生自 `runner/runs/test_v1_*`，Tier B 传统工具派生自 `traditional/static` 与 `traditional/dynamic`，round-2 的 evidence/pair-joint/hybrid v2/LLM postleakfix/repair 则是真实调用的只读导入。
 
 | 验证 | 结果 |
 | --- | --- |
