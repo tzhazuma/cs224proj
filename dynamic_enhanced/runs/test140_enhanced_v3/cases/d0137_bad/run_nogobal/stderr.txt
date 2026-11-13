@@ -1,0 +1,52 @@
+
+=================================================================
+==15689==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 4096 byte(s) in 1 object(s) allocated from:
+    #0 0x7341ad52b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x7341ad08cbaf in _IO_wfile_doallocate /usr/src/glibc-2.44-1ubuntu2/libio/wfiledoalloc.c:79
+    #2 0x7341ad091779 in __GI__IO_wdoallocbuf /usr/src/glibc-2.44-1ubuntu2/libio/wgenops.c:368
+    #3 0x7341ad09390d in __GI__IO_wfile_overflow /usr/src/glibc-2.44-1ubuntu2/libio/wfileops.c:422
+    #4 0x7341ad091540 in __GI___woverflow /usr/src/glibc-2.44-1ubuntu2/libio/wgenops.c:214
+    #5 0x7341ad091540 in __GI__IO_wdefault_xsputn /usr/src/glibc-2.44-1ubuntu2/libio/wgenops.c:314
+    #6 0x7341ad091540 in __GI__IO_wdefault_xsputn /usr/src/glibc-2.44-1ubuntu2/libio/wgenops.c:281
+    #7 0x7341ad089157 in __wprintf_buffer_flush_to_file /usr/src/glibc-2.44-1ubuntu2/stdio-common/wprintf_buffer_to_file.c:31
+    #8 0x7341ad089157 in __wprintf_buffer_to_file_done /usr/src/glibc-2.44-1ubuntu2/stdio-common/wprintf_buffer_to_file.c:53
+    #9 0x7341ad07f9f3 in __vfwprintf_internal /usr/src/glibc-2.44-1ubuntu2/stdio-common/vfprintf-internal.c:1549
+    #10 0x7341ad0908d2 in __wprintf /usr/src/glibc-2.44-1ubuntu2/libio/wprintf.c:32
+    #11 0x566f41ae8692 in printWLine /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c:23
+    #12 0x566f41ae85c9 in CWE401_Memory_Leak__wchar_t_realloc_01_bad /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_realloc_01.c:33
+    #13 0x566f41ae861f in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0137_bad/build/__dynenh_probe_main.c:2
+    #14 0x7341ad02a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #15 0x7341ad02a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #16 0x566f41ae84a4 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0137_bad/build/bad.plain.exe+0x24a4) (BuildId: 84b75f1ed46d3bea899332769343cb40dd3540f1)
+
+Direct leak of 1024 byte(s) in 1 object(s) allocated from:
+    #0 0x7341ad52b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x7341ad08b32b in __GI__IO_file_doallocate /usr/src/glibc-2.44-1ubuntu2/libio/filedoalloc.c:91
+    #2 0x7341ad08cbdc in _IO_wfile_doallocate /usr/src/glibc-2.44-1ubuntu2/libio/wfiledoalloc.c:70
+    #3 0x7341ad091779 in __GI__IO_wdoallocbuf /usr/src/glibc-2.44-1ubuntu2/libio/wgenops.c:368
+    #4 0x7341ad09390d in __GI__IO_wfile_overflow /usr/src/glibc-2.44-1ubuntu2/libio/wfileops.c:422
+    #5 0x7341ad091540 in __GI___woverflow /usr/src/glibc-2.44-1ubuntu2/libio/wgenops.c:214
+    #6 0x7341ad091540 in __GI__IO_wdefault_xsputn /usr/src/glibc-2.44-1ubuntu2/libio/wgenops.c:314
+    #7 0x7341ad091540 in __GI__IO_wdefault_xsputn /usr/src/glibc-2.44-1ubuntu2/libio/wgenops.c:281
+    #8 0x7341ad089157 in __wprintf_buffer_flush_to_file /usr/src/glibc-2.44-1ubuntu2/stdio-common/wprintf_buffer_to_file.c:31
+    #9 0x7341ad089157 in __wprintf_buffer_to_file_done /usr/src/glibc-2.44-1ubuntu2/stdio-common/wprintf_buffer_to_file.c:53
+    #10 0x7341ad07f9f3 in __vfwprintf_internal /usr/src/glibc-2.44-1ubuntu2/stdio-common/vfprintf-internal.c:1549
+    #11 0x7341ad0908d2 in __wprintf /usr/src/glibc-2.44-1ubuntu2/libio/wprintf.c:32
+    #12 0x566f41ae8692 in printWLine /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c:23
+    #13 0x566f41ae85c9 in CWE401_Memory_Leak__wchar_t_realloc_01_bad /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_realloc_01.c:33
+    #14 0x566f41ae861f in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0137_bad/build/__dynenh_probe_main.c:2
+    #15 0x7341ad02a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #16 0x7341ad02a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #17 0x566f41ae84a4 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0137_bad/build/bad.plain.exe+0x24a4) (BuildId: 84b75f1ed46d3bea899332769343cb40dd3540f1)
+
+Direct leak of 400 byte(s) in 1 object(s) allocated from:
+    #0 0x7341ad52a6af in realloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:81
+    #1 0x566f41ae858d in CWE401_Memory_Leak__wchar_t_realloc_01_bad /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_realloc_01.c:29
+    #2 0x566f41ae861f in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0137_bad/build/__dynenh_probe_main.c:2
+    #3 0x7341ad02a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #4 0x7341ad02a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #5 0x566f41ae84a4 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0137_bad/build/bad.plain.exe+0x24a4) (BuildId: 84b75f1ed46d3bea899332769343cb40dd3540f1)
+
+SUMMARY: AddressSanitizer: 5520 byte(s) leaked in 3 allocation(s).

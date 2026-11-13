@@ -1,0 +1,70 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "ext_evidence_retraction_deepseek_self",
+  "created_at": "2026-11-13T17:10:14Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": null,
+    "label_counts": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    }
+  },
+  "method": {
+    "method_id": "hybrid.evidence_retraction.deepseek-v4.1-flash_by_deepseek-v4.1-flash",
+    "family": "hybrid",
+    "name": "Evidence retraction: deepseek-v4.1-flash first pass verified by deepseek-v4.1-flash",
+    "strategy": "verify_positive_claim",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "llm",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 2048
+      }
+    },
+    "config_sha256": "379c86e30541a3f27065e14a517d79bbc088ab85f79c0a09358919b43d407f77"
+  },
+  "execution": {
+    "started_at": "2026-11-13T17:10:14Z",
+    "finished_at": "2026-11-13T17:10:14Z",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "9754b23feddc63cd0c9600936402a8c3d21b74613598bba0f8501ebd6d0bec1f",
+    "extension_manifest_sha256": "bb4836adc4acee65aaa75e82142ed7450d8ba95e7334dd026ee3be8d77821d80"
+  },
+  "legacy_import": null,
+  "notes": [
+    "post-hoc evidence retraction on the frozen 160 detection test; analysis_status=exploratory_post_hoc_test_seen",
+    "positive first-pass claims only; negatives unchanged; invalid verifier output is fail-closed (retract)",
+    "copied from producer raw; post prediction recomputed, not re-run"
+  ]
+}

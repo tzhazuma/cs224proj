@@ -1,0 +1,13 @@
+
+=================================================================
+==12312==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 100 byte(s) in 1 object(s) allocated from:
+    #0 0x755511f2b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x61d277c0c68e in CWE401_Memory_Leak__char_malloc_33::bad() /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_malloc_33.cpp:33
+    #2 0x61d277c0c7d2 in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0007_bad/build/__dynenh_probe_main.cpp:2
+    #3 0x75551162a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #4 0x75551162a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #5 0x61d277c0c504 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0007_bad/build/bad.wrap.exe+0x2504) (BuildId: c89d31e0859ab3d244b95aab3df54f1f82f05e1d)
+
+SUMMARY: AddressSanitizer: 100 byte(s) leaked in 1 allocation(s).

@@ -1,0 +1,43 @@
+{
+  "run_id": "ext_pair_debias_deepseek_forced",
+  "tier": "A",
+  "track": "secvuleval",
+  "pair_split": "splits/test_pairs_180.json",
+  "pairing_id": "pairset-deepseek-forced-v1",
+  "method": {
+    "method_id": "llm.deepseek.pair_debiased",
+    "family": "llm",
+    "name": "DeepSeek V4.1 Flash / pair-debias forced",
+    "strategy": "pair_debiased",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "deepseek",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_tokens"
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-13"
+    }
+  },
+  "orders": {
+    "fwd": {
+      "raw": "pair_joint/runs/test_deepseek_180/results.jsonl",
+      "position_map": "pair_joint/runs/test_deepseek_180/position_map.json",
+      "run_id": "ext_pair_debias_deepseek_forced_fwd"
+    },
+    "rev": {
+      "raw": "pair_debias/runs/test_deepseek_forced_rev/results.jsonl",
+      "position_map": "pair_debias/runs/test_deepseek_forced_rev/position_map.json",
+      "run_id": "ext_pair_debias_deepseek_forced_rev"
+    }
+  },
+  "out": "../runs/pair_debias/deepseek/forced",
+  "include_rationale": true,
+  "notes": [
+    "real pair_debias forced_fwd from pair_joint; forced_rev from pair_debias"
+  ]
+}

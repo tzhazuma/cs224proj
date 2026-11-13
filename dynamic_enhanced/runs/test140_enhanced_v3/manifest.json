@@ -1,0 +1,1582 @@
+{
+  "schema": "dynamic-enhanced-run-v1",
+  "run_id": "test140_enhanced_v3",
+  "created_at_utc": "2026-11-12T16:35:37Z",
+  "units": 140,
+  "labels": {
+    "bad": 70,
+    "good": 70
+  },
+  "groups": 70,
+  "freeze": {
+    "dataset_id": "juliet-cwe401-v1.3-subset-v1",
+    "subset_units": "juliet/subset_units.jsonl",
+    "subset_units_sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "freeze_file": "juliet/FREEZE.json",
+    "freeze_file_sha256": "05972f02f9b37f77a75b9f3d8cb64dcfcb0e70174127fb7d7feb49dd3f706b03"
+  },
+  "modes": {
+    "default": "ASan/LSan with the standard root set (globals, TLS, libc); stacks and registers are not roots. Reproduces the archived ASan verdict.",
+    "realloc_fail": "Same root set, but the binary is linked with --wrap=realloc and the first realloc() call that receives a non-NULL pointer is forced to return NULL. This reaches the error path that the default run never executes for the malloc_realloc_* family.",
+    "nogobal": "Same binary as default, but LSan runs with use_globals=0 so a block whose only remaining pointer lives in a global variable is reported instead of being classified as still reachable."
+  },
+  "env": {
+    "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+    "LSAN_OPTIONS_default": "exitcode=23:use_stacks=0:use_registers=0",
+    "LSAN_OPTIONS_nogobal": "exitcode=23:use_stacks=0:use_registers=0:use_globals=0",
+    "DYNENH_REALLOC_FAIL_NONNULL": "1 (realloc_fail only)"
+  },
+  "tools": {
+    "gcc": "gcc (Ubuntu 15.3.0-4ubuntu1) 15.3.0",
+    "g++": "g++ (Ubuntu 15.3.0-4ubuntu1) 15.3.0",
+    "python": "3.14.8",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44"
+  },
+  "unit_inputs": [
+    {
+      "unit_id": "CWE401_Memory_Leak__char_calloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_calloc_01.c",
+          "sha256": "7d9870716c196843fd77e84c4ce46535707753353be94a0fc7a589fba3c7cee1"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_calloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_calloc_01.c",
+          "sha256": "7d9870716c196843fd77e84c4ce46535707753353be94a0fc7a589fba3c7cee1"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_calloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_calloc_33.cpp",
+          "sha256": "851168949e48639b1f847e1ec9ef9e6503f47dbe3392b1c15ffea004b761a6fe"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_calloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_calloc_33.cpp",
+          "sha256": "851168949e48639b1f847e1ec9ef9e6503f47dbe3392b1c15ffea004b761a6fe"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_malloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_malloc_01.c",
+          "sha256": "602cbb00e0d93e50698adc9fbc55bdfa9d50b70ddefdf76f4f43be76bf08e0a2"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_malloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_malloc_01.c",
+          "sha256": "602cbb00e0d93e50698adc9fbc55bdfa9d50b70ddefdf76f4f43be76bf08e0a2"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_malloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_malloc_33.cpp",
+          "sha256": "88dbedf48eb178755a5e611e513ab30f4041639c429c4e0fe96bd5acd5a8998f"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_malloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_malloc_33.cpp",
+          "sha256": "88dbedf48eb178755a5e611e513ab30f4041639c429c4e0fe96bd5acd5a8998f"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_realloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_01.c",
+          "sha256": "3e72a27d1149e54cd9f4ff95da828ff8f55ca727d7b987262a76d00502e81e27"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_realloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_01.c",
+          "sha256": "3e72a27d1149e54cd9f4ff95da828ff8f55ca727d7b987262a76d00502e81e27"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_realloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_33.cpp",
+          "sha256": "5beb8e717554ac98536e8395f0d5ade462ecd96fbfaafbd642eb18459aec2fff"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_realloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_33.cpp",
+          "sha256": "5beb8e717554ac98536e8395f0d5ade462ecd96fbfaafbd642eb18459aec2fff"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_realloc_54__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54a.c",
+          "sha256": "d003984ee1271ba08413011e815097bd90e37568fb4e9c68e2f0eccfde611226"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54b.c",
+          "sha256": "178ebe320c5e3ac5cbe694e57767ab4d858fdbc6b3badcb7749babb7cd0d033f"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54c.c",
+          "sha256": "cadace3884282bdc825da2cd9fc0ef2dc7dd9e405245ff8bfb633c677132b0fc"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54d.c",
+          "sha256": "eefb1e6742d0209f49a2e9255984b5ff9fa60d66a03f40f7ad3c181431457133"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54e.c",
+          "sha256": "8f442526a5cd75b5f84a76583324aa52a17e986dd91c404b63d1d062e80a4c39"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__char_realloc_54__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54a.c",
+          "sha256": "d003984ee1271ba08413011e815097bd90e37568fb4e9c68e2f0eccfde611226"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54b.c",
+          "sha256": "178ebe320c5e3ac5cbe694e57767ab4d858fdbc6b3badcb7749babb7cd0d033f"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54c.c",
+          "sha256": "cadace3884282bdc825da2cd9fc0ef2dc7dd9e405245ff8bfb633c677132b0fc"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54d.c",
+          "sha256": "eefb1e6742d0209f49a2e9255984b5ff9fa60d66a03f40f7ad3c181431457133"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54e.c",
+          "sha256": "8f442526a5cd75b5f84a76583324aa52a17e986dd91c404b63d1d062e80a4c39"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_calloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_01.c",
+          "sha256": "f33a89071476280835102e4e815f070c3aa9abf26dc6b21211faaee9a42db4da"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_calloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_01.c",
+          "sha256": "f33a89071476280835102e4e815f070c3aa9abf26dc6b21211faaee9a42db4da"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_calloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_33.cpp",
+          "sha256": "8687423223e3cb8388fe5bf14232288cccd83f1b4405d975ffdfeffcfba2e955"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_calloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_calloc_33.cpp",
+          "sha256": "8687423223e3cb8388fe5bf14232288cccd83f1b4405d975ffdfeffcfba2e955"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_malloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_01.c",
+          "sha256": "30c446d91f19c8b7230e84e013dbd4c4066db01a1980789e8b359dcd571667cd"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_malloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_01.c",
+          "sha256": "30c446d91f19c8b7230e84e013dbd4c4066db01a1980789e8b359dcd571667cd"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_malloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_33.cpp",
+          "sha256": "4156cf7844c1f4ac4534677bfbd463e260a3809e4af61e66f944a8a86ec83685"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_malloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_33.cpp",
+          "sha256": "4156cf7844c1f4ac4534677bfbd463e260a3809e4af61e66f944a8a86ec83685"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_realloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_realloc_01.c",
+          "sha256": "3e0fe560694bfd4acfed513117ac549b29f5effc997ef62262acf9acdd5fbed1"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_realloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_realloc_01.c",
+          "sha256": "3e0fe560694bfd4acfed513117ac549b29f5effc997ef62262acf9acdd5fbed1"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_realloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_realloc_33.cpp",
+          "sha256": "150023254926b3949e685c2a4dc86f152049a9085b02712b41695aa63e2ae726"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_realloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_realloc_33.cpp",
+          "sha256": "150023254926b3949e685c2a4dc86f152049a9085b02712b41695aa63e2ae726"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_calloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_01.c",
+          "sha256": "cd02d14d12825655924943e0f4450feaf0122e2dfa30df8d10347e8c84715116"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_calloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_01.c",
+          "sha256": "cd02d14d12825655924943e0f4450feaf0122e2dfa30df8d10347e8c84715116"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_calloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_33.cpp",
+          "sha256": "cd0a5c869513942177b6765dca41c557c1299ccd5555cc60e25fee209617270a"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_calloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_33.cpp",
+          "sha256": "cd0a5c869513942177b6765dca41c557c1299ccd5555cc60e25fee209617270a"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_calloc_54__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54a.c",
+          "sha256": "7cbe1893daf50d5850ddcf0465dc2e3bdac474654e404bf43177f697254b7f48"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54b.c",
+          "sha256": "e0610f8e0908a720b6796aa5dbd63671ae2f6254bdc340d9a77d9bb0ee5d041c"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54c.c",
+          "sha256": "fdc5947038605305abbf8fba7550c86ad743f0f2f9bebf64503d7a18b8115a07"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54d.c",
+          "sha256": "bb679feb77f2d862d242eba767a303b54be03fa9d15f1bc9eebc1d25d607f06c"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54e.c",
+          "sha256": "35a2fd113d5a583b7c9c45bfa05fc8a32a5a823626926452dd82e02e5e81ed13"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_calloc_54__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54a.c",
+          "sha256": "7cbe1893daf50d5850ddcf0465dc2e3bdac474654e404bf43177f697254b7f48"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54b.c",
+          "sha256": "e0610f8e0908a720b6796aa5dbd63671ae2f6254bdc340d9a77d9bb0ee5d041c"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54c.c",
+          "sha256": "fdc5947038605305abbf8fba7550c86ad743f0f2f9bebf64503d7a18b8115a07"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54d.c",
+          "sha256": "bb679feb77f2d862d242eba767a303b54be03fa9d15f1bc9eebc1d25d607f06c"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_54e.c",
+          "sha256": "35a2fd113d5a583b7c9c45bfa05fc8a32a5a823626926452dd82e02e5e81ed13"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_malloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_malloc_01.c",
+          "sha256": "61b58abfcf4fc5bc9c64a4e3c623b34df93c100e1d71c1ad546372062bb91ad8"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_malloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_malloc_01.c",
+          "sha256": "61b58abfcf4fc5bc9c64a4e3c623b34df93c100e1d71c1ad546372062bb91ad8"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_malloc_22__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_malloc_22a.c",
+          "sha256": "201eedbf0a86c47235aae4663dc46a955f24269f557c5898e630b95d2b394f67"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_malloc_22b.c",
+          "sha256": "69dc8d9a72d09e32efa85285f40b3a5ba1fc8f49705ae15222baa5234e8ea770"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_malloc_22__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_malloc_22a.c",
+          "sha256": "201eedbf0a86c47235aae4663dc46a955f24269f557c5898e630b95d2b394f67"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_malloc_22b.c",
+          "sha256": "69dc8d9a72d09e32efa85285f40b3a5ba1fc8f49705ae15222baa5234e8ea770"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_malloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_malloc_33.cpp",
+          "sha256": "cc59f54c08b1d86ab7e9586d6a6fe6854b54a427a07256ff289dbbe61a7d5e4e"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_malloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_malloc_33.cpp",
+          "sha256": "cc59f54c08b1d86ab7e9586d6a6fe6854b54a427a07256ff289dbbe61a7d5e4e"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_realloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_realloc_01.c",
+          "sha256": "be989570343f9df493f5a7c5ec188c20a452740394de45cc78c8df2768f6b0b0"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_realloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_realloc_01.c",
+          "sha256": "be989570343f9df493f5a7c5ec188c20a452740394de45cc78c8df2768f6b0b0"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_realloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_realloc_33.cpp",
+          "sha256": "a99955e8992eb0bcf284940a0e20a73e091d85cd123790bdbee2bb78d6a6e0eb"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_realloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_realloc_33.cpp",
+          "sha256": "a99955e8992eb0bcf284940a0e20a73e091d85cd123790bdbee2bb78d6a6e0eb"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int64_t_01.c",
+          "sha256": "1d70aa4835f1148a017c7a477d88bde02387e09c3c5189b6d359551aae9a89e2"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int64_t_01.c",
+          "sha256": "1d70aa4835f1148a017c7a477d88bde02387e09c3c5189b6d359551aae9a89e2"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_09__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int64_t_09.c",
+          "sha256": "5bd81c57892289810c21eadc3e503d5e62cbd3adde2e91d3d85679106bc55153"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_09__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int64_t_09.c",
+          "sha256": "5bd81c57892289810c21eadc3e503d5e62cbd3adde2e91d3d85679106bc55153"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_18__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int64_t_18.c",
+          "sha256": "08564fe7775cabe26885b80385371d0d44778f5be064c8fc5a118707544cd9f7"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_18__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int64_t_18.c",
+          "sha256": "08564fe7775cabe26885b80385371d0d44778f5be064c8fc5a118707544cd9f7"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c",
+          "sha256": "33998c0b0bf386339a76dd179176b44f8276afb0c1a056ca08382c8aab8f34be"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_01.c",
+          "sha256": "33998c0b0bf386339a76dd179176b44f8276afb0c1a056ca08382c8aab8f34be"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int_18__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_18.c",
+          "sha256": "642b85732d52f5256f9173d22936e2f09f3b511dc7dd9c2f204dbfea91a5a335"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_int_18__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_int_18.c",
+          "sha256": "642b85732d52f5256f9173d22936e2f09f3b511dc7dd9c2f204dbfea91a5a335"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01.c",
+          "sha256": "f5979e45d7d040938a950dd4a502b363ec5a31475c68b1808eedc164de5d92fd"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01.c",
+          "sha256": "f5979e45d7d040938a950dd4a502b363ec5a31475c68b1808eedc164de5d92fd"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18.c",
+          "sha256": "1da7855a0d345827a2fb4857eb9c5e2fe7fabfb51a2885905bb0a13e33f44820"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18.c",
+          "sha256": "1da7855a0d345827a2fb4857eb9c5e2fe7fabfb51a2885905bb0a13e33f44820"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_TwoIntsClass_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_01.cpp",
+          "sha256": "22d7c418ac0220750b2559710dba23aff82a01b1c706e7a35458aa676742c1d0"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_TwoIntsClass_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_01.cpp",
+          "sha256": "22d7c418ac0220750b2559710dba23aff82a01b1c706e7a35458aa676742c1d0"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_TwoIntsClass_68__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_68a.cpp",
+          "sha256": "cdc8548f7a01e155f91d4cc262455640edb1f3b1db49624b5371ebcaf1a2eaa7"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_68b.cpp",
+          "sha256": "789af4215caecc57d894692cfd59801f8265749382cd3601a88577fe24b26bf6"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_TwoIntsClass_68__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_68a.cpp",
+          "sha256": "cdc8548f7a01e155f91d4cc262455640edb1f3b1db49624b5371ebcaf1a2eaa7"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_TwoIntsClass_68b.cpp",
+          "sha256": "789af4215caecc57d894692cfd59801f8265749382cd3601a88577fe24b26bf6"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_char_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__new_array_char_01.cpp",
+          "sha256": "5947da124560f226bdb6cc7ca449c0b5db73b60f34d0049e3697590dfb4b96e3"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_char_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__new_array_char_01.cpp",
+          "sha256": "5947da124560f226bdb6cc7ca449c0b5db73b60f34d0049e3697590dfb4b96e3"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_char_22__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__new_array_char_22a.cpp",
+          "sha256": "b546255cf23dff80bc494990aeeb30ade24d8540484ec4b2ee3d4c7e9099f1cb"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__new_array_char_22b.cpp",
+          "sha256": "ca179fe3b01e912ada19e419db52fb3f22650bf28ad1aa0021b3f122c25b940d"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_char_22__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__new_array_char_22a.cpp",
+          "sha256": "b546255cf23dff80bc494990aeeb30ade24d8540484ec4b2ee3d4c7e9099f1cb"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__new_array_char_22b.cpp",
+          "sha256": "ca179fe3b01e912ada19e419db52fb3f22650bf28ad1aa0021b3f122c25b940d"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_int64_t_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_int64_t_01.cpp",
+          "sha256": "c442c24888cebaed7db186176fbfd3b1992cae26c88c8002883dfc46ee6d1cbc"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_int64_t_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_int64_t_01.cpp",
+          "sha256": "c442c24888cebaed7db186176fbfd3b1992cae26c88c8002883dfc46ee6d1cbc"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_int64_t_31__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_int64_t_31.cpp",
+          "sha256": "48656c24b2442621308048262176502811426538e8de742177919194d5927d59"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_int64_t_31__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_int64_t_31.cpp",
+          "sha256": "48656c24b2442621308048262176502811426538e8de742177919194d5927d59"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_int_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_int_01.cpp",
+          "sha256": "0ead47fb76601a152544a81f6672592b9888887ac215e0cf8b36d2b4fc176e53"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_int_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_int_01.cpp",
+          "sha256": "0ead47fb76601a152544a81f6672592b9888887ac215e0cf8b36d2b4fc176e53"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_int_22__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_int_22a.cpp",
+          "sha256": "1594670b9dfd9c5847265276473487e4999c42167be396909f63b74b0f8d363d"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_int_22b.cpp",
+          "sha256": "c836fc9b604ef9e1b20d606ccae57233942592cc59eed805a27c4c1555ec6a8b"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_int_22__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_int_22a.cpp",
+          "sha256": "1594670b9dfd9c5847265276473487e4999c42167be396909f63b74b0f8d363d"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_int_22b.cpp",
+          "sha256": "c836fc9b604ef9e1b20d606ccae57233942592cc59eed805a27c4c1555ec6a8b"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_twointsStruct_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_01.cpp",
+          "sha256": "39783cb7a180197f3652cf33242c9f6d2f6c18d3032538a0b70e70c2c8c11d2d"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_twointsStruct_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_01.cpp",
+          "sha256": "39783cb7a180197f3652cf33242c9f6d2f6c18d3032538a0b70e70c2c8c11d2d"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_twointsStruct_68__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp",
+          "sha256": "c14c3ebf9124fc0ac3bf63bf7db24ae955a60668883f9d7b48c80b7e0a3043ea"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp",
+          "sha256": "9242aea9ca26efdf2bf5527143bb1b86c67e9a067f1b12478020bbf98c4cb911"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_twointsStruct_68__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp",
+          "sha256": "c14c3ebf9124fc0ac3bf63bf7db24ae955a60668883f9d7b48c80b7e0a3043ea"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp",
+          "sha256": "9242aea9ca26efdf2bf5527143bb1b86c67e9a067f1b12478020bbf98c4cb911"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_wchar_t_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_wchar_t_01.cpp",
+          "sha256": "c6a0ab1fa6bd411c69eec8e4da535549ffd02ce552d7d79b296da340473ca402"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_wchar_t_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_wchar_t_01.cpp",
+          "sha256": "c6a0ab1fa6bd411c69eec8e4da535549ffd02ce552d7d79b296da340473ca402"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_wchar_t_31__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_wchar_t_31.cpp",
+          "sha256": "6557d7d4fc1f2d93e72e2603fbdd2600c5a5876c0163fa48a25c5f1aa3c83cee"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_wchar_t_31__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_wchar_t_31.cpp",
+          "sha256": "6557d7d4fc1f2d93e72e2603fbdd2600c5a5876c0163fa48a25c5f1aa3c83cee"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_wchar_t_72__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_wchar_t_72a.cpp",
+          "sha256": "ffa29fee3149ae22e8a07a50a0ab3211620bf5c55bbc1ad1cc26bf5f7473617e"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_wchar_t_72b.cpp",
+          "sha256": "ceed5b6560832b02af894dada99c395208842b15d8c8b332155ee88b67be57c5"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_array_wchar_t_72__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_wchar_t_72a.cpp",
+          "sha256": "ffa29fee3149ae22e8a07a50a0ab3211620bf5c55bbc1ad1cc26bf5f7473617e"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_wchar_t_72b.cpp",
+          "sha256": "ceed5b6560832b02af894dada99c395208842b15d8c8b332155ee88b67be57c5"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_char_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_01.cpp",
+          "sha256": "b45422b5676b9cc65176b82e7cdb07a146eecb6bedd57336be0401aa4633271f"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_char_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_01.cpp",
+          "sha256": "b45422b5676b9cc65176b82e7cdb07a146eecb6bedd57336be0401aa4633271f"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_char_31__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_31.cpp",
+          "sha256": "87913794c54811834e93d48b8d5c3a8d9a09f430185213b41da3e9f544ef807c"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_char_31__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_31.cpp",
+          "sha256": "87913794c54811834e93d48b8d5c3a8d9a09f430185213b41da3e9f544ef807c"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_char_72__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp",
+          "sha256": "efcf255738512fc8189c6afbbd41fed72fa52ac18a134b7317f5ab37dc2c1040"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72b.cpp",
+          "sha256": "dee6b75b05e7cb05f39783122b837344c99e4736aad0df9db8005069be37404a"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_char_72__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp",
+          "sha256": "efcf255738512fc8189c6afbbd41fed72fa52ac18a134b7317f5ab37dc2c1040"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72b.cpp",
+          "sha256": "dee6b75b05e7cb05f39783122b837344c99e4736aad0df9db8005069be37404a"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_int64_t_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_01.cpp",
+          "sha256": "941920e2352898fb4bd5a832cce82e524806ad45d479eac1dc590358d51337eb"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_int64_t_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_01.cpp",
+          "sha256": "941920e2352898fb4bd5a832cce82e524806ad45d479eac1dc590358d51337eb"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_int64_t_54__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_54a.cpp",
+          "sha256": "335f8bed2c1b38f76b12597b00ba73d251c13083ee14235c45c94ae954aa6ffb"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_54b.cpp",
+          "sha256": "1bce084adafba399b6126e7eadaf1d81bdb6b9eacd6fb95773cdc76b24aa0365"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_54c.cpp",
+          "sha256": "61dde80cc737c0287eee23593a6a2a3871a9fb80964f9326a4b0a75940015033"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_54d.cpp",
+          "sha256": "e123bdb8ce28069e33e464e10fbd2a3a8349c6b3c9831af7f3578c98061009fb"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_54e.cpp",
+          "sha256": "dca91f88c318b609af8a1ac0e4af06ea932c13d5bdddc5d3b69b8da1769756b9"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_int64_t_54__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_54a.cpp",
+          "sha256": "335f8bed2c1b38f76b12597b00ba73d251c13083ee14235c45c94ae954aa6ffb"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_54b.cpp",
+          "sha256": "1bce084adafba399b6126e7eadaf1d81bdb6b9eacd6fb95773cdc76b24aa0365"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_54c.cpp",
+          "sha256": "61dde80cc737c0287eee23593a6a2a3871a9fb80964f9326a4b0a75940015033"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_54d.cpp",
+          "sha256": "e123bdb8ce28069e33e464e10fbd2a3a8349c6b3c9831af7f3578c98061009fb"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int64_t_54e.cpp",
+          "sha256": "dca91f88c318b609af8a1ac0e4af06ea932c13d5bdddc5d3b69b8da1769756b9"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_int_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int_01.cpp",
+          "sha256": "3cdd53d648b3bd45fc17eff67ba6a1a14b0455f32716b3bcaf66e89a025ddaf0"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_int_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int_01.cpp",
+          "sha256": "3cdd53d648b3bd45fc17eff67ba6a1a14b0455f32716b3bcaf66e89a025ddaf0"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_int_22__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int_22a.cpp",
+          "sha256": "c4a7e7a875d73d8052ec5f52db8ceaa70d84addb21f8740fa96aa0d34da3f592"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int_22b.cpp",
+          "sha256": "a49714603e73407592ed562dfe1ff00225aa7db5f9570f3cf8acb2294f5770fa"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_int_22__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int_22a.cpp",
+          "sha256": "c4a7e7a875d73d8052ec5f52db8ceaa70d84addb21f8740fa96aa0d34da3f592"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int_22b.cpp",
+          "sha256": "a49714603e73407592ed562dfe1ff00225aa7db5f9570f3cf8acb2294f5770fa"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_int_72__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int_72a.cpp",
+          "sha256": "f8be94ec536eec3e03da1ea24e137ca8a8f3098b1742efacd9dd85182c924f72"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int_72b.cpp",
+          "sha256": "40f17922d76544af81781d8c0458ca362746ce7ad70eba54c66e40b15774f1e1"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_int_72__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int_72a.cpp",
+          "sha256": "f8be94ec536eec3e03da1ea24e137ca8a8f3098b1742efacd9dd85182c924f72"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_int_72b.cpp",
+          "sha256": "40f17922d76544af81781d8c0458ca362746ce7ad70eba54c66e40b15774f1e1"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_twoIntsStruct_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_01.cpp",
+          "sha256": "20772a77e259682a422ddc22c1bf67642ee26f8845d647f6572f1640f73913fa"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_twoIntsStruct_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_01.cpp",
+          "sha256": "20772a77e259682a422ddc22c1bf67642ee26f8845d647f6572f1640f73913fa"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_twoIntsStruct_54__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_54a.cpp",
+          "sha256": "c5e2bb3acb5f2e805e5423a32f455e190c2363ba2d0092b673aff72b2a62c139"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_54b.cpp",
+          "sha256": "49465933cd692721b9c107a30379497e8ca24d638aa407b5cd796d426c24798a"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_54c.cpp",
+          "sha256": "fb802dcd53e2224f061feb02fa385208926362e9c878d3d04c0f6952b750f7c0"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_54d.cpp",
+          "sha256": "97b84a26402b9ae639f295f1beb788dc3eda4050fb88b366a525c4122934ecc5"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_54e.cpp",
+          "sha256": "0862657f96502f949405161ab7da2e597f9b76bf1a89df7e69a1156492e2e74b"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_twoIntsStruct_54__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_54a.cpp",
+          "sha256": "c5e2bb3acb5f2e805e5423a32f455e190c2363ba2d0092b673aff72b2a62c139"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_54b.cpp",
+          "sha256": "49465933cd692721b9c107a30379497e8ca24d638aa407b5cd796d426c24798a"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_54c.cpp",
+          "sha256": "fb802dcd53e2224f061feb02fa385208926362e9c878d3d04c0f6952b750f7c0"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_54d.cpp",
+          "sha256": "97b84a26402b9ae639f295f1beb788dc3eda4050fb88b366a525c4122934ecc5"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_54e.cpp",
+          "sha256": "0862657f96502f949405161ab7da2e597f9b76bf1a89df7e69a1156492e2e74b"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_twoIntsStruct_82__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_82_bad.cpp",
+          "sha256": "a6246d7ddf8a649315cea3b95c33759beb6fd7f1c6a3bf9f468afe9c8082490e"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_82_goodB2G.cpp",
+          "sha256": "8434502ac5fd686b1506d0227399ed6978814d740d68833505f6e4754a396699"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_82_goodG2B.cpp",
+          "sha256": "554a600b28c66fdb8dc8a9065c34841be43d7535c7c3bc2379f35ebcc948eeef"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_82a.cpp",
+          "sha256": "8f299215ae4da601ab85fe029992adc6263842980030c44dd92ce0780c75c071"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_twoIntsStruct_82__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_82_bad.cpp",
+          "sha256": "a6246d7ddf8a649315cea3b95c33759beb6fd7f1c6a3bf9f468afe9c8082490e"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_82_goodB2G.cpp",
+          "sha256": "8434502ac5fd686b1506d0227399ed6978814d740d68833505f6e4754a396699"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_82_goodG2B.cpp",
+          "sha256": "554a600b28c66fdb8dc8a9065c34841be43d7535c7c3bc2379f35ebcc948eeef"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_82a.cpp",
+          "sha256": "8f299215ae4da601ab85fe029992adc6263842980030c44dd92ce0780c75c071"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_wchar_t_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_wchar_t_01.cpp",
+          "sha256": "49f67912828cecd18db079e15665892a9ca1826dacfa118f0f41ce4f6fbf59a7"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_wchar_t_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_wchar_t_01.cpp",
+          "sha256": "49f67912828cecd18db079e15665892a9ca1826dacfa118f0f41ce4f6fbf59a7"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_wchar_t_82__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_wchar_t_82_bad.cpp",
+          "sha256": "1e169c39227831f701c6db7f200e439c30e2081944b66bbda78283a873e0e023"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_wchar_t_82_goodB2G.cpp",
+          "sha256": "bb4f14860f2ce41305d71f0c3f6b0b3bdb89e20402bfe7fbe8dc59f408686797"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_wchar_t_82_goodG2B.cpp",
+          "sha256": "55f41ad431990a437237196953a812b98e139cddb9056ff68ea0a80f638576b0"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_wchar_t_82a.cpp",
+          "sha256": "55d979f2ebceb6b125206b10dd80719118a3098567ca6f3908385c7d8cfd6b10"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_wchar_t_82__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_wchar_t_82_bad.cpp",
+          "sha256": "1e169c39227831f701c6db7f200e439c30e2081944b66bbda78283a873e0e023"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_wchar_t_82_goodB2G.cpp",
+          "sha256": "bb4f14860f2ce41305d71f0c3f6b0b3bdb89e20402bfe7fbe8dc59f408686797"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_wchar_t_82_goodG2B.cpp",
+          "sha256": "55f41ad431990a437237196953a812b98e139cddb9056ff68ea0a80f638576b0"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_wchar_t_82a.cpp",
+          "sha256": "55d979f2ebceb6b125206b10dd80719118a3098567ca6f3908385c7d8cfd6b10"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_calloc_01.c",
+          "sha256": "9fec3e6cb0e3791cc45fca8dc509afb7198d4cb1b678d54f27561434a6b7ed9c"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_calloc_01.c",
+          "sha256": "9fec3e6cb0e3791cc45fca8dc509afb7198d4cb1b678d54f27561434a6b7ed9c"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_calloc_33.cpp",
+          "sha256": "8f6807f97a4f17a654bd07745b7996be8def4ceb10ee667131f526022b78e2bf"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_calloc_33.cpp",
+          "sha256": "8f6807f97a4f17a654bd07745b7996be8def4ceb10ee667131f526022b78e2bf"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_malloc_01.c",
+          "sha256": "87c270e0bd69525d2e08e2d6379082923e2f88355bdd190a77e2fd270332b4b9"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_malloc_01.c",
+          "sha256": "87c270e0bd69525d2e08e2d6379082923e2f88355bdd190a77e2fd270332b4b9"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_malloc_33.cpp",
+          "sha256": "a967ff39acab95e270c9e3e860b3bb20affe151be3195c53c588f94ec85abed7"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_malloc_33.cpp",
+          "sha256": "a967ff39acab95e270c9e3e860b3bb20affe151be3195c53c588f94ec85abed7"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_68__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_malloc_68a.c",
+          "sha256": "e9b34acb811946a01ac735df3dae6efa797c25ad96148e97487c2f74c637dc06"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_malloc_68b.c",
+          "sha256": "e967269796e74e88eb9a67350b0f07d255ad13c5399b576b7508da6affd96d81"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_68__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_malloc_68a.c",
+          "sha256": "e9b34acb811946a01ac735df3dae6efa797c25ad96148e97487c2f74c637dc06"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_malloc_68b.c",
+          "sha256": "e967269796e74e88eb9a67350b0f07d255ad13c5399b576b7508da6affd96d81"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_realloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_01.c",
+          "sha256": "0d0fe12f7d28095be2451a98304c0881052efb69540374b9e76d41540cec2dce"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_realloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_01.c",
+          "sha256": "0d0fe12f7d28095be2451a98304c0881052efb69540374b9e76d41540cec2dce"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_realloc_22__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_22a.c",
+          "sha256": "19b3e1dce18072fc8afbc228aa8da23f4adcc92484f41f3097fdbbf75163b77a"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_22b.c",
+          "sha256": "4bd7a1766d916472a3823007d3cb39811884ff0a4ad123d850fb8c6b3522346a"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_22a.c",
+          "sha256": "19b3e1dce18072fc8afbc228aa8da23f4adcc92484f41f3097fdbbf75163b77a"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_22b.c",
+          "sha256": "4bd7a1766d916472a3823007d3cb39811884ff0a4ad123d850fb8c6b3522346a"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_realloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp",
+          "sha256": "20dd01eabd05f34e31a529a0bb2e7e8b07ab0edfc699bbc1c42ed9b4c7064d6a"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_realloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_33.cpp",
+          "sha256": "20dd01eabd05f34e31a529a0bb2e7e8b07ab0edfc699bbc1c42ed9b4c7064d6a"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_01.c",
+          "sha256": "cac57c73352757d837dc945af97563b2342e88fc58af00a8e81f840e23b77602"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_01.c",
+          "sha256": "cac57c73352757d837dc945af97563b2342e88fc58af00a8e81f840e23b77602"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_33.cpp",
+          "sha256": "244b781e14db22433a947c7c72904b97ae66486e17121761ca9228c8fee12439"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_33.cpp",
+          "sha256": "244b781e14db22433a947c7c72904b97ae66486e17121761ca9228c8fee12439"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_68__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_68a.c",
+          "sha256": "21e8d6ed7d2cb2e240f965322cd0b017c01374afc601bf46c0eae898a0e9ca3f"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_68b.c",
+          "sha256": "4e5efa1c3da754d206688f8a5d3d679d9af78b4e76c151ca8b6debd86b0b4926"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_68__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_68a.c",
+          "sha256": "21e8d6ed7d2cb2e240f965322cd0b017c01374afc601bf46c0eae898a0e9ca3f"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_calloc_68b.c",
+          "sha256": "4e5efa1c3da754d206688f8a5d3d679d9af78b4e76c151ca8b6debd86b0b4926"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_malloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_malloc_01.c",
+          "sha256": "0f2c713676a957b1f7777881c04145fbad6c80f5224c96c1b5108a5d6211f86b"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_malloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_malloc_01.c",
+          "sha256": "0f2c713676a957b1f7777881c04145fbad6c80f5224c96c1b5108a5d6211f86b"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_malloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_malloc_33.cpp",
+          "sha256": "b5461ddda5b830aabc908f17518e74c0e3d1ed1e80d399563275d72b8f8bd91a"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_malloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_malloc_33.cpp",
+          "sha256": "b5461ddda5b830aabc908f17518e74c0e3d1ed1e80d399563275d72b8f8bd91a"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_malloc_68__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_malloc_68a.c",
+          "sha256": "0a2be606e2bc58777b6e7b9226a3ef826fd30d34207251d1cfdd22bec958daab"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_malloc_68b.c",
+          "sha256": "5cad374b0e654cf31740001ff4486c6e0a3c7c5b91f01f81cf62a8c93e1c55e8"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_malloc_68__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_malloc_68a.c",
+          "sha256": "0a2be606e2bc58777b6e7b9226a3ef826fd30d34207251d1cfdd22bec958daab"
+        },
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_malloc_68b.c",
+          "sha256": "5cad374b0e654cf31740001ff4486c6e0a3c7c5b91f01f81cf62a8c93e1c55e8"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_realloc_01__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_realloc_01.c",
+          "sha256": "5a4fa9284dc5796fe331e0ff005b1e8242077a35caee64e2d63201c2c81119b8"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_realloc_01__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_realloc_01.c",
+          "sha256": "5a4fa9284dc5796fe331e0ff005b1e8242077a35caee64e2d63201c2c81119b8"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_realloc_33__bad",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_realloc_33.cpp",
+          "sha256": "42c56c0242f95b7a974fc04a46e1887550a8bd80ac23bf448429d5dfb10f7c89"
+        }
+      ]
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__wchar_t_realloc_33__good",
+      "sources": [
+        {
+          "path": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_realloc_33.cpp",
+          "sha256": "42c56c0242f95b7a974fc04a46e1887550a8bd80ac23bf448429d5dfb10f7c89"
+        }
+      ]
+    }
+  ],
+  "attribution_rule": "the first allocation-stack frame with a source location outside the toolchain/sanitizer runtime must point into the unit's own sources or a group-local header",
+  "finished_at_utc": "2026-11-12T16:36:18Z",
+  "wall_seconds": 41.68,
+  "results_units_sha256": "bed73483ea4733dcb5c81ad8559d7e46c525cd9af21e523866e7cb240675f2ae",
+  "results_raw_sha256": "bcd373a5c024689c805c4c13a2f8744d320182c015995718d5ca7cd537c7d3a8"
+}

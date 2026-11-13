@@ -1,0 +1,96 @@
+{
+  "registry_version": "2026-11-13.1",
+  "description": "Pre-registered fault-injection taxonomy for dynamic CWE-401 analysis. A fault instance's expected outcome must be justified by the fault design and, where possible, by two independent oracles or a manual audit before test evaluation. The registry constrains allowed outcomes; it does not create labels.",
+  "fault_types": {
+    "inject_leak_good_path": {
+      "description": "Insert an allocation without a matching free on the executed good path.",
+      "category": "leak_injection",
+      "allowed_expected_outcomes": ["leak"],
+      "default_expected_outcome": "leak",
+      "binary_label": true,
+      "requires": ["source_patch", "compile", "oracle_preflight"],
+      "notes": "Tests whether a dynamic tool detects a leak introduced into a unit that is designed clean."
+    },
+    "mask_leak_early_exit": {
+      "description": "Exit the target path before the leaking allocation is reached, so the executed path contains no leak.",
+      "category": "leak_masking",
+      "allowed_expected_outcomes": ["clean"],
+      "default_expected_outcome": "clean",
+      "binary_label": true,
+      "requires": ["source_patch", "compile", "coverage"],
+      "notes": "Tests false-negative risk when the harness no longer exercises the leaking path. If the target function is not entered, the observation is inconclusive rather than clean."
+    },
+    "conditional_free_one_path": {
+      "description": "Free only on one branch while the harness takes the other branch.",
+      "category": "path_sensitivity",
+      "allowed_expected_outcomes": ["leak"],
+      "default_expected_outcome": "leak",
+      "binary_label": true,
+      "requires": ["source_patch", "compile", "input_control"],
+      "notes": "Tests path sensitivity. The expected outcome depends on the pre-registered harness input; record the input/seed."
+    },
+    "realloc_without_free": {
+      "description": "Replace a free/ownership transfer with realloc or drop the free after a successful realloc.",
+      "category": "leak_injection",
+      "allowed_expected_outcomes": ["leak"],
+      "default_expected_outcome": "leak",
+      "binary_label": true,
+      "requires": ["source_patch", "compile", "oracle_preflight"],
+      "notes": "Juliet malloc_realloc cases need a failing realloc to leak; the fault must make the allocation observable."
+    },
+    "allocation_size_zero": {
+      "description": "Change an allocation size to zero while retaining the ownership/free structure.",
+      "category": "allocator_edge_case",
+      "allowed_expected_outcomes": ["leak", "clean", "inconclusive"],
+      "default_expected_outcome": "inconclusive",
+      "binary_label": false,
+      "requires": ["source_patch", "compile", "oracle_preflight"],
+      "notes": "malloc(0) behavior and leak observability are implementation-dependent. Do not assign a binary label without oracle preflight."
+    },
+    "harness_early_exit": {
+      "description": "Return from the harness before calling the target function.",
+      "category": "harness_integrity",
+      "allowed_expected_outcomes": ["inconclusive"],
+      "default_expected_outcome": "inconclusive",
+      "binary_label": false,
+      "requires": ["harness_patch", "coverage"],
+      "notes": "Tests whether a tool incorrectly reports clean when the target was never executed. Expected outcome is inconclusive, so it is excluded from label-based sensitivity/specificity and reported as a coverage-integrity check."
+    },
+    "sanitizer_suppression": {
+      "description": "Add a suppression file or disable leak detection in the sanitizer environment.",
+      "category": "tool_integrity",
+      "allowed_expected_outcomes": ["inconclusive"],
+      "default_expected_outcome": "inconclusive",
+      "binary_label": false,
+      "requires": ["suppression_file", "hash"],
+      "notes": "The tool must report an unsupported/tool_error/inconclusive state, not clean. A clean result under active suppression is a tool-integrity failure, not a true negative."
+    },
+    "timeout_injection": {
+      "description": "Insert a non-terminating or very slow loop on the target path.",
+      "category": "tool_integrity",
+      "allowed_expected_outcomes": ["inconclusive"],
+      "default_expected_outcome": "inconclusive",
+      "binary_label": false,
+      "requires": ["source_patch", "timeout"],
+      "notes": "A timeout must remain timeout, not clean. Excluded from label-based metrics; reported as an error/timeout rate."
+    },
+    "double_free_injection": {
+      "description": "Add a second free on an error path to test false-positive behaviour.",
+      "category": "non_leak_defect",
+      "allowed_expected_outcomes": ["clean", "inconclusive"],
+      "default_expected_outcome": "clean",
+      "binary_label": false,
+      "requires": ["source_patch", "compile", "oracle_preflight"],
+      "notes": "Double free is CWE-415, not CWE-401. It should not be counted as a leak. A crash is recorded as crash, not leak."
+    },
+    "still_reachable_global": {
+      "description": "Allocate into a global/static pointer that remains reachable at exit.",
+      "category": "leak_category_boundary",
+      "allowed_expected_outcomes": ["clean"],
+      "default_expected_outcome": "clean",
+      "binary_label": true,
+      "requires": ["source_patch", "oracle_preflight"],
+      "notes": "Under the definite/indirect-only policy this is clean. Tests whether a tool treats 'still reachable' as a leak."
+    }
+  }
+}

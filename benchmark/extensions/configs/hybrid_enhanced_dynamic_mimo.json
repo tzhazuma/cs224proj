@@ -1,0 +1,26 @@
+{
+  "run_id": "ext_hybrid_enhanced_dynamic_mimo",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "unit_map": "juliet/subset_units.jsonl",
+  "split": "test",
+  "model_filter": "mimo",
+  "source_run_id": "enhanced_dynamic_v1",
+  "method": {
+    "method_id": "hybrid.enhanced_dynamic.mimo",
+    "family": "hybrid",
+    "name": "Enhanced-dynamic-guided LLM (MiMo)",
+    "strategy": "enhanced-dynamic-guided",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {"temperature": 0.0, "max_tokens": 2048}
+    }
+  },
+  "raw": "hybrid_dynamic_enhanced/results/enhanced_dynamic_results.jsonl",
+  "out": "../runs/hybrid_dynamic_enhanced/mimo",
+  "notes": ["real hybrid enhanced-dynamic-guided run; 140 test units"]
+}

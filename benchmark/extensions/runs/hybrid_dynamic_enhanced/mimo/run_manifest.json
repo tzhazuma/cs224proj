@@ -1,0 +1,70 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "ext_hybrid_enhanced_dynamic_mimo",
+  "created_at": "2026-11-13T17:43:31Z",
+  "protocol_version": "1.0.0",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "tasks": [
+    "leak_detection"
+  ],
+  "dataset": {
+    "dataset_id": "juliet-cwe401-v1.3-subset-v1",
+    "split_id": "juliet-cwe401-v1.3-subset-v1",
+    "path": "juliet/subset_units.jsonl",
+    "sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "unit_manifest": null,
+    "unit_count": 140,
+    "group_count": 70,
+    "label_counts": {
+      "bad": 70,
+      "good": 70
+    }
+  },
+  "method": {
+    "method_id": "hybrid.enhanced_dynamic.mimo",
+    "family": "hybrid",
+    "name": "Enhanced-dynamic-guided LLM (MiMo)",
+    "strategy": "enhanced-dynamic-guided",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 2048
+      }
+    },
+    "config_sha256": "74862506c6d3f9018363a54aab08c249c1caf52cac3444c2e0eca072c1199f24"
+  },
+  "execution": {
+    "started_at": "2026-11-13T17:43:31Z",
+    "finished_at": "2026-11-13T17:43:31Z",
+    "status": "completed",
+    "planned_units": 140,
+    "recorded_units": 140,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "810c2017ec87dd644d5130ac015655bf040a7dec52cf5a4c00fe79983179d111",
+    "extension_manifest_sha256": "f5d09004eb6c88c39d4c9ccb4d06feadb9e3caeb3b306b27f1464c3f4c76beb1"
+  },
+  "legacy_import": null,
+  "notes": [
+    "LLM guided by three-mode enhanced dynamic evidence; real 140-unit run",
+    "tool baseline is 140/140; compare LLM to frozen hybrid_v2 direct/combined only descriptively",
+    "copied from producer raw; not re-run"
+  ]
+}

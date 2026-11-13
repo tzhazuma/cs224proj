@@ -1,0 +1,70 @@
+{
+  "leak_raw": true,
+  "leak_attributed": false,
+  "leak_blocks": [
+    {
+      "kind": "Direct",
+      "bytes": 73728,
+      "records": 1,
+      "attributed": false,
+      "deciding_frame": null,
+      "allocation_site": {
+        "function": "malloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 67
+      }
+    },
+    {
+      "kind": "Direct",
+      "bytes": 1024,
+      "records": 1,
+      "attributed": false,
+      "deciding_frame": {
+        "function": "printStructLine",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c",
+        "line": 89
+      },
+      "allocation_site": {
+        "function": "malloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 67
+      }
+    }
+  ],
+  "attributed_blocks": [],
+  "attributed_bytes": 0,
+  "raw_bytes": 74752,
+  "leak_kinds": [],
+  "leak_summary": "SUMMARY: AddressSanitizer: 74752 byte(s) leaked in 2 allocation(s)",
+  "leak_summary_bytes": 74752,
+  "leak_summary_records": 2,
+  "asan_errors": [],
+  "deadly_signal": false,
+  "injection": {
+    "realloc_calls": 0,
+    "realloc_null_calls": 0,
+    "realloc_nonnull_calls": 0,
+    "injected": false,
+    "injected_at_call": null
+  },
+  "mode": "nogobal",
+  "build_variant": "plain",
+  "applicable": true,
+  "returncode": 23,
+  "timed_out": false,
+  "wall_ms": 194,
+  "failure_class": "unattributed_runtime_leak",
+  "stdout_sha256": "156ce12df026cbf9b76be7442c1b9ad1bcba51864fec1161f3e7c7bf0bb69eb1",
+  "stdout_lines": [
+    "0 -- 0",
+    "0 -- 0"
+  ],
+  "stderr_path": "cases/d0102_good/run_nogobal/stderr.txt",
+  "stdout_path": "cases/d0102_good/run_nogobal/stdout.txt",
+  "env": {
+    "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0:use_globals=0",
+    "DYNENH_REALLOC_FAIL_NONNULL": ""
+  },
+  "decision": "clean"
+}

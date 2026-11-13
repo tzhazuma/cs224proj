@@ -1,0 +1,402 @@
+{
+  "schema_version": "benchmark-extension-metrics-v1",
+  "extension_id": "ext.open_choice_pair.v1",
+  "design": "open_choice_pair",
+  "generated_at": "2026-11-13T17:36:35Z",
+  "run_ids": {
+    "run": "ext_pair_debias_deepseek_open_rev"
+  },
+  "settings": {
+    "bootstrap_resamples": 1000,
+    "bootstrap_seed": 42,
+    "confidence": 0.95,
+    "cluster_unit": "pair_id",
+    "design_version": "1.0.0"
+  },
+  "counts": {
+    "pairs": 180,
+    "valid_pairs": 180,
+    "decisive_pairs": 149,
+    "correct_pairs": 115,
+    "records": 360,
+    "choice_counts_valid": {
+      "A": 85,
+      "neither": 24,
+      "both": 7,
+      "B": 64
+    },
+    "by_status": {
+      "ok": 360
+    }
+  },
+  "primary": {
+    "name": "pair_da",
+    "value": 0.6388888888888888,
+    "n": 180,
+    "ci_low": 0.5666666666666667,
+    "ci_high": 0.7111111111111111,
+    "method": "cluster percentile bootstrap (pair_id)",
+    "note": "Open-choice is a different task from forced choice; both/neither count as pair errors."
+  },
+  "metrics": {
+    "pair_da": {
+      "value": 0.6388888888888888,
+      "n": 180,
+      "ci_low": 0.5666666666666667,
+      "ci_high": 0.7111111111111111,
+      "method": "cluster percentile bootstrap",
+      "note": "115/180 valid pairs; both/neither count as pair errors."
+    },
+    "pair_da_all": {
+      "value": 0.6388888888888888,
+      "n": 180,
+      "ci_low": null,
+      "ci_high": null,
+      "method": "wilson",
+      "note": "115/180"
+    },
+    "pair_da_decisive": {
+      "value": 0.7718120805369127,
+      "n": 149,
+      "ci_low": 0.6978150382919471,
+      "ci_high": 0.8402777777777778,
+      "method": "cluster percentile bootstrap",
+      "note": "115/149 decisive pairs."
+    },
+    "decisive_rate": {
+      "value": 0.8277777777777777,
+      "n": 180,
+      "ci_low": 0.7722222222222223,
+      "ci_high": 0.8834722222222221,
+      "method": "cluster percentile bootstrap",
+      "note": "149/180 valid pairs chose A or B."
+    },
+    "decisive_rate_all": {
+      "value": 0.8277777777777777,
+      "n": 180,
+      "ci_low": null,
+      "ci_high": null,
+      "method": "wilson",
+      "note": "149/180"
+    },
+    "both_rate": {
+      "value": 0.03888888888888889,
+      "n": 180,
+      "ci_low": 0.011111111111111112,
+      "ci_high": 0.06680555555555542,
+      "method": "cluster percentile bootstrap",
+      "note": "7/180."
+    },
+    "neither_rate": {
+      "value": 0.13333333333333333,
+      "n": 180,
+      "ci_low": 0.08333333333333333,
+      "ci_high": 0.18333333333333332,
+      "method": "cluster percentile bootstrap",
+      "note": "24/180."
+    },
+    "slot_accuracy_A": {
+      "value": 0.84,
+      "n": 75,
+      "ci_low": 0.7534246575342466,
+      "ci_high": 0.9230769230769231,
+      "method": "cluster percentile bootstrap",
+      "note": "Correct rate when the vulnerable version is in slot A, among decisive pairs."
+    },
+    "slot_accuracy_B": {
+      "value": 0.7027027027027027,
+      "n": 74,
+      "ci_low": 0.5941205533596838,
+      "ci_high": 0.8028169014084507,
+      "method": "cluster percentile bootstrap",
+      "note": "Correct rate when the vulnerable version is in slot B, among decisive pairs."
+    },
+    "position_bias_index": {
+      "value": 0.13729729729729723,
+      "n": 149,
+      "ci_low": 0.010279057638212701,
+      "ci_high": 0.2735245627724441,
+      "method": "cluster percentile bootstrap",
+      "note": "slot_accuracy_A - slot_accuracy_B."
+    },
+    "open_choice_distribution": {
+      "A": {
+        "count": 85,
+        "rate_valid": 0.4722222222222222,
+        "rate_all": 0.4722222222222222
+      },
+      "B": {
+        "count": 64,
+        "rate_valid": 0.35555555555555557,
+        "rate_all": 0.35555555555555557
+      },
+      "both": {
+        "count": 7,
+        "rate_valid": 0.03888888888888889,
+        "rate_all": 0.03888888888888889
+      },
+      "neither": {
+        "count": 24,
+        "rate_valid": 0.13333333333333333,
+        "rate_all": 0.13333333333333333
+      }
+    }
+  },
+  "strata": {
+    "by_choice": {
+      "A": {
+        "count": 85
+      },
+      "B": {
+        "count": 64
+      },
+      "both": {
+        "count": 7
+      },
+      "neither": {
+        "count": 24
+      }
+    },
+    "by_vulnerable_slot": {
+      "A": {
+        "decisive_pairs": 75,
+        "accuracy": 0.84
+      },
+      "B": {
+        "decisive_pairs": 74,
+        "accuracy": 0.7027027027027027
+      }
+    }
+  },
+  "comparisons": {},
+  "parent_metrics": {
+    "schema_version": "benchmark-metrics-v1",
+    "run_id": "ext_pair_debias_deepseek_open_rev",
+    "protocol_version": "1.0.0",
+    "tier": "A",
+    "track": "secvuleval",
+    "generated_at": "2026-11-13T17:36:35Z",
+    "settings": {
+      "bootstrap_resamples": 1000,
+      "bootstrap_seed": 42,
+      "confidence": 0.95,
+      "cluster_unit": "record.cluster_id",
+      "coverage_threshold": 0.8,
+      "strict_policy": "non-ok records count as errors in strict_accuracy; valid-only metrics exclude them"
+    },
+    "tasks": {
+      "pair_detection": {
+        "n_pairs": 180,
+        "valid_pairs": 180,
+        "invalid_pairs": 0,
+        "coverage": 1.0,
+        "invalid_rate": 0.0,
+        "joint_correct_valid_pairs": 115,
+        "joint_correct_all_pairs": 115,
+        "joint_accuracy_valid_pairs": 0.6388888888888888,
+        "joint_accuracy_all_pairs": 0.6388888888888888,
+        "joint_categories": {
+          "vulnerable_detected_fixed_clean": 115,
+          "both_flagged": 7,
+          "both_clean": 24,
+          "vulnerable_missed_fixed_flagged": 34
+        },
+        "joint_rates_valid_pairs": {
+          "vulnerable_detected_fixed_clean": 0.6388888888888888,
+          "both_flagged": 0.03888888888888889,
+          "both_clean": 0.13333333333333333,
+          "vulnerable_missed_fixed_flagged": 0.18888888888888888
+        },
+        "consistent": 149,
+        "swapped": 34,
+        "consistent_rate": 0.8277777777777777,
+        "swapped_rate": 0.18888888888888888,
+        "both_vulnerable_rate": 0.03888888888888889,
+        "both_safe_rate": 0.13333333333333333,
+        "wilson": {
+          "joint_accuracy_valid_pairs": {
+            "successes": 115,
+            "total": 180,
+            "estimate": 0.6388888888888888,
+            "low": 0.566494145176867,
+            "high": 0.7054793276226847,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "joint_accuracy_all_pairs": {
+            "successes": 115,
+            "total": 180,
+            "estimate": 0.6388888888888888,
+            "low": 0.566494145176867,
+            "high": 0.7054793276226847,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 180,
+            "total": 180,
+            "estimate": 1.0,
+            "low": 0.979104502078387,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "consistent_rate": {
+            "successes": 149,
+            "total": 180,
+            "estimate": 0.8277777777777777,
+            "low": 0.7659213511713736,
+            "high": 0.8759360446355688,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "swapped_rate": {
+            "successes": 34,
+            "total": 180,
+            "estimate": 0.18888888888888888,
+            "low": 0.13843659520258494,
+            "high": 0.25234282572641864,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_vulnerable_rate": {
+            "successes": 7,
+            "total": 180,
+            "estimate": 0.03888888888888889,
+            "low": 0.018963292190413965,
+            "high": 0.07808477811507361,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_safe_rate": {
+            "successes": 24,
+            "total": 180,
+            "estimate": 0.13333333333333333,
+            "low": 0.09126281053659402,
+            "high": 0.19072722127258884,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "missing_pairs": 0,
+        "by_status": {
+          "ok": 360
+        },
+        "bootstrap": {
+          "joint_accuracy_valid_pairs": {
+            "ci_low": 0.5666666666666667,
+            "ci_high": 0.7111111111111111,
+            "bootstrap_median": 0.6388888888888888,
+            "bootstrap_mean": 0.6391444444444444,
+            "valid_resamples": 1000,
+            "resamples": 1000,
+            "unstable": false
+          },
+          "joint_accuracy_all_pairs": {
+            "ci_low": 0.5666666666666667,
+            "ci_high": 0.7111111111111111,
+            "bootstrap_median": 0.6388888888888888,
+            "bootstrap_mean": 0.6391444444444444,
+            "valid_resamples": 1000,
+            "resamples": 1000,
+            "unstable": false
+          },
+          "coverage": {
+            "ci_low": 1.0,
+            "ci_high": 1.0,
+            "bootstrap_median": 1.0,
+            "bootstrap_mean": 1.0,
+            "valid_resamples": 1000,
+            "resamples": 1000,
+            "unstable": false
+          }
+        },
+        "cluster_count": 180
+      }
+    },
+    "cost": {
+      "currency": "USD",
+      "usd_known_sum": 0.30456732,
+      "usd_unknown_records": 0,
+      "usd_complete": true,
+      "wall_s_sum": 2056.7609055660023,
+      "cpu_s_sum": null,
+      "peak_rss_mb_max": null,
+      "prompt_tokens_sum": 893410,
+      "completion_tokens_sum": 59932,
+      "cached_prompt_tokens_sum": 120320,
+      "latency_ms_p50": 5221.344569000053,
+      "latency_ms_p95": 10209.775723550014,
+      "latency_samples": 360,
+      "cost_basis_counts": {
+        "api_price": 360
+      },
+      "cost_per_100_units_usd": 0.16920406666666665,
+      "wall_s_per_100_units": 1142.6449475366678,
+      "cost_per_true_positive_usd": null
+    },
+    "counts": {
+      "records": 360,
+      "planned_units": 360,
+      "by_task": {
+        "pair_detection": 360
+      },
+      "by_status": {
+        "ok": 360
+      },
+      "missing_units": 0
+    },
+    "provenance": {
+      "run_manifest_sha256": "4a9aa4a6bd6cc984a68e92cce7b9a08b9da92c002330b2240f5e19eb050f2cf0",
+      "predictions_sha256": "c039ff8929edaa31ca7261c1dce6bba80df907a288628b4bff1dce3b7cb180e8"
+    },
+    "notes": [
+      "Tasks and tiers are not pooled into a single score.",
+      "Detection and pair metrics use valid predictions only; strict accuracy is separate.",
+      "Leak clean predictions below the coverage threshold are inconclusive, not true negatives.",
+      "Cost is a known-sum plus unknown count, never an imputed total."
+    ]
+  },
+  "cost": {
+    "currency": "USD",
+    "usd_known_sum": 0.30456732,
+    "usd_unknown_records": 0,
+    "usd_complete": true,
+    "wall_s_sum": 2056.7609055660023,
+    "cpu_s_sum": null,
+    "peak_rss_mb_max": null,
+    "prompt_tokens_sum": 893410,
+    "completion_tokens_sum": 59932,
+    "cached_prompt_tokens_sum": 120320,
+    "latency_ms_p50": 5221.344569000053,
+    "latency_ms_p95": 10209.775723550014,
+    "latency_samples": 360,
+    "cost_basis_counts": {
+      "api_price": 360
+    }
+  },
+  "limitations": [
+    "Open-choice is a different task: forced choice has no both/neither answer. Do not subtract open-choice pair_da from forced-choice DA without stating the task change.",
+    "Both and neither are substantive answers counted as pair errors; report decisive_rate and pair_da_decisive next to pair_da.",
+    "The four-way distribution is design- and prompt-dependent; it is not an estimate of the natural prevalence of both/neither.",
+    "One run per model/configuration; run-to-run variance is not estimated."
+  ],
+  "provenance": {
+    "extension_version": "0.2.0",
+    "hashes": {
+      "run_manifest_sha256": "4a9aa4a6bd6cc984a68e92cce7b9a08b9da92c002330b2240f5e19eb050f2cf0",
+      "predictions_sha256": "c039ff8929edaa31ca7261c1dce6bba80df907a288628b4bff1dce3b7cb180e8",
+      "extension_manifest_sha256": "cfaca5c31a6faa88e765e62582c2f7232b4c34b23035d2685c3356aa15b6866a",
+      "design_registry_sha256": "5909896ff35f304d62a587e057d09a9245e67d62a756210882242f7f96d7c6dc",
+      "records": 360
+    },
+    "source": "canonical extension run; metrics recomputed, not copied"
+  }
+}

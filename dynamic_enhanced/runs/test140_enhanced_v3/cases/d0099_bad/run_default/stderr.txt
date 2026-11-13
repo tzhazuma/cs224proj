@@ -1,0 +1,13 @@
+
+=================================================================
+==14516==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 8 byte(s) in 1 object(s) allocated from:
+    #0 0x7baf7f12c71f in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:109
+    #1 0x5c042e61f546 in CWE401_Memory_Leak__new_twoIntsStruct_01::bad() /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_01.cpp:34
+    #2 0x5c042e61f601 in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0099_bad/build/__dynenh_probe_main.cpp:2
+    #3 0x7baf7e82a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #4 0x7baf7e82a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #5 0x5c042e61f464 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0099_bad/build/bad.plain.exe+0x2464) (BuildId: 17d584c7142af63c44c6e9615149fa8a90ee7969)
+
+SUMMARY: AddressSanitizer: 8 byte(s) leaked in 1 allocation(s).

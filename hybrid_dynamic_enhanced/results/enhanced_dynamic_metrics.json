@@ -1,0 +1,2997 @@
+{
+  "schema_version": "hde-analysis-v1",
+  "generated_at": "2026-11-13T17:21:03.214375+00:00",
+  "run_id": "enhanced_dynamic_v1",
+  "method": "enhanced-dynamic-guided",
+  "protocol": {
+    "units": 140,
+    "labels": {
+      "bad": 70,
+      "good": 70
+    },
+    "input_sha256": "061546a40e5dd66d7a1fca2dd23dd1ec250d4705a48651dca1eb757488976dce",
+    "guided_prompt_version": "hde-juliet-llm-binary-2026-11-14.1",
+    "direct_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+    "preflight_ok": true,
+    "preflight_sha256": "d0fb10c206d7773a2e792534ba46ca8957edc99900c573ed405ea562fc989459",
+    "tool_confusion": {
+      "tp": 70,
+      "fp": 0,
+      "tn": 70,
+      "fn": 0
+    },
+    "tool_accuracy": 1.0,
+    "baselines": "frozen hybrid_v2 runs (2026-11-11), not re-requested",
+    "preflight_checks_passed": 13,
+    "preflight_checks_total": 13,
+    "run_manifests": {
+      "deepseek": {
+        "path": "hybrid_dynamic_enhanced/runs/enhanced_dynamic_v1_deepseek/manifest.json",
+        "counts": {
+          "ok": 140,
+          "invalid": 0,
+          "api_error": 0
+        },
+        "cost": {
+          "configured_usd": 0.011165106,
+          "provider_list_usd": 0.01116554,
+          "allowance_usd": 0.00669885
+        },
+        "usage": {
+          "prompt_tokens": 112671,
+          "completion_tokens": 7187,
+          "cached_tokens": 68352,
+          "attempts": 140
+        },
+        "prompt_version": "hde-juliet-llm-binary-2026-11-14.1",
+        "elapsed_seconds": 47.736
+      },
+      "mimo": {
+        "path": "hybrid_dynamic_enhanced/runs/enhanced_dynamic_v1_mimo/manifest.json",
+        "counts": {
+          "ok": 140,
+          "invalid": 0,
+          "api_error": 0
+        },
+        "cost": {
+          "configured_usd": 0.012395437600000002,
+          "provider_list_usd": 0.01239543,
+          "allowance_usd": 0.01239543
+        },
+        "usage": {
+          "prompt_tokens": 111357,
+          "completion_tokens": 6717,
+          "cached_tokens": 36992,
+          "attempts": 140
+        },
+        "prompt_version": "hde-juliet-llm-binary-2026-11-14.1",
+        "elapsed_seconds": 78.064
+      }
+    }
+  },
+  "methods": {},
+  "models": {
+    "deepseek": {
+      "methods": {
+        "hde-guided": {
+          "n": 140,
+          "valid": 140,
+          "coverage": 1.0,
+          "tp": 70,
+          "fp": 3,
+          "tn": 67,
+          "fn": 0,
+          "accuracy": 0.9785714285714285,
+          "accuracy_ci95": [
+            0.9388952114746261,
+            0.9926859967432213
+          ],
+          "strict_accuracy": 0.9785714285714285,
+          "strict_confusion": {
+            "tp": 70,
+            "fp": 3,
+            "tn": 67,
+            "fn": 0
+          },
+          "precision": 0.958904109589041,
+          "recall": 1.0,
+          "specificity": 0.9571428571428572,
+          "f1": 0.9790209790209791,
+          "balanced_accuracy": 0.9785714285714286,
+          "mcc": 0.9580230786249787,
+          "predicted_positive_rate": 0.5214285714285715,
+          "cost": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 112671,
+            "completion_tokens": 7187,
+            "cached_tokens": 68352,
+            "configured_usd": 0.011165106,
+            "provider_list_usd": 0.01116554,
+            "allowance_usd": 0.00669885,
+            "mean_prompt_tokens": 804.7928571428571
+          }
+        },
+        "v2-direct": {
+          "n": 140,
+          "valid": 140,
+          "coverage": 1.0,
+          "tp": 70,
+          "fp": 5,
+          "tn": 65,
+          "fn": 0,
+          "accuracy": 0.9642857142857143,
+          "accuracy_ci95": [
+            0.919122529588944,
+            0.9846502843537439
+          ],
+          "strict_accuracy": 0.9642857142857143,
+          "strict_confusion": {
+            "tp": 70,
+            "fp": 5,
+            "tn": 65,
+            "fn": 0
+          },
+          "precision": 0.9333333333333333,
+          "recall": 1.0,
+          "specificity": 0.9285714285714286,
+          "f1": 0.9655172413793104,
+          "balanced_accuracy": 0.9642857142857143,
+          "mcc": 0.9309493362512629,
+          "predicted_positive_rate": 0.5357142857142857,
+          "cost": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 78091,
+            "completion_tokens": 6892,
+            "cached_tokens": 38528,
+            "configured_usd": 0.010185234,
+            "provider_list_usd": 0.01018542,
+            "allowance_usd": 0.00611102,
+            "mean_prompt_tokens": 557.7928571428571
+          }
+        },
+        "v2-dynamic": {
+          "n": 140,
+          "valid": 140,
+          "coverage": 1.0,
+          "tp": 70,
+          "fp": 4,
+          "tn": 66,
+          "fn": 0,
+          "accuracy": 0.9714285714285714,
+          "accuracy_ci95": [
+            0.9288427879216012,
+            0.9888342231586664
+          ],
+          "strict_accuracy": 0.9714285714285714,
+          "strict_confusion": {
+            "tp": 70,
+            "fp": 4,
+            "tn": 66,
+            "fn": 0
+          },
+          "precision": 0.9459459459459459,
+          "recall": 1.0,
+          "specificity": 0.9428571428571428,
+          "f1": 0.9722222222222222,
+          "balanced_accuracy": 0.9714285714285714,
+          "mcc": 0.944400281603035,
+          "predicted_positive_rate": 0.5285714285714286,
+          "cost": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 98183,
+            "completion_tokens": 7211,
+            "cached_tokens": 51584,
+            "configured_usd": 0.011471202,
+            "provider_list_usd": 0.01147108,
+            "allowance_usd": 0.00688256,
+            "mean_prompt_tokens": 701.3071428571428
+          }
+        },
+        "v2-combined": {
+          "n": 140,
+          "valid": 140,
+          "coverage": 1.0,
+          "tp": 70,
+          "fp": 4,
+          "tn": 66,
+          "fn": 0,
+          "accuracy": 0.9714285714285714,
+          "accuracy_ci95": [
+            0.9288427879216012,
+            0.9888342231586664
+          ],
+          "strict_accuracy": 0.9714285714285714,
+          "strict_confusion": {
+            "tp": 70,
+            "fp": 4,
+            "tn": 66,
+            "fn": 0
+          },
+          "precision": 0.9459459459459459,
+          "recall": 1.0,
+          "specificity": 0.9428571428571428,
+          "f1": 0.9722222222222222,
+          "balanced_accuracy": 0.9714285714285714,
+          "mcc": 0.944400281603035,
+          "predicted_positive_rate": 0.5285714285714286,
+          "cost": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 115590,
+            "completion_tokens": 7228,
+            "cached_tokens": 66560,
+            "configured_usd": 0.011890979999999999,
+            "provider_list_usd": 0.0118912,
+            "allowance_usd": 0.00713438,
+            "mean_prompt_tokens": 825.6428571428571
+          }
+        },
+        "tool": {
+          "n": 140,
+          "valid": 140,
+          "coverage": 1.0,
+          "tp": 70,
+          "fp": 0,
+          "tn": 70,
+          "fn": 0,
+          "accuracy": 1.0,
+          "accuracy_ci95": [
+            0.9732937996305869,
+            0.9999999999999999
+          ],
+          "strict_accuracy": 1.0,
+          "strict_confusion": {
+            "tp": 70,
+            "fp": 0,
+            "tn": 70,
+            "fn": 0
+          },
+          "precision": 1.0,
+          "recall": 1.0,
+          "specificity": 1.0,
+          "f1": 1.0,
+          "balanced_accuracy": 1.0,
+          "mcc": 1.0,
+          "predicted_positive_rate": 0.5,
+          "cost": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "cached_tokens": 0,
+            "configured_usd": 0.0,
+            "provider_list_usd": 0.0,
+            "allowance_usd": 0.0,
+            "mean_prompt_tokens": 0.0
+          }
+        }
+      },
+      "mcnemar": [
+        {
+          "a": "hde-guided",
+          "b": "v2-direct",
+          "a_right_b_wrong": 2,
+          "a_wrong_b_right": 0,
+          "discordant": 2,
+          "p_value_exact": 0.5,
+          "bootstrap": {
+            "delta": 0.014285714285714235,
+            "ci95": [
+              0.0,
+              0.03571428571428581
+            ],
+            "reps": 10000,
+            "seed": 20261114,
+            "method": "paired percentile bootstrap over units"
+          },
+          "delta_accuracy": 0.014285714285714235,
+          "p_value_holm": 1.0
+        },
+        {
+          "a": "hde-guided",
+          "b": "v2-dynamic",
+          "a_right_b_wrong": 1,
+          "a_wrong_b_right": 0,
+          "discordant": 1,
+          "p_value_exact": 1.0,
+          "bootstrap": {
+            "delta": 0.0071428571428571175,
+            "ci95": [
+              0.0,
+              0.021428571428571463
+            ],
+            "reps": 10000,
+            "seed": 20261114,
+            "method": "paired percentile bootstrap over units"
+          },
+          "delta_accuracy": 0.0071428571428571175,
+          "p_value_holm": 1.0
+        },
+        {
+          "a": "hde-guided",
+          "b": "v2-combined",
+          "a_right_b_wrong": 1,
+          "a_wrong_b_right": 0,
+          "discordant": 1,
+          "p_value_exact": 1.0,
+          "bootstrap": {
+            "delta": 0.0071428571428571175,
+            "ci95": [
+              0.0,
+              0.021428571428571463
+            ],
+            "reps": 10000,
+            "seed": 20261114,
+            "method": "paired percentile bootstrap over units"
+          },
+          "delta_accuracy": 0.0071428571428571175,
+          "p_value_holm": 1.0
+        },
+        {
+          "a": "hde-guided",
+          "b": "tool",
+          "a_right_b_wrong": 0,
+          "a_wrong_b_right": 3,
+          "discordant": 3,
+          "p_value_exact": 0.25,
+          "bootstrap": {
+            "delta": -0.021428571428571463,
+            "ci95": [
+              -0.050000000000000044,
+              0.0
+            ],
+            "reps": 10000,
+            "seed": 20261114,
+            "method": "paired percentile bootstrap over units"
+          },
+          "delta_accuracy": -0.021428571428571463,
+          "p_value_holm": 1.0
+        }
+      ],
+      "subsets": {
+        "old_unobservable_12": {
+          "n": 12,
+          "methods": {
+            "hde-guided": {
+              "n": 12,
+              "correct": 12,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-direct": {
+              "n": 12,
+              "correct": 12,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-dynamic": {
+              "n": 12,
+              "correct": 12,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-combined": {
+              "n": 12,
+              "correct": 12,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "tool": {
+              "n": 12,
+              "correct": 12,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            }
+          }
+        },
+        "old_leak_58": {
+          "n": 58,
+          "methods": {
+            "hde-guided": {
+              "n": 58,
+              "correct": 58,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-direct": {
+              "n": 58,
+              "correct": 58,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-dynamic": {
+              "n": 58,
+              "correct": 58,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-combined": {
+              "n": 58,
+              "correct": 58,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "tool": {
+              "n": 58,
+              "correct": 58,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            }
+          }
+        },
+        "cleaned_22_good": {
+          "n": 6,
+          "methods": {
+            "hde-guided": {
+              "n": 6,
+              "correct": 3,
+              "accuracy": 0.5,
+              "strict_accuracy": 0.5,
+              "recall": null,
+              "specificity": 0.5
+            },
+            "v2-direct": {
+              "n": 6,
+              "correct": 1,
+              "accuracy": 0.16666666666666666,
+              "strict_accuracy": 0.16666666666666666,
+              "recall": null,
+              "specificity": 0.16666666666666666
+            },
+            "v2-dynamic": {
+              "n": 6,
+              "correct": 2,
+              "accuracy": 0.3333333333333333,
+              "strict_accuracy": 0.3333333333333333,
+              "recall": null,
+              "specificity": 0.3333333333333333
+            },
+            "v2-combined": {
+              "n": 6,
+              "correct": 2,
+              "accuracy": 0.3333333333333333,
+              "strict_accuracy": 0.3333333333333333,
+              "recall": null,
+              "specificity": 0.3333333333333333
+            },
+            "tool": {
+              "n": 6,
+              "correct": 6,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": null,
+              "specificity": 1.0
+            }
+          }
+        },
+        "direct_error_units": {
+          "n": 5,
+          "units": [
+            "CWE401_Memory_Leak__int_malloc_22__good",
+            "CWE401_Memory_Leak__new_array_char_22__good",
+            "CWE401_Memory_Leak__new_array_int_22__good",
+            "CWE401_Memory_Leak__new_int_22__good",
+            "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good"
+          ],
+          "methods": {
+            "hde-guided": {
+              "n": 5,
+              "correct": 2,
+              "accuracy": 0.4,
+              "strict_accuracy": 0.4,
+              "recall": null,
+              "specificity": 0.4
+            },
+            "v2-direct": {
+              "n": 5,
+              "correct": 0,
+              "accuracy": 0.0,
+              "strict_accuracy": 0.0,
+              "recall": null,
+              "specificity": 0.0
+            },
+            "v2-dynamic": {
+              "n": 5,
+              "correct": 1,
+              "accuracy": 0.2,
+              "strict_accuracy": 0.2,
+              "recall": null,
+              "specificity": 0.2
+            },
+            "v2-combined": {
+              "n": 5,
+              "correct": 1,
+              "accuracy": 0.2,
+              "strict_accuracy": 0.2,
+              "recall": null,
+              "specificity": 0.2
+            },
+            "tool": {
+              "n": 5,
+              "correct": 5,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": null,
+              "specificity": 1.0
+            }
+          }
+        }
+      },
+      "cost": {
+        "per_method": {
+          "hde-guided": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 112671,
+            "completion_tokens": 7187,
+            "cached_tokens": 68352,
+            "configured_usd": 0.011165106,
+            "provider_list_usd": 0.01116554,
+            "allowance_usd": 0.00669885,
+            "mean_prompt_tokens": 804.7928571428571
+          },
+          "v2-direct": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 78091,
+            "completion_tokens": 6892,
+            "cached_tokens": 38528,
+            "configured_usd": 0.010185234,
+            "provider_list_usd": 0.01018542,
+            "allowance_usd": 0.00611102,
+            "mean_prompt_tokens": 557.7928571428571
+          },
+          "v2-dynamic": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 98183,
+            "completion_tokens": 7211,
+            "cached_tokens": 51584,
+            "configured_usd": 0.011471202,
+            "provider_list_usd": 0.01147108,
+            "allowance_usd": 0.00688256,
+            "mean_prompt_tokens": 701.3071428571428
+          },
+          "v2-combined": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 115590,
+            "completion_tokens": 7228,
+            "cached_tokens": 66560,
+            "configured_usd": 0.011890979999999999,
+            "provider_list_usd": 0.0118912,
+            "allowance_usd": 0.00713438,
+            "mean_prompt_tokens": 825.6428571428571
+          },
+          "tool": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "cached_tokens": 0,
+            "configured_usd": 0.0,
+            "provider_list_usd": 0.0,
+            "allowance_usd": 0.0,
+            "mean_prompt_tokens": 0.0
+          }
+        },
+        "usd_per_correct": {
+          "hde-guided": 8.149712408759123e-05,
+          "v2-direct": 7.544617777777778e-05,
+          "v2-dynamic": 8.434707352941176e-05,
+          "v2-combined": 8.743367647058823e-05,
+          "tool": 0.0
+        },
+        "incremental_vs_direct": {
+          "extra_correct": 2,
+          "extra_usd": 0.0009798719999999997,
+          "usd_per_extra_correct": 0.0004899359999999998
+        }
+      },
+      "consistency": {
+        "tool_wrong_units": 0,
+        "tool_accuracy": 1.0,
+        "model_accuracy": 0.9785714285714285,
+        "agreement_with_tool": 0.9785714285714285,
+        "agreement_note": "the enhanced tool is 140/140 on this frozen set, so agreement with the tool verdict is numerically identical to accuracy and cannot separate copying from independent reasoning",
+        "disagreements": {
+          "over_call_units": [
+            "CWE401_Memory_Leak__new_array_char_22__good",
+            "CWE401_Memory_Leak__new_array_int_22__good",
+            "CWE401_Memory_Leak__new_int_22__good"
+          ],
+          "under_call_units": []
+        },
+        "flips_vs_baselines": {
+          "v2-direct": {
+            "n": 140,
+            "new_right_base_wrong": 2,
+            "new_wrong_base_right": 0,
+            "both_right": 135,
+            "both_wrong": 3,
+            "fixed_units": [
+              "CWE401_Memory_Leak__int_malloc_22__good",
+              "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good"
+            ],
+            "broken_units": []
+          },
+          "v2-dynamic": {
+            "n": 140,
+            "new_right_base_wrong": 1,
+            "new_wrong_base_right": 0,
+            "both_right": 136,
+            "both_wrong": 3,
+            "fixed_units": [
+              "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good"
+            ],
+            "broken_units": []
+          },
+          "v2-combined": {
+            "n": 140,
+            "new_right_base_wrong": 1,
+            "new_wrong_base_right": 0,
+            "both_right": 136,
+            "both_wrong": 3,
+            "fixed_units": [
+              "CWE401_Memory_Leak__int_malloc_22__good"
+            ],
+            "broken_units": []
+          },
+          "tool": {
+            "n": 140,
+            "new_right_base_wrong": 0,
+            "new_wrong_base_right": 3,
+            "both_right": 137,
+            "both_wrong": 0,
+            "fixed_units": [],
+            "broken_units": [
+              "CWE401_Memory_Leak__new_array_char_22__good",
+              "CWE401_Memory_Leak__new_array_int_22__good",
+              "CWE401_Memory_Leak__new_int_22__good"
+            ]
+          }
+        },
+        "evidence_transition_groups": {
+          "old_leak_58": {
+            "n": 58,
+            "hde_accuracy": 1.0,
+            "direct_accuracy": 1.0,
+            "dynamic_accuracy": 1.0,
+            "hde_vs_direct_fixed": 0,
+            "hde_vs_direct_broken": 0
+          },
+          "new_leak_12": {
+            "n": 12,
+            "hde_accuracy": 1.0,
+            "direct_accuracy": 1.0,
+            "dynamic_accuracy": 1.0,
+            "hde_vs_direct_fixed": 0,
+            "hde_vs_direct_broken": 0
+          },
+          "clean_70": {
+            "n": 70,
+            "hde_accuracy": 0.9571428571428572,
+            "direct_accuracy": 0.9285714285714286,
+            "dynamic_accuracy": 0.9428571428571428,
+            "hde_vs_direct_fixed": 2,
+            "hde_vs_direct_broken": 0
+          }
+        },
+        "reasons": {
+          "hde-guided": {
+            "n": 140,
+            "rates": {
+              "tool_or_evidence": 0.09285714285714286,
+              "leak": 0.9642857142857143,
+              "realloc": 0.2642857142857143,
+              "global_or_root": 0.03571428571428571,
+              "byte_count": 0.30714285714285716,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.3142857142857143
+            },
+            "counts": {
+              "leak": 135,
+              "not_freed": 44,
+              "tool_or_evidence": 13,
+              "byte_count": 43,
+              "realloc": 37,
+              "global_or_root": 5
+            },
+            "unique_reasons": 114,
+            "top_reasons": [
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 calloc is freed via dataRef. No heap leak.",
+                "count": 5
+              },
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 mallocs and frees data on the only path. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 reallocs NULL then frees the result. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_3 allocates with new and deletes on the same path; sym_1 uses stack storage. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 calloc is freed on the only path. No heap leak.",
+                "count": 3
+              }
+            ]
+          },
+          "v2-dynamic": {
+            "n": 140,
+            "rates": {
+              "tool_or_evidence": 0.03571428571428571,
+              "leak": 0.9571428571428572,
+              "realloc": 0.2714285714285714,
+              "global_or_root": 0.03571428571428571,
+              "byte_count": 0.2785714285714286,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.34285714285714286
+            },
+            "counts": {
+              "leak": 134,
+              "not_freed": 48,
+              "byte_count": 39,
+              "realloc": 38,
+              "tool_or_evidence": 5,
+              "global_or_root": 5
+            },
+            "unique_reasons": 124,
+            "top_reasons": [
+              {
+                "reason": "sym_1 uses stack array; sym_3 allocates with new[] and frees with delete[] on the only path. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 calloc is freed on the only path. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 calloc is freed via dataRef. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 mallocs and frees data on the only path. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 reallocs NULL then frees data. No heap leak.",
+                "count": 3
+              }
+            ]
+          },
+          "v2-combined": {
+            "n": 140,
+            "rates": {
+              "tool_or_evidence": 0.05,
+              "leak": 0.9428571428571428,
+              "realloc": 0.2642857142857143,
+              "global_or_root": 0.15,
+              "byte_count": 0.2357142857142857,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.32857142857142857
+            },
+            "counts": {
+              "leak": 132,
+              "global_or_root": 21,
+              "not_freed": 46,
+              "tool_or_evidence": 7,
+              "byte_count": 33,
+              "realloc": 37
+            },
+            "unique_reasons": 120,
+            "top_reasons": [
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 calloc is freed via dataRef. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 calloc is freed on all paths. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 mallocs and frees data via dataRef. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 reallocs NULL then frees data on all paths. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "malloc'd data is freed on all paths; realloc failure keeps original pointer which is then freed. No leak.",
+                "count": 3
+              }
+            ]
+          },
+          "v2-direct": {
+            "n": 140,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.8642857142857143,
+              "realloc": 0.2714285714285714,
+              "global_or_root": 0.03571428571428571,
+              "byte_count": 0.02857142857142857,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.34285714285714286
+            },
+            "counts": {
+              "leak": 121,
+              "not_freed": 48,
+              "realloc": 38,
+              "byte_count": 4,
+              "global_or_root": 5
+            },
+            "unique_reasons": 118,
+            "top_reasons": [
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 calloc is freed before return. No heap leaks.",
+                "count": 5
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 mallocs and frees data on the same path. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 calloc is freed via dataRef. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "malloc'd data in sym_0 is never freed before program exit, leaking heap memory.",
+                "count": 3
+              },
+              {
+                "reason": "realloc allocates heap memory for data, which is never freed before program exit.",
+                "count": 3
+              }
+            ]
+          }
+        },
+        "special_12_mechanism_citation": {
+          "n": 12,
+          "hits": 12,
+          "rate": 1.0,
+          "details": [
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_01__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original data pointer is lost and never freed, leaking the initial 800-byte allocation.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_09__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails it returns NULL, overwriting data pointer, so original 800-byte block is leaked and never freed.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_18__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original data pointer is lost and never freed, leaking the initial 800-byte allocation.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_int_01__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original data pointer is lost and never freed, leaking 400 bytes.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_int_18__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original data pointer is lost and never freed, leaking 400 bytes.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, it returns NULL and the original 100-struct block is never freed, leaking heap memory.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original data pointer is lost and never freed, leaking the initial malloc block.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__new_TwoIntsClass_68__bad",
+              "evidence_mode": "nogobal",
+              "reason": "new TwoIntsClass stored in global sym_1 and never freed; global-roots-disabled run confirms 8-byte leak.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__new_array_twointsStruct_68__bad",
+              "evidence_mode": "nogobal",
+              "reason": "new twoIntsStruct[100] stored in global sym_1 and never deleted; global-roots-disabled run confirms 800-byte leak.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_68__bad",
+              "evidence_mode": "nogobal",
+              "reason": "malloc'd 100-element array stored in global sym_0 and never freed; global-roots-disabled run confirms 800-byte leak.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_68__bad",
+              "evidence_mode": "nogobal",
+              "reason": "calloc'd data stored in global sym_0 and never freed; global-roots-disabled run confirms 400-byte leak.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__wchar_t_malloc_68__bad",
+              "evidence_mode": "nogobal",
+              "reason": "malloc'd 100 wchar_t buffer stored in global sym_0 and never freed before exit; global-roots-disabled run confirms 400-byte leak.",
+              "mechanism_cited": true,
+              "label_correct": true
+            }
+          ]
+        },
+        "special_12_citation": {
+          "hde-guided": {
+            "n": 12,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 1.0,
+              "realloc": 0.5833333333333334,
+              "global_or_root": 0.4166666666666667,
+              "byte_count": 0.16666666666666666,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.9166666666666666
+            },
+            "counts": {
+              "leak": 12,
+              "realloc": 7,
+              "not_freed": 11,
+              "byte_count": 2,
+              "global_or_root": 5
+            },
+            "unique_reasons": 10,
+            "top_reasons": [
+              {
+                "reason": "If realloc fails, original data pointer is lost and never freed, leaking the initial 800-byte allocation.",
+                "count": 2
+              },
+              {
+                "reason": "If realloc fails, original data pointer is lost and never freed, leaking 400 bytes.",
+                "count": 2
+              },
+              {
+                "reason": "If realloc fails it returns NULL, overwriting data pointer, so original 800-byte block is leaked and never freed.",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, it returns NULL and the original 100-struct block is never freed, leaking heap memory.",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, original data pointer is lost and never freed, leaking the initial malloc block.",
+                "count": 1
+              }
+            ]
+          },
+          "v2-direct": {
+            "n": 12,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 1.0,
+              "realloc": 0.5833333333333334,
+              "global_or_root": 0.4166666666666667,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.9166666666666666
+            },
+            "counts": {
+              "leak": 12,
+              "realloc": 7,
+              "not_freed": 11,
+              "global_or_root": 5
+            },
+            "unique_reasons": 8,
+            "top_reasons": [
+              {
+                "reason": "If realloc returns NULL, the original malloc'd block is leaked because the pointer is overwritten and never freed.",
+                "count": 3
+              },
+              {
+                "reason": "If realloc fails, original data pointer is lost and never freed, leaking the initial malloc block.",
+                "count": 2
+              },
+              {
+                "reason": "If realloc fails, original data pointer is lost and never freed, leaking the initial malloc.",
+                "count": 2
+              },
+              {
+                "reason": "new TwoIntsClass allocated in sym_5 is stored in global sym_1 and never freed; sym_4 only reads it, so heap memory leaks at exit.",
+                "count": 1
+              },
+              {
+                "reason": "new twoIntsStruct[100] stored in global sym_1 and never deleted before program exit, leaking heap memory.",
+                "count": 1
+              }
+            ]
+          },
+          "v2-dynamic": {
+            "n": 12,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.9166666666666666,
+              "realloc": 0.5833333333333334,
+              "global_or_root": 0.4166666666666667,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.75
+            },
+            "counts": {
+              "leak": 11,
+              "realloc": 7,
+              "not_freed": 9,
+              "global_or_root": 5
+            },
+            "unique_reasons": 12,
+            "top_reasons": [
+              {
+                "reason": "If realloc returns NULL, original data pointer is lost and never freed, leaking the initial malloc block.",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, data becomes NULL and the original 100-int64 block is leaked (no free on that path).",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, data is overwritten with NULL and the original 100-int64 block is never freed, leaking it.",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, it returns NULL and the original 100-int block is leaked (data overwritten, never freed).",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, data is overwritten with NULL and the original 100-int block is never freed, leaking it.",
+                "count": 1
+              }
+            ]
+          }
+        },
+        "clean_70_citation": {
+          "hde-guided": {
+            "n": 70,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.9428571428571428,
+              "realloc": 0.2571428571428571,
+              "global_or_root": 0.0,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.0
+            },
+            "counts": {
+              "leak": 66,
+              "realloc": 18
+            },
+            "unique_reasons": 48,
+            "top_reasons": [
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 calloc is freed via dataRef. No heap leak.",
+                "count": 5
+              },
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 mallocs and frees data on the only path. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 reallocs NULL then frees the result. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_3 allocates with new and deletes on the same path; sym_1 uses stack storage. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 calloc is freed on the only path. No heap leak.",
+                "count": 3
+              }
+            ]
+          },
+          "v2-direct": {
+            "n": 70,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.8285714285714286,
+              "realloc": 0.2714285714285714,
+              "global_or_root": 0.0,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.02857142857142857
+            },
+            "counts": {
+              "leak": 58,
+              "realloc": 19,
+              "not_freed": 2
+            },
+            "unique_reasons": 57,
+            "top_reasons": [
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 calloc is freed before return. No heap leaks.",
+                "count": 5
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 mallocs and frees data on the same path. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 calloc is freed via dataRef. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 reallocs NULL then frees the buffer. No heap memory leaked.",
+                "count": 2
+              },
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 reallocs then frees the pointer, so no heap leak.",
+                "count": 2
+              }
+            ]
+          },
+          "v2-dynamic": {
+            "n": 70,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.9428571428571428,
+              "realloc": 0.2714285714285714,
+              "global_or_root": 0.0,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.014285714285714285
+            },
+            "counts": {
+              "leak": 66,
+              "realloc": 19,
+              "not_freed": 1
+            },
+            "unique_reasons": 55,
+            "top_reasons": [
+              {
+                "reason": "sym_1 uses stack array; sym_3 allocates with new[] and frees with delete[] on the only path. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 calloc is freed on the only path. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 calloc is freed via dataRef. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 mallocs and frees data on the only path. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 reallocs NULL then frees data. No heap leak.",
+                "count": 3
+              }
+            ]
+          },
+          "v2-combined": {
+            "n": 70,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.8857142857142857,
+              "realloc": 0.2571428571428571,
+              "global_or_root": 0.0,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.05714285714285714
+            },
+            "counts": {
+              "leak": 62,
+              "realloc": 18,
+              "not_freed": 4
+            },
+            "unique_reasons": 53,
+            "top_reasons": [
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 calloc is freed via dataRef. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 calloc is freed on all paths. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_1 uses ALLOCA (stack, not heap); sym_2 mallocs and frees data via dataRef. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 uses ALLOCA (stack, not heap); sym_1 reallocs NULL then frees data on all paths. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "malloc'd data is freed on all paths; realloc failure keeps original pointer which is then freed. No leak.",
+                "count": 3
+              }
+            ]
+          }
+        },
+        "old_leak_58_citation": {
+          "hde-guided": {
+            "n": 58,
+            "rates": {
+              "tool_or_evidence": 0.22413793103448276,
+              "leak": 0.9827586206896551,
+              "realloc": 0.20689655172413793,
+              "global_or_root": 0.0,
+              "byte_count": 0.7068965517241379,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.5689655172413793
+            },
+            "counts": {
+              "leak": 57,
+              "not_freed": 33,
+              "tool_or_evidence": 13,
+              "byte_count": 41,
+              "realloc": 12
+            },
+            "unique_reasons": 56,
+            "top_reasons": [
+              {
+                "reason": "realloc allocates 800 bytes in sym_0 and is never freed before main returns, leaking heap memory.",
+                "count": 2
+              },
+              {
+                "reason": "realloc allocates 400 bytes into data, never freed before main returns; leak confirmed by tool evidence.",
+                "count": 2
+              },
+              {
+                "reason": "calloc'd 100-byte buffer in sym_0 is never freed before program exit, leaking heap memory.",
+                "count": 1
+              },
+              {
+                "reason": "calloc'd 100-byte buffer in sym_1 is never freed; inner shadowed pointer does not release it, so it leaks at exit.",
+                "count": 1
+              },
+              {
+                "reason": "malloc'd 100-byte buffer in sym_0 is never freed before program exit; leak confirmed by tool evidence.",
+                "count": 1
+              }
+            ]
+          },
+          "v2-direct": {
+            "n": 58,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.8793103448275862,
+              "realloc": 0.20689655172413793,
+              "global_or_root": 0.0,
+              "byte_count": 0.06896551724137931,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.603448275862069
+            },
+            "counts": {
+              "leak": 51,
+              "not_freed": 35,
+              "realloc": 12,
+              "byte_count": 4
+            },
+            "unique_reasons": 53,
+            "top_reasons": [
+              {
+                "reason": "malloc'd data in sym_0 is never freed before program exit, leaking heap memory.",
+                "count": 3
+              },
+              {
+                "reason": "realloc allocates heap memory for data, which is never freed before program exit.",
+                "count": 3
+              },
+              {
+                "reason": "calloc'd data is never freed before program exit, leaking heap memory.",
+                "count": 2
+              },
+              {
+                "reason": "calloc'd buffer in sym_0 is never freed before program exit, leaking heap memory.",
+                "count": 1
+              },
+              {
+                "reason": "calloc'd data in sym_1 is never freed before return; heap block leaks.",
+                "count": 1
+              }
+            ]
+          },
+          "v2-dynamic": {
+            "n": 58,
+            "rates": {
+              "tool_or_evidence": 0.08620689655172414,
+              "leak": 0.9827586206896551,
+              "realloc": 0.20689655172413793,
+              "global_or_root": 0.0,
+              "byte_count": 0.6724137931034483,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.6551724137931034
+            },
+            "counts": {
+              "leak": 57,
+              "not_freed": 38,
+              "byte_count": 39,
+              "realloc": 12,
+              "tool_or_evidence": 5
+            },
+            "unique_reasons": 57,
+            "top_reasons": [
+              {
+                "reason": "realloc allocates 800 bytes in sym_0 and is never freed before main returns, leaking heap memory.",
+                "count": 2
+              },
+              {
+                "reason": "calloc'd 100-byte buffer in sym_0 is never freed before program exit, leaking heap memory.",
+                "count": 1
+              },
+              {
+                "reason": "calloc'd 100-byte buffer in sym_1 is never freed; inner shadowed pointer does not release it, so it leaks at exit.",
+                "count": 1
+              },
+              {
+                "reason": "malloc(100) in sym_0 is never freed before main returns, leaking 100 bytes.",
+                "count": 1
+              },
+              {
+                "reason": "malloc(100) in sym_1 is never freed; inner shadowed data pointer does not free it, so 100 bytes leak.",
+                "count": 1
+              }
+            ]
+          },
+          "v2-combined": {
+            "n": 58,
+            "rates": {
+              "tool_or_evidence": 0.1206896551724138,
+              "leak": 1.0,
+              "realloc": 0.20689655172413793,
+              "global_or_root": 0.27586206896551724,
+              "byte_count": 0.5689655172413793,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.6206896551724138
+            },
+            "counts": {
+              "leak": 58,
+              "global_or_root": 16,
+              "not_freed": 36,
+              "tool_or_evidence": 7,
+              "byte_count": 33,
+              "realloc": 12
+            },
+            "unique_reasons": 58,
+            "top_reasons": [
+              {
+                "reason": "calloc'd 100-byte buffer in sym_0 is never freed before main returns; static and dynamic tools confirm the leak.",
+                "count": 1
+              },
+              {
+                "reason": "calloc'd 100-byte buffer in sym_1 is never freed before program exit; ASan and Valgrind confirm a definite leak.",
+                "count": 1
+              },
+              {
+                "reason": "malloc'd 100-byte buffer in sym_0 is never freed before main returns; static and dynamic tools confirm the leak.",
+                "count": 1
+              },
+              {
+                "reason": "malloc(100) in sym_1 is never freed; inner shadowed data pointer does not release it, so 100 bytes leak at exit.",
+                "count": 1
+              },
+              {
+                "reason": "realloc allocates 100 bytes into data, which is never freed before main returns; leak confirmed by ASan and Valgrind.",
+                "count": 1
+              }
+            ]
+          }
+        },
+        "evidence_echo": {
+          "hde-guided": {
+            "n_leak_units_with_reason": 70,
+            "attributed_byte_match": 65,
+            "attributed_byte_match_rate": 0.9285714285714286,
+            "evidence_phrasing": 0,
+            "evidence_phrasing_rate": 0.0
+          },
+          "v2-direct": {
+            "n_leak_units_with_reason": 70,
+            "attributed_byte_match": 8,
+            "attributed_byte_match_rate": 0.11428571428571428,
+            "evidence_phrasing": 0,
+            "evidence_phrasing_rate": 0.0
+          },
+          "v2-dynamic": {
+            "n_leak_units_with_reason": 70,
+            "attributed_byte_match": 54,
+            "attributed_byte_match_rate": 0.7714285714285715,
+            "evidence_phrasing": 0,
+            "evidence_phrasing_rate": 0.0
+          },
+          "v2-combined": {
+            "n_leak_units_with_reason": 70,
+            "attributed_byte_match": 48,
+            "attributed_byte_match_rate": 0.6857142857142857,
+            "evidence_phrasing": 0,
+            "evidence_phrasing_rate": 0.0
+          }
+        },
+        "reason_polarity": {
+          "counts": {
+            "unclear": 102,
+            "consistent": 38
+          },
+          "contradictions": [],
+          "definition": "clean if a negation/release phrase matches and no positive leak phrase precedes it; leak if a positive leak phrase matches; otherwise unclear"
+        },
+        "confidence": {
+          "mean": 0.9424999999999999,
+          "n": 140
+        }
+      }
+    },
+    "mimo": {
+      "methods": {
+        "hde-guided": {
+          "n": 140,
+          "valid": 140,
+          "coverage": 1.0,
+          "tp": 70,
+          "fp": 4,
+          "tn": 66,
+          "fn": 0,
+          "accuracy": 0.9714285714285714,
+          "accuracy_ci95": [
+            0.9288427879216012,
+            0.9888342231586664
+          ],
+          "strict_accuracy": 0.9714285714285714,
+          "strict_confusion": {
+            "tp": 70,
+            "fp": 4,
+            "tn": 66,
+            "fn": 0
+          },
+          "precision": 0.9459459459459459,
+          "recall": 1.0,
+          "specificity": 0.9428571428571428,
+          "f1": 0.9722222222222222,
+          "balanced_accuracy": 0.9714285714285714,
+          "mcc": 0.944400281603035,
+          "predicted_positive_rate": 0.5285714285714286,
+          "cost": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 111357,
+            "completion_tokens": 6717,
+            "cached_tokens": 36992,
+            "configured_usd": 0.012395437600000002,
+            "provider_list_usd": 0.01239543,
+            "allowance_usd": 0.01239543,
+            "mean_prompt_tokens": 795.4071428571428
+          }
+        },
+        "v2-direct": {
+          "n": 140,
+          "valid": 140,
+          "coverage": 1.0,
+          "tp": 70,
+          "fp": 4,
+          "tn": 66,
+          "fn": 0,
+          "accuracy": 0.9714285714285714,
+          "accuracy_ci95": [
+            0.9288427879216012,
+            0.9888342231586664
+          ],
+          "strict_accuracy": 0.9714285714285714,
+          "strict_confusion": {
+            "tp": 70,
+            "fp": 4,
+            "tn": 66,
+            "fn": 0
+          },
+          "precision": 0.9459459459459459,
+          "recall": 1.0,
+          "specificity": 0.9428571428571428,
+          "f1": 0.9722222222222222,
+          "balanced_accuracy": 0.9714285714285714,
+          "mcc": 0.944400281603035,
+          "predicted_positive_rate": 0.5285714285714286,
+          "cost": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 77410,
+            "completion_tokens": 6557,
+            "cached_tokens": 57984,
+            "configured_usd": 0.0047179552,
+            "provider_list_usd": 0.0047177,
+            "allowance_usd": 0.0047177,
+            "mean_prompt_tokens": 552.9285714285714
+          }
+        },
+        "v2-dynamic": {
+          "n": 140,
+          "valid": 140,
+          "coverage": 1.0,
+          "tp": 68,
+          "fp": 5,
+          "tn": 65,
+          "fn": 2,
+          "accuracy": 0.95,
+          "accuracy_ci95": [
+            0.9003926927042931,
+            0.9755717269632351
+          ],
+          "strict_accuracy": 0.95,
+          "strict_confusion": {
+            "tp": 68,
+            "fp": 5,
+            "tn": 65,
+            "fn": 2
+          },
+          "precision": 0.9315068493150684,
+          "recall": 0.9714285714285714,
+          "specificity": 0.9285714285714286,
+          "f1": 0.9510489510489512,
+          "balanced_accuracy": 0.95,
+          "mcc": 0.9008276709458755,
+          "predicted_positive_rate": 0.5214285714285715,
+          "cost": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 97258,
+            "completion_tokens": 6631,
+            "cached_tokens": 70976,
+            "configured_usd": 0.0057348928,
+            "provider_list_usd": 0.00573469,
+            "allowance_usd": 0.00573469,
+            "mean_prompt_tokens": 694.7
+          }
+        },
+        "v2-combined": {
+          "n": 140,
+          "valid": 140,
+          "coverage": 1.0,
+          "tp": 70,
+          "fp": 4,
+          "tn": 66,
+          "fn": 0,
+          "accuracy": 0.9714285714285714,
+          "accuracy_ci95": [
+            0.9288427879216012,
+            0.9888342231586664
+          ],
+          "strict_accuracy": 0.9714285714285714,
+          "strict_confusion": {
+            "tp": 70,
+            "fp": 4,
+            "tn": 66,
+            "fn": 0
+          },
+          "precision": 0.9459459459459459,
+          "recall": 1.0,
+          "specificity": 0.9428571428571428,
+          "f1": 0.9722222222222222,
+          "balanced_accuracy": 0.9714285714285714,
+          "mcc": 0.944400281603035,
+          "predicted_positive_rate": 0.5285714285714286,
+          "cost": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 114495,
+            "completion_tokens": 6700,
+            "cached_tokens": 95424,
+            "configured_usd": 0.0048131272000000004,
+            "provider_list_usd": 0.00481298,
+            "allowance_usd": 0.00481298,
+            "mean_prompt_tokens": 817.8214285714286
+          }
+        },
+        "tool": {
+          "n": 140,
+          "valid": 140,
+          "coverage": 1.0,
+          "tp": 70,
+          "fp": 0,
+          "tn": 70,
+          "fn": 0,
+          "accuracy": 1.0,
+          "accuracy_ci95": [
+            0.9732937996305869,
+            0.9999999999999999
+          ],
+          "strict_accuracy": 1.0,
+          "strict_confusion": {
+            "tp": 70,
+            "fp": 0,
+            "tn": 70,
+            "fn": 0
+          },
+          "precision": 1.0,
+          "recall": 1.0,
+          "specificity": 1.0,
+          "f1": 1.0,
+          "balanced_accuracy": 1.0,
+          "mcc": 1.0,
+          "predicted_positive_rate": 0.5,
+          "cost": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "cached_tokens": 0,
+            "configured_usd": 0.0,
+            "provider_list_usd": 0.0,
+            "allowance_usd": 0.0,
+            "mean_prompt_tokens": 0.0
+          }
+        }
+      },
+      "mcnemar": [
+        {
+          "a": "hde-guided",
+          "b": "v2-direct",
+          "a_right_b_wrong": 0,
+          "a_wrong_b_right": 0,
+          "discordant": 0,
+          "p_value_exact": 1.0,
+          "bootstrap": {
+            "delta": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "reps": 10000,
+            "seed": 20261114,
+            "method": "paired percentile bootstrap over units"
+          },
+          "delta_accuracy": 0.0,
+          "p_value_holm": 1.0
+        },
+        {
+          "a": "hde-guided",
+          "b": "v2-dynamic",
+          "a_right_b_wrong": 3,
+          "a_wrong_b_right": 0,
+          "discordant": 3,
+          "p_value_exact": 0.25,
+          "bootstrap": {
+            "delta": 0.021428571428571463,
+            "ci95": [
+              0.0,
+              0.050000000000000044
+            ],
+            "reps": 10000,
+            "seed": 20261114,
+            "method": "paired percentile bootstrap over units"
+          },
+          "delta_accuracy": 0.021428571428571463,
+          "p_value_holm": 0.75
+        },
+        {
+          "a": "hde-guided",
+          "b": "v2-combined",
+          "a_right_b_wrong": 1,
+          "a_wrong_b_right": 1,
+          "discordant": 2,
+          "p_value_exact": 1.0,
+          "bootstrap": {
+            "delta": 0.0,
+            "ci95": [
+              -0.021428571428571463,
+              0.021428571428571463
+            ],
+            "reps": 10000,
+            "seed": 20261114,
+            "method": "paired percentile bootstrap over units"
+          },
+          "delta_accuracy": 0.0,
+          "p_value_holm": 1.0
+        },
+        {
+          "a": "hde-guided",
+          "b": "tool",
+          "a_right_b_wrong": 0,
+          "a_wrong_b_right": 4,
+          "discordant": 4,
+          "p_value_exact": 0.125,
+          "bootstrap": {
+            "delta": -0.02857142857142858,
+            "ci95": [
+              -0.05714285714285716,
+              -0.0071428571428571175
+            ],
+            "reps": 10000,
+            "seed": 20261114,
+            "method": "paired percentile bootstrap over units"
+          },
+          "delta_accuracy": -0.02857142857142858,
+          "p_value_holm": 0.5
+        }
+      ],
+      "subsets": {
+        "old_unobservable_12": {
+          "n": 12,
+          "methods": {
+            "hde-guided": {
+              "n": 12,
+              "correct": 12,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-direct": {
+              "n": 12,
+              "correct": 12,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-dynamic": {
+              "n": 12,
+              "correct": 10,
+              "accuracy": 0.8333333333333334,
+              "strict_accuracy": 0.8333333333333334,
+              "recall": 0.8333333333333334,
+              "specificity": null
+            },
+            "v2-combined": {
+              "n": 12,
+              "correct": 12,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "tool": {
+              "n": 12,
+              "correct": 12,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            }
+          }
+        },
+        "old_leak_58": {
+          "n": 58,
+          "methods": {
+            "hde-guided": {
+              "n": 58,
+              "correct": 58,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-direct": {
+              "n": 58,
+              "correct": 58,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-dynamic": {
+              "n": 58,
+              "correct": 58,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "v2-combined": {
+              "n": 58,
+              "correct": 58,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            },
+            "tool": {
+              "n": 58,
+              "correct": 58,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": 1.0,
+              "specificity": null
+            }
+          }
+        },
+        "cleaned_22_good": {
+          "n": 6,
+          "methods": {
+            "hde-guided": {
+              "n": 6,
+              "correct": 2,
+              "accuracy": 0.3333333333333333,
+              "strict_accuracy": 0.3333333333333333,
+              "recall": null,
+              "specificity": 0.3333333333333333
+            },
+            "v2-direct": {
+              "n": 6,
+              "correct": 2,
+              "accuracy": 0.3333333333333333,
+              "strict_accuracy": 0.3333333333333333,
+              "recall": null,
+              "specificity": 0.3333333333333333
+            },
+            "v2-dynamic": {
+              "n": 6,
+              "correct": 1,
+              "accuracy": 0.16666666666666666,
+              "strict_accuracy": 0.16666666666666666,
+              "recall": null,
+              "specificity": 0.16666666666666666
+            },
+            "v2-combined": {
+              "n": 6,
+              "correct": 2,
+              "accuracy": 0.3333333333333333,
+              "strict_accuracy": 0.3333333333333333,
+              "recall": null,
+              "specificity": 0.3333333333333333
+            },
+            "tool": {
+              "n": 6,
+              "correct": 6,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": null,
+              "specificity": 1.0
+            }
+          }
+        },
+        "direct_error_units": {
+          "n": 4,
+          "units": [
+            "CWE401_Memory_Leak__new_array_char_22__good",
+            "CWE401_Memory_Leak__new_array_int_22__good",
+            "CWE401_Memory_Leak__new_int_22__good",
+            "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good"
+          ],
+          "methods": {
+            "hde-guided": {
+              "n": 4,
+              "correct": 0,
+              "accuracy": 0.0,
+              "strict_accuracy": 0.0,
+              "recall": null,
+              "specificity": 0.0
+            },
+            "v2-direct": {
+              "n": 4,
+              "correct": 0,
+              "accuracy": 0.0,
+              "strict_accuracy": 0.0,
+              "recall": null,
+              "specificity": 0.0
+            },
+            "v2-dynamic": {
+              "n": 4,
+              "correct": 0,
+              "accuracy": 0.0,
+              "strict_accuracy": 0.0,
+              "recall": null,
+              "specificity": 0.0
+            },
+            "v2-combined": {
+              "n": 4,
+              "correct": 1,
+              "accuracy": 0.25,
+              "strict_accuracy": 0.25,
+              "recall": null,
+              "specificity": 0.25
+            },
+            "tool": {
+              "n": 4,
+              "correct": 4,
+              "accuracy": 1.0,
+              "strict_accuracy": 1.0,
+              "recall": null,
+              "specificity": 1.0
+            }
+          }
+        }
+      },
+      "cost": {
+        "per_method": {
+          "hde-guided": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 111357,
+            "completion_tokens": 6717,
+            "cached_tokens": 36992,
+            "configured_usd": 0.012395437600000002,
+            "provider_list_usd": 0.01239543,
+            "allowance_usd": 0.01239543,
+            "mean_prompt_tokens": 795.4071428571428
+          },
+          "v2-direct": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 77410,
+            "completion_tokens": 6557,
+            "cached_tokens": 57984,
+            "configured_usd": 0.0047179552,
+            "provider_list_usd": 0.0047177,
+            "allowance_usd": 0.0047177,
+            "mean_prompt_tokens": 552.9285714285714
+          },
+          "v2-dynamic": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 97258,
+            "completion_tokens": 6631,
+            "cached_tokens": 70976,
+            "configured_usd": 0.0057348928,
+            "provider_list_usd": 0.00573469,
+            "allowance_usd": 0.00573469,
+            "mean_prompt_tokens": 694.7
+          },
+          "v2-combined": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 114495,
+            "completion_tokens": 6700,
+            "cached_tokens": 95424,
+            "configured_usd": 0.0048131272000000004,
+            "provider_list_usd": 0.00481298,
+            "allowance_usd": 0.00481298,
+            "mean_prompt_tokens": 817.8214285714286
+          },
+          "tool": {
+            "records": 140,
+            "valid": 140,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "cached_tokens": 0,
+            "configured_usd": 0.0,
+            "provider_list_usd": 0.0,
+            "allowance_usd": 0.0,
+            "mean_prompt_tokens": 0.0
+          }
+        },
+        "usd_per_correct": {
+          "hde-guided": 9.114292352941177e-05,
+          "v2-direct": 3.469084705882353e-05,
+          "v2-dynamic": 4.311949473684211e-05,
+          "v2-combined": 3.539064117647059e-05,
+          "tool": 0.0
+        },
+        "incremental_vs_direct": {
+          "extra_correct": 0,
+          "extra_usd": 0.007677482400000001,
+          "usd_per_extra_correct": null
+        }
+      },
+      "consistency": {
+        "tool_wrong_units": 0,
+        "tool_accuracy": 1.0,
+        "model_accuracy": 0.9714285714285714,
+        "agreement_with_tool": 0.9714285714285714,
+        "agreement_note": "the enhanced tool is 140/140 on this frozen set, so agreement with the tool verdict is numerically identical to accuracy and cannot separate copying from independent reasoning",
+        "disagreements": {
+          "over_call_units": [
+            "CWE401_Memory_Leak__new_array_char_22__good",
+            "CWE401_Memory_Leak__new_array_int_22__good",
+            "CWE401_Memory_Leak__new_int_22__good",
+            "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good"
+          ],
+          "under_call_units": []
+        },
+        "flips_vs_baselines": {
+          "v2-direct": {
+            "n": 140,
+            "new_right_base_wrong": 0,
+            "new_wrong_base_right": 0,
+            "both_right": 136,
+            "both_wrong": 4,
+            "fixed_units": [],
+            "broken_units": []
+          },
+          "v2-dynamic": {
+            "n": 140,
+            "new_right_base_wrong": 3,
+            "new_wrong_base_right": 0,
+            "both_right": 133,
+            "both_wrong": 4,
+            "fixed_units": [
+              "CWE401_Memory_Leak__int_malloc_22__good",
+              "CWE401_Memory_Leak__malloc_realloc_int_01__bad",
+              "CWE401_Memory_Leak__malloc_realloc_int_18__bad"
+            ],
+            "broken_units": []
+          },
+          "v2-combined": {
+            "n": 140,
+            "new_right_base_wrong": 1,
+            "new_wrong_base_right": 1,
+            "both_right": 135,
+            "both_wrong": 3,
+            "fixed_units": [
+              "CWE401_Memory_Leak__int_malloc_22__good"
+            ],
+            "broken_units": [
+              "CWE401_Memory_Leak__new_int_22__good"
+            ]
+          },
+          "tool": {
+            "n": 140,
+            "new_right_base_wrong": 0,
+            "new_wrong_base_right": 4,
+            "both_right": 136,
+            "both_wrong": 0,
+            "fixed_units": [],
+            "broken_units": [
+              "CWE401_Memory_Leak__new_array_char_22__good",
+              "CWE401_Memory_Leak__new_array_int_22__good",
+              "CWE401_Memory_Leak__new_int_22__good",
+              "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good"
+            ]
+          }
+        },
+        "evidence_transition_groups": {
+          "old_leak_58": {
+            "n": 58,
+            "hde_accuracy": 1.0,
+            "direct_accuracy": 1.0,
+            "dynamic_accuracy": 1.0,
+            "hde_vs_direct_fixed": 0,
+            "hde_vs_direct_broken": 0
+          },
+          "new_leak_12": {
+            "n": 12,
+            "hde_accuracy": 1.0,
+            "direct_accuracy": 1.0,
+            "dynamic_accuracy": 0.8333333333333334,
+            "hde_vs_direct_fixed": 0,
+            "hde_vs_direct_broken": 0
+          },
+          "clean_70": {
+            "n": 70,
+            "hde_accuracy": 0.9428571428571428,
+            "direct_accuracy": 0.9428571428571428,
+            "dynamic_accuracy": 0.9285714285714286,
+            "hde_vs_direct_fixed": 0,
+            "hde_vs_direct_broken": 0
+          }
+        },
+        "reasons": {
+          "hde-guided": {
+            "n": 140,
+            "rates": {
+              "tool_or_evidence": 0.02857142857142857,
+              "leak": 0.6714285714285714,
+              "realloc": 0.2714285714285714,
+              "global_or_root": 0.03571428571428571,
+              "byte_count": 0.35,
+              "evidence_phrasing": 0.007142857142857143,
+              "not_freed": 0.2642857142857143
+            },
+            "counts": {
+              "leak": 94,
+              "not_freed": 37,
+              "byte_count": 49,
+              "realloc": 38,
+              "tool_or_evidence": 4,
+              "evidence_phrasing": 1,
+              "global_or_root": 5
+            },
+            "unique_reasons": 132,
+            "top_reasons": [
+              {
+                "reason": "sym_1 uses stack ALLOCA; sym_2's realloc'd buffer is freed before exit; no heap allocation remains unreleased.",
+                "count": 2
+              },
+              {
+                "reason": "calloc result in sym_0 is never freed before program exit, leaking 800 bytes.",
+                "count": 2
+              },
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 mallocs and frees data on all paths. No heap leak.",
+                "count": 2
+              },
+              {
+                "reason": "sym_0 allocates 400 bytes via realloc and never frees it before returning, leaking on every path.",
+                "count": 2
+              },
+              {
+                "reason": "If realloc fails, original malloc'd pointer is lost without free, leaking 800 bytes.",
+                "count": 2
+              }
+            ]
+          },
+          "v2-dynamic": {
+            "n": 140,
+            "rates": {
+              "tool_or_evidence": 0.05,
+              "leak": 0.7428571428571429,
+              "realloc": 0.2642857142857143,
+              "global_or_root": 0.03571428571428571,
+              "byte_count": 0.24285714285714285,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.2785714285714286
+            },
+            "counts": {
+              "leak": 104,
+              "not_freed": 39,
+              "tool_or_evidence": 7,
+              "byte_count": 34,
+              "realloc": 37,
+              "global_or_root": 5
+            },
+            "unique_reasons": 128,
+            "top_reasons": [
+              {
+                "reason": "sym_1 uses stack ALLOCA; sym_2 mallocs and frees on all paths. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 frees its realloc'd buffer on success and exits on failure. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "malloc'd data is freed on both realloc success and failure paths; no leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_3 allocates with new and deletes it; sym_1 uses stack storage. No heap memory is leaked.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 mallocs 400 bytes and never frees it before returning; confirmed by ASan/Valgrind leak reports.",
+                "count": 2
+              }
+            ]
+          },
+          "v2-combined": {
+            "n": 140,
+            "rates": {
+              "tool_or_evidence": 0.10714285714285714,
+              "leak": 0.7571428571428571,
+              "realloc": 0.2642857142857143,
+              "global_or_root": 0.03571428571428571,
+              "byte_count": 0.17142857142857143,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.29285714285714287
+            },
+            "counts": {
+              "tool_or_evidence": 15,
+              "leak": 106,
+              "not_freed": 41,
+              "byte_count": 24,
+              "realloc": 37,
+              "global_or_root": 5
+            },
+            "unique_reasons": 122,
+            "top_reasons": [
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 frees its realloc'd buffer on success and exits on failure. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "If realloc fails, original data pointer is lost and never freed, leaking the malloc'd block.",
+                "count": 4
+              },
+              {
+                "reason": "sym_3 allocates with new and deletes it; sym_1 uses stack storage. No heap memory is leaked.",
+                "count": 4
+              },
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 mallocs and frees data on all paths. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_1 uses stack ALLOCA; sym_2 mallocs and frees on all paths. No heap leak.",
+                "count": 2
+              }
+            ]
+          },
+          "v2-direct": {
+            "n": 140,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.6,
+              "realloc": 0.2642857142857143,
+              "global_or_root": 0.03571428571428571,
+              "byte_count": 0.07142857142857142,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.2642857142857143
+            },
+            "counts": {
+              "leak": 84,
+              "not_freed": 37,
+              "byte_count": 10,
+              "realloc": 37,
+              "global_or_root": 5
+            },
+            "unique_reasons": 122,
+            "top_reasons": [
+              {
+                "reason": "If realloc fails and returns NULL, the original malloc'd pointer is lost and never freed, leaking heap memory.",
+                "count": 5
+              },
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 mallocs and frees data on all paths. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "malloc'd data is freed on both paths; realloc failure leaves original pointer valid and freed.",
+                "count": 3
+              },
+              {
+                "reason": "sym_3 allocates with new and deletes it; sym_1 uses stack storage. No heap memory leaks.",
+                "count": 3
+              },
+              {
+                "reason": "calloc'd buffer in sym_0 is never freed before program exit, leaking heap memory.",
+                "count": 2
+              }
+            ]
+          }
+        },
+        "special_12_mechanism_citation": {
+          "n": 12,
+          "hits": 12,
+          "rate": 1.0,
+          "details": [
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_01__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original malloc'd pointer is lost without free, leaking 800 bytes.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_09__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original malloc'd pointer is lost without free, leaking 800 bytes as confirmed by realloc-failure configuration.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_18__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original malloc'd pointer is lost without free, leaking 800 bytes.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_int_01__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original data pointer is lost and never freed, leaking 400 bytes.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_int_18__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, the original malloc'd pointer is lost and never freed, leaking 400 bytes.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original data pointer is lost and never freed, leaking 800 bytes.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18__bad",
+              "evidence_mode": "realloc_fail",
+              "reason": "If realloc fails, original data pointer is lost and never freed, leaking the 800-byte allocation.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__new_TwoIntsClass_68__bad",
+              "evidence_mode": "nogobal",
+              "reason": "new TwoIntsClass stored in global sym_1, never deleted before program exit; global-roots-disabled config confirms 8-byte leak.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__new_array_twointsStruct_68__bad",
+              "evidence_mode": "nogobal",
+              "reason": "new twoIntsStruct[100] stored in global sym_1, never deleted before program exit",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__twoIntsStruct_malloc_68__bad",
+              "evidence_mode": "nogobal",
+              "reason": "malloc'd buffer stored in global sym_0, never freed before program exit; global-roots-disabled config confirms 800-byte leak.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_68__bad",
+              "evidence_mode": "nogobal",
+              "reason": "calloc result stored in global sym_0, never freed before program exit; global-roots-disabled config confirms 400-byte leak.",
+              "mechanism_cited": true,
+              "label_correct": true
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__wchar_t_malloc_68__bad",
+              "evidence_mode": "nogobal",
+              "reason": "malloc'd buffer stored in global sym_0 and never freed before program exit; global-roots-disabled config confirms 400-byte leak.",
+              "mechanism_cited": true,
+              "label_correct": true
+            }
+          ]
+        },
+        "special_12_citation": {
+          "hde-guided": {
+            "n": 12,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.9166666666666666,
+              "realloc": 0.5833333333333334,
+              "global_or_root": 0.4166666666666667,
+              "byte_count": 0.5,
+              "evidence_phrasing": 0.08333333333333333,
+              "not_freed": 0.8333333333333334
+            },
+            "counts": {
+              "leak": 11,
+              "realloc": 7,
+              "byte_count": 6,
+              "not_freed": 10,
+              "evidence_phrasing": 1,
+              "global_or_root": 5
+            },
+            "unique_reasons": 11,
+            "top_reasons": [
+              {
+                "reason": "If realloc fails, original malloc'd pointer is lost without free, leaking 800 bytes.",
+                "count": 2
+              },
+              {
+                "reason": "If realloc fails, original malloc'd pointer is lost without free, leaking 800 bytes as confirmed by realloc-failure configuration.",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, original data pointer is lost and never freed, leaking 400 bytes.",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, the original malloc'd pointer is lost and never freed, leaking 400 bytes.",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, original data pointer is lost and never freed, leaking 800 bytes.",
+                "count": 1
+              }
+            ]
+          },
+          "v2-direct": {
+            "n": 12,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.5833333333333334,
+              "realloc": 0.5833333333333334,
+              "global_or_root": 0.4166666666666667,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.8333333333333334
+            },
+            "counts": {
+              "leak": 7,
+              "realloc": 7,
+              "not_freed": 10,
+              "global_or_root": 5
+            },
+            "unique_reasons": 8,
+            "top_reasons": [
+              {
+                "reason": "If realloc fails and returns NULL, the original malloc'd pointer is lost and never freed, leaking heap memory.",
+                "count": 5
+              },
+              {
+                "reason": "If realloc fails and returns NULL, the original malloc'd pointer is lost and never freed, leaking memory.",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, the original malloc'd pointer is lost and never freed, leaking heap memory.",
+                "count": 1
+              },
+              {
+                "reason": "sym_5 allocates TwoIntsClass via new, stores it in global sym_1, and never deletes it before exit.",
+                "count": 1
+              },
+              {
+                "reason": "new twoIntsStruct[100] stored in global sym_1 is never deleted before program exit.",
+                "count": 1
+              }
+            ]
+          },
+          "v2-dynamic": {
+            "n": 12,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.5833333333333334,
+              "realloc": 0.5833333333333334,
+              "global_or_root": 0.4166666666666667,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.8333333333333334
+            },
+            "counts": {
+              "leak": 7,
+              "realloc": 7,
+              "not_freed": 10,
+              "global_or_root": 5
+            },
+            "unique_reasons": 12,
+            "top_reasons": [
+              {
+                "reason": "If realloc fails, the original malloc'd pointer is lost and never freed, leaking memory on that path.",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, original data pointer is lost and never freed, leaking the 800-byte allocation.",
+                "count": 1
+              },
+              {
+                "reason": "If realloc fails, original pointer is lost and never freed, leaking the initial malloc'd block.",
+                "count": 1
+              },
+              {
+                "reason": "Memory freed on success path; realloc failure leaves original block unreachable but tools show no leak in this run.",
+                "count": 1
+              },
+              {
+                "reason": "malloc'd data is freed on success; realloc failure path leaves original pointer unreachable but realloc only fails if original was freed by implementation; standard realloc keeps original valid on failure, so no leak.",
+                "count": 1
+              }
+            ]
+          }
+        },
+        "clean_70_citation": {
+          "hde-guided": {
+            "n": 70,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.5571428571428572,
+              "realloc": 0.2714285714285714,
+              "global_or_root": 0.0,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.1
+            },
+            "counts": {
+              "leak": 39,
+              "not_freed": 7,
+              "realloc": 19
+            },
+            "unique_reasons": 65,
+            "top_reasons": [
+              {
+                "reason": "sym_1 uses stack ALLOCA; sym_2's realloc'd buffer is freed before exit; no heap allocation remains unreleased.",
+                "count": 2
+              },
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 mallocs and frees data on all paths. No heap leak.",
+                "count": 2
+              },
+              {
+                "reason": "malloc'd data is freed on both realloc success and failure paths; no leak.",
+                "count": 2
+              },
+              {
+                "reason": "data is freed on both paths; realloc failure leaves original pointer valid and freed.",
+                "count": 2
+              },
+              {
+                "reason": "sym_3 allocates with new and deletes it; sym_1 uses stack storage. No heap memory is leaked.",
+                "count": 2
+              }
+            ]
+          },
+          "v2-direct": {
+            "n": 70,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.5428571428571428,
+              "realloc": 0.2571428571428571,
+              "global_or_root": 0.0,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.04285714285714286
+            },
+            "counts": {
+              "leak": 38,
+              "realloc": 18,
+              "not_freed": 3
+            },
+            "unique_reasons": 58,
+            "top_reasons": [
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 mallocs and frees data on all paths. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "malloc'd data is freed on both paths; realloc failure leaves original pointer valid and freed.",
+                "count": 3
+              },
+              {
+                "reason": "sym_3 allocates with new and deletes it; sym_1 uses stack storage. No heap memory leaks.",
+                "count": 3
+              },
+              {
+                "reason": "sym_1 uses ALLOCA (stack), sym_2 mallocs then frees on all paths; no heap leak.",
+                "count": 2
+              },
+              {
+                "reason": "calloc'd memory in sym_2 is freed; sym_1 uses ALLOCA (stack), not heap.",
+                "count": 2
+              }
+            ]
+          },
+          "v2-dynamic": {
+            "n": 70,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.7571428571428571,
+              "realloc": 0.2571428571428571,
+              "global_or_root": 0.0,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.04285714285714286
+            },
+            "counts": {
+              "leak": 53,
+              "realloc": 18,
+              "not_freed": 3
+            },
+            "unique_reasons": 60,
+            "top_reasons": [
+              {
+                "reason": "sym_1 uses stack ALLOCA; sym_2 mallocs and frees on all paths. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 frees its realloc'd buffer on success and exits on failure. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "malloc'd data is freed on both realloc success and failure paths; no leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_3 allocates with new and deletes it; sym_1 uses stack storage. No heap memory is leaked.",
+                "count": 3
+              },
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 mallocs and frees data on all paths. No heap leak.",
+                "count": 2
+              }
+            ]
+          },
+          "v2-combined": {
+            "n": 70,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.6142857142857143,
+              "realloc": 0.2571428571428571,
+              "global_or_root": 0.0,
+              "byte_count": 0.0,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.04285714285714286
+            },
+            "counts": {
+              "leak": 43,
+              "not_freed": 3,
+              "realloc": 18
+            },
+            "unique_reasons": 59,
+            "top_reasons": [
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 frees its realloc'd buffer on success and exits on failure. No heap leak.",
+                "count": 4
+              },
+              {
+                "reason": "sym_3 allocates with new and deletes it; sym_1 uses stack storage. No heap memory is leaked.",
+                "count": 4
+              },
+              {
+                "reason": "sym_0 uses stack ALLOCA; sym_1 mallocs and frees data on all paths. No heap leak.",
+                "count": 3
+              },
+              {
+                "reason": "sym_1 uses stack ALLOCA; sym_2 mallocs and frees on all paths. No heap leak.",
+                "count": 2
+              },
+              {
+                "reason": "calloc'd data is freed in sym_2; sym_1 uses ALLOCA (stack), not heap. No heap leak.",
+                "count": 2
+              }
+            ]
+          }
+        },
+        "old_leak_58_citation": {
+          "hde-guided": {
+            "n": 58,
+            "rates": {
+              "tool_or_evidence": 0.06896551724137931,
+              "leak": 0.7586206896551724,
+              "realloc": 0.20689655172413793,
+              "global_or_root": 0.0,
+              "byte_count": 0.7413793103448276,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.3448275862068966
+            },
+            "counts": {
+              "leak": 44,
+              "not_freed": 20,
+              "byte_count": 43,
+              "realloc": 12,
+              "tool_or_evidence": 4
+            },
+            "unique_reasons": 56,
+            "top_reasons": [
+              {
+                "reason": "calloc result in sym_0 is never freed before program exit, leaking 800 bytes.",
+                "count": 2
+              },
+              {
+                "reason": "sym_0 allocates 400 bytes via realloc and never frees it before returning, leaking on every path.",
+                "count": 2
+              },
+              {
+                "reason": "calloc(100) in sym_0 is never freed before program exit, matching the reported 100-byte leak.",
+                "count": 1
+              },
+              {
+                "reason": "calloc'd buffer in sym_1 is never freed before function returns and program exits, leaking 100 bytes.",
+                "count": 1
+              },
+              {
+                "reason": "sym_0 mallocs 100 bytes and never frees it before returning; confirmed by leak detector.",
+                "count": 1
+              }
+            ]
+          },
+          "v2-direct": {
+            "n": 58,
+            "rates": {
+              "tool_or_evidence": 0.0,
+              "leak": 0.6724137931034483,
+              "realloc": 0.20689655172413793,
+              "global_or_root": 0.0,
+              "byte_count": 0.1724137931034483,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.41379310344827586
+            },
+            "counts": {
+              "leak": 39,
+              "not_freed": 24,
+              "byte_count": 10,
+              "realloc": 12
+            },
+            "unique_reasons": 56,
+            "top_reasons": [
+              {
+                "reason": "calloc'd buffer in sym_0 is never freed before program exit, leaking heap memory.",
+                "count": 2
+              },
+              {
+                "reason": "malloc'd data is never freed before program exit; inner shadowed pointer doesn't release it.",
+                "count": 2
+              },
+              {
+                "reason": "calloc'd data is never freed before program exit; inner shadowed copy doesn't release the original allocation.",
+                "count": 1
+              },
+              {
+                "reason": "sym_0 mallocs 100 bytes and never frees it before returning, leaking heap memory on every call.",
+                "count": 1
+              },
+              {
+                "reason": "malloc'd data is never freed before program exit, leaking 100 bytes.",
+                "count": 1
+              }
+            ]
+          },
+          "v2-dynamic": {
+            "n": 58,
+            "rates": {
+              "tool_or_evidence": 0.1206896551724138,
+              "leak": 0.7586206896551724,
+              "realloc": 0.20689655172413793,
+              "global_or_root": 0.0,
+              "byte_count": 0.5862068965517241,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.4482758620689655
+            },
+            "counts": {
+              "leak": 44,
+              "not_freed": 26,
+              "tool_or_evidence": 7,
+              "byte_count": 34,
+              "realloc": 12
+            },
+            "unique_reasons": 56,
+            "top_reasons": [
+              {
+                "reason": "sym_0 mallocs 400 bytes and never frees it before returning; confirmed by ASan/Valgrind leak reports.",
+                "count": 2
+              },
+              {
+                "reason": "new int64_t[100] allocated in sym_1 is never deleted before program exit.",
+                "count": 2
+              },
+              {
+                "reason": "calloc'd buffer in sym_0 is never freed before program exit, matching detected 100-byte leak.",
+                "count": 1
+              },
+              {
+                "reason": "calloc'd data never freed before function returns; confirmed by ASan/Valgrind leak reports.",
+                "count": 1
+              },
+              {
+                "reason": "sym_0 mallocs 100 bytes and never frees it before returning, leaking on every call.",
+                "count": 1
+              }
+            ]
+          },
+          "v2-combined": {
+            "n": 58,
+            "rates": {
+              "tool_or_evidence": 0.25862068965517243,
+              "leak": 0.9310344827586207,
+              "realloc": 0.20689655172413793,
+              "global_or_root": 0.0,
+              "byte_count": 0.41379310344827586,
+              "evidence_phrasing": 0.0,
+              "not_freed": 0.4827586206896552
+            },
+            "counts": {
+              "tool_or_evidence": 15,
+              "leak": 54,
+              "not_freed": 28,
+              "byte_count": 24,
+              "realloc": 12
+            },
+            "unique_reasons": 54,
+            "top_reasons": [
+              {
+                "reason": "malloc'd data is never freed before function returns; dynamic tools confirm 800-byte leak.",
+                "count": 2
+              },
+              {
+                "reason": "sym_0 mallocs 400 bytes and never frees it before returning; confirmed by ASan/Valgrind leak detection.",
+                "count": 2
+              },
+              {
+                "reason": "sym_0 allocates 400 bytes via realloc and never frees it before returning; confirmed by ASan/Valgrind leak detection.",
+                "count": 2
+              },
+              {
+                "reason": "new int64_t[100] allocated in sym_1 is never deleted before program exit, leaking 800 bytes.",
+                "count": 2
+              },
+              {
+                "reason": "calloc'd data is never freed before program exit, confirmed by ASan/Valgrind leak detection.",
+                "count": 1
+              }
+            ]
+          }
+        },
+        "evidence_echo": {
+          "hde-guided": {
+            "n_leak_units_with_reason": 70,
+            "attributed_byte_match": 62,
+            "attributed_byte_match_rate": 0.8857142857142857,
+            "evidence_phrasing": 1,
+            "evidence_phrasing_rate": 0.014285714285714285
+          },
+          "v2-direct": {
+            "n_leak_units_with_reason": 70,
+            "attributed_byte_match": 16,
+            "attributed_byte_match_rate": 0.22857142857142856,
+            "evidence_phrasing": 0,
+            "evidence_phrasing_rate": 0.0
+          },
+          "v2-dynamic": {
+            "n_leak_units_with_reason": 70,
+            "attributed_byte_match": 47,
+            "attributed_byte_match_rate": 0.6714285714285714,
+            "evidence_phrasing": 0,
+            "evidence_phrasing_rate": 0.0
+          },
+          "v2-combined": {
+            "n_leak_units_with_reason": 70,
+            "attributed_byte_match": 42,
+            "attributed_byte_match_rate": 0.6,
+            "evidence_phrasing": 0,
+            "evidence_phrasing_rate": 0.0
+          }
+        },
+        "reason_polarity": {
+          "counts": {
+            "unclear": 92,
+            "consistent": 46,
+            "contradictory": 2
+          },
+          "contradictions": [
+            {
+              "unit_id": "CWE401_Memory_Leak__new_TwoIntsClass_68__good",
+              "label": "good",
+              "y_pred": 0,
+              "reason": "sym_8 allocates with new and sym_5 deletes it; sym_6 uses stack storage. No heap allocation is left unreleased."
+            },
+            {
+              "unit_id": "CWE401_Memory_Leak__new_array_twointsStruct_68__good",
+              "label": "good",
+              "y_pred": 0,
+              "reason": "sym_8 allocates with new[] and sym_5 deletes it; sym_6 uses stack storage. No heap allocation is left unreleased."
+            }
+          ],
+          "definition": "clean if a negation/release phrase matches and no positive leak phrase precedes it; leak if a positive leak phrase matches; otherwise unclear"
+        },
+        "confidence": {
+          "mean": 0.9524285714285714,
+          "n": 140
+        }
+      }
+    }
+  },
+  "pooled_descriptive": {
+    "hde-guided": {
+      "mean_accuracy": 0.975,
+      "mean_strict_accuracy": 0.975,
+      "configured_usd_total": 0.0235605436
+    },
+    "v2-direct": {
+      "mean_accuracy": 0.9678571428571429,
+      "mean_strict_accuracy": 0.9678571428571429,
+      "configured_usd_total": 0.0149031892
+    },
+    "v2-dynamic": {
+      "mean_accuracy": 0.9607142857142856,
+      "mean_strict_accuracy": 0.9607142857142856,
+      "configured_usd_total": 0.017206094800000002
+    },
+    "v2-combined": {
+      "mean_accuracy": 0.9714285714285714,
+      "mean_strict_accuracy": 0.9714285714285714,
+      "configured_usd_total": 0.0167041072
+    },
+    "tool": {
+      "mean_accuracy": 1.0,
+      "mean_strict_accuracy": 1.0,
+      "configured_usd_total": 0.0
+    }
+  },
+  "subsets": {
+    "old_unobservable_12": [
+      "CWE401_Memory_Leak__malloc_realloc_int64_t_01__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int64_t_09__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int64_t_18__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int_01__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int_18__bad",
+      "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad",
+      "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18__bad",
+      "CWE401_Memory_Leak__new_TwoIntsClass_68__bad",
+      "CWE401_Memory_Leak__new_array_twointsStruct_68__bad",
+      "CWE401_Memory_Leak__twoIntsStruct_malloc_68__bad",
+      "CWE401_Memory_Leak__wchar_t_calloc_68__bad",
+      "CWE401_Memory_Leak__wchar_t_malloc_68__bad"
+    ],
+    "old_leak_58": [
+      "CWE401_Memory_Leak__char_calloc_01__bad",
+      "CWE401_Memory_Leak__char_calloc_33__bad",
+      "CWE401_Memory_Leak__char_malloc_01__bad",
+      "CWE401_Memory_Leak__char_malloc_33__bad",
+      "CWE401_Memory_Leak__char_realloc_01__bad",
+      "CWE401_Memory_Leak__char_realloc_33__bad",
+      "CWE401_Memory_Leak__char_realloc_54__bad",
+      "CWE401_Memory_Leak__int64_t_calloc_01__bad",
+      "CWE401_Memory_Leak__int64_t_calloc_33__bad",
+      "CWE401_Memory_Leak__int64_t_malloc_01__bad",
+      "CWE401_Memory_Leak__int64_t_malloc_33__bad",
+      "CWE401_Memory_Leak__int64_t_realloc_01__bad",
+      "CWE401_Memory_Leak__int64_t_realloc_33__bad",
+      "CWE401_Memory_Leak__int_calloc_01__bad",
+      "CWE401_Memory_Leak__int_calloc_33__bad",
+      "CWE401_Memory_Leak__int_calloc_54__bad",
+      "CWE401_Memory_Leak__int_malloc_01__bad",
+      "CWE401_Memory_Leak__int_malloc_22__bad",
+      "CWE401_Memory_Leak__int_malloc_33__bad",
+      "CWE401_Memory_Leak__int_realloc_01__bad",
+      "CWE401_Memory_Leak__int_realloc_33__bad",
+      "CWE401_Memory_Leak__new_TwoIntsClass_01__bad",
+      "CWE401_Memory_Leak__new_array_char_01__bad",
+      "CWE401_Memory_Leak__new_array_char_22__bad",
+      "CWE401_Memory_Leak__new_array_int64_t_01__bad",
+      "CWE401_Memory_Leak__new_array_int64_t_31__bad",
+      "CWE401_Memory_Leak__new_array_int_01__bad",
+      "CWE401_Memory_Leak__new_array_int_22__bad",
+      "CWE401_Memory_Leak__new_array_twointsStruct_01__bad",
+      "CWE401_Memory_Leak__new_array_wchar_t_01__bad",
+      "CWE401_Memory_Leak__new_array_wchar_t_31__bad",
+      "CWE401_Memory_Leak__new_array_wchar_t_72__bad",
+      "CWE401_Memory_Leak__new_char_01__bad",
+      "CWE401_Memory_Leak__new_char_31__bad",
+      "CWE401_Memory_Leak__new_char_72__bad",
+      "CWE401_Memory_Leak__new_int64_t_01__bad",
+      "CWE401_Memory_Leak__new_int64_t_54__bad",
+      "CWE401_Memory_Leak__new_int_01__bad",
+      "CWE401_Memory_Leak__new_int_22__bad",
+      "CWE401_Memory_Leak__new_int_72__bad",
+      "CWE401_Memory_Leak__new_twoIntsStruct_01__bad",
+      "CWE401_Memory_Leak__new_twoIntsStruct_54__bad",
+      "CWE401_Memory_Leak__new_twoIntsStruct_82__bad",
+      "CWE401_Memory_Leak__new_wchar_t_01__bad",
+      "CWE401_Memory_Leak__new_wchar_t_82__bad",
+      "CWE401_Memory_Leak__twoIntsStruct_calloc_01__bad",
+      "CWE401_Memory_Leak__twoIntsStruct_calloc_33__bad",
+      "CWE401_Memory_Leak__twoIntsStruct_malloc_01__bad",
+      "CWE401_Memory_Leak__twoIntsStruct_malloc_33__bad",
+      "CWE401_Memory_Leak__twoIntsStruct_realloc_01__bad",
+      "CWE401_Memory_Leak__twoIntsStruct_realloc_22__bad",
+      "CWE401_Memory_Leak__twoIntsStruct_realloc_33__bad",
+      "CWE401_Memory_Leak__wchar_t_calloc_01__bad",
+      "CWE401_Memory_Leak__wchar_t_calloc_33__bad",
+      "CWE401_Memory_Leak__wchar_t_malloc_01__bad",
+      "CWE401_Memory_Leak__wchar_t_malloc_33__bad",
+      "CWE401_Memory_Leak__wchar_t_realloc_01__bad",
+      "CWE401_Memory_Leak__wchar_t_realloc_33__bad"
+    ],
+    "cleaned_22_good": [
+      "CWE401_Memory_Leak__int_malloc_22__good",
+      "CWE401_Memory_Leak__malloc_realloc_int64_t_09__good",
+      "CWE401_Memory_Leak__new_array_char_22__good",
+      "CWE401_Memory_Leak__new_array_int_22__good",
+      "CWE401_Memory_Leak__new_int_22__good",
+      "CWE401_Memory_Leak__twoIntsStruct_realloc_22__good"
+    ]
+  },
+  "notes": [
+    "The dynamic-enhanced tool is 70TP/70TN on this frozen set, so any model accuracy at or below 1.0 is consistent with copying the evidence.",
+    "v2 baselines were collected on 2026-11-11 with the same input pack and prompt version; only the new method was requested in this run.",
+    "McNemar tests are exact and Holm-adjusted within each model across four contrasts; no claim of semantic reasoning follows from a significant p."
+  ]
+}

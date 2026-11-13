@@ -1,0 +1,255 @@
+{
+  "schema": "dynamic-enhanced-selftest-v1",
+  "controls": 6,
+  "passed": 6,
+  "failed": 0,
+  "results": [
+    {
+      "control": "plain_leak",
+      "compiled": true,
+      "observed": {
+        "default": {
+          "decision": "leak",
+          "raw_leak": true,
+          "attributed": true,
+          "injected": false,
+          "failure_class": "leak",
+          "wall_ms": 101
+        },
+        "nogobal": {
+          "decision": "leak",
+          "raw_leak": true,
+          "attributed": true,
+          "injected": false,
+          "failure_class": "leak",
+          "wall_ms": 84
+        },
+        "realloc_fail": {
+          "decision": "leak",
+          "raw_leak": true,
+          "attributed": true,
+          "injected": false,
+          "failure_class": "leak",
+          "wall_ms": 89
+        }
+      },
+      "expected": {
+        "default": "leak",
+        "nogobal": "leak",
+        "realloc_fail": "not_applicable"
+      },
+      "checks": {
+        "default": true,
+        "nogobal": true,
+        "realloc_fail": true
+      },
+      "pass": true
+    },
+    {
+      "control": "plain_clean",
+      "compiled": true,
+      "observed": {
+        "default": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 4
+        },
+        "nogobal": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 3
+        },
+        "realloc_fail": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 5
+        }
+      },
+      "expected": {
+        "default": "clean",
+        "nogobal": "clean",
+        "realloc_fail": "not_applicable"
+      },
+      "checks": {
+        "default": true,
+        "nogobal": true,
+        "realloc_fail": true
+      },
+      "pass": true
+    },
+    {
+      "control": "latent_realloc_bad",
+      "compiled": true,
+      "observed": {
+        "default": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 5
+        },
+        "nogobal": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 3
+        },
+        "realloc_fail": {
+          "decision": "leak",
+          "raw_leak": true,
+          "attributed": true,
+          "injected": true,
+          "failure_class": "leak",
+          "wall_ms": 88
+        }
+      },
+      "expected": {
+        "default": "clean",
+        "nogobal": "clean",
+        "realloc_fail": "leak"
+      },
+      "checks": {
+        "default": true,
+        "nogobal": true,
+        "realloc_fail": true
+      },
+      "pass": true
+    },
+    {
+      "control": "latent_realloc_good",
+      "compiled": true,
+      "observed": {
+        "default": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 5
+        },
+        "nogobal": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 4
+        },
+        "realloc_fail": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": true,
+          "failure_class": "clean",
+          "wall_ms": 5
+        }
+      },
+      "expected": {
+        "default": "clean",
+        "nogobal": "clean",
+        "realloc_fail": "clean"
+      },
+      "checks": {
+        "default": true,
+        "nogobal": true,
+        "realloc_fail": true
+      },
+      "pass": true
+    },
+    {
+      "control": "global_leak",
+      "compiled": true,
+      "observed": {
+        "default": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 4
+        },
+        "nogobal": {
+          "decision": "leak",
+          "raw_leak": true,
+          "attributed": true,
+          "injected": false,
+          "failure_class": "leak",
+          "wall_ms": 87
+        },
+        "realloc_fail": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 5
+        }
+      },
+      "expected": {
+        "default": "clean",
+        "nogobal": "leak",
+        "realloc_fail": "not_applicable"
+      },
+      "checks": {
+        "default": true,
+        "nogobal": true,
+        "realloc_fail": true
+      },
+      "pass": true
+    },
+    {
+      "control": "global_clean",
+      "compiled": true,
+      "observed": {
+        "default": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 5
+        },
+        "nogobal": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 3
+        },
+        "realloc_fail": {
+          "decision": "clean",
+          "raw_leak": false,
+          "attributed": false,
+          "injected": false,
+          "failure_class": "clean",
+          "wall_ms": 5
+        }
+      },
+      "expected": {
+        "default": "clean",
+        "nogobal": "clean",
+        "realloc_fail": "not_applicable"
+      },
+      "checks": {
+        "default": true,
+        "nogobal": true,
+        "realloc_fail": true
+      },
+      "pass": true
+    }
+  ],
+  "status": "PASS"
+}

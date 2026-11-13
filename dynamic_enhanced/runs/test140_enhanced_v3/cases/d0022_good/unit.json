@@ -1,0 +1,247 @@
+{
+  "unit_id": "CWE401_Memory_Leak__int64_t_malloc_33__good",
+  "unit_key": "d0022",
+  "group_id": "CWE401_Memory_Leak__int64_t_malloc_33",
+  "family": "int64_t_malloc",
+  "variant": "33",
+  "language": "cpp",
+  "label": "good",
+  "sources": [
+    "juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_33.cpp"
+  ],
+  "defines": [
+    "INCLUDEMAIN",
+    "OMITBAD"
+  ],
+  "modes": {
+    "default": {
+      "leak_raw": false,
+      "leak_attributed": false,
+      "leak_blocks": [],
+      "attributed_blocks": [],
+      "attributed_bytes": 0,
+      "raw_bytes": 0,
+      "leak_kinds": [],
+      "leak_summary": null,
+      "leak_summary_bytes": null,
+      "leak_summary_records": null,
+      "asan_errors": [],
+      "deadly_signal": false,
+      "injection": {
+        "realloc_calls": 0,
+        "realloc_null_calls": 0,
+        "realloc_nonnull_calls": 0,
+        "injected": false,
+        "injected_at_call": null
+      },
+      "mode": "default",
+      "build_variant": "plain",
+      "applicable": true,
+      "returncode": 0,
+      "timed_out": false,
+      "wall_ms": 15,
+      "failure_class": "clean",
+      "stdout_sha256": "e53ee59797fb8eaa96e37638df95094f56f0b7ce7beb19e8cbc6a3e0f0ed84d2",
+      "stdout_lines": [
+        "5",
+        "5"
+      ],
+      "stderr_path": "cases/d0022_good/run_default/stderr.txt",
+      "stdout_path": "cases/d0022_good/run_default/stdout.txt",
+      "env": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+        "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0",
+        "DYNENH_REALLOC_FAIL_NONNULL": ""
+      },
+      "decision": "clean"
+    },
+    "nogobal": {
+      "leak_raw": true,
+      "leak_attributed": false,
+      "leak_blocks": [
+        {
+          "kind": "Direct",
+          "bytes": 73728,
+          "records": 1,
+          "attributed": false,
+          "deciding_frame": null,
+          "allocation_site": {
+            "function": "malloc",
+            "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+            "line": 67
+          }
+        },
+        {
+          "kind": "Direct",
+          "bytes": 1024,
+          "records": 1,
+          "attributed": false,
+          "deciding_frame": {
+            "function": "printLongLongLine",
+            "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c",
+            "line": 49
+          },
+          "allocation_site": {
+            "function": "malloc",
+            "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+            "line": 67
+          }
+        }
+      ],
+      "attributed_blocks": [],
+      "attributed_bytes": 0,
+      "raw_bytes": 74752,
+      "leak_kinds": [],
+      "leak_summary": "SUMMARY: AddressSanitizer: 74752 byte(s) leaked in 2 allocation(s)",
+      "leak_summary_bytes": 74752,
+      "leak_summary_records": 2,
+      "asan_errors": [],
+      "deadly_signal": false,
+      "injection": {
+        "realloc_calls": 0,
+        "realloc_null_calls": 0,
+        "realloc_nonnull_calls": 0,
+        "injected": false,
+        "injected_at_call": null
+      },
+      "mode": "nogobal",
+      "build_variant": "plain",
+      "applicable": true,
+      "returncode": 23,
+      "timed_out": false,
+      "wall_ms": 137,
+      "failure_class": "unattributed_runtime_leak",
+      "stdout_sha256": "e53ee59797fb8eaa96e37638df95094f56f0b7ce7beb19e8cbc6a3e0f0ed84d2",
+      "stdout_lines": [
+        "5",
+        "5"
+      ],
+      "stderr_path": "cases/d0022_good/run_nogobal/stderr.txt",
+      "stdout_path": "cases/d0022_good/run_nogobal/stdout.txt",
+      "env": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+        "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0:use_globals=0",
+        "DYNENH_REALLOC_FAIL_NONNULL": ""
+      },
+      "decision": "clean"
+    },
+    "realloc_fail": {
+      "leak_raw": false,
+      "leak_attributed": false,
+      "leak_blocks": [],
+      "attributed_blocks": [],
+      "attributed_bytes": 0,
+      "raw_bytes": 0,
+      "leak_kinds": [],
+      "leak_summary": null,
+      "leak_summary_bytes": null,
+      "leak_summary_records": null,
+      "asan_errors": [],
+      "deadly_signal": false,
+      "injection": {
+        "realloc_calls": 0,
+        "realloc_null_calls": 0,
+        "realloc_nonnull_calls": 0,
+        "injected": false,
+        "injected_at_call": null
+      },
+      "mode": "realloc_fail",
+      "build_variant": "wrap",
+      "applicable": false,
+      "returncode": 0,
+      "timed_out": false,
+      "wall_ms": 21,
+      "failure_class": "clean",
+      "stdout_sha256": "e53ee59797fb8eaa96e37638df95094f56f0b7ce7beb19e8cbc6a3e0f0ed84d2",
+      "stdout_lines": [
+        "5",
+        "5"
+      ],
+      "stderr_path": "cases/d0022_good/run_realloc_fail/stderr.txt",
+      "stdout_path": "cases/d0022_good/run_realloc_fail/stdout.txt",
+      "env": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+        "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0",
+        "DYNENH_REALLOC_FAIL_NONNULL": "1"
+      },
+      "decision": "clean"
+    }
+  },
+  "build": {
+    "plain": {
+      "ok": true,
+      "variant": "plain",
+      "command": [
+        "g++",
+        "-std=gnu++11",
+        "-O0",
+        "-g",
+        "-fsanitize=address",
+        "-fno-omit-frame-pointer",
+        "-w",
+        "-DOMITBAD",
+        "-I",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+        "-I",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01",
+        "-o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0022_good/build/good.plain.exe",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_33.cpp",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0022_good/build/__dynenh_probe_main.cpp",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/build/support/io.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/build/support/std_thread.o",
+        "-lpthread",
+        "-lm"
+      ],
+      "exe": "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0022_good/build/good.plain.exe",
+      "returncode": 0,
+      "timed_out": false,
+      "compile_ms": 748,
+      "stderr_tail": "",
+      "probe_path": "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0022_good/build/__dynenh_probe_main.cpp"
+    },
+    "wrap": {
+      "ok": true,
+      "variant": "wrap",
+      "command": [
+        "g++",
+        "-std=gnu++11",
+        "-O0",
+        "-g",
+        "-fsanitize=address",
+        "-fno-omit-frame-pointer",
+        "-w",
+        "-DOMITBAD",
+        "-I",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+        "-I",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01",
+        "-o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0022_good/build/good.wrap.exe",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int64_t_malloc_33.cpp",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0022_good/build/__dynenh_probe_main.cpp",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/build/support/io.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/build/support/std_thread.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/build/support/inject_realloc.o",
+        "-Wl,--wrap=realloc",
+        "-lpthread",
+        "-lm"
+      ],
+      "exe": "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0022_good/build/good.wrap.exe",
+      "returncode": 0,
+      "timed_out": false,
+      "compile_ms": 815,
+      "stderr_tail": "",
+      "probe_path": "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0022_good/build/__dynenh_probe_main.cpp"
+    }
+  },
+  "decision": "clean",
+  "y_pred": 0,
+  "evidence_modes": [],
+  "primary_evidence": null,
+  "conditionally_observable": false,
+  "unobservable_in_default": false,
+  "failure_class": "clean",
+  "runtime_ms": 1886,
+  "errors": []
+}

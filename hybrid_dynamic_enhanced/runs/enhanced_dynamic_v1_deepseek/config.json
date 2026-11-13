@@ -1,0 +1,46 @@
+{
+  "schema_version": "hde-v1",
+  "run_id": "enhanced_dynamic_v1_deepseek",
+  "model_key": "deepseek",
+  "model_display_name": "DeepSeek-V4.1-Flash",
+  "method": "enhanced-dynamic-guided",
+  "prompt_version": "hde-juliet-llm-binary-2026-11-14.1",
+  "direct_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+  "api": {
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "model": "deepseek-v4.1-flash",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "timeout_seconds": 180.0,
+    "max_attempts": 3,
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "response_format": "json_object",
+    "thinking": null,
+    "reasoning_effort": null,
+    "max_tokens_field": "max_tokens",
+    "user_agent": "secvul-eval-runner/1.0",
+    "input_price_usd_per_1m": 0.15,
+    "output_price_usd_per_1m": 0.6,
+    "cached_input_price_usd_per_1m": 0.003
+  },
+  "dataset": {
+    "path": "hybrid_dynamic_enhanced/inputs/units.jsonl",
+    "sha256": "061546a40e5dd66d7a1fca2dd23dd1ec250d4705a48651dca1eb757488976dce",
+    "units": 140,
+    "partial": false
+  },
+  "concurrency": 10,
+  "config_fingerprint": "e1a711bbd0987052d49ad81458d51f95225a09511bdfbf33b98f963397cb1dbc",
+  "preflight": {
+    "path": "hybrid_dynamic_enhanced/results/preflight.json",
+    "sha256": "d0fb10c206d7773a2e792534ba46ca8957edc99900c573ed405ea562fc989459",
+    "ok": true
+  },
+  "network": {
+    "host": "opencode.ai",
+    "no_proxy_extended": true
+  },
+  "credentials": "read from local Kimi Code config into process memory; never logged"
+}

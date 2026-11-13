@@ -1,0 +1,226 @@
+{
+  "analysis_status": "exploratory_post_hoc_test_seen",
+  "api": {
+    "api_key_env": "OPENCODE_API_KEY",
+    "api_key_present": true,
+    "api_key_value_stored": false,
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "input_price_usd_per_1m": 0.14,
+    "max_attempts": 3,
+    "max_tokens": 2048,
+    "max_tokens_field": "max_completion_tokens",
+    "model": "mimo-v2.6-flash",
+    "output_price_usd_per_1m": 0.28,
+    "reasoning_effort": "none",
+    "response_format": "json_object",
+    "session": {
+      "header": "x-opencode-session",
+      "is_secret": false,
+      "note": "Random per-run routing identifier; not an API key.",
+      "sha256": "4a50fab2e4cb75aea7b11bf813c497d319354555f978639e23a960c3e476b34d",
+      "source": "generated",
+      "value": "ses_26d8a5c1574bdfc79d5745fb593cdeb7"
+    },
+    "temperature": 0.0,
+    "thinking": "disabled",
+    "timeout_seconds": 300.0,
+    "user_agent": "secvul-eval-runner/1.0"
+  },
+  "artifact": "evidence_verify_run",
+  "authorization_header_stored": false,
+  "claims": {
+    "excluded_first_pass_records": {
+      "invalid_or_error": 2,
+      "missing_parsed": 0,
+      "negative": 100
+    },
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/evidence_prompt/runs/test_evidence_mimo/results.jsonl",
+    "selected_positives": 58,
+    "sha256": "c68dfa509ad5aadc9256404f44f44cd025d502897abec9fd75d64f0a760e2e05"
+  },
+  "completed_at": "2026-11-12T16:47:06.335+00:00",
+  "config": {
+    "api": {
+      "backoff_base_seconds": 1.5,
+      "backoff_cap_seconds": 30.0,
+      "base_url": "https://opencode.ai/zen/go/v1",
+      "cached_input_price_usd_per_1m": 0.0028,
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "input_price_usd_per_1m": 0.14,
+      "max_attempts": 3,
+      "max_tokens": 2048,
+      "max_tokens_field": "max_completion_tokens",
+      "model": "mimo-v2.6-flash",
+      "output_price_usd_per_1m": 0.28,
+      "reasoning_effort": "none",
+      "response_format": "json_object",
+      "temperature": 0.0,
+      "thinking": "disabled",
+      "timeout_seconds": 300.0,
+      "user_agent": "secvul-eval-runner/1.0"
+    },
+    "claims_source": "/mnt/c/Users/tzh03/Downloads/cs224proj/evidence_prompt/runs/test_evidence_mimo/results.jsonl",
+    "concurrency": 16,
+    "limit": 0,
+    "package": "evidence_verify",
+    "package_version": "0.1.0",
+    "prompt_version": "secvul-verify-prompt-2026-11-13.1",
+    "runner_version": "1.0.0",
+    "strategy": "verify_positive_claim",
+    "task": "verification",
+    "template_sha256": "4bcf7a4807065fc13b701cda4b551bdca2989403ee0aafaecc270f73508587a2"
+  },
+  "config_fingerprint": "1b98ea1a3a5853fcfecfe1fd19794088312a86c00ac156199b038f2f87434288",
+  "context_used": false,
+  "counts": {
+    "api_errors": 0,
+    "invalid": 1,
+    "planned_requests": 58,
+    "recorded_requests": 58,
+    "valid": 57
+  },
+  "created_at": "2026-11-12T16:46:25.019+00:00",
+  "dataset": {
+    "metadata": {
+      "constraints": [
+        "At most one function per (project, commit_id)",
+        "No vulnerable/fixed pair within samples",
+        "Negative samples are not the fixed_func_idx target of any vulnerable source row"
+      ],
+      "cross_dataset_isolation": "No shared source idx or (project, commit_id) group",
+      "dataset_type": "independent_functions",
+      "excluded_malformed_rows": [
+        {
+          "idx": 3510,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9418,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9578,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10195,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10196,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 16033,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 18071,
+          "reason": "changed_statements is not a valid serialized list"
+        }
+      ],
+      "field_encoding": {
+        "context": "Original workbook string, not evaluated",
+        "json_arrays": [
+          "changed_lines",
+          "changed_statements",
+          "cve_list",
+          "cwe_list"
+        ]
+      },
+      "non_vulnerable_count": 32,
+      "sample_count": 160,
+      "sampling": "Shuffle source rows with random.Random(seed); keep at most one item per project+commit. Select pairs first.",
+      "schema_version": 1,
+      "seed": 42,
+      "source_file": "SecVulEval.xlsx",
+      "source_label_counts": {
+        "False": 14442,
+        "True": 10998
+      },
+      "source_rows": 25440,
+      "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+      "source_sheet": "train",
+      "split": {
+        "manifest": "splits/split_v1.json",
+        "protocol": "research/evaluation_protocol.md#4",
+        "role": "test",
+        "seed": 42,
+        "source_dataset": "datasets/independent_200.json",
+        "source_dataset_sha256": "055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d",
+        "split_id": "secvul-split-v1",
+        "task": "detection"
+      },
+      "usable_rows": 25433,
+      "vulnerable_count": 128
+    },
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "type": "independent"
+  },
+  "expected_requests": 58,
+  "network": {
+    "ipv4_only_resolution": true,
+    "proxy_env_present": false
+  },
+  "notes": [
+    "No API key or Authorization header is stored in run artifacts.",
+    "The verifier sees the numbered function source and one prior positive claim; it never sees the label, project, changed lines, or first-pass confidence.",
+    "Only schema-valid positive first-pass predictions are sent; negatives and invalid records are untouched.",
+    "The 160 test functions were already used to evaluate the first pass, so this experiment is exploratory and not an independent confirmation."
+  ],
+  "package_version": "0.1.0",
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+  "prompt_input_fields": [
+    "func_body",
+    "claim.evidence_lines",
+    "claim.mechanism"
+  ],
+  "python_version": "3.14.8",
+  "results_file": "results.jsonl",
+  "results_sha256": "814e93f3f6fadc7eb0bb5a6b651a5beb38b3f705b0afb1fbd3b34b7510cb8e84",
+  "run_id": "test_verify_mimo_self",
+  "run_label": "frozen-test-160-verify-mimo_self",
+  "runner_version": "1.0.0",
+  "schema_version": 1,
+  "started_at": "2026-11-12T16:46:25.019+00:00",
+  "status": "completed",
+  "summary": {
+    "by_status": {
+      "invalid": 1,
+      "ok": 57
+    },
+    "cost": {
+      "requests_with_cost": 58,
+      "total_cost_usd": 0.015100456
+    },
+    "coverage": 0.9827586206896551,
+    "fp_retracted": 3,
+    "latency_seconds": {
+      "max": 24.873174643000084,
+      "mean": 7.785088184672398,
+      "p50": 6.826241793499889,
+      "p95": 14.974931603350045
+    },
+    "rebuttal_type_counts": {
+      "evidence_mislocated": 1,
+      "guard_present": 3,
+      "insufficient_evidence": 15,
+      "no_reachable_flow": 1,
+      "none": 36,
+      "not_security_relevant": 1
+    },
+    "records": 58,
+    "retract": 21,
+    "retract_rate_of_verified": 0.3684210526315789,
+    "retraction_precision_fp_share": 0.14285714285714285,
+    "sustain": 36,
+    "tp_retracted": 18,
+    "valid": 57
+  },
+  "updated_at": "2026-11-12T16:47:06.345+00:00"
+}

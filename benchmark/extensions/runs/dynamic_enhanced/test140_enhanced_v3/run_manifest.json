@@ -1,0 +1,65 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "ext_dynamic_enhanced_test140_v3",
+  "created_at": "2026-11-13T17:36:08Z",
+  "protocol_version": "1.0.0",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "tasks": [
+    "leak_detection"
+  ],
+  "dataset": {
+    "dataset_id": "juliet-cwe401-v1.3-subset-v1",
+    "split_id": "juliet-cwe401-v1.3-subset-v1",
+    "path": "juliet/subset_units.jsonl",
+    "sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "unit_manifest": null,
+    "unit_count": 140,
+    "group_count": 70,
+    "label_counts": {
+      "bad": 70,
+      "good": 70
+    }
+  },
+  "method": {
+    "method_id": "dynamic.enhanced.three_mode",
+    "family": "dynamic",
+    "name": "ASan/LSan + realloc-failure injection + LSan no-globals",
+    "tool": {
+      "name": "ASan/LSan enhanced harness",
+      "version": "gcc 15.3.0; LSan three-mode",
+      "command_template": "gcc -fsanitize=address ...; LSan use_globals=0; -Wl,--wrap=realloc",
+      "rules": [],
+      "license": "GPL-3.0-or-later (GCC); LLVM sanitizer runtime"
+    },
+    "config_sha256": "aab0df5975a681d0b44159101e95f1ea435914eb721b0f88cfa06dd71cf4abe3"
+  },
+  "execution": {
+    "started_at": "2026-11-13T17:36:08Z",
+    "finished_at": "2026-11-13T17:36:08Z",
+    "status": "completed",
+    "planned_units": 140,
+    "recorded_units": 140,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "5742aff63927a58ce29b6d92f6ebe5160cdf86f523ca36466cc17105cb106f55",
+    "extension_manifest_sha256": "85a046471cac9e5d3138a67bfea63bf54112bb6b6a1912f7db4d48b569d282fa"
+  },
+  "legacy_import": null,
+  "notes": [
+    "enhanced dynamic three-mode run; source verdicts 70 leak / 70 clean",
+    "canonical protocol: clean without line coverage is inconclusive, not TN; operational view is separate",
+    "copied from producer raw; not re-run"
+  ]
+}

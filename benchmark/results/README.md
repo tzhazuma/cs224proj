@@ -67,6 +67,7 @@ python3 benchmark/tools/bench_metrics.py \
 | Tier B 新结果 | `tier_b/juliet_cwe401_repair/<model>/<run_id>/` | 2 个真实 run：70 bad 修复；58 可观测单元 strict pass，12 不可观测不入分母 |
 | 历史（排除） | `superseded/leakage_sensitive_v1/...`、`superseded/pre_postleakfix_harness/...` | 11 个被取代的 run（10 hybrid v1 + 1 旧 harness LLM）；冻结文件只移动不改写，`discover_runs()` 跳过，不进入主 leaderboard |
 | 汇总 | `LEADERBOARD.md` / `final_summary.json` | **最终统一汇总**：Tier A/B 分层、evidence、pair-joint、LLM/hybrid、repair、成本/延迟/配对统计 |
+| 扩展汇总 | `EXTENSIONS.md` / `extension_summary.json` | **扩展层独立汇总**：pair_debias、evidence_verify、dynamic_enhanced、hybrid_dynamic_enhanced、CodeQL 新静态工具、schema_recovery；不与 Tier A/B 或设计间池化 |
 | 历史汇总 | `tier_a_summary.json` / `tier_a_leaderboard.md` | 整合前 12-run Tier A 视图（保留，不是最终索引） |
 | 历史汇总 | `tier_b_summary.json` / `tier_b_leaderboard.md` | 整合前 5-tool Tier B 视图（保留，不是最终索引） |
 

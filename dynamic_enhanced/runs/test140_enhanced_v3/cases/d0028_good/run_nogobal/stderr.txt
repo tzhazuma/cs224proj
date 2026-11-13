@@ -1,0 +1,25 @@
+
+=================================================================
+==12763==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 1024 byte(s) in 1 object(s) allocated from:
+    #0 0x76e51652b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x76e51608b32b in __GI__IO_file_doallocate /usr/src/glibc-2.44-1ubuntu2/libio/filedoalloc.c:91
+    #2 0x76e51609cc65 in __GI__IO_doallocbuf /usr/src/glibc-2.44-1ubuntu2/libio/genops.c:373
+    #3 0x76e51609a328 in _IO_new_file_overflow /usr/src/glibc-2.44-1ubuntu2/libio/fileops.c:797
+    #4 0x76e51609af22 in _IO_new_file_xsputn /usr/src/glibc-2.44-1ubuntu2/libio/fileops.c:1323
+    #5 0x76e51609af22 in _IO_new_file_xsputn /usr/src/glibc-2.44-1ubuntu2/libio/fileops.c:1276
+    #6 0x76e51606504d in __printf_buffer_flush_to_file /usr/src/glibc-2.44-1ubuntu2/stdio-common/printf_buffer_to_file.c:59
+    #7 0x76e51606504d in __printf_buffer_to_file_done /usr/src/glibc-2.44-1ubuntu2/stdio-common/printf_buffer_to_file.c:120
+    #8 0x76e516070af3 in __vfprintf_internal /usr/src/glibc-2.44-1ubuntu2/stdio-common/vfprintf-internal.c:1549
+    #9 0x76e5164f18ac in vprintf ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1731
+    #10 0x76e5164f3aa4 in printf ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1791
+    #11 0x57f1f08d2849 in printIntLine /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c:29
+    #12 0x57f1f08d26aa in goodG2B /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_01.c:51
+    #13 0x57f1f08d277d in CWE401_Memory_Leak__int_calloc_01_good /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__int_calloc_01.c:73
+    #14 0x57f1f08d27ab in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0028_good/build/__dynenh_probe_main.c:2
+    #15 0x76e51602a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #16 0x76e51602a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #17 0x57f1f08d24c4 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0028_good/build/good.plain.exe+0x24c4) (BuildId: 137dad54508e4edfe94ab8cdfd31699682463cc5)
+
+SUMMARY: AddressSanitizer: 1024 byte(s) leaked in 1 allocation(s).

@@ -1,0 +1,46 @@
+{
+  "schema_version": "hde-v1",
+  "run_id": "enhanced_dynamic_v1_mimo",
+  "model_key": "mimo",
+  "model_display_name": "MiMo-V2.6-Flash",
+  "method": "enhanced-dynamic-guided",
+  "prompt_version": "hde-juliet-llm-binary-2026-11-14.1",
+  "direct_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+  "api": {
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "model": "mimo-v2.6-flash",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "timeout_seconds": 300.0,
+    "max_attempts": 3,
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "response_format": "json_object",
+    "thinking": "disabled",
+    "reasoning_effort": "none",
+    "max_tokens_field": "max_completion_tokens",
+    "user_agent": "secvul-eval-runner/1.0",
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "cached_input_price_usd_per_1m": 0.0028
+  },
+  "dataset": {
+    "path": "hybrid_dynamic_enhanced/inputs/units.jsonl",
+    "sha256": "061546a40e5dd66d7a1fca2dd23dd1ec250d4705a48651dca1eb757488976dce",
+    "units": 140,
+    "partial": false
+  },
+  "concurrency": 10,
+  "config_fingerprint": "e6df50df8b798918c84aa05e33401f4db1f5a64340081aa0738cc411edd74019",
+  "preflight": {
+    "path": "hybrid_dynamic_enhanced/results/preflight.json",
+    "sha256": "d0fb10c206d7773a2e792534ba46ca8957edc99900c573ed405ea562fc989459",
+    "ok": true
+  },
+  "network": {
+    "host": "opencode.ai",
+    "no_proxy_extended": false
+  },
+  "credentials": "read from local Kimi Code config into process memory; never logged"
+}

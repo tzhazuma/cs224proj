@@ -1,0 +1,29 @@
+
+=================================================================
+==13613==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 73728 byte(s) in 1 object(s) allocated from:
+    #0 0x7dd962d2b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x7dd9628c1bd6  (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0xc1bd6) (BuildId: 850374d9386974fb53ddeace7a4583b934ebb582)
+    #2 0x7dd96347878e in call_init /usr/src/glibc-2.44-1ubuntu2/elf/dl-init.c:74
+    #3 0x7dd9634788a3 in call_init /usr/src/glibc-2.44-1ubuntu2/elf/dl-init.c:120
+    #4 0x7dd9634788a3 in _dl_init /usr/src/glibc-2.44-1ubuntu2/elf/dl-init.c:121
+    #5 0x7dd963498e7f  (/lib64/ld-linux-x86-64.so.2+0x26e7f) (BuildId: 45fdeb3c44505a97e013ebb0133e49b983c05c71)
+
+Direct leak of 1024 byte(s) in 1 object(s) allocated from:
+    #0 0x7dd962d2b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x7dd96248b32b in __GI__IO_file_doallocate /usr/src/glibc-2.44-1ubuntu2/libio/filedoalloc.c:91
+    #2 0x7dd96249cc65 in __GI__IO_doallocbuf /usr/src/glibc-2.44-1ubuntu2/libio/genops.c:373
+    #3 0x7dd96249a328 in _IO_new_file_overflow /usr/src/glibc-2.44-1ubuntu2/libio/fileops.c:797
+    #4 0x7dd96249af22 in _IO_new_file_xsputn /usr/src/glibc-2.44-1ubuntu2/libio/fileops.c:1323
+    #5 0x7dd96249af22 in _IO_new_file_xsputn /usr/src/glibc-2.44-1ubuntu2/libio/fileops.c:1276
+    #6 0x7dd96248e1f9 in __GI__IO_puts /usr/src/glibc-2.44-1ubuntu2/libio/ioputs.c:40
+    #7 0x5a56791207ed in printLine /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c:15
+    #8 0x5a5679120674 in goodG2B /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__new_array_char_01.cpp:56
+    #9 0x5a5679120754 in CWE401_Memory_Leak__new_array_char_01::good() /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__new_array_char_01.cpp:77
+    #10 0x5a56791207af in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0062_good/build/__dynenh_probe_main.cpp:2
+    #11 0x7dd96242a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #12 0x7dd96242a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #13 0x5a56791204c4 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0062_good/build/good.plain.exe+0x24c4) (BuildId: 79e44b49f800f397b66e14ece89861d5ecfd47cc)
+
+SUMMARY: AddressSanitizer: 74752 byte(s) leaked in 2 allocation(s).

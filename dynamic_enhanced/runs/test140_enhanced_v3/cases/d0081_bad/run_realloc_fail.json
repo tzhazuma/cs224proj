@@ -1,0 +1,76 @@
+{
+  "leak_raw": true,
+  "leak_attributed": true,
+  "leak_blocks": [
+    {
+      "kind": "Direct",
+      "bytes": 400,
+      "records": 1,
+      "attributed": true,
+      "deciding_frame": {
+        "function": "CWE401_Memory_Leak__new_array_wchar_t_72::bad()",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_wchar_t_72a.cpp",
+        "line": 41
+      },
+      "allocation_site": {
+        "function": "operator new[](unsigned long)",
+        "file": "../../../../src/libsanitizer/asan/asan_new_delete.cpp",
+        "line": 111
+      }
+    }
+  ],
+  "attributed_blocks": [
+    {
+      "kind": "Direct",
+      "bytes": 400,
+      "records": 1,
+      "attributed": true,
+      "deciding_frame": {
+        "function": "CWE401_Memory_Leak__new_array_wchar_t_72::bad()",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_wchar_t_72a.cpp",
+        "line": 41
+      },
+      "allocation_site": {
+        "function": "operator new[](unsigned long)",
+        "file": "../../../../src/libsanitizer/asan/asan_new_delete.cpp",
+        "line": 111
+      }
+    }
+  ],
+  "attributed_bytes": 400,
+  "raw_bytes": 400,
+  "leak_kinds": [
+    "Direct"
+  ],
+  "leak_summary": "SUMMARY: AddressSanitizer: 400 byte(s) leaked in 1 allocation(s)",
+  "leak_summary_bytes": 400,
+  "leak_summary_records": 1,
+  "asan_errors": [],
+  "deadly_signal": false,
+  "injection": {
+    "realloc_calls": 0,
+    "realloc_null_calls": 0,
+    "realloc_nonnull_calls": 0,
+    "injected": false,
+    "injected_at_call": null
+  },
+  "mode": "realloc_fail",
+  "build_variant": "wrap",
+  "applicable": false,
+  "returncode": 23,
+  "timed_out": false,
+  "wall_ms": 117,
+  "failure_class": "leak",
+  "stdout_sha256": "4f14464dec3e7c98da4ec7e58d7d9b110b1d3e632b03a2c6fb300404c58838e0",
+  "stdout_lines": [
+    "A String"
+  ],
+  "stderr_path": "cases/d0081_bad/run_realloc_fail/stderr.txt",
+  "stdout_path": "cases/d0081_bad/run_realloc_fail/stdout.txt",
+  "env": {
+    "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0",
+    "DYNENH_REALLOC_FAIL_NONNULL": "1"
+  },
+  "decision": "leak"
+}

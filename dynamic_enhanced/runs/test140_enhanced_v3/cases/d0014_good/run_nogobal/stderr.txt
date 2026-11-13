@@ -1,0 +1,21 @@
+
+=================================================================
+==12598==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 1024 byte(s) in 1 object(s) allocated from:
+    #0 0x73ada1d2b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x73ada188b32b in __GI__IO_file_doallocate /usr/src/glibc-2.44-1ubuntu2/libio/filedoalloc.c:91
+    #2 0x73ada189cc65 in __GI__IO_doallocbuf /usr/src/glibc-2.44-1ubuntu2/libio/genops.c:373
+    #3 0x73ada189a328 in _IO_new_file_overflow /usr/src/glibc-2.44-1ubuntu2/libio/fileops.c:797
+    #4 0x73ada189af22 in _IO_new_file_xsputn /usr/src/glibc-2.44-1ubuntu2/libio/fileops.c:1323
+    #5 0x73ada189af22 in _IO_new_file_xsputn /usr/src/glibc-2.44-1ubuntu2/libio/fileops.c:1276
+    #6 0x73ada188e1f9 in __GI__IO_puts /usr/src/glibc-2.44-1ubuntu2/libio/ioputs.c:40
+    #7 0x5d8762ed6931 in printLine /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c:15
+    #8 0x5d8762ed66a1 in goodG2B /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54a.c:55
+    #9 0x5d8762ed675b in CWE401_Memory_Leak__char_realloc_54_good /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_54a.c:77
+    #10 0x5d8762ed68f3 in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0014_good/build/__dynenh_probe_main.c:2
+    #11 0x73ada182a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #12 0x73ada182a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #13 0x5d8762ed64e4 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0014_good/build/good.plain.exe+0x24e4) (BuildId: 228d59ee2b98bcbf890ad85aad8f29a528cccd50)
+
+SUMMARY: AddressSanitizer: 1024 byte(s) leaked in 1 allocation(s).

@@ -1,0 +1,72 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "ext_pair_debias_mimo_open_fwd",
+  "created_at": "2026-11-13T17:24:45Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "pair_detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1",
+    "path": "splits/test_pairs_180.json",
+    "sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "unit_manifest": null,
+    "unit_count": 360,
+    "group_count": 180,
+    "label_counts": {
+      "vulnerable": 180,
+      "fixed": 180
+    }
+  },
+  "method": {
+    "method_id": "llm.mimo.pair_debiased_open",
+    "family": "llm",
+    "name": "MiMo-V2.6-Flash / pair-debias open fwd",
+    "strategy": "pair_debiased_open",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_completion_tokens",
+        "reasoning_effort": "none"
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-13"
+    },
+    "config_sha256": "0fa4c94293d6de1dd162dd1f21134c7c1dccec7be6c8edbf46b474f1adc42121"
+  },
+  "execution": {
+    "started_at": "2026-11-13T17:24:45Z",
+    "finished_at": "2026-11-13T17:24:45Z",
+    "status": "completed",
+    "planned_units": 360,
+    "recorded_units": 360,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "72c789e8de89ab86e54cdafc1f6d706c9fbe368fd6843d31a7e32fa3f65ee039",
+    "extension_manifest_sha256": "6e6e43e9d12b7cd64fbc0e81885b7cd980d09c50a46e8594525f647c6b115891"
+  },
+  "legacy_import": null,
+  "notes": [
+    "open-choice pair run; one 4-way response encoded as two side records",
+    "copied from producer raw; not re-run"
+  ]
+}

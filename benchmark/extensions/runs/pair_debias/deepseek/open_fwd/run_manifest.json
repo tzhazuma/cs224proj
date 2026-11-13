@@ -1,0 +1,71 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "ext_pair_debias_deepseek_open_fwd",
+  "created_at": "2026-11-13T17:23:47Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "pair_detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1",
+    "path": "splits/test_pairs_180.json",
+    "sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "unit_manifest": null,
+    "unit_count": 360,
+    "group_count": 180,
+    "label_counts": {
+      "vulnerable": 180,
+      "fixed": 180
+    }
+  },
+  "method": {
+    "method_id": "llm.deepseek.pair_debiased_open",
+    "family": "llm",
+    "name": "DeepSeek V4.1 Flash / pair-debias open fwd",
+    "strategy": "pair_debiased_open",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "deepseek",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_tokens"
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-13"
+    },
+    "config_sha256": "5618dbca002ef211558fa7aa3c772b5d1921a38529044fa2015b2315ac25d919"
+  },
+  "execution": {
+    "started_at": "2026-11-13T17:23:47Z",
+    "finished_at": "2026-11-13T17:23:47Z",
+    "status": "completed",
+    "planned_units": 360,
+    "recorded_units": 360,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "230d2565eddfc141cdb8a901d7066d8302fe773bc5197cd736288c03ec049a7f",
+    "extension_manifest_sha256": "d0ca84ec79f06fdb33e8d6962301173d95952900c28b0ee4f3c7e65f9a74d79c"
+  },
+  "legacy_import": null,
+  "notes": [
+    "open-choice pair run; one 4-way response encoded as two side records",
+    "copied from producer raw; not re-run"
+  ]
+}

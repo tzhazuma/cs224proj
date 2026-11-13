@@ -1,0 +1,1128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cs224.local/benchmark/extensions/schemas/extension_blocks.schema.json",
+  "title": "Design-specific prediction.extensions blocks",
+  "description": "Validated against prediction.extensions for each extension design. The parent prediction.schema.json remains unchanged; these definitions add design invariants only.",
+  "$defs": {
+    "position_debiased_pair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pair_design",
+        "presentation_order",
+        "position_map",
+        "forced_choice",
+        "choice",
+        "selected_side",
+        "selected_slot"
+      ],
+      "properties": {
+        "pair_design": {
+          "const": "position_debiased_pair"
+        },
+        "presentation_order": {
+          "enum": [
+            "AB",
+            "BA",
+            "fwd",
+            "rev"
+          ]
+        },
+        "position_map": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "A",
+            "B"
+          ],
+          "properties": {
+            "A": {
+              "enum": [
+                "vulnerable",
+                "fixed"
+              ]
+            },
+            "B": {
+              "enum": [
+                "vulnerable",
+                "fixed"
+              ]
+            }
+          }
+        },
+        "forced_choice": {
+          "const": true
+        },
+        "choice": {
+          "enum": [
+            "A",
+            "B",
+            null
+          ]
+        },
+        "selected_side": {
+          "enum": [
+            "vulnerable",
+            "fixed",
+            null
+          ]
+        },
+        "selected_slot": {
+          "enum": [
+            "A",
+            "B",
+            null
+          ]
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "length_chars": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "vulnerable",
+                "fixed"
+              ],
+              "properties": {
+                "vulnerable": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "fixed": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                }
+              }
+            }
+          ]
+        },
+        "longer_side": {
+          "enum": [
+            "vulnerable",
+            "fixed",
+            "tie",
+            null
+          ]
+        },
+        "order_seed": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_record_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sibling_run_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pair_project": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "open_choice_pair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pair_design",
+        "open_choice",
+        "selected_slots",
+        "forced_choice",
+        "position_map"
+      ],
+      "properties": {
+        "pair_design": {
+          "const": "open_choice_pair"
+        },
+        "open_choice": {
+          "enum": [
+            "A",
+            "B",
+            "both",
+            "neither",
+            null
+          ]
+        },
+        "selected_slots": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "A",
+              "B"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "forced_choice": {
+          "const": false
+        },
+        "position_map": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "A",
+            "B"
+          ],
+          "properties": {
+            "A": {
+              "enum": [
+                "vulnerable",
+                "fixed"
+              ]
+            },
+            "B": {
+              "enum": [
+                "vulnerable",
+                "fixed"
+              ]
+            }
+          }
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "length_chars": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "vulnerable",
+                "fixed"
+              ],
+              "properties": {
+                "vulnerable": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "fixed": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                }
+              }
+            }
+          ]
+        },
+        "longer_side": {
+          "enum": [
+            "vulnerable",
+            "fixed",
+            "tie",
+            null
+          ]
+        },
+        "raw_record_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "pair_project": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "repeat_role": {
+          "enum": [
+            "fwd",
+            "rev",
+            null
+          ]
+        },
+        "pairing_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 300
+        },
+        "sibling_run_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        }
+      }
+    },
+    "evidence_verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_design",
+        "verification"
+      ],
+      "properties": {
+        "task_design": {
+          "const": "evidence_verification"
+        },
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "claim_id",
+            "claim_type",
+            "verdict",
+            "gold_verdict",
+            "abstained",
+            "claim_text_sha256",
+            "claim_manifest_sha256"
+          ],
+          "properties": {
+            "claim_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "claim_type": {
+              "enum": [
+                "genuine",
+                "counterfactual",
+                "perturbed",
+                "other"
+              ]
+            },
+            "verdict": {
+              "enum": [
+                "supported",
+                "unsupported",
+                "insufficient",
+                null
+              ]
+            },
+            "gold_verdict": {
+              "enum": [
+                "supported",
+                "unsupported"
+              ]
+            },
+            "abstained": {
+              "type": "boolean"
+            },
+            "claim_text_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "claim_manifest_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "cited_lines": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "line_check": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "cited_line_exists": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "cited_line_in_source": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "cited_line_count": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    }
+                  }
+                }
+              ]
+            },
+            "raw_record_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "notes": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "fault_injected_dynamic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_design",
+        "fault_injection"
+      ],
+      "properties": {
+        "task_design": {
+          "const": "fault_injected_dynamic"
+        },
+        "fault_injection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fault_id",
+            "fault_type",
+            "base_unit_id",
+            "expected_outcome",
+            "observed_outcome",
+            "fault_manifest_sha256",
+            "injection_sha256"
+          ],
+          "properties": {
+            "fault_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "fault_type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "base_unit_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "expected_outcome": {
+              "enum": [
+                "leak",
+                "clean",
+                "inconclusive"
+              ]
+            },
+            "observed_outcome": {
+              "enum": [
+                "leak",
+                "clean",
+                "inconclusive",
+                "error",
+                "timeout",
+                "crash"
+              ]
+            },
+            "baseline_outcome": {
+              "enum": [
+                "leak",
+                "clean",
+                "inconclusive",
+                "unknown",
+                null
+              ]
+            },
+            "fault_manifest_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "injection_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "coverage_sufficient": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "oracle_consensus": {
+              "enum": [
+                "leak",
+                "clean",
+                "disagree",
+                "not_run",
+                "unknown",
+                null
+              ]
+            },
+            "flip": {
+              "enum": [
+                "same",
+                "leak_to_clean",
+                "clean_to_leak",
+                "not_comparable",
+                null
+              ]
+            },
+            "description": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "seed": {
+              "type": [
+                "string",
+                "integer",
+                "null"
+              ]
+            },
+            "raw_record_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "notes": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "new_static_tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_design",
+        "static_normalization"
+      ],
+      "properties": {
+        "task_design": {
+          "const": "new_static_tool"
+        },
+        "static_normalization": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "tool_id",
+            "tool_version",
+            "rule_map_version",
+            "registry_sha256",
+            "scope_kind",
+            "diagnostics",
+            "raw_warning_count",
+            "dedup_warning_count",
+            "mapped_warning_count",
+            "unmapped_warning_count",
+            "out_of_scope_count",
+            "suppressed_count"
+          ],
+          "properties": {
+            "tool_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "tool_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "rule_map_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "registry_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "scope_kind": {
+              "enum": [
+                "target_file",
+                "target_function"
+              ]
+            },
+            "target_files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "line_range": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "start",
+                    "end"
+                  ],
+                  "properties": {
+                    "start": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "end": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "diagnostics": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/static_diagnostic"
+              }
+            },
+            "raw_warning_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "dedup_warning_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "mapped_warning_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unmapped_warning_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "out_of_scope_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "suppressed_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "severity_policy": {
+              "type": "object"
+            },
+            "main_threshold": {
+              "type": "string"
+            },
+            "sensitivity_threshold": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "command_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "notes": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "static_diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule_id",
+        "raw_rule",
+        "severity",
+        "severity_class",
+        "message",
+        "file",
+        "line",
+        "column",
+        "cwe",
+        "mapped_cwe",
+        "counts_for_cwe401",
+        "in_scope",
+        "suppressed",
+        "dedup_key",
+        "mapping_basis"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "benchmark-static-diagnostic-v1"
+        },
+        "rule_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "raw_rule": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "severity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity_class": {
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unknown"
+          ]
+        },
+        "message": {
+          "type": "string"
+        },
+        "file": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "line": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "column": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "cwe": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^CWE-[0-9]+$"
+          }
+        },
+        "mapped_cwe": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^CWE-[0-9]+$"
+        },
+        "counts_for_cwe401": {
+          "type": "boolean"
+        },
+        "in_scope": {
+          "type": "boolean"
+        },
+        "suppressed": {
+          "type": "boolean"
+        },
+        "dedup_key": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "mapping_basis": {
+          "enum": [
+            "registry",
+            "cwe_field",
+            "unmapped"
+          ]
+        },
+        "trace": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "evidence_retraction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_design",
+        "retraction"
+      ],
+      "properties": {
+        "task_design": {
+          "const": "evidence_retraction"
+        },
+        "retraction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "first_pass_y_pred",
+            "first_pass_status",
+            "verifier_status",
+            "verifier_verdict",
+            "retracted",
+            "fail_closed"
+          ],
+          "properties": {
+            "first_pass_run": {
+              "type": "string"
+            },
+            "verifier_run": {
+              "type": "string"
+            },
+            "first_pass_model": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "verifier_model": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "first_pass_y_pred": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "first_pass_status": {
+              "type": "string"
+            },
+            "verifier_status": {
+              "type": "string"
+            },
+            "verifier_verdict": {
+              "enum": [
+                "sustain",
+                "retract",
+                "not_requested",
+                "invalid",
+                null
+              ]
+            },
+            "verifier_evidence_check": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "retracted": {
+              "type": "boolean"
+            },
+            "fail_closed": {
+              "type": "boolean"
+            },
+            "analysis_status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "claim_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "rebuttal_type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "first_pass_cost_usd": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "verifier_cost_usd": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "raw_record_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "notes": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "enhanced_dynamic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_design",
+        "dynamic_enhanced"
+      ],
+      "properties": {
+        "task_design": {
+          "const": "enhanced_dynamic"
+        },
+        "dynamic_enhanced": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source_run_id",
+            "decision",
+            "evidence_modes",
+            "unobservable_in_default",
+            "conditionally_observable",
+            "probe_executed",
+            "coverage_proxy",
+            "operational_y_pred"
+          ],
+          "properties": {
+            "source_run_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "decision": {
+              "enum": [
+                "leak",
+                "clean",
+                "build_error",
+                "run_error",
+                "timeout",
+                "crash",
+                "not_evaluable"
+              ]
+            },
+            "evidence_modes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "primary_evidence": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "unobservable_in_default": {
+              "type": "boolean"
+            },
+            "conditionally_observable": {
+              "type": "boolean"
+            },
+            "probe_executed": {
+              "type": "boolean"
+            },
+            "coverage_proxy": {
+              "type": "string"
+            },
+            "per_mode": {
+              "type": "object"
+            },
+            "raw_leak_counts": {
+              "type": "object"
+            },
+            "attributed_leak_counts": {
+              "type": "object"
+            },
+            "operational_y_pred": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "protocol_clean_status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw_record_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "notes": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "hybrid_enhanced_dynamic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_design",
+        "hybrid_dynamic_enhanced"
+      ],
+      "properties": {
+        "task_design": {
+          "const": "hybrid_enhanced_dynamic"
+        },
+        "hybrid_dynamic_enhanced": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source_run_id",
+            "evidence_outcome",
+            "tool_verdict",
+            "prompt_version"
+          ],
+          "properties": {
+            "source_run_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidence_outcome": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "evidence_primary_mode": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "old_dynamic_outcome": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "tool_verdict": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "prompt_version": {
+              "type": "string"
+            },
+            "evidence_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "prompt_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "model": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "method": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "notes": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

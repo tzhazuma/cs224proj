@@ -1,0 +1,252 @@
+{
+  "registry_version": "2026-11-14.1",
+  "description": "Versioned rule registry for canonicalizing static-analyzer diagnostics to CWE-401. A rule is counted only if it appears here with counts_for_cwe401=true and the warning is in the target scope. Tool versions are recorded per run; this file pins the mapping semantics, not the analyzer binary.",
+  "tools": {
+    "clang-sa": {
+      "name": "Clang Static Analyzer",
+      "family": "static",
+      "version_probe": "clang --version",
+      "command_template": "clang --analyze -Xanalyzer -analyzer-output=text <flags> <translation_unit>",
+      "license": "Apache-2.0 WITH LLVM-exception",
+      "default_scope": "target_file",
+      "status": "reference_registered",
+      "severity_policy": {
+        "high": [
+          "error",
+          "warning"
+        ],
+        "medium": [
+          "note"
+        ],
+        "low": [
+          "style",
+          "performance",
+          "portability"
+        ],
+        "note": "clang-sa findings are emitted as warnings; high-only therefore equals the default for this tool."
+      },
+      "rules": {
+        "unix.Malloc": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        },
+        "unix.MallocSizeof": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        },
+        "cplusplus.NewDeleteLeaks": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        },
+        "cplusplus.NewDelete": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        }
+      },
+      "rule_prefixes": [],
+      "allow_cwe_fallback": true,
+      "notes": "Existing formal Tier B baseline. Rule names follow Clang 22.x. New rule names require a registry version bump and a dev-set freeze before test evaluation."
+    },
+    "clang-tidy": {
+      "name": "clang-tidy (clang-analyzer checks)",
+      "family": "static",
+      "version_probe": "clang-tidy --version",
+      "command_template": "clang-tidy <translation_unit> --checks=-*,clang-analyzer-unix.Malloc,clang-analyzer-cplusplus.NewDeleteLeaks -- <compiler_flags>",
+      "license": "Apache-2.0 WITH LLVM-exception",
+      "default_scope": "target_file",
+      "status": "reference_registered",
+      "severity_policy": {
+        "high": [
+          "error",
+          "warning"
+        ],
+        "medium": [
+          "note"
+        ],
+        "low": [
+          "style",
+          "performance",
+          "portability"
+        ],
+        "note": "clang-analyzer checks are reported as warning diagnostics."
+      },
+      "rules": {
+        "clang-analyzer-unix.Malloc": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        },
+        "clang-analyzer-unix.MallocSizeof": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        },
+        "clang-analyzer-cplusplus.NewDeleteLeaks": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        },
+        "clang-analyzer-cplusplus.NewDelete": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        }
+      },
+      "rule_prefixes": [],
+      "allow_cwe_fallback": true,
+      "notes": "clang-tidy version 22.1.8 is available in the project WSL environment. The analyzer checks are a separate front end over the same Clang analysis engine as clang-sa, so a near-identical result is expected; report it as a front-end/tooling comparison, not as an independent algorithm."
+    },
+    "gcc-analyzer": {
+      "name": "GCC -fanalyzer",
+      "family": "static",
+      "version_probe": "gcc -dumpfullversion -dumpversion",
+      "command_template": "gcc -std=<std> -fanalyzer -Wanalyzer-malloc-leak -c <translation_unit> -o <object>",
+      "license": "GPL-3.0-or-later",
+      "default_scope": "target_file",
+      "status": "reference_registered",
+      "severity_policy": {
+        "high": [
+          "error",
+          "warning"
+        ],
+        "medium": [
+          "note"
+        ],
+        "low": [],
+        "note": "GCC analyzer leak diagnostics are warnings carrying [CWE-401]."
+      },
+      "rules": {
+        "-Wanalyzer-malloc-leak": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        },
+        "-Wanalyzer-double-free": {
+          "cwe": "CWE-415",
+          "category": "double_free",
+          "counts_for_cwe401": false
+        },
+        "-Wanalyzer-use-after-free": {
+          "cwe": "CWE-416",
+          "category": "use_after_free",
+          "counts_for_cwe401": false
+        },
+        "-Wanalyzer-possible-null-dereference": {
+          "cwe": "CWE-690",
+          "category": "null_dereference",
+          "counts_for_cwe401": false
+        }
+      },
+      "rule_prefixes": [],
+      "allow_cwe_fallback": true,
+      "notes": "GCC 15.3.0 is available in the project WSL environment. Only -Wanalyzer-malloc-leak counts for CWE-401; other analyzer warnings are retained as diagnostics but do not set y_pred=1."
+    },
+    "cppcheck": {
+      "name": "Cppcheck",
+      "family": "static",
+      "version_probe": "cppcheck --version",
+      "command_template": "cppcheck --enable=warning --template=<template> --xml <translation_unit>",
+      "license": "GPL-3.0-or-later",
+      "default_scope": "target_file",
+      "status": "reference_registered",
+      "severity_policy": {
+        "high": [
+          "error"
+        ],
+        "medium": [
+          "warning"
+        ],
+        "low": [
+          "style",
+          "performance",
+          "portability"
+        ],
+        "note": "Cppcheck memleak is severity=error; high-only is the Cppcheck default operating point for leak findings."
+      },
+      "rules": {
+        "memleak": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        },
+        "memleakOnRealloc": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        }
+      },
+      "rule_prefixes": [],
+      "allow_cwe_fallback": true,
+      "notes": "Existing formal Tier B baseline. The binary is not system-installed in the project WSL image; the prior run used an unpacked Debian package under /tmp. A new run must record the exact binary/version and FILESDIR workaround."
+    },
+    "infer": {
+      "name": "Infer",
+      "family": "static",
+      "version_probe": "infer --version",
+      "command_template": "infer run -- <compile_command>",
+      "license": "MIT",
+      "default_scope": "target_file",
+      "status": "documented_not_installed",
+      "severity_policy": {
+        "high": [
+          "error",
+          "warning"
+        ],
+        "medium": [
+          "note"
+        ],
+        "low": [],
+        "note": "Infer issue severity is recorded as reported; verify before freezing."
+      },
+      "rules": {
+        "MEMORY_LEAK": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        }
+      },
+      "rule_prefixes": [],
+      "allow_cwe_fallback": true,
+      "notes": "Infer is not installed in the project WSL image. This entry is a documentation/registry stub; no result may be reported until a real run exists and records version/command."
+    },
+    "codeql": {
+      "name": "CodeQL",
+      "family": "static",
+      "version_probe": "codeql version --format=json",
+      "command_template": "codeql database create ... && codeql database analyze ... --format=sarif-latest",
+      "license": "GitHub CodeQL Terms and Conditions",
+      "default_scope": "target_file",
+      "status": "run_recorded",
+      "severity_policy": {
+        "high": [
+          "error",
+          "warning"
+        ],
+        "medium": [
+          "recommendation"
+        ],
+        "low": [],
+        "note": "Both pinned queries report SARIF level=warning; high-only equals the default operating point for this run."
+      },
+      "rules": {
+        "cpp/memory-never-freed": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        },
+        "cpp/memory-may-not-be-freed": {
+          "cwe": "CWE-401",
+          "category": "memory_leak",
+          "counts_for_cwe401": true
+        }
+      },
+      "rule_prefixes": [],
+      "allow_cwe_fallback": false,
+      "notes": "CodeQL CLI 2.27.4 + codeql/cpp-queries 1.10.0 (cpp-all 12.4.0) are installed under ~/tools and ~/.codeql; a real 200-unit run exists at static_extended/runs/codeql_20261114_cwe401_full. Only the two pinned CWE-401 queries count; headers/out-of-scope findings do not. Rule names changed from the earlier stub (cpp/memory-leak) and require this registry version."
+    }
+  }
+}

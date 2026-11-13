@@ -1,0 +1,311 @@
+{
+  "registry_version": "2026-11-14.3",
+  "description": "Machine-readable registry of extension designs. Each design reuses a parent benchmark task (pair_detection, detection, leak_detection) and adds a design-specific block under prediction.extensions. Parent tasks, status words and core metric arithmetic are inherited from benchmark/PROTOCOL.md and benchmark/tools/bench_common.py.",
+  "designs": [
+    {
+      "design_id": "position_debiased_pair",
+      "title": "Position-debiased pair discrimination (A/B order swap)",
+      "parent_task": "pair_detection",
+      "tiers": [
+        "A"
+      ],
+      "tracks": [
+        "secvuleval"
+      ],
+      "families": [
+        "llm"
+      ],
+      "run_mode": "paired_runs",
+      "unit_kind": "pair_side",
+      "aggregation_unit": "pair_id",
+      "canonical_task": "pair_detection",
+      "canonical_unit_id": "secvul:pair:<pair_id>:<vulnerable|fixed>",
+      "extension_block": "pair_design",
+      "primary_metric": "position_avg_pair_da",
+      "key_secondary_metrics": [
+        "order_consensus_pair_da",
+        "order_consistency",
+        "position_bias_index",
+        "length_audit"
+      ],
+      "comparison_family": "EXT-POSITION",
+      "required_run_roles": [
+        "fwd",
+        "rev"
+      ],
+      "status": "result_imported",
+      "notes": "Two presentations per pair with per-pair slot maps: pair_debias forced_fwd/forced_rev and global AB/BA are both supported. Result imported: 2 models x {forced_fwd, forced_rev}; open-choice repeats are separate runs.",
+      "imported_runs": [
+        "benchmark/extensions/runs/pair_debias/deepseek/forced",
+        "benchmark/extensions/runs/pair_debias/mimo/forced"
+      ]
+    },
+    {
+      "design_id": "open_choice_pair",
+      "title": "Open-choice pair decision (A / B / both / neither)",
+      "parent_task": "pair_detection",
+      "tiers": [
+        "A"
+      ],
+      "tracks": [
+        "secvuleval"
+      ],
+      "families": [
+        "llm"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "pair_side",
+      "aggregation_unit": "pair_id",
+      "canonical_task": "pair_detection",
+      "canonical_unit_id": "secvul:pair:<pair_id>:<vulnerable|fixed>",
+      "extension_block": "pair_design",
+      "primary_metric": "pair_da",
+      "key_secondary_metrics": [
+        "decisive_rate",
+        "pair_da_decisive",
+        "both_rate",
+        "neither_rate",
+        "slot_position_bias"
+      ],
+      "comparison_family": "EXT-OPEN-CHOICE",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "result_imported",
+      "notes": "One request per pair, four-way answer. Result imported: 2 models x {open_fwd, open_rev} from pair_debias, each as a separate canonical open-choice run with its own position_map. The two repeats are not independent pairs.",
+      "imported_runs": [
+        "benchmark/extensions/runs/pair_debias/deepseek/open_fwd",
+        "benchmark/extensions/runs/pair_debias/deepseek/open_rev",
+        "benchmark/extensions/runs/pair_debias/mimo/open_fwd",
+        "benchmark/extensions/runs/pair_debias/mimo/open_rev"
+      ]
+    },
+    {
+      "design_id": "evidence_verification",
+      "title": "Evidence verification (support / reject / insufficient)",
+      "parent_task": "detection",
+      "tiers": [
+        "A",
+        "B"
+      ],
+      "tracks": [
+        "secvuleval",
+        "juliet_cwe401"
+      ],
+      "families": [
+        "llm",
+        "hybrid"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "claim",
+      "aggregation_unit": "claim_source_cluster",
+      "canonical_task": "detection",
+      "canonical_unit_id": "<tier>:claim:<claim_id>",
+      "extension_block": "task_design",
+      "primary_metric": "macro_f1",
+      "key_secondary_metrics": [
+        "balanced_accuracy",
+        "decisive_coverage",
+        "abstention_rate",
+        "false_support_rate",
+        "false_reject_rate"
+      ],
+      "comparison_family": "EXT-EVIDENCE-VERIFY",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "design_ready_no_results",
+      "notes": "Claim-level support/reject task is specified but still has no run. The real evidence_verify experiment is a different post-hoc retraction task and is registered separately as evidence_retraction; do not merge the two.",
+      "imported_runs": []
+    },
+    {
+      "design_id": "fault_injected_dynamic",
+      "title": "Fault-injected dynamic leak analysis",
+      "parent_task": "leak_detection",
+      "tiers": [
+        "B"
+      ],
+      "tracks": [
+        "juliet_cwe401"
+      ],
+      "families": [
+        "dynamic"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "fault_variant",
+      "aggregation_unit": "base_case_family",
+      "canonical_task": "leak_detection",
+      "canonical_unit_id": "juliet:<case_id>:<bad|good>:fault:<fault_id>",
+      "extension_block": "fault_injection",
+      "primary_metric": "fault_balanced_accuracy",
+      "key_secondary_metrics": [
+        "fault_sensitivity",
+        "fault_specificity",
+        "fault_macro_f1",
+        "inconclusive_rate",
+        "flip_vs_baseline",
+        "coverage_strata"
+      ],
+      "comparison_family": "EXT-FAULT",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "design_ready_no_results",
+      "notes": "Fault-variant suite is specified but has no frozen fault manifest run yet. dynamic_enhanced is not this design: it is a three-mode enhanced dynamic method on the canonical 140 units, registered as enhanced_dynamic.",
+      "imported_runs": []
+    },
+    {
+      "design_id": "new_static_tool",
+      "title": "New static analyzer canonicalization",
+      "parent_task": "leak_detection",
+      "tiers": [
+        "B"
+      ],
+      "tracks": [
+        "juliet_cwe401"
+      ],
+      "families": [
+        "static"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "case_variant",
+      "aggregation_unit": "case_family",
+      "canonical_task": "leak_detection",
+      "canonical_unit_id": "juliet:<case_id>:<bad|good>",
+      "extension_block": "static_normalization",
+      "primary_metric": "macro_f1",
+      "key_secondary_metrics": [
+        "mcc",
+        "strict_accuracy",
+        "warning_counts",
+        "severity_sensitivity",
+        "agreement_with_baseline"
+      ],
+      "comparison_family": "EXT-STATIC",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "result_imported",
+      "notes": "Adapter, registry and a real CodeQL 2.27.4 run exist. Imported canonical run: codeql_cwe401_test140_20261114 (test 140; 136 ok / 4 compile_error; valid TP68/FP23/TN45/FN0; end-to-end TN47/FN2). Only the two pinned CWE-401 queries count; the registry entry was promoted from documented_not_installed to run_recorded.",
+      "imported_runs": [
+        "benchmark/extensions/runs/new_static_tool/codeql_cwe401_test140_20261114"
+      ]
+    },
+    {
+      "design_id": "evidence_retraction",
+      "title": "Post-hoc evidence verification by positive-claim retraction",
+      "parent_task": "detection",
+      "tiers": [
+        "A"
+      ],
+      "tracks": [
+        "secvuleval"
+      ],
+      "families": [
+        "hybrid"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "function",
+      "aggregation_unit": "project",
+      "canonical_task": "detection",
+      "canonical_unit_id": "secvul:det:<idx>",
+      "extension_block": "task_design",
+      "primary_metric": "macro_f1",
+      "key_secondary_metrics": [
+        "pre_macro_f1",
+        "delta_macro_f1",
+        "retraction_precision",
+        "tp_loss_rate",
+        "fp_correction_rate",
+        "strict_accuracy"
+      ],
+      "comparison_family": "EXT-EVIDENCE-VERIFY",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "result_imported_exploratory",
+      "notes": "A verifier receives sanitized source plus the first-pass positive claim (evidence lines/mechanism) and can sustain or retract it. Negatives are unchanged; invalid verifier output is fail-closed (retract). Real four arms imported: deepseek_self, deepseek_by_mimo, mimo_self, mimo_by_deepseek. Post-hoc, test seen; not an independent confirmation.",
+      "imported_runs": [
+        "benchmark/extensions/runs/evidence_verify/deepseek_self",
+        "benchmark/extensions/runs/evidence_verify/deepseek_by_mimo",
+        "benchmark/extensions/runs/evidence_verify/mimo_self",
+        "benchmark/extensions/runs/evidence_verify/mimo_by_deepseek"
+      ]
+    },
+    {
+      "design_id": "enhanced_dynamic",
+      "title": "Three-mode enhanced dynamic leak analysis",
+      "parent_task": "leak_detection",
+      "tiers": [
+        "B"
+      ],
+      "tracks": [
+        "juliet_cwe401"
+      ],
+      "families": [
+        "dynamic"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "case_variant",
+      "aggregation_unit": "case_family",
+      "canonical_task": "leak_detection",
+      "canonical_unit_id": "juliet:<case_id>:<bad|good>",
+      "extension_block": "task_design",
+      "primary_metric": "operational_macro_f1",
+      "key_secondary_metrics": [
+        "protocol_macro_f1",
+        "leak_recall",
+        "clean_abstention",
+        "coverage",
+        "mode_resolved",
+        "good_false_positive"
+      ],
+      "comparison_family": "EXT-DYNAMIC-ENHANCED",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "result_imported",
+      "notes": "Dynamic method with default + realloc-failure injection + LSan global-root control on the frozen test 140. Real run imported: 70 leak / 70 clean source verdicts. The run has no line-coverage instrumentation, so protocol-valid clean is inconclusive, not TN; the source 70/70 is reported as an operational coverage-unverified view only. Never pool with canonical 140 dynamic run without this caveat.",
+      "imported_runs": [
+        "benchmark/extensions/runs/dynamic_enhanced/test140_enhanced_v3"
+      ]
+    },
+    {
+      "design_id": "hybrid_enhanced_dynamic",
+      "title": "LLM guided by three-mode enhanced dynamic evidence",
+      "parent_task": "leak_detection",
+      "tiers": [
+        "B"
+      ],
+      "tracks": [
+        "juliet_cwe401"
+      ],
+      "families": [
+        "hybrid"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "case_variant",
+      "aggregation_unit": "case_family",
+      "canonical_task": "leak_detection",
+      "canonical_unit_id": "juliet:<case_id>:<bad|good>",
+      "extension_block": "task_design",
+      "primary_metric": "macro_f1",
+      "key_secondary_metrics": [
+        "mcc",
+        "strict_accuracy",
+        "tool_agreement",
+        "overcall_count"
+      ],
+      "comparison_family": "EXT-DYNAMIC-ENHANCED",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "result_imported",
+      "imported_runs": [
+        "benchmark/extensions/runs/hybrid_dynamic_enhanced/deepseek",
+        "benchmark/extensions/runs/hybrid_dynamic_enhanced/mimo"
+      ],
+      "notes": "LLM receives sanitized code plus enhanced dynamic evidence (three modes). Two models x 140 units, one run each; real source results imported. Compare to frozen hybrid_v2 direct/combined and the 140/140 tool only as descriptive baselines; never pool with dynamic_enhanced tool metrics."
+    }
+  ]
+}
