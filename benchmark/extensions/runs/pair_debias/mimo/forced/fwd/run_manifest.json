@@ -1,0 +1,72 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "ext_pair_debias_mimo_forced_fwd",
+  "created_at": "2026-11-13T17:22:48Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "pair_detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1",
+    "path": "splits/test_pairs_180.json",
+    "sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "unit_manifest": null,
+    "unit_count": 360,
+    "group_count": 180,
+    "label_counts": {
+      "vulnerable": 180,
+      "fixed": 180
+    }
+  },
+  "method": {
+    "method_id": "llm.mimo.pair_debiased",
+    "family": "llm",
+    "name": "MiMo-V2.6-Flash / pair-debias forced",
+    "strategy": "pair_debiased",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_completion_tokens",
+        "reasoning_effort": "none"
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-13"
+    },
+    "config_sha256": "b0d03adaebcf912a9554bfab0a288270b2528f071359fcdec0074ff9afb84603"
+  },
+  "execution": {
+    "started_at": "2026-11-13T17:22:48Z",
+    "finished_at": "2026-11-13T17:22:48Z",
+    "status": "completed",
+    "planned_units": 360,
+    "recorded_units": 360,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "f5b1bc091dbe85e1eb51aeede06a47ad4487dd808db17afa9fe1b32d8d1c8d6c",
+    "extension_manifest_sha256": "bd4c9b2a157db09d086cc031dc6626988ca3358ee6a5b75983bb4a39a7380d74"
+  },
+  "legacy_import": null,
+  "notes": [
+    "position-debiased pair run, presentation order fwd; pairing_id=pairset-mimo-forced-v1",
+    "copied from producer raw; not re-run"
+  ]
+}

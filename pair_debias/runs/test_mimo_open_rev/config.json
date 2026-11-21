@@ -1,0 +1,87 @@
+{
+  "api": {
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "input_price_usd_per_1m": 0.14,
+    "max_attempts": 3,
+    "max_tokens": 8192,
+    "max_tokens_field": "max_completion_tokens",
+    "model": "mimo-v2.6-flash",
+    "output_price_usd_per_1m": 0.28,
+    "reasoning_effort": "none",
+    "response_format": "json_object",
+    "temperature": 0.0,
+    "thinking": "disabled",
+    "timeout_seconds": 300.0,
+    "user_agent": "secvul-pair-debias/1.0"
+  },
+  "api_key_env": "OPENCODE_API_KEY",
+  "api_key_present": true,
+  "api_key_value_stored": false,
+  "base_map_path": "pair_joint/runs/test_deepseek_180/position_map.json",
+  "base_map_sha256": "82c40fd03b1d0ae6d34eb51ad780da3cd543bb5d38f45d7e44d86c7044e6e7c8",
+  "concurrency": 16,
+  "condition": "open_rev",
+  "config_fingerprint": "2a2f6344b926e26fe811a769e5dc87751c37c2d77ba8d817c7f74ac27e73346b",
+  "dataset_metadata": {
+    "schema_version": 1,
+    "source_file": "SecVulEval.xlsx",
+    "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+    "split": {
+      "manifest": "splits/split_v1.json",
+      "protocol": "research/evaluation_protocol.md#4",
+      "role": "test",
+      "seed": 42,
+      "source_dataset": "datasets/vulnerable_fixed_200_pairs.json",
+      "source_dataset_sha256": "7028b98d6f2c13b960bd08dd2e737e2ba61732b89dba03e3f173fe44c27214d5",
+      "split_id": "secvul-split-v1",
+      "task": "pairs"
+    }
+  },
+  "dataset_path": "splits/test_pairs_180.json",
+  "dataset_sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+  "dataset_units_total": 180,
+  "limit": 0,
+  "max_evidence_items": 20,
+  "network": {
+    "ipv4_dns_preference": "installed",
+    "localhost_proxy_env_removed": [
+      "HTTP_PROXY",
+      "HTTPS_PROXY",
+      "http_proxy",
+      "https_proxy"
+    ],
+    "note": "Proxy variables pointing at 127.0.0.1/localhost are unusable inside WSL and were removed for the process only; the resolver was also wrapped to prefer A records because the IPv6 path is blackholed. No proxy value is stored."
+  },
+  "open_choice": true,
+  "out_dir": "pair_debias/runs/test_mimo_open_rev",
+  "partial": false,
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+  "position_map_sha256": "fc345bd4ec0d97e6b53abfc8466f9035839f65714ed777fc25d178b583fb243f",
+  "prompt_version": "pair-debias-open-2026-11-13.1",
+  "python_version": "3.14.8",
+  "reversal": true,
+  "run_label": "pair-debias-full-mimo-open_rev",
+  "runner": "pair_debias.runner",
+  "runner_version": "1.0.0",
+  "schema_version": 1,
+  "selected_units": 180,
+  "session": {
+    "header": "x-opencode-session",
+    "is_secret": false,
+    "note": "Random per-run identifier for request routing; it is not an API key.",
+    "sha256": "079a7b09b2a1917af553af0c19699b36e082231d648b009bd4787b73cb0fe45e",
+    "source": "reused",
+    "value": "ses_297fb0292cbc0d80b7b40d09043ef63a"
+  },
+  "started_at": "2026-11-12T16:50:44.989+00:00",
+  "strategy": "pair_debias_open",
+  "task": "pair_decision_open_rev",
+  "vulnerable_slot_counts": {
+    "A": 90,
+    "B": 90
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "leak_raw": false,
+  "leak_attributed": false,
+  "leak_blocks": [],
+  "attributed_blocks": [],
+  "attributed_bytes": 0,
+  "raw_bytes": 0,
+  "leak_kinds": [],
+  "leak_summary": null,
+  "leak_summary_bytes": null,
+  "leak_summary_records": null,
+  "asan_errors": [],
+  "deadly_signal": false,
+  "injection": {
+    "realloc_calls": 1,
+    "realloc_null_calls": 0,
+    "realloc_nonnull_calls": 1,
+    "injected": true,
+    "injected_at_call": 1
+  },
+  "mode": "realloc_fail",
+  "build_variant": "wrap",
+  "applicable": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_ms": 21,
+  "failure_class": "clean",
+  "stdout_sha256": "7fb2aaeaf3eef66b52db104118c30f62899f5f0df520350a94a8fcb843c0dfdf",
+  "stdout_lines": [
+    "5"
+  ],
+  "stderr_path": "cases/d0044_good/run_realloc_fail/stderr.txt",
+  "stdout_path": "cases/d0044_good/run_realloc_fail/stdout.txt",
+  "env": {
+    "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0",
+    "DYNENH_REALLOC_FAIL_NONNULL": "1"
+  },
+  "decision": "clean"
+}

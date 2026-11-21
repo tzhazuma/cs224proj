@@ -1,0 +1,931 @@
+{
+  "schema_version": "latest-audit-2026-11-14.2",
+  "generated_at_utc": "2026-11-13T19:26:32.271459+00:00",
+  "root": "/mnt/c/Users/tzh03/Downloads/cs224proj",
+  "overall": "PASS",
+  "api_calls": 0,
+  "network": "none",
+  "publication_note": {
+    "status": "STALE",
+    "detail": "These publication summaries still cite the pre-fix 52 PASS / 4 WARN audit (A6/E6/F4/G3). This run reports PASS with 56 PASS / 0 WARN / 0 FAIL; the publication pass must refresh these lines. The audit itself does not edit README.md or docs/.",
+    "files": [
+      {
+        "path": "README.md",
+        "line": 16,
+        "text": "> **最新一轮审计：** [`audit/latest_audit.md`](audit/latest_audit.md)，**Overall `PASS_WITH_WARNINGS`：52 PASS / 0 FAIL / 4 WARN（56 checks，2026-11-14 最近重跑）**。0 FAIL 已满足发布门禁；4 个 WARN 为 A6（缓存复用披露）、E6（F1(V) 标注）、F4（schema 成本价卡）、G3（文献"
+      },
+      {
+        "path": "README.md",
+        "line": 569,
+        "text": "27. **最新一轮尚未进入主 leaderboard，但已通过只读审计。** 2026-11-13/14 的实验默认都是单次运行；除 `schema_recovery` 外都有 API/工具调用。`benchmark/results/` 的主表仍只覆盖 v2/postleakfix 工作树；最新审计（[`audit/latest_audit.md`](audit/latest_audit.md)，2026-11-14 最近重跑）为 5"
+      },
+      {
+        "path": "README.md",
+        "line": 583,
+        "text": "| [`audit/latest_audit.md`](audit/latest_audit.md) | **最新一轮（2026-11-14 最近重跑）：Overall `PASS_WITH_WARNINGS`，52 PASS / 0 FAIL / 4 WARN；发布门禁通过**。4 个 WARN 为 A6/E6/F4/G3 |"
+      },
+      {
+        "path": "docs/GITHUB_RELEASE.md",
+        "line": 13,
+        "text": "- **审计分两代。** 旧一轮 `audit/final_audit.md`（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**，只覆盖 v2/postleakfix 工作树；它**不含** 2026-11-13/14 的 `pair_debias`、`evidence_verify`、`dynamic_e"
+      },
+      {
+        "path": "docs/GITHUB_RELEASE.md",
+        "line": 43,
+        "text": "审计分两代。旧一轮（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO**，Overall **`PASS_WITH_WARNINGS`**，must-fix 为空，只覆盖 v2/postleakfix。**最新一轮：[`audit/latest_audit.md`](../audit/latest_audit.md)，Overall `PASS_WITH_WARNIN"
+      },
+      {
+        "path": "docs/GITHUB_RELEASE.md",
+        "line": 73,
+        "text": "当前 `audit/latest_audit.md` 的 `Overall` 是 **PASS_WITH_WARNINGS**、FAIL=0；A6/E6/F4/G3 是 WARN，不阻断发布但必须保留说明。发布前仍应重跑审计确认工作树未变。新目录的发布范围至少包括：`pair_debias/`、`evidence_verify/`、`dynamic_enhanced/`、`hybrid_dynamic_enhanced/`、`stati"
+      },
+      {
+        "path": "docs/GITHUB_RELEASE.md",
+        "line": 413,
+        "text": "- 审计 FAIL 未清零（最新一轮 `audit/latest_audit.md` 为 0 FAIL；A6/E6/F4/G3 是 WARN，需保留说明）。"
+      },
+      {
+        "path": "docs/GITHUB_RELEASE.md",
+        "line": 627,
+        "text": "- [x] 最新一轮审计 `audit/latest_audit.md` 已落盘，为 **PASS_WITH_WARNINGS**（52 PASS / 0 FAIL / 4 WARN，2026-11-14 最近重跑）；覆盖六个新结果组（pair_debias、evidence_verify、dynamic_enhanced、hybrid_dynamic_enhanced、static_extended、schema_recovery），"
+      },
+      {
+        "path": "docs/REPRODUCIBILITY.md",
+        "line": 219,
+        "text": "`audit/` 目前有两代只读审计。旧一轮 `audit/final_audit.md`（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`，must-fix 为空**，覆盖 v2/postleakfix 工作树；它**不含** 2026-11-13/14 的 `pair_debias`、`evidence_v"
+      },
+      {
+        "path": "docs/REPRODUCIBILITY.md",
+        "line": 632,
+        "text": "- [x] **最新一轮**审计已落盘（`audit/latest_audit.md`），为 **PASS_WITH_WARNINGS（52 PASS / 0 FAIL / 4 WARN，2026-11-14 最近重跑）**；覆盖六个新结果组：`pair_debias`、`evidence_verify`、`dynamic_enhanced`、`hybrid_dynamic_enhanced`、`static_extended`、`an"
+      },
+      {
+        "path": "docs/REPRODUCIBILITY.md",
+        "line": 705,
+        "text": "| 最新审计 | `audit/latest_audit.md`、`audit/latest_audit.json`（2026-11-14 最近重跑；`PASS_WITH_WARNINGS`：52 PASS / 0 FAIL / 4 WARN） |"
+      }
+    ]
+  },
+  "writes": [
+    "audit/latest_audit.json",
+    "audit/latest_audit.md"
+  ],
+  "scope": {
+    "groups": [
+      "pair_debias (6 runs, 1,080 records)",
+      "evidence_verify (4 arms)",
+      "dynamic_enhanced (test 140)",
+      "hybrid_dynamic_enhanced (280 requests)",
+      "static_extended CodeQL (200 units / test 140)",
+      "analysis/schema_recovery (102 invalid repair records)"
+    ],
+    "literature": [
+      "research/latest_llm_methods_2026.md",
+      "research/latest_evaluation_repair_2026.md",
+      "research/latest_memory_tools_2026.md",
+      "docs/LITERATURE.md"
+    ],
+    "out_of_scope": [
+      "benchmark/extensions aggregation (unification pass)",
+      "report/ and README publication edits",
+      "git/gh operations"
+    ],
+    "method": "Read stored artifacts only; recompute prompts, joins, hashes, costs and metrics from raw records where possible."
+  },
+  "counts": {
+    "total": 56,
+    "pass": 56,
+    "warn": 0,
+    "fail": 0,
+    "info": 0
+  },
+  "must_fix": [],
+  "warnings": [],
+  "checks": [
+    {
+      "id": "A1",
+      "area": "pair_debias",
+      "title": "Six complete runs, 1,080 records",
+      "status": "PASS",
+      "detail": "Six runs x 180 = 1,080 records, all ok, no partial run.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "A2",
+      "area": "pair_debias",
+      "title": "Forward/reverse maps exact, 90/90",
+      "status": "PASS",
+      "detail": "Forward maps equal the pair_joint base; reverse maps are exact complements; 90/90.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "A3",
+      "area": "pair_debias",
+      "title": "DA reproduces per condition",
+      "status": "PASS",
+      "detail": "DA reproduces per condition, analysis JSON, summary and report.",
+      "evidence": {
+        "values": {
+          "deepseek/forced_fwd": {
+            "correct": 138,
+            "abstain": 0
+          },
+          "deepseek/forced_rev": {
+            "correct": 140,
+            "abstain": 0
+          },
+          "deepseek/open_fwd": {
+            "correct": 119,
+            "abstain": 38
+          },
+          "deepseek/open_rev": {
+            "correct": 115,
+            "abstain": 31
+          },
+          "mimo/forced_fwd": {
+            "correct": 156,
+            "abstain": 0
+          },
+          "mimo/forced_rev": {
+            "correct": 147,
+            "abstain": 0
+          },
+          "mimo/open_fwd": {
+            "correct": 119,
+            "abstain": 39
+          },
+          "mimo/open_rev": {
+            "correct": 118,
+            "abstain": 40
+          }
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A4",
+      "area": "pair_debias",
+      "title": "Exchange consistency reproduces",
+      "status": "PASS",
+      "detail": "Exchange-consistency DA, semantic agreement, same-letter rate and the 74.44% / 72.22% length baselines all reproduce.",
+      "evidence": {
+        "values": {
+          "deepseek/forced": {
+            "both": 111,
+            "agree": 124,
+            "same": 56,
+            "same_rate": 0.3111111111111111
+          },
+          "deepseek/open": {
+            "both": 100,
+            "agree": 131,
+            "same": 19,
+            "same_rate": 0.1450381679389313
+          },
+          "mimo/forced": {
+            "both": 134,
+            "agree": 145,
+            "same": 35,
+            "same_rate": 0.19444444444444445
+          },
+          "mimo/open": {
+            "both": 105,
+            "agree": 143,
+            "same": 11,
+            "same_rate": 0.0859375
+          }
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A5",
+      "area": "pair_debias",
+      "title": "Prompts are metadata/slot-free",
+      "status": "PASS",
+      "detail": "All 1,080 prompts are metadata/slot-free outside code; only the documented CVE-2017-17969 comment remains in one pair's body.",
+      "evidence": {
+        "scanned": 1080,
+        "body_cve": [
+          "CVE-2017-17969"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A6",
+      "area": "pair_debias",
+      "title": "Cache/checkpoint and resume are consistent",
+      "status": "PASS",
+      "detail": "1,080 stored records = 1,029 newly issued requests + 51 cached responses from test_mimo_open_rev; cache keys equal request fingerprints and README/report both state the split (129 newly issued requests for the resumed run).",
+      "evidence": {
+        "per_run": {
+          "test_deepseek_forced_rev": {
+            "records": 180,
+            "hits": 0
+          },
+          "test_deepseek_open_fwd": {
+            "records": 180,
+            "hits": 0
+          },
+          "test_deepseek_open_rev": {
+            "records": 180,
+            "hits": 0
+          },
+          "test_mimo_forced_rev": {
+            "records": 180,
+            "hits": 0
+          },
+          "test_mimo_open_fwd": {
+            "records": 180,
+            "hits": 0
+          },
+          "test_mimo_open_rev": {
+            "records": 180,
+            "hits": 51
+          }
+        },
+        "hits": 51,
+        "new_calls": 1029
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A7",
+      "area": "pair_debias",
+      "title": "Configured cost recomputes",
+      "status": "PASS",
+      "detail": "New $0.676605; reused $0.225396; all-in $0.902001.",
+      "evidence": {
+        "per_run": {
+          "test_deepseek_forced_rev": 0.15567246,
+          "test_deepseek_open_fwd": 0.152318268,
+          "test_deepseek_open_rev": 0.15228366,
+          "test_mimo_forced_rev": 0.070744576,
+          "test_mimo_open_fwd": 0.07385205,
+          "test_mimo_open_rev": 0.071733805
+        },
+        "reused": 0.225396364
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A8",
+      "area": "pair_debias",
+      "title": "Manifests, hashes and credentials are clean",
+      "status": "PASS",
+      "detail": "Six manifests complete/unpartial; dataset hash frozen; keys never stored; Authorization omitted.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "B1",
+      "area": "evidence",
+      "title": "Four arms complete at 60/60/58/58",
+      "status": "PASS",
+      "detail": "Arms complete at 60/60/58/58 planned records; verifier-invalid records are 0/2/1/0 and are handled fail-closed.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "B2",
+      "area": "evidence",
+      "title": "First-pass metrics reproduce",
+      "status": "PASS",
+      "detail": "First-pass metrics reproduce (DeepSeek 159 valid + 1 invalid, MiMo 158 + 2).",
+      "evidence": {
+        "values": {
+          "deepseek": {
+            "confusion": {
+              "tp": 49,
+              "fp": 11,
+              "tn": 21,
+              "fn": 78
+            },
+            "invalid": 1,
+            "strict": 70
+          },
+          "mimo": {
+            "confusion": {
+              "tp": 47,
+              "fp": 11,
+              "tn": 20,
+              "fn": 80
+            },
+            "invalid": 2,
+            "strict": 67
+          }
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B3",
+      "area": "evidence",
+      "title": "Fail-closed post metrics reproduce",
+      "status": "PASS",
+      "detail": "Fail-closed post metrics and retraction precision reproduce; negatives and pre-invalid rows are untouched.",
+      "evidence": {
+        "values": {
+          "deepseek_self": {
+            "confusion": {
+              "tp": 6,
+              "fp": 0,
+              "tn": 32,
+              "fn": 121
+            },
+            "invalid": 1,
+            "retracted": 54,
+            "tp_retracted": 43,
+            "fp_retracted": 11
+          },
+          "deepseek_cross": {
+            "confusion": {
+              "tp": 28,
+              "fp": 4,
+              "tn": 28,
+              "fn": 99
+            },
+            "invalid": 1,
+            "retracted": 26,
+            "tp_retracted": 20,
+            "fp_retracted": 6
+          },
+          "mimo_self": {
+            "confusion": {
+              "tp": 28,
+              "fp": 8,
+              "tn": 23,
+              "fn": 99
+            },
+            "invalid": 2,
+            "retracted": 21,
+            "tp_retracted": 18,
+            "fp_retracted": 3
+          },
+          "mimo_cross": {
+            "confusion": {
+              "tp": 7,
+              "fp": 0,
+              "tn": 31,
+              "fn": 120
+            },
+            "invalid": 2,
+            "retracted": 51,
+            "tp_retracted": 40,
+            "fp_retracted": 11
+          }
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B4",
+      "area": "evidence",
+      "title": "Exact McNemar reproduces",
+      "status": "PASS",
+      "detail": "Exact McNemar pre-vs-post reproduces for all four arms.",
+      "evidence": {
+        "values": {
+          "deepseek_self": {
+            "pre": 70,
+            "post": 38,
+            "p": 1.4013057456185862e-05
+          },
+          "deepseek_cross": {
+            "pre": 70,
+            "post": 56,
+            "p": 0.012540951371192932
+          },
+          "mimo_self": {
+            "pre": 67,
+            "post": 51,
+            "p": 0.0008554458618164062
+          },
+          "mimo_cross": {
+            "pre": 67,
+            "post": 38,
+            "p": 5.703811637403078e-05
+          }
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B5",
+      "area": "evidence",
+      "title": "Prompts rebuild and stay label-free",
+      "status": "PASS",
+      "detail": "All 236 verifier prompts rebuild byte-identically; wrapper has no label/project/path field.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "B6",
+      "area": "evidence",
+      "title": "Cache has no hits or cross-arm reuse",
+      "status": "PASS",
+      "detail": "All 236 records have their own cache entry, zero hits and no cross-arm key reuse.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "B7",
+      "area": "evidence",
+      "title": "Verifier cost recomputes",
+      "status": "PASS",
+      "detail": "Verifier cost totals $0.154333.",
+      "evidence": {
+        "per_arm": {
+          "deepseek_self": 0.0645801,
+          "deepseek_cross": 0.02269251,
+          "mimo_self": 0.015100456,
+          "mimo_cross": 0.05196042
+        },
+        "total": 0.154333486
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B8",
+      "area": "evidence",
+      "title": "Post-hoc status is disclosed",
+      "status": "PASS",
+      "detail": "Exploratory/post-hoc status and fail-closed/fail-open policies are explicit.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "C1",
+      "area": "dynamic",
+      "title": "Test140 units and labels match the freeze",
+      "status": "PASS",
+      "detail": "140 frozen test units, 70/70, exactly matching juliet/subset_units.jsonl.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "C2",
+      "area": "dynamic",
+      "title": "Confusion is 70/0/70/0",
+      "status": "PASS",
+      "detail": "70 TP / 0 FP / 70 TN / 0 FN; coverage 1.000 and no undecided unit.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "C3",
+      "area": "dynamic",
+      "title": "Per-mode evidence and 12 new units are exact",
+      "status": "PASS",
+      "detail": "Mode counts 58/7/63; the 12 newly observable units are exactly 7 realloc-fail + 5 no-global and attribute to their own sources.",
+      "evidence": {
+        "modes": {
+          "default": {
+            "applicable": 140,
+            "bad_leak": 58,
+            "good_leak": 0
+          },
+          "realloc_fail": {
+            "applicable": 14,
+            "bad_leak": 7,
+            "good_leak": 0
+          },
+          "nogobal": {
+            "applicable": 140,
+            "bad_leak": 63,
+            "good_leak": 0
+          }
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "C4",
+      "area": "dynamic",
+      "title": "No failures or undecided units",
+      "status": "PASS",
+      "detail": "No compile failure, timeout or undecided unit; verify.json and the build/run checks are clean (the failure map only contains leak/clean decisions).",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "C5",
+      "area": "dynamic",
+      "title": "Default mode reproduces old ASan",
+      "status": "PASS",
+      "detail": "Default mode agrees with the frozen old ASan run 140/140; old observable bad units remain 58/70.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "C6",
+      "area": "dynamic",
+      "title": "No API/model usage",
+      "status": "PASS",
+      "detail": "Local tool run: no network/API client import and no model field in the results.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "C7",
+      "area": "dynamic",
+      "title": "README ceiling claims match rows",
+      "status": "PASS",
+      "detail": "README ceiling 70/0/70/0, 12/12 new evidence and 0/70 good FPs match the rows.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "D1",
+      "area": "hybrid",
+      "title": "Two complete 140-unit runs",
+      "status": "PASS",
+      "detail": "Two complete 140-unit runs, all ok/valid, zero API errors (280 requests).",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "D2",
+      "area": "hybrid",
+      "title": "HDE accuracy reproduces",
+      "status": "PASS",
+      "detail": "HDE confusion and accuracy reproduce (DeepSeek 137/140, MiMo 136/140).",
+      "evidence": {
+        "values": {
+          "deepseek": {
+            "confusion": [
+              70,
+              3,
+              67,
+              0
+            ],
+            "accuracy": 0.9785714285714285
+          },
+          "mimo": {
+            "confusion": [
+              70,
+              4,
+              66,
+              0
+            ],
+            "accuracy": 0.9714285714285714
+          }
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "D3",
+      "area": "hybrid",
+      "title": "Paired McNemar contrasts reproduce",
+      "status": "PASS",
+      "detail": "Paired counts, exact p-values and deltas reproduce for all four baselines.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "D4",
+      "area": "hybrid",
+      "title": "Prompts rebuild and stay sanitized",
+      "status": "PASS",
+      "detail": "All 280 guided prompts rebuild byte-identically (140 unique); direct equals hybrid v2; evidence blocks are label/path/CWE-free.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "D5",
+      "area": "hybrid",
+      "title": "Evidence matches the dynamic modes",
+      "status": "PASS",
+      "detail": "Enhanced evidence matches the dynamic mode decisions, has 13 distinct texts and covers the 12 new units.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "D6",
+      "area": "hybrid",
+      "title": "280-request cost and smoke split",
+      "status": "PASS",
+      "detail": "280 requests cost $0.023561; two smoke calls add $0.000087716 (all-in $0.023648).",
+      "evidence": {
+        "per_model": {
+          "deepseek": 0.011165106,
+          "mimo": 0.012395438
+        },
+        "total": 0.023560544
+      },
+      "must_fix": false
+    },
+    {
+      "id": "D7",
+      "area": "hybrid",
+      "title": "Frozen v2 baselines are read-only",
+      "status": "PASS",
+      "detail": "Frozen v2 baselines predate the new run; the v2 input pack hash still matches 1ec51f57...",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "D8",
+      "area": "hybrid",
+      "title": "Copying caveat and flips reproduce",
+      "status": "PASS",
+      "detail": "Tool agreement and flips vs v2 direct reproduce; the report refuses a semantic-reasoning claim.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "E1",
+      "area": "codeql",
+      "title": "200 units/splits/labels match the freeze",
+      "status": "PASS",
+      "detail": "200 unique frozen units (100/100; test 140 / dev 60); input hash matches the Juliet freeze.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "E2",
+      "area": "codeql",
+      "title": "194 ok / 6 compile_error, all documented",
+      "status": "PASS",
+      "detail": "194 ok / 6 compile_error; all six are _82 (4 test, 2 dev); no timeout or tool error.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "E3",
+      "area": "codeql",
+      "title": "Test140 confusion and metrics reproduce",
+      "status": "PASS",
+      "detail": "Test140 end-to-end 68/23/47/2, evaluable 68/23/45/0; F1(V) 0.8447, macro-F1 0.8173, MCC 0.6739.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "E4",
+      "area": "codeql",
+      "title": "Per-query counts and 132 diagnostics",
+      "status": "PASS",
+      "detail": "Per-query counts reproduce; 132 raw diagnostics, all in target files.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "E5",
+      "area": "codeql",
+      "title": "Output hashes and raw artifacts intact",
+      "status": "PASS",
+      "detail": "Manifest output hashes match; 194 SARIF files and 6 compile-error stderr logs are present.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "E6",
+      "area": "codeql",
+      "title": "Clang/Cppcheck comparison; F1 caveat",
+      "status": "PASS",
+      "detail": "Baselines and coverage gains reproduce (15 Clang-missed bad units recovered, no Clang positive missed, all 23 FP are C++). static_extended/README.md now labels both positive-class F1(V) (0.8447 vs Clang 0.8618) and Macro-F1 (0.8173 vs 0.8768), names Macro-F1 as the project primary endpoint and states the two are not interchangeable.",
+      "evidence": {
+        "added_bad": 15,
+        "clang_missed": 0,
+        "fp_languages": [
+          "cpp"
+        ],
+        "f1_v": 0.8447,
+        "macro_f1": 0.8173
+      },
+      "must_fix": false
+    },
+    {
+      "id": "E7",
+      "area": "codeql",
+      "title": "No API use and no Juliet modification",
+      "status": "PASS",
+      "detail": "Local CodeQL run; the Juliet subset hash is unchanged and no model/API field is present.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "E8",
+      "area": "codeql",
+      "title": "Limitations are disclosed",
+      "status": "PASS",
+      "detail": "README documents single-TU databases, compiler differences, compile errors and tools not run.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "F1",
+      "area": "schema",
+      "title": "12 old runs are hash-identical",
+      "status": "PASS",
+      "detail": "All 12 legacy result/config/metrics hashes match; 36 hashes verified, no old run rewritten.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "F2",
+      "area": "schema",
+      "title": "102 invalid split 93 + 9",
+      "status": "PASS",
+      "detail": "102 invalid split exactly into 93 missing-explanation (stop, fixed_function present) and 9 truncations (length, unparseable).",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "F3",
+      "area": "schema",
+      "title": "Strict/code-only/usable totals reproduce",
+      "status": "PASS",
+      "detail": "Official 822/924 (88.96%), code-only 915/924 (99.03%), usable 552→619 (+7.25 pp); salvage 67/69.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "F4",
+      "area": "schema",
+      "title": "Invalid costs recompute; price basis flagged",
+      "status": "PASS",
+      "detail": "Both schema cost bases are present and reconcile exactly with analysis/cost_normalization.json: configured-peak cache-aware $2.521790096 (4,968 records) = legacy_test.configured_cache_aware_usd; off-peak list $1.572472286 = legacy_test.normalized_list_usd, delta $0 on both. The 102 invalid records also recompute at $0.218280 (peak) and $0.109140 (off-peak); README states the two bases and the 10.32% / 9.61% invalid shares.",
+      "evidence": {
+        "configured_peak_usd": 2.521790096,
+        "offpeak_list_usd": 1.572472286,
+        "invalid_peak_usd": 0.218279592,
+        "invalid_offpeak_usd": 0.109139796,
+        "records": 4968
+      },
+      "must_fix": false
+    },
+    {
+      "id": "F5",
+      "area": "schema",
+      "title": "MiMo 61/61 field drift reproduces",
+      "status": "PASS",
+      "detail": "61/61 drift remappable; 5 true / 56 false; 28/61 label agreement; 60+1 alias split with one both-key record.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "F6",
+      "area": "schema",
+      "title": "Zero API/network calls",
+      "status": "PASS",
+      "detail": "Read-only replay: no network import and api_calls=0 in scope and sources.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "F7",
+      "area": "schema",
+      "title": "L0/non-accuracy caveats present",
+      "status": "PASS",
+      "detail": "README states L0 (no compile/test/PoC), separates official/code-only and treats truncation as fatal.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "F8",
+      "area": "schema",
+      "title": "README rates match the JSON",
+      "status": "PASS",
+      "detail": "All headline schema rates/denominators match the JSON and 924/102/93/9 counts.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "G1",
+      "area": "literature",
+      "title": "Latest literature files and index exist",
+      "status": "PASS",
+      "detail": "Three research/latest_*.md files and docs/LITERATURE.md exist and are non-trivial.",
+      "evidence": {
+        "sizes": {
+          "llm": 119749,
+          "eval": 106628,
+          "memory": 70945,
+          "index": 10117
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "G2",
+      "area": "literature",
+      "title": "Reference sections and schema citations resolve",
+      "status": "PASS",
+      "detail": "Reference sections exist and every schema_recovery letter-numbered citation resolves in latest_llm_methods.",
+      "evidence": {
+        "ids": [
+          "A16",
+          "A18",
+          "B14",
+          "B15",
+          "C1",
+          "C2",
+          "C7"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "G3",
+      "area": "literature",
+      "title": "Snapshots are stale on the new experiments",
+      "status": "PASS",
+      "detail": "Both research/latest_*.md files carry the 2026-11-14 dated status note. It scopes the original 2026-11-13 text as writing-time, lists schema recovery, pair_debias, evidence_verify, dynamic_enhanced, hybrid_dynamic_enhanced and CodeQL as completed, and says the historical body is intentionally unchanged (so the old '未实现' lines are explicitly historical, not current claims).",
+      "evidence": {
+        "documents": {
+          "latest_llm_methods_2026.md": {
+            "dated_note": true,
+            "completed_items": [
+              "schema recovery",
+              "pair_debias",
+              "evidence_verify",
+              "dynamic_enhanced",
+              "hybrid_dynamic_enhanced",
+              "CodeQL"
+            ]
+          },
+          "latest_evaluation_repair_2026.md": {
+            "dated_note": true,
+            "completed_items": [
+              "schema recovery",
+              "pair_debias",
+              "evidence_verify",
+              "dynamic_enhanced",
+              "hybrid_dynamic_enhanced",
+              "CodeQL"
+            ]
+          }
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "G4",
+      "area": "literature",
+      "title": "Index maps the new groups",
+      "status": "PASS",
+      "detail": "docs/LITERATURE.md maps all six new result groups to their literature basis and limitations.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "H1",
+      "area": "preserve",
+      "title": "Legacy results predate all new experiments",
+      "status": "PASS",
+      "detail": "Newest legacy artifact audit/final_audit.md at 2026-11-11T21:58:24.203676+00:00 predates the first new run; final_audit.* untouched.",
+      "evidence": {
+        "newest": "audit/final_audit.md",
+        "mtime": "2026-11-11T21:58:24.203676+00:00"
+      },
+      "must_fix": false
+    },
+    {
+      "id": "H2",
+      "area": "preserve",
+      "title": "Frozen inputs and legacy hashes unchanged",
+      "status": "PASS",
+      "detail": "Frozen Juliet, both splits, the hybrid v2 pack and all 12 legacy result files still match their recorded hashes.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "H3",
+      "area": "preserve",
+      "title": "New artifacts contain no credentials",
+      "status": "PASS",
+      "detail": "Scanned 5404 text artifacts in the six new directories; no credential-like string found.",
+      "evidence": {
+        "scanned": 5404
+      },
+      "must_fix": false
+    },
+    {
+      "id": "H4",
+      "area": "preserve",
+      "title": "Only the two latest_audit files are written",
+      "status": "PASS",
+      "detail": "Only audit/latest_audit.json and audit/latest_audit.md are written; final_audit.* is untouched.",
+      "evidence": {},
+      "must_fix": false
+    },
+    {
+      "id": "H5",
+      "area": "preserve",
+      "title": "Audit itself is offline",
+      "status": "PASS",
+      "detail": "The audit script is offline; it only reads stored artifacts.",
+      "evidence": {},
+      "must_fix": false
+    }
+  ],
+  "preserved_old_audit": {
+    "final_audit.json": "2026-11-11T21:58:05.183187+00:00",
+    "final_audit.md": "2026-11-11T21:58:24.203676+00:00"
+  }
+}

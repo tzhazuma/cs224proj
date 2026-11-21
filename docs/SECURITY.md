@@ -32,7 +32,7 @@
 3. 设置 `SECVUL_BASE_URL`；
 4. 不打印 key，不写文件，不把 key 放进 `sys.argv`。
 
-`juliet_llm/launch.py` 与 `evidence_prompt/run_with_kimi_config.py` 复用同一路径。`hybrid/run_hybrid.py`、`juliet_repair/scripts/run_repair.py`、`pair_joint/runner.py` 各自用 Python `tomllib` 读取同一 TOML（代码路径不同，但都只把 key 放入进程内存/环境变量，不落盘；产物记录 `api_key_value_stored: false`）。它们不读取 `auth.json`、`opencode.json`、keychain 或其他本地凭证。
+`juliet_llm/launch.py` 与 `evidence_prompt/run_with_kimi_config.py` 复用同一路径。`hybrid/run_hybrid.py`、`juliet_repair/scripts/run_repair.py`、`pair_joint/runner.py`、`pair_debias/runner.py`、`evidence_verify/run_with_kimi_config.py`、`hybrid_dynamic_enhanced/hde/api.py` 各自用 Python `tomllib` 读取同一 TOML（代码路径不同，但都只把 key 放入进程内存/环境变量，不落盘；产物记录 `api_key_value_stored: false`）。它们不读取 `auth.json`、`opencode.json`、keychain 或其他本地凭证。
 
 ### 2.2 运行产物
 
@@ -46,6 +46,8 @@
 | `results.jsonl` | 否 | runner / `juliet_llm` 的响应体经 `sk-...` / `Bearer ...` 模式脱敏；所有模块的 manifest 不记录 `Authorization` |
 | `run.log` | 否 | 只有 URL/状态码/时间；不含 key |
 | `config.json` | 否 | 模型、端点、价格、参数；不含 key |
+| `pair_debias/runs/*`、`evidence_verify/runs/*`、`hybrid_dynamic_enhanced/runs/*` | 否 | 2026-11-13/14 的新 run；manifest 记录 `api_key_value_stored: false`，`requests.jsonl` 不含 `Authorization` 头 |
+| `dynamic_enhanced/runs/*`、`static_extended/runs/*` | 否 | 本地工具产物；不读取、不保存任何 API key |
 
 ### 2.3 环境变量
 
@@ -76,6 +78,7 @@ echo 'sk-...' > creds/opencode.json                    # 会进入文件/备份
 | `juliet/cache/`、`juliet/raw/`、`juliet/build/` | 146 MB 归档、58 MB 上游源码、27 MB 可执行文件；可由 `fetch_juliet.py` 恢复 |
 | `traditional/dynamic/runs/*/cases/`、`*/support/` | 326 MB 逐 case 二进制/日志；`results.jsonl` 已保留 |
 | `**/runs/*/cache/` | 请求缓存，和 `requests.jsonl`/`results.jsonl` 重复 |
+| `dynamic_enhanced/runs/*/build/` | ASan/注入构建产物；逐单元 JSON/stderr 证据保留 |
 | `juliet_repair/build/baselines/`、`sanitized/`、`support/`、`selftest/` | 编译产物；`baselines_summary.json` 与 `results.jsonl` 保留 |
 | `.env`、`creds/`、`credentials/`、`secrets/`、`*.pem`、`*.key`、`*.p12`、`*.pfx`、`auth.json`、`opencode.json`、`*_api_key.json`、`*.token` | 凭证/认证材料 |
 | `repair_eval/packages/*/private/` | 盲评 key（salt + 映射） |
@@ -87,7 +90,9 @@ echo 'sk-...' > creds/opencode.json                    # 会进入文件/备份
 - `traditional/static` / `traditional/dynamic` 的 `results.jsonl`、`predictions.jsonl`、`metrics.json/md`、`manifest.json`、`cases.jsonl`；
 - `runner/runs/*/results.jsonl`、`requests.jsonl`、`metrics.json`、`manifest.json`；
 - `benchmark/results/**/*.json`、`*.md`、`*.jsonl`；
-- `report/report_extended_zh.pdf`、`report_extended_zh.tex`（27 页），`report/report_zh.pdf`、`report_zh.tex`（17 页），`results_summary.md`；
+- `report/report_extended_zh.pdf`、`report_extended_zh.tex`（27 页），`report/report_zh.pdf`、`report_zh.tex`（17 页），`report/report_latest_zh.pdf`（35 页，2026-11-14 最新）、`report_latest_zh.tex` 与 `report/references_latest.bib`，`results_summary.md`；
+- `pair_debias/results/*`、`evidence_verify/analysis/*`、`dynamic_enhanced/runs/*/metrics.json`、`hybrid_dynamic_enhanced/results/*`、`static_extended/runs/*/metrics.json`、`analysis/schema_recovery/*`、`benchmark/extensions/runs/*`；
+- `report/latest_results_summary.md`、`benchmark/results/EXTENSIONS.md`、`benchmark/results/extension_summary.json`；
 - `juliet_llm/build/`（prompt 输入与审计，不是编译产物）。
 
 ---
@@ -131,7 +136,7 @@ git ls-files -z | xargs -0 -I{} sh -c \
   's=$(stat -c%s "{}"); [ "$s" -gt 52428800 ] && printf "%s\t%s\n" "$s" "{}"'
 ```
 
-本机扫描（按 `.gitignore` 估算，2026-11-12，v2 后）：**约 248.1 MiB / 7,969 个文件**；最大单文件为 `traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`（40.55 MB），**没有 >100 MB 文件**。这是估算，发布前仍以 `git ls-files` 为准。注意：本地 `juliet/cache/juliet-c-cplusplus-v1.3.zip` 为 146 MB，属于**未跟踪的下载缓存**；它出现在 `find` 结果里是正常的，只要不出现在 `git ls-files` 即可。
+本机扫描（按 `.gitignore` 估算，2026-11-14）：**约 333.3 MiB / 10,836 个文件**；最大单文件为 `traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`（40.55 MB），**没有 >100 MB 文件**。这是估算，发布前仍以 `git ls-files` 为准。注意：本地 `juliet/cache/juliet-c-cplusplus-v1.3.zip` 为 146 MB，属于**未跟踪的下载缓存**；它出现在 `find` 结果里是正常的，只要不出现在 `git ls-files` 即可。
 
 ### 4.3 Secret scan
 
@@ -157,7 +162,8 @@ trufflehog filesystem . --only-verified
 ```bash
 grep -RIn --include='manifest.json' --include='config.json' \
   -E 'authorization|bearer|api_key_value_stored|authorization_header_stored' \
-  runner/runs juliet_llm/runs hybrid/runs pair_joint/runs juliet_repair/runs evidence_prompt/runs | head -50
+  runner/runs juliet_llm/runs hybrid/runs pair_joint/runs juliet_repair/runs evidence_prompt/runs \
+  pair_debias/runs evidence_verify/runs hybrid_dynamic_enhanced/runs | head -50
 ```
 
 预期：只有 `api_key_value_stored: false`、`authorization_header_stored: false`、`api_key_present: true/false`，没有值。
@@ -178,9 +184,12 @@ pdffonts report/report_extended_zh.pdf | head
 
 pdfinfo report/report_zh.pdf | head -8
 pdffonts report/report_zh.pdf | head
+
+pdfinfo report/report_latest_zh.pdf | head -8
+pdffonts report/report_latest_zh.pdf | head
 ```
 
-预期：扩展版 27 页、基础版 17 页；字体嵌入；无缺字。报告正文不应包含 key、账号、内部 URL 凭证。
+预期：扩展版 27 页、基础版 17 页、最新版 35 页；字体嵌入；无缺字。报告正文不应包含 key、账号、内部 URL 凭证。
 
 ### 4.7 推送前最后一步
 
@@ -204,7 +213,7 @@ git diff --cached -- . ':!*.jsonl' ':!*.json' | head -200
 | 模型输出含上游代码/CVE | 低 | 研究产物；公开前核对上游许可；不要把模型输出当作事实 |
 | `pair_joint` 1/180 注释含 CVE | 低 | 两侧相同注释，不指示漏洞侧；已在报告中记录，未改写源码 |
 | 盲评 key 未公开 | 低 | 公开仓库无法复现解盲；汇总 `summary.json` 仍保留 |
-| 大型结果文件 | 中 | 当前最大 40.55 MB；若新增结果 >100 MB，先压缩/拆分或使用 Git LFS（需显式配置） |
+| 大型结果文件 | 中 | 当前最大 40.55 MB；2026-11-14 新增目录约 83 MB，总量约 333.3 MiB；若新增结果 >100 MB，先压缩/拆分或使用 Git LFS（需显式配置） |
 | 私有仓库协作者 | 中 | 只邀请必要人员；定期审查 access；泄露后轮换 key |
 | 模型端点/价格变化 | 低 | 记录 run 日期与价格快照；不要把历史价格当长期报价 |
 | 提示注入 | 低 | 模型不执行代码；但输出可能被代码注释影响，评测结果应按“模型 + 数据”解读 |
@@ -233,7 +242,7 @@ git diff --cached -- . ':!*.jsonl' ':!*.json' | head -200
 
 ---
 
-## 8. 已执行的验证（2026-11-12）
+## 8. 已执行的验证（2026-11-14 更新）
 
 | 检查 | 结果 |
 | --- | --- |
@@ -241,9 +250,9 @@ git diff --cached -- . ':!*.jsonl' ':!*.json' | head -200
 | 凭据形状文件名扫描 | 仅 `repair_eval/packages/repair_blind_v1/private/blind_key.json`（盲评 key，已加入 `.gitignore`） |
 | `juliet_llm.selfcheck` | `no credential-shaped artefacts` PASS |
 | manifest 字段抽查 | `api_key_value_stored=false`、`authorization_header_stored=false` |
-| 按 `.gitignore` 估算的受控体积 | 约 248.1 MiB / 7,969 文件（v2 后估算）；最大 40.55 MB |
+| 按 `.gitignore` 估算的受控体积 | 约 333.3 MiB / 10,836 文件（2026-11-14 估算）；最大 40.55 MB |
 | >100 MB 文件 | 0 |
 | `juliet/scripts/verify.py` | PASS（2,853 文件） |
-| 动态/静态/盲评自检 | 见 `docs/REPRODUCIBILITY.md` §4.1 |
+| 动态/静态/盲评自检 | 见 `docs/REPRODUCIBILITY.md` §4.1；`dynamic_enhanced` 6/6、`pair_debias` 2099 assertions、`schema_recovery` OK，`evidence_verify` 的 `valid_indices` 仍待修复 |
 
 这些检查是**发布前的最低门槛**，不构成对历史提交的保证。若仓库已有多条历史，仍需对完整历史做一次扫描。

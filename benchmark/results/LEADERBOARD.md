@@ -376,3 +376,11 @@ Policy: historical only; never enters a main table, comparison or pooled statist
 | `tierb_juliet_cwe401_hybrid_mimo_shuffled_20261112_1e33dcfa` | `leakage_sensitive_v1` | MiMo-V2.6-Flash / shuffled placebo evidence (Juliet) | 140 | leakage-sensitive v1 inputs: six good units still contained the Juliet label phrase |
 | `tierb_juliet_cwe401_hybrid_mimo_static_20261112_45f88228` | `leakage_sensitive_v1` | MiMo-V2.6-Flash / static evidence (Juliet) | 140 | leakage-sensitive v1 inputs: six good units still contained the Juliet label phrase |
 | `tierb_juliet_cwe401_llm_mimo_xiaomi_20261112_b41c1d0e` | `pre_postleakfix_harness` | MiMo-V2.6-Flash / Juliet direct (Xiaomi official fallback) | 140 | superseded harness: prompting.py changed before the formal postleakfix run |
+
+## Extension layer (separate designs; not pooled)
+
+The extension designs (position/open-choice pair, evidence retraction, enhanced dynamic,
+hybrid enhanced dynamic, CodeQL static tool) and the schema-recovery audit are summarized in
+[`EXTENSIONS.md`](EXTENSIONS.md) with machine-readable [`extension_summary.json`](extension_summary.json).
+They use separate denominators and are **not** pooled with any Tier A/B table above; no number in this
+file is imported from the extension layer.

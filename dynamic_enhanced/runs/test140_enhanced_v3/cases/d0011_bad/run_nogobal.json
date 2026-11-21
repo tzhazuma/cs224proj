@@ -1,0 +1,104 @@
+{
+  "leak_raw": true,
+  "leak_attributed": true,
+  "leak_blocks": [
+    {
+      "kind": "Direct",
+      "bytes": 73728,
+      "records": 1,
+      "attributed": false,
+      "deciding_frame": null,
+      "allocation_site": {
+        "function": "malloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 67
+      }
+    },
+    {
+      "kind": "Direct",
+      "bytes": 1024,
+      "records": 1,
+      "attributed": false,
+      "deciding_frame": {
+        "function": "printLine",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c",
+        "line": 15
+      },
+      "allocation_site": {
+        "function": "malloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 67
+      }
+    },
+    {
+      "kind": "Direct",
+      "bytes": 100,
+      "records": 1,
+      "attributed": true,
+      "deciding_frame": {
+        "function": "CWE401_Memory_Leak__char_realloc_33::bad()",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_33.cpp",
+        "line": 33
+      },
+      "allocation_site": {
+        "function": "realloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 81
+      }
+    }
+  ],
+  "attributed_blocks": [
+    {
+      "kind": "Direct",
+      "bytes": 100,
+      "records": 1,
+      "attributed": true,
+      "deciding_frame": {
+        "function": "CWE401_Memory_Leak__char_realloc_33::bad()",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_33.cpp",
+        "line": 33
+      },
+      "allocation_site": {
+        "function": "realloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 81
+      }
+    }
+  ],
+  "attributed_bytes": 100,
+  "raw_bytes": 74852,
+  "leak_kinds": [
+    "Direct"
+  ],
+  "leak_summary": "SUMMARY: AddressSanitizer: 74852 byte(s) leaked in 3 allocation(s)",
+  "leak_summary_bytes": 74852,
+  "leak_summary_records": 3,
+  "asan_errors": [],
+  "deadly_signal": false,
+  "injection": {
+    "realloc_calls": 0,
+    "realloc_null_calls": 0,
+    "realloc_nonnull_calls": 0,
+    "injected": false,
+    "injected_at_call": null
+  },
+  "mode": "nogobal",
+  "build_variant": "plain",
+  "applicable": true,
+  "returncode": 23,
+  "timed_out": false,
+  "wall_ms": 128,
+  "failure_class": "leak",
+  "stdout_sha256": "4f14464dec3e7c98da4ec7e58d7d9b110b1d3e632b03a2c6fb300404c58838e0",
+  "stdout_lines": [
+    "A String"
+  ],
+  "stderr_path": "cases/d0011_bad/run_nogobal/stderr.txt",
+  "stdout_path": "cases/d0011_bad/run_nogobal/stdout.txt",
+  "env": {
+    "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0:use_globals=0",
+    "DYNENH_REALLOC_FAIL_NONNULL": ""
+  },
+  "decision": "leak"
+}

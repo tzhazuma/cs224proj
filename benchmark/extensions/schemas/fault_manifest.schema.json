@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cs224.local/benchmark/extensions/schemas/fault_manifest.schema.json",
+  "title": "Frozen fault-injection manifest",
+  "description": "Pre-registered fault variants for the fault_injected_dynamic design. The expected outcome is part of the manifest, not a post-hoc reading of tool output. Each variant must be traceable to a source/injection hash.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "split_id",
+    "created_at",
+    "frozen",
+    "injection_protocol",
+    "faults"
+  ],
+  "properties": {
+    "schema_version": {"const": "benchmark-fault-injection-v1"},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "split_id": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "frozen": {"const": true},
+    "injection_protocol": {"type": "string", "minLength": 20},
+    "notes": {"type": "array", "items": {"type": "string"}},
+    "faults": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fault_id",
+          "base_unit_id",
+          "fault_type",
+          "expected_outcome",
+          "cluster_id",
+          "split",
+          "injection_sha256",
+          "source_sha256"
+        ],
+        "properties": {
+          "fault_id": {"type": "string", "minLength": 1, "maxLength": 200},
+          "base_unit_id": {"type": "string", "minLength": 1, "maxLength": 300},
+          "fault_type": {"type": "string", "minLength": 1},
+          "expected_outcome": {"enum": ["leak", "clean", "inconclusive"]},
+          "cluster_id": {"type": "string", "minLength": 1, "maxLength": 300},
+          "split": {"type": "string", "minLength": 1},
+          "description": {"type": ["string", "null"]},
+          "injection_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "baseline_outcome": {"enum": ["leak", "clean", "inconclusive", "unknown", null]},
+          "oracle_required": {"type": "boolean"},
+          "seed": {"type": ["string", "integer", "null"]},
+          "notes": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

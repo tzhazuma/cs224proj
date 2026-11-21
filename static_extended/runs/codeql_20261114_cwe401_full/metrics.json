@@ -1,0 +1,322 @@
+{
+  "schema_version": "static-extended-codeql-v1",
+  "generated_at": "2026-11-13T17:28:06Z",
+  "wall_seconds": 1434.723,
+  "dataset": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/subset_units.jsonl",
+    "sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "n_units": 200,
+    "split_counts": {
+      "test": 140,
+      "dev": 60
+    },
+    "label_counts": {
+      "vulnerable": 100,
+      "non_vulnerable": 100
+    },
+    "name": "juliet-cwe401-v1.3-subset-v1"
+  },
+  "tool_info": {
+    "name": "codeql",
+    "version": "CodeQL command-line toolchain release 2.27.4.",
+    "binary": "/home/azuma/tools/codeql-2.27.4/codeql/codeql",
+    "queries": [
+      {
+        "id": "cpp/memory-never-freed",
+        "path": "/home/azuma/.codeql/packages/codeql/cpp-queries/1.10.0/Critical/MemoryNeverFreed.ql",
+        "sha256": "c63819d598b57f34247f76ddc4ee1cdaec9e700e336c3454b2ac3e592efc68c1"
+      },
+      {
+        "id": "cpp/memory-may-not-be-freed",
+        "path": "/home/azuma/.codeql/packages/codeql/cpp-queries/1.10.0/Critical/MemoryMayNotBeFreed.ql",
+        "sha256": "f890553705e3c52bb0095575c2acfc0d819d08ae68df40751e164d6317f3246b"
+      }
+    ]
+  },
+  "settings": {
+    "split": null,
+    "jobs": 6,
+    "timeout_seconds": 600.0,
+    "std_c": "c11",
+    "std_cxx": "c++17",
+    "ram_mb": 2048,
+    "support_dir": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+    "analyze_on_compile_error": false
+  },
+  "tool": {
+    "runs": 200,
+    "labelled": 200,
+    "evaluable_count": 194,
+    "coverage": 0.97,
+    "status_counts": {
+      "ok": 194,
+      "compile_error": 6
+    },
+    "evaluable": {
+      "n": 194,
+      "tp": 96,
+      "fp": 30,
+      "tn": 67,
+      "fn": 1,
+      "excluded": 6,
+      "precision": 0.7619047619047619,
+      "recall": 0.9896907216494846,
+      "specificity": 0.6907216494845361,
+      "f1_vulnerable": 0.8609865470852017,
+      "f1_non_vulnerable": 0.8121212121212121,
+      "macro_f1": 0.8365538796032069,
+      "accuracy": 0.8402061855670103,
+      "mcc": 0.7130240959073808
+    },
+    "end_to_end": {
+      "n": 200,
+      "tp": 96,
+      "fp": 30,
+      "tn": 70,
+      "fn": 4,
+      "excluded": 0,
+      "precision": 0.7619047619047619,
+      "recall": 0.96,
+      "specificity": 0.7,
+      "f1_vulnerable": 0.8495575221238937,
+      "f1_non_vulnerable": 0.8045977011494254,
+      "macro_f1": 0.8270776116366596,
+      "accuracy": 0.83,
+      "mcc": 0.68350674260132
+    },
+    "per_query": {
+      "cpp/memory-never-freed": {
+        "evaluable": {
+          "n": 194,
+          "tp": 63,
+          "fp": 0,
+          "tn": 97,
+          "fn": 34,
+          "excluded": 6,
+          "precision": 1.0,
+          "recall": 0.6494845360824743,
+          "specificity": 1.0,
+          "f1_vulnerable": 0.7875000000000001,
+          "f1_non_vulnerable": 0.8508771929824561,
+          "macro_f1": 0.8191885964912281,
+          "accuracy": 0.8247422680412371,
+          "mcc": 0.6934810960180178
+        },
+        "end_to_end": {
+          "n": 200,
+          "tp": 63,
+          "fp": 0,
+          "tn": 100,
+          "fn": 37,
+          "excluded": 0,
+          "precision": 1.0,
+          "recall": 0.63,
+          "specificity": 1.0,
+          "f1_vulnerable": 0.7730061349693252,
+          "f1_non_vulnerable": 0.8438818565400844,
+          "macro_f1": 0.8084439957547048,
+          "accuracy": 0.815,
+          "mcc": 0.6781253679066579
+        }
+      },
+      "cpp/memory-may-not-be-freed": {
+        "evaluable": {
+          "n": 194,
+          "tp": 33,
+          "fp": 30,
+          "tn": 67,
+          "fn": 64,
+          "excluded": 6,
+          "precision": 0.5238095238095238,
+          "recall": 0.3402061855670103,
+          "specificity": 0.6907216494845361,
+          "f1_vulnerable": 0.4125,
+          "f1_non_vulnerable": 0.5877192982456141,
+          "macro_f1": 0.500109649122807,
+          "accuracy": 0.5154639175257731,
+          "mcc": 0.033022909334191324
+        },
+        "end_to_end": {
+          "n": 200,
+          "tp": 33,
+          "fp": 30,
+          "tn": 70,
+          "fn": 67,
+          "excluded": 0,
+          "precision": 0.5238095238095238,
+          "recall": 0.33,
+          "specificity": 0.7,
+          "f1_vulnerable": 0.40490797546012275,
+          "f1_non_vulnerable": 0.5907172995780591,
+          "macro_f1": 0.4978126375190909,
+          "accuracy": 0.515,
+          "mcc": 0.03229168418603133
+        }
+      }
+    },
+    "by_language": {
+      "c": {
+        "evaluable": {
+          "n": 88,
+          "tp": 44,
+          "fp": 0,
+          "tn": 44,
+          "fn": 0,
+          "excluded": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "specificity": 1.0,
+          "f1_vulnerable": 1.0,
+          "f1_non_vulnerable": 1.0,
+          "macro_f1": 1.0,
+          "accuracy": 1.0,
+          "mcc": 1.0
+        },
+        "end_to_end": {
+          "n": 88,
+          "tp": 44,
+          "fp": 0,
+          "tn": 44,
+          "fn": 0,
+          "excluded": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "specificity": 1.0,
+          "f1_vulnerable": 1.0,
+          "f1_non_vulnerable": 1.0,
+          "macro_f1": 1.0,
+          "accuracy": 1.0,
+          "mcc": 1.0
+        }
+      },
+      "cpp": {
+        "evaluable": {
+          "n": 106,
+          "tp": 52,
+          "fp": 30,
+          "tn": 23,
+          "fn": 1,
+          "excluded": 6,
+          "precision": 0.6341463414634146,
+          "recall": 0.9811320754716981,
+          "specificity": 0.4339622641509434,
+          "f1_vulnerable": 0.7703703703703704,
+          "f1_non_vulnerable": 0.5974025974025975,
+          "macro_f1": 0.683886483886484,
+          "accuracy": 0.7075471698113207,
+          "mcc": 0.4959182990670878
+        },
+        "end_to_end": {
+          "n": 112,
+          "tp": 52,
+          "fp": 30,
+          "tn": 26,
+          "fn": 4,
+          "excluded": 0,
+          "precision": 0.6341463414634146,
+          "recall": 0.9285714285714286,
+          "specificity": 0.4642857142857143,
+          "f1_vulnerable": 0.7536231884057972,
+          "f1_non_vulnerable": 0.6046511627906976,
+          "macro_f1": 0.6791371755982474,
+          "accuracy": 0.6964285714285714,
+          "mcc": 0.4435628112000315
+        }
+      }
+    },
+    "by_split": {
+      "dev": {
+        "evaluable": {
+          "n": 58,
+          "tp": 28,
+          "fp": 7,
+          "tn": 22,
+          "fn": 1,
+          "excluded": 2,
+          "precision": 0.8,
+          "recall": 0.9655172413793104,
+          "specificity": 0.7586206896551724,
+          "f1_vulnerable": 0.8750000000000001,
+          "f1_non_vulnerable": 0.8461538461538461,
+          "macro_f1": 0.8605769230769231,
+          "accuracy": 0.8620689655172413,
+          "mcc": 0.7401527456927535
+        },
+        "end_to_end": {
+          "n": 60,
+          "tp": 28,
+          "fp": 7,
+          "tn": 23,
+          "fn": 2,
+          "excluded": 0,
+          "precision": 0.8,
+          "recall": 0.9333333333333333,
+          "specificity": 0.7666666666666667,
+          "f1_vulnerable": 0.8615384615384616,
+          "f1_non_vulnerable": 0.8363636363636363,
+          "macro_f1": 0.848951048951049,
+          "accuracy": 0.85,
+          "mcc": 0.7099295739719539
+        }
+      },
+      "test": {
+        "evaluable": {
+          "n": 136,
+          "tp": 68,
+          "fp": 23,
+          "tn": 45,
+          "fn": 0,
+          "excluded": 4,
+          "precision": 0.7472527472527473,
+          "recall": 1.0,
+          "specificity": 0.6617647058823529,
+          "f1_vulnerable": 0.8553459119496856,
+          "f1_non_vulnerable": 0.7964601769911505,
+          "macro_f1": 0.8259030444704181,
+          "accuracy": 0.8308823529411765,
+          "mcc": 0.7032108464077432
+        },
+        "end_to_end": {
+          "n": 140,
+          "tp": 68,
+          "fp": 23,
+          "tn": 47,
+          "fn": 2,
+          "excluded": 0,
+          "precision": 0.7472527472527473,
+          "recall": 0.9714285714285714,
+          "specificity": 0.6714285714285714,
+          "f1_vulnerable": 0.8447204968944099,
+          "f1_non_vulnerable": 0.7899159663865546,
+          "macro_f1": 0.8173182316404822,
+          "accuracy": 0.8214285714285714,
+          "mcc": 0.6738973950355189
+        }
+      }
+    },
+    "diagnostics": {
+      "total": 132,
+      "cwe401": 132,
+      "by_query": {
+        "cpp/memory-never-freed": 66,
+        "cpp/memory-may-not-be-freed": 66
+      },
+      "in_target_file": 132
+    },
+    "timing": {
+      "n": 200,
+      "total_seconds": 8504.027,
+      "mean_seconds": 42.5201,
+      "median_seconds": 43.0131,
+      "p95_seconds": 51.664,
+      "max_seconds": 60.5094
+    }
+  },
+  "target_cwe": "CWE-401",
+  "limitations": [
+    "One CodeQL database per unit with a single gcc/g++ compile command; the build is a single translation unit.",
+    "Multi-file Juliet groups are combined into one wrapper TU, same convention as the Clang/Cppcheck baseline.",
+    "Header-only results are excluded (include_external=false in the baseline).",
+    "Compile errors are reported by CodeQL's build tracing; the original compiler text is kept in raw/."
+  ]
+}

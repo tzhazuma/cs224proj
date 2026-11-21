@@ -1,0 +1,98 @@
+{
+  "schema_version": "hde-inputs-v1",
+  "created_at": "2026-11-13T17:06:44.675213+00:00",
+  "unit_count": 140,
+  "label_counts": {
+    "bad": 70,
+    "good": 70
+  },
+  "language_counts": {
+    "c": 58,
+    "cpp": 82
+  },
+  "source_chars": {
+    "min": 376,
+    "median": 651,
+    "max": 1658
+  },
+  "v2_pack": {
+    "path": "hybrid/inputs_v2/units.jsonl",
+    "sha256": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6",
+    "prompt_version": "hybrid-inputs-v2"
+  },
+  "enhanced_export": {
+    "path": "dynamic_enhanced/exports/hybrid",
+    "cases_sha256": "b7ca724580fc60c0995ea3cf37fe4d0ea6b0088e012a0cfc560e18574d01a770",
+    "results_sha256": "73149fde3728dce73bcbea38e1fb659f5c35dfddba81acdb7939f063aad1f13d",
+    "generated_at": "2026-11-12T16:36:18Z",
+    "source_run": "dynamic_enhanced/runs/test140_enhanced_v3",
+    "counts": {
+      "units": 140,
+      "bad": 70,
+      "good": 70,
+      "cases": 140
+    }
+  },
+  "enhanced_mode_counts": {
+    "default": {
+      "applicable": 140,
+      "leak": 58,
+      "leak_bad": 58,
+      "leak_good": 0,
+      "not_applicable": 0
+    },
+    "realloc_fail": {
+      "applicable": 14,
+      "leak": 7,
+      "leak_bad": 7,
+      "leak_good": 0,
+      "not_applicable": 126
+    },
+    "nogobal": {
+      "applicable": 140,
+      "leak": 63,
+      "leak_bad": 63,
+      "leak_good": 0,
+      "not_applicable": 0
+    }
+  },
+  "enhanced_tool": {
+    "confusion": {
+      "tp": 70,
+      "fp": 0,
+      "tn": 70,
+      "fn": 0
+    },
+    "accuracy": 1.0,
+    "primary_mode_counts": {
+      "default": 58,
+      "realloc_fail": 7,
+      "nogobal": 5
+    },
+    "newly_observable_units": [
+      "CWE401_Memory_Leak__malloc_realloc_int64_t_01__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int64_t_09__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int64_t_18__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int_01__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int_18__bad",
+      "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad",
+      "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18__bad",
+      "CWE401_Memory_Leak__new_TwoIntsClass_68__bad",
+      "CWE401_Memory_Leak__new_array_twointsStruct_68__bad",
+      "CWE401_Memory_Leak__twoIntsStruct_malloc_68__bad",
+      "CWE401_Memory_Leak__wchar_t_calloc_68__bad",
+      "CWE401_Memory_Leak__wchar_t_malloc_68__bad"
+    ]
+  },
+  "evidence": {
+    "chars": {
+      "min": 875,
+      "median": 1006,
+      "max": 1055
+    },
+    "distinct_texts": 13,
+    "forbidden_markers": 0
+  },
+  "units_file": "hybrid_dynamic_enhanced/inputs/units.jsonl",
+  "units_sha256": "061546a40e5dd66d7a1fca2dd23dd1ec250d4705a48651dca1eb757488976dce"
+}

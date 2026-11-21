@@ -2,7 +2,7 @@
 
 本目录保存最终报告的中文源稿、参考文献、结果摘要和辅助脚本。报告按 CS224 课程指南组织：在同一数据集上比较三种 LLM 提示策略，报告检测、配对联合判别、修复结构指标、成本、统计检验和定性案例。
 
-**当前状态：六个真实完整运行（`test_v1_*`）已完成，检测/配对/修复/成本/统计/10 个案例/LLM 辅助盲评均已写入报告，结果表中不再有 `TBD`。** 唯一保留的 `TODO` 是作者/单位补充。报告已用 Tectonic 0.17.0 在 WSL 编译为 `report/report_zh.pdf`（17 页，Nimbus 字体）；无 unresolved、无缺字，目标 overfull 已消除。
+**当前状态：六个真实完整运行（`test_v1_*`）已完成，检测/配对/修复/成本/统计/10 个案例/LLM 辅助盲评均已写入报告，结果表中不再有 `TBD`。** 唯一保留的 `TODO` 是作者/单位补充。报告已用 Tectonic 0.17.0 在 WSL 编译为 `report/report_zh.pdf`（17 页，Nimbus 字体）；无 unresolved、无缺字，目标 overfull 已消除。2026-11-14 新增最新扩展版 `report_latest_zh.tex` / `report_latest_zh.pdf`（35 页），旧的两份 PDF 均未改动。
 
 ## 扩展版（2026-11-12）
 
@@ -33,7 +33,7 @@
 ```bash
 cd /mnt/c/Users/tzh03/Downloads/cs224proj
 python3 report/scripts/build_extended_tables.py
-/tmp/secvul-tectonic/tectonic -X compile \
+~/tools/tectonic/tectonic -X compile \
   report/report_extended_zh.tex --outdir report --keep-intermediates
 pdfinfo report/report_extended_zh.pdf
 pdffonts report/report_extended_zh.pdf
@@ -42,6 +42,39 @@ pdffonts report/report_extended_zh.pdf
 检查结果：27 页；NimbusRoman/NimbusSans/NimbusMonoPS 与 FandolSong/FandolKai 均已嵌入；0 个 unresolved reference/citation、0 个 `Missing character`、0 个 `Overfull \hbox`；仅 1 个 0.8 pt 的 `Overfull \vbox`（末页 column balancing，低于 10 pt）；`pdftotext` 中 0 个 `TBD`、0 个 `TODO`、0 个 `??`。字体 shape 警告 `TU/NimbusRoman(0)/m/sc` 与 `TU/NimbusMonoPS(0)/m/sc` 是 small-caps 形状缺失后的自动替换，不是缺字。静态检查 `python3 report/scripts/check_extended.py` 报告 59 个 label、41 个 ref、28 个 cite、28 个 bib 键，missing refs/cites 均为空。
 
 **登记口径提醒**：`benchmark/results/tier_b_summary.json` 仍把 Juliet LLM/hybrid 的 B4–B8 标为 `blocked_gate`；`juliet_llm/` 与 `hybrid/` 是独立工作流，扩展版把它们写成“未纳入统一 leaderboard 的探索性证据”，不写成 B4–B8 的正式登记结果。Tier A 与 Tier B 不池化、不横比。
+
+## 最新扩展版（2026-11-14）
+
+在扩展版 27 页基础上新增六组真实实验与三份文献调研；扩展版与旧版 PDF 均保持原样、未被覆盖：
+
+| 项目 | 内容 |
+| --- | --- |
+| 源稿 / PDF | `report_latest_zh.tex` / `report_latest_zh.pdf` |
+| 页数 / 版式 | 35 页，IEEEtran conference 双栏，letter |
+| 参考文献 | `references_latest.bib`（58 条：扩展版 28 条 + 新增 30 条） |
+| 结果摘要 | `latest_results_summary.md` |
+| 旧版 | `report_zh.tex`/`.pdf`（17 页）、`report_extended_zh.tex`/`.pdf`（27 页），均未修改 |
+
+新增内容与关键结果（全部为负结果或收紧后的结论）：
+
+- **配对顺序去偏**：180 对 × 正反两序 × 强制/开放 × 2 模型，新增 1,080 请求。单序强制 DA 仍为 76.67%/86.67%，但**交换一致 DA 只有 61.67%/74.44%**；DeepSeek 低于“选较短版本”的 72.22%（Holm p=0.0289），MiMo 与它不可区分（p=0.644）。开放四分类交换一致 DA 为 55.56%/58.33%。
+- **证据二次验证**：4 臂（自审/跨模型），$\Delta$macro-F1 为 $-0.2043$、$-0.0701$、$-0.0846$、$-0.1842$（Holm p≤0.0125）；撤销不偏向假阳性（超几何 Holm p≥0.8367）；同预算下不如随机撤销。
+- **动态分析增强**：真实 `--wrap=realloc` 失败注入 + `use_globals=0`，140 单元 × 3 模式 = 420 次运行；TP 70/FP 0/TN 70/FN 0，12/12 旧不可观测 bad 有可复核证据，但**无覆盖率 instrumentation**，clean 不是无泄漏证明。
+- **增强动态证据混合**：DeepSeek 137/140（+2，p=0.5）、MiMo 136/140（0，p=1.0）；工具满分使“抄证据”与“推理”不可分离，**不显著**。
+- **CodeQL 对照**：200 单元（194 可分析）；test 140 上 TP 68/FP 23/FN 2，P 0.747/R 0.971/MCC 0.674，**42.5 s/单元**；MCC 低于 Clang 的 0.781。
+- **schema 复分析**：零 API；102 条 invalid 中 93 条只缺 `explanation`；usable 552/924 → 619/924（+7.25 pp），但 **schema 不是修复质量的主矛盾**。
+- **三份文献**：`research/latest_llm_methods_2026.md`、`research/latest_evaluation_repair_2026.md`、`research/latest_memory_tools_2026.md`，新增引用均经 arXiv API/Crossref/DROPS 核验。
+
+编译与检查（WSL，Tectonic 0.17.0）：
+
+```bash
+cd /mnt/c/Users/tzh03/Downloads/cs224proj
+~/tools/tectonic/tectonic -X compile \
+  report/report_latest_zh.tex --outdir report --keep-logs
+pdfinfo report/report_latest_zh.pdf
+```
+
+检查结果：35 页；NimbusRoman/NimbusSans/NimbusMonoPS 与 FandolSong/FandolKai 均已嵌入；0 个 unresolved reference/citation（仅 2 个 small-caps font shape 警告）、0 个 `Missing character`、0 个 >10 pt overfull（最大 9.22 pt `Overfull \vbox`，另有 1.06 pt）；`pdftotext` 中 0 个 `??`、0 个 `TBD`、0 个 `TODO`。
 
 ## 核心结果
 
@@ -63,6 +96,10 @@ pdffonts report/report_extended_zh.pdf
 | `report_zh.pdf` | 已编译 PDF（17 页，Tectonic 0.17.0，Nimbus 字体） |
 | `report_extended_zh.tex` | 扩展版中文 IEEE 双栏源稿（27 页） |
 | `report_extended_zh.pdf` | 扩展版已编译 PDF（27 页，Tectonic 0.17.0） |
+| `report_latest_zh.tex` | 最新扩展版源稿（35 页，含顺序去偏/二次验证/动态增强/CodeQL/schema） |
+| `report_latest_zh.pdf` | 最新扩展版已编译 PDF（35 页，Tectonic 0.17.0） |
+| `references_latest.bib` | 最新扩展版参考文献（58 条，新增 30 条已核验） |
+| `latest_results_summary.md` | 最新六组实验的统一结果摘要、负面结论、复现命令与限制 |
 | `references.bib` | 旧版专用参考文献，IEEEtran 样式 |
 | `references_extended.bib` | 扩展版参考文献（28 条，含工具/统计/Juliet） |
 | `extended_results_summary.md` | 扩展版结果摘要、限制与编译检查 |
@@ -176,11 +213,15 @@ python3 report/scripts/check_tex.py
 
 ## 编译
 
-本机 WSL **没有安装 TeX Live**（`xelatex`、`bibtex` 不可用），但已有独立 Tectonic 0.17.0 二进制 `/tmp/secvul-tectonic/tectonic`。在项目根目录执行：
+本机 WSL **没有安装 TeX Live**（`xelatex`、`bibtex` 不可用），但已有独立 Tectonic 0.17.0 二进制 `~/tools/tectonic/tectonic`（旧路径 `/tmp/secvul-tectonic/tectonic` 已不存在）。在项目根目录执行：
 
 ```bash
-/tmp/secvul-tectonic/tectonic -X compile \
+~/tools/tectonic/tectonic -X compile \
   report/report_zh.tex --outdir report --keep-intermediates
+~/tools/tectonic/tectonic -X compile \
+  report/report_extended_zh.tex --outdir report --keep-logs
+~/tools/tectonic/tectonic -X compile \
+  report/report_latest_zh.tex --outdir report --keep-logs
 ```
 
 当前编译结果：
@@ -190,6 +231,8 @@ python3 report/scripts/check_tex.py
 - 无 unresolved references/citations，无 `Missing character`/缺字；
 - 目标 overfull 已消除：data-stats、MCC 公式、m3-strata、McNemar 均不再有 >10pt overfull；仅剩一处 3.8pt 的非目标 overfull（itemize 长标识符），低于 10pt；
 - `pdfinfo`：`Pages: 17`，PDF 版本 1.5。
+
+最新扩展版 `report_latest_zh.pdf` 的检查结果：35 页；0 个 unresolved reference/citation（仅 2 个 small-caps font shape 替换警告）、0 个 `Missing character`、0 个 >10 pt overfull（最大 9.22 pt `Overfull \vbox`，另有 1.06 pt）；`pdftotext` 中 0 个 `??`、0 个 `TBD`、0 个 `TODO`；字体嵌入同上。
 
 清理中间文件（保留 PDF、tex、bbl）：
 
@@ -212,6 +255,7 @@ rm -f report/preview_contact_*.png report/_preview*.png \
 
 ## 剩余工作
 
-1. 已完成 Tectonic 编译与 17 页检查；如需切换 XeLaTeX，需重新核对页数、字体和 overfull。
+1. 已完成 Tectonic 编译与 17 页（旧版）/27 页（扩展版）/35 页（最新扩展版）检查；如需切换 XeLaTeX，需重新核对页数、字体和 overfull。
 2. 补充作者、单位、课程分组和提交信息（`report_zh.tex` 中 `TODO`）。
 3. 若需要，按教师要求把 PDF 归档到 `output/pdf/`。
+4. 最新扩展版的负结果（单序 DA、二次验证、增强混合、CodeQL、schema）仍需多 seed/多模型重复；`report/latest_results_summary.md` 已列出具体限制。

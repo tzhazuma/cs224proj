@@ -1,0 +1,71 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "ext_pair_debias_deepseek_forced_fwd",
+  "created_at": "2026-11-13T17:18:10Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "pair_detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1",
+    "path": "splits/test_pairs_180.json",
+    "sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "unit_manifest": null,
+    "unit_count": 360,
+    "group_count": 180,
+    "label_counts": {
+      "vulnerable": 180,
+      "fixed": 180
+    }
+  },
+  "method": {
+    "method_id": "llm.deepseek.pair_debiased",
+    "family": "llm",
+    "name": "DeepSeek V4.1 Flash / pair-debias forced",
+    "strategy": "pair_debiased",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "deepseek",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_tokens"
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-13"
+    },
+    "config_sha256": "bd1906209783e032c61b9f6e28c9acfa1c0eae44449e3866f1fe1f45152fe98d"
+  },
+  "execution": {
+    "started_at": "2026-11-13T17:18:10Z",
+    "finished_at": "2026-11-13T17:18:10Z",
+    "status": "completed",
+    "planned_units": 360,
+    "recorded_units": 360,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "77bd1070684a2088da5fa8202c94afbf5a160ff286de32dfa58b857ffba56289",
+    "extension_manifest_sha256": "c9f767ce159cff2b54cb2164424ce1fb4a7a524fe71f691ffbcab457ac871251"
+  },
+  "legacy_import": null,
+  "notes": [
+    "position-debiased pair run, presentation order fwd; pairing_id=pairset-deepseek-forced-v1",
+    "copied from producer raw; not re-run"
+  ]
+}

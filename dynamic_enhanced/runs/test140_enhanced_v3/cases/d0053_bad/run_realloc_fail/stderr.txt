@@ -1,0 +1,16 @@
+[dynenh] realloc #1
+[dynenh] realloc ptr=nonnull
+[dynenh] injected NULL at call 1
+
+=================================================================
+==13460==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 800 byte(s) in 1 object(s) allocated from:
+    #0 0x7827ea92b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x5e9cf26055be in CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01_bad /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01.c:27
+    #2 0x5e9cf260574e in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0053_bad/build/__dynenh_probe_main.c:2
+    #3 0x7827ea42a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #4 0x7827ea42a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #5 0x5e9cf26054e4 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/runs/test140_enhanced_v3/cases/d0053_bad/build/bad.wrap.exe+0x24e4) (BuildId: 36f3ffc7434bb9e1ce8c46dcb027c8253f41dabd)
+
+SUMMARY: AddressSanitizer: 800 byte(s) leaked in 1 allocation(s).

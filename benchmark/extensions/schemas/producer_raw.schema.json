@@ -1,0 +1,835 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cs224.local/benchmark/extensions/schemas/producer_raw.schema.json",
+  "title": "Producer raw records accepted by ext_import.py",
+  "description": "Reference contract for raw JSONL records. A producer may add fields; ext_import.py reads only the documented keys and never copies request headers or credentials. The optional 'design' key selects the oneOf branch for schema validation; the importer takes the design from the import config.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/position_debiased_pair"
+    },
+    {
+      "$ref": "#/$defs/open_choice_pair"
+    },
+    {
+      "$ref": "#/$defs/evidence_verification"
+    },
+    {
+      "$ref": "#/$defs/fault_injected_dynamic"
+    },
+    {
+      "$ref": "#/$defs/new_static_tool"
+    },
+    {
+      "$ref": "#/$defs/enhanced_dynamic"
+    },
+    {
+      "$ref": "#/$defs/hybrid_enhanced_dynamic"
+    }
+  ],
+  "$defs": {
+    "position_debiased_pair": {
+      "type": "object",
+      "required": [
+        "design",
+        "pair_id",
+        "presentation_order",
+        "choice"
+      ],
+      "properties": {
+        "design": {
+          "const": "position_debiased_pair"
+        },
+        "pair_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "presentation_order": {
+          "enum": [
+            "AB",
+            "BA"
+          ]
+        },
+        "choice": {
+          "enum": [
+            "A",
+            "B",
+            null
+          ]
+        },
+        "position_map": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "A",
+                "B"
+              ],
+              "properties": {
+                "A": {
+                  "enum": [
+                    "vulnerable",
+                    "fixed"
+                  ]
+                },
+                "B": {
+                  "enum": [
+                    "vulnerable",
+                    "fixed"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "rationale": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "prompt_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_output_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "usage": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "cost": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "length_chars": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "error": {
+          "type": [
+            "object",
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "open_choice_pair": {
+      "type": "object",
+      "required": [
+        "design",
+        "pair_id",
+        "open_choice"
+      ],
+      "properties": {
+        "design": {
+          "const": "open_choice_pair"
+        },
+        "pair_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "open_choice": {
+          "enum": [
+            "A",
+            "B",
+            "both",
+            "neither",
+            null
+          ]
+        },
+        "position_map": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "A",
+                "B"
+              ],
+              "properties": {
+                "A": {
+                  "enum": [
+                    "vulnerable",
+                    "fixed"
+                  ]
+                },
+                "B": {
+                  "enum": [
+                    "vulnerable",
+                    "fixed"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "rationale": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "prompt_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_output_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "usage": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "cost": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "length_chars": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "error": {
+          "type": [
+            "object",
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "evidence_verification": {
+      "type": "object",
+      "required": [
+        "design",
+        "claim_id",
+        "verdict"
+      ],
+      "properties": {
+        "design": {
+          "const": "evidence_verification"
+        },
+        "claim_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verdict": {
+          "enum": [
+            "supported",
+            "unsupported",
+            "insufficient",
+            null
+          ]
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "cited_lines": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "rationale": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "prompt_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_output_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "usage": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "cost": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "error": {
+          "type": [
+            "object",
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "fault_injected_dynamic": {
+      "type": "object",
+      "required": [
+        "design",
+        "fault_id",
+        "observed_outcome"
+      ],
+      "properties": {
+        "design": {
+          "const": "fault_injected_dynamic"
+        },
+        "fault_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_outcome": {
+          "enum": [
+            "leak",
+            "clean",
+            "inconclusive",
+            "error",
+            "timeout",
+            "crash"
+          ]
+        },
+        "coverage": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "unit_executed",
+                "line_coverage",
+                "coverage_source"
+              ],
+              "properties": {
+                "unit_executed": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "target_function_entered": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "line_coverage": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "branch_coverage": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "allocation_site_executed": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "free_site_executed": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "coverage_source": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        "oracle": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "baseline_outcome": {
+          "enum": [
+            "leak",
+            "clean",
+            "inconclusive",
+            "unknown",
+            null
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "usage": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "cost": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "error": {
+          "type": [
+            "object",
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "new_static_tool": {
+      "type": "object",
+      "required": [
+        "design",
+        "sample_id",
+        "status"
+      ],
+      "properties": {
+        "design": {
+          "const": "new_static_tool"
+        },
+        "sample_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": "string"
+        },
+        "tool": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tool_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/raw_diagnostic"
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/raw_diagnostic"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/raw_diagnostic"
+          }
+        },
+        "command": {
+          "type": [
+            "array",
+            "string",
+            "null"
+          ]
+        },
+        "duration_seconds": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "source_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "line_start": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "line_end": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "target_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "suppressed": {
+          "type": "boolean"
+        },
+        "error": {
+          "type": [
+            "object",
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "raw_diagnostic": {
+      "type": "object",
+      "properties": {
+        "rule_id": {
+          "type": "string"
+        },
+        "rule": {
+          "type": "string"
+        },
+        "check": {
+          "type": "string"
+        },
+        "checker": {
+          "type": "string"
+        },
+        "warning": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "file": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "line": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "column": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "cwe": {
+          "type": [
+            "string",
+            "array",
+            "null"
+          ]
+        },
+        "cwe_list": {
+          "type": [
+            "string",
+            "array",
+            "null"
+          ]
+        },
+        "trace": {
+          "type": "array"
+        },
+        "suppressed": {
+          "type": "boolean"
+        },
+        "in_target_file": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "in_target_region": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "counts_as_finding": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    },
+    "enhanced_dynamic": {
+      "type": "object",
+      "required": [
+        "design",
+        "unit_id",
+        "decision"
+      ],
+      "properties": {
+        "design": {
+          "const": "enhanced_dynamic"
+        },
+        "unit_id": {
+          "type": "string"
+        },
+        "decision": {
+          "enum": [
+            "leak",
+            "clean",
+            "build_error",
+            "run_error",
+            "timeout",
+            "crash",
+            "not_evaluable"
+          ]
+        },
+        "evidence_modes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "primary_evidence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unobservable_in_default": {
+          "type": "boolean"
+        },
+        "conditionally_observable": {
+          "type": "boolean"
+        },
+        "modes": {
+          "type": "object"
+        },
+        "failure_class": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "runtime_ms": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "hybrid_enhanced_dynamic": {
+      "type": "object",
+      "required": [
+        "design",
+        "unit_id",
+        "model",
+        "status"
+      ],
+      "properties": {
+        "design": {
+          "const": "hybrid_enhanced_dynamic"
+        },
+        "unit_id": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "y_true": {
+          "type": [
+            "boolean",
+            "integer",
+            "null"
+          ]
+        },
+        "y_pred": {
+          "type": [
+            "boolean",
+            "integer",
+            "null"
+          ]
+        },
+        "predicted_label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "evidence_outcome": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence_primary_mode": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "old_dynamic_outcome": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tool_verdict": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "prompt": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "usage": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "cost": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": "static-extended-codeql-v1",
+  "generated_at": "2026-11-13T17:28:06Z",
+  "command": [
+    "static_extended/codeql_adapter.py",
+    "--units",
+    "juliet/subset_units.jsonl",
+    "--juliet-root",
+    "juliet",
+    "--out",
+    "static_extended/runs/codeql_20261114_cwe401_full",
+    "--jobs",
+    "6",
+    "--timeout",
+    "600"
+  ],
+  "adapter": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/static_extended/codeql_adapter.py",
+    "sha256": "0e536c11ec83612ba7537823cede4e6100f1f607fd403ab89b9dd87e25fd78aa"
+  },
+  "input": {
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/subset_units.jsonl",
+    "sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24"
+  },
+  "outputs": {
+    "predictions.jsonl": {
+      "sha256": "ed54cfeaca86e2edc7b76928d741dae2a3b2605c829013e40aa112d65775c4cc",
+      "bytes": 603330
+    },
+    "metrics.json": {
+      "sha256": "aa79c9a586f2396759f9ed4fd00ba6f9c78a3bc344dfb96ea379ac3c8919d13c",
+      "bytes": 9224
+    },
+    "metrics.md": {
+      "sha256": "156cf63f49b5e4d742f31031953bfc733c0b5d2cffcfe8504a8837b0cd363dae",
+      "bytes": 2257
+    }
+  },
+  "tool": {
+    "name": "codeql",
+    "version": "CodeQL command-line toolchain release 2.27.4.",
+    "binary": "/home/azuma/tools/codeql-2.27.4/codeql/codeql",
+    "queries": [
+      {
+        "id": "cpp/memory-never-freed",
+        "path": "/home/azuma/.codeql/packages/codeql/cpp-queries/1.10.0/Critical/MemoryNeverFreed.ql",
+        "sha256": "c63819d598b57f34247f76ddc4ee1cdaec9e700e336c3454b2ac3e592efc68c1"
+      },
+      {
+        "id": "cpp/memory-may-not-be-freed",
+        "path": "/home/azuma/.codeql/packages/codeql/cpp-queries/1.10.0/Critical/MemoryMayNotBeFreed.ql",
+        "sha256": "f890553705e3c52bb0095575c2acfc0d819d08ae68df40751e164d6317f3246b"
+      }
+    ]
+  },
+  "settings": {
+    "split": null,
+    "jobs": 6,
+    "timeout_seconds": 600.0,
+    "std_c": "c11",
+    "std_cxx": "c++17",
+    "ram_mb": 2048,
+    "support_dir": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport",
+    "analyze_on_compile_error": false
+  },
+  "wall_seconds": 1434.723,
+  "post_processing": {
+    "at_utc": "2026-11-13T17:34:57Z",
+    "note": "metrics.md regenerated after fixing the duplicated tool-name prefix; analysis logic unchanged. adapter sha256 updated to the current file. predictions.jsonl/metrics.json are the run outputs.",
+    "metrics_md_sha256": "156cf63f49b5e4d742f31031953bfc733c0b5d2cffcfe8504a8837b0cd363dae"
+  }
+}

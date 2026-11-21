@@ -1,0 +1,33 @@
+{
+  "schema_version": "benchmark-extension-manifest-v1",
+  "extension_id": "ext.new_static_tool.v1",
+  "design": "new_static_tool",
+  "design_version": "1.0.0",
+  "registry_version": "2026-11-14.2",
+  "parent_task": "leak_detection",
+  "aggregation_unit": "case_family",
+  "created_at": "2026-11-13T18:01:20Z",
+  "run_role": "single",
+  "presentation_order": null,
+  "pairing_id": null,
+  "sibling_run_id": null,
+  "claim_manifest": null,
+  "fault_manifest": null,
+  "tool_registry": {
+    "path": "benchmark/extensions/registry/static_tools.json",
+    "sha256": "f221b5b75b5b2c53eee86cb637f984f856be069d411bec20a304add5f44caa91",
+    "tool_id": "codeql"
+  },
+  "baseline_run": null,
+  "coverage_threshold": 0.8,
+  "options": {
+    "extension_version": "0.2.0",
+    "jsonschema_checked": true,
+    "split": "test"
+  },
+  "notes": [
+    "real CodeQL 2.27.4 run on the frozen Juliet CWE-401 test split; copied from producer raw, diagnostics re-normalized and recounted, not re-run",
+    "200 raw records (dev 60 + test 140); only the test split is imported, dev is reference-only",
+    "4 test compile errors are preserved as compile_error and count wrong in strict, never as y_pred=0"
+  ]
+}

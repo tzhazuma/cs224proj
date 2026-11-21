@@ -1,0 +1,432 @@
+{
+  "ok": true,
+  "generated_at": "2026-11-13T17:07:22.025353+00:00",
+  "method": "enhanced-dynamic-guided",
+  "prompt_version": "hde-juliet-llm-binary-2026-11-14.1",
+  "direct_prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+  "input_pack": {
+    "path": "hybrid_dynamic_enhanced/inputs/units.jsonl",
+    "units_sha256": "061546a40e5dd66d7a1fca2dd23dd1ec250d4705a48651dca1eb757488976dce",
+    "units": 140
+  },
+  "evidence": {
+    "chars": {
+      "min": 875,
+      "median": 1006,
+      "max": 1055
+    },
+    "distinct_texts": 13,
+    "forbidden_markers": 0
+  },
+  "enhanced_tool": {
+    "confusion": {
+      "tp": 70,
+      "fp": 0,
+      "tn": 70,
+      "fn": 0
+    },
+    "accuracy": 1.0,
+    "primary_mode_counts": {
+      "default": 58,
+      "realloc_fail": 7,
+      "nogobal": 5
+    },
+    "newly_observable_units": [
+      "CWE401_Memory_Leak__malloc_realloc_int64_t_01__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int64_t_09__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int64_t_18__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int_01__bad",
+      "CWE401_Memory_Leak__malloc_realloc_int_18__bad",
+      "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad",
+      "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18__bad",
+      "CWE401_Memory_Leak__new_TwoIntsClass_68__bad",
+      "CWE401_Memory_Leak__new_array_twointsStruct_68__bad",
+      "CWE401_Memory_Leak__twoIntsStruct_malloc_68__bad",
+      "CWE401_Memory_Leak__wchar_t_calloc_68__bad",
+      "CWE401_Memory_Leak__wchar_t_malloc_68__bad"
+    ]
+  },
+  "enhanced_mode_counts": {
+    "default": {
+      "applicable": 140,
+      "leak": 58,
+      "leak_bad": 58,
+      "leak_good": 0,
+      "not_applicable": 0
+    },
+    "realloc_fail": {
+      "applicable": 14,
+      "leak": 7,
+      "leak_bad": 7,
+      "leak_good": 0,
+      "not_applicable": 126
+    },
+    "nogobal": {
+      "applicable": 140,
+      "leak": 63,
+      "leak_bad": 63,
+      "leak_good": 0,
+      "not_applicable": 0
+    }
+  },
+  "guided_prompts": {
+    "prompts": 140,
+    "unique": 140,
+    "chars_min": 3068,
+    "chars_max": 4239
+  },
+  "checks": [
+    {
+      "check": "frozen_split",
+      "ok": true,
+      "detail": {
+        "subset_sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+        "freeze_sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+        "units": 140,
+        "labels": {
+          "bad": 70,
+          "good": 70
+        }
+      }
+    },
+    {
+      "check": "v2_input_pack",
+      "ok": true,
+      "detail": {
+        "sha256": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6",
+        "manifest_sha256": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6",
+        "units": 140,
+        "source_sha_mismatch": [],
+        "cleaner_mismatch": []
+      }
+    },
+    {
+      "check": "enhanced_inputs_build",
+      "ok": true,
+      "detail": {
+        "error": null,
+        "units": 140
+      }
+    },
+    {
+      "check": "inputs_pack_on_disk",
+      "ok": true,
+      "detail": {
+        "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/hybrid_dynamic_enhanced/inputs/units.jsonl",
+        "sha256": "061546a40e5dd66d7a1fca2dd23dd1ec250d4705a48651dca1eb757488976dce",
+        "manifest_sha256": "061546a40e5dd66d7a1fca2dd23dd1ec250d4705a48651dca1eb757488976dce",
+        "rebuilt_sha256": "061546a40e5dd66d7a1fca2dd23dd1ec250d4705a48651dca1eb757488976dce",
+        "units_equal": true
+      }
+    },
+    {
+      "check": "enhanced_tool_confusion",
+      "ok": true,
+      "detail": {
+        "confusion": {
+          "tp": 70,
+          "fp": 0,
+          "tn": 70,
+          "fn": 0
+        },
+        "mode_counts": {
+          "default": {
+            "applicable": 140,
+            "leak": 58,
+            "leak_bad": 58,
+            "leak_good": 0,
+            "not_applicable": 0
+          },
+          "realloc_fail": {
+            "applicable": 14,
+            "leak": 7,
+            "leak_bad": 7,
+            "leak_good": 0,
+            "not_applicable": 126
+          },
+          "nogobal": {
+            "applicable": 140,
+            "leak": 63,
+            "leak_bad": 63,
+            "leak_good": 0,
+            "not_applicable": 0
+          }
+        },
+        "newly_observable": 12
+      }
+    },
+    {
+      "check": "enhanced_evidence_audit",
+      "ok": true,
+      "detail": {
+        "chars": {
+          "min": 875,
+          "median": 1006,
+          "max": 1055
+        },
+        "distinct_texts": 13,
+        "forbidden_markers": 0
+      }
+    },
+    {
+      "check": "direct_prompt_identity",
+      "ok": true,
+      "detail": {
+        "checked": 280,
+        "mismatch": [],
+        "version_mismatch": []
+      }
+    },
+    {
+      "check": "evidence_template_identity",
+      "ok": true,
+      "detail": {
+        "hde_template_sha256": "9778aa0cc2cb8650c7ae60080853d02cfc9fc4eb0f8f209f72dd7405be0c637d"
+      }
+    },
+    {
+      "check": "guided_prompt_audit",
+      "ok": true,
+      "detail": {
+        "prompts": 140,
+        "unique": 140,
+        "chars_min": 3068,
+        "chars_max": 4239,
+        "errors": []
+      }
+    },
+    {
+      "check": "v2_baselines",
+      "ok": true,
+      "detail": {
+        "deepseek/direct": {
+          "records": 140,
+          "unique": 140,
+          "ok": 140,
+          "prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+          "input_sha": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6"
+        },
+        "deepseek/dynamic": {
+          "records": 140,
+          "unique": 140,
+          "ok": 140,
+          "prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+          "input_sha": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6"
+        },
+        "deepseek/combined": {
+          "records": 140,
+          "unique": 140,
+          "ok": 140,
+          "prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+          "input_sha": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6"
+        },
+        "mimo/direct": {
+          "records": 140,
+          "unique": 140,
+          "ok": 140,
+          "prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+          "input_sha": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6"
+        },
+        "mimo/dynamic": {
+          "records": 140,
+          "unique": 140,
+          "ok": 140,
+          "prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+          "input_sha": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6"
+        },
+        "mimo/combined": {
+          "records": 140,
+          "unique": 140,
+          "ok": 140,
+          "prompt_version": "hybrid-v2-juliet-llm-binary-2026-11-12.2",
+          "input_sha": "1ec51f5744a1b0c6da329b716a868f5992afec17178311c4c83010f07b6457d6"
+        }
+      }
+    },
+    {
+      "check": "credentials",
+      "ok": true,
+      "detail": {
+        "provider": "opencode-go",
+        "present": true,
+        "error": null
+      }
+    },
+    {
+      "check": "live_smoke",
+      "ok": true,
+      "detail": {
+        "deepseek": {
+          "status": "ok",
+          "http_status": 200,
+          "schema_ok": true,
+          "label": "not_vulnerable",
+          "attempts": 1,
+          "latency_seconds": 2.781,
+          "usage": {
+            "prompt_tokens": 358,
+            "completion_tokens": 37,
+            "total_tokens": 395,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "cost": 0,
+            "opencode": {
+              "billing_source": "go",
+              "list_cost": 7.59e-05,
+              "allowance": 4.554e-05,
+              "tokens": {
+                "input": 358,
+                "output": 37,
+                "reasoning": 0,
+                "cache_read": 0,
+                "cache_write_5m": 0,
+                "cache_write_1h": 0
+              }
+            }
+          },
+          "cost_usd": 7.589999999999999e-05,
+          "network": {
+            "host": "opencode.ai",
+            "no_proxy_extended": true
+          }
+        },
+        "mimo": {
+          "status": "ok",
+          "http_status": 200,
+          "schema_ok": true,
+          "label": "not_vulnerable",
+          "attempts": 1,
+          "latency_seconds": 3.138,
+          "usage": {
+            "prompt_tokens": 336,
+            "completion_tokens": 31,
+            "total_tokens": 367,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cached_tokens": 320,
+              "cache_write_tokens": 0
+            },
+            "completion_tokens_details": {
+              "audio_tokens": 0,
+              "reasoning_tokens": 0
+            },
+            "cost": 0,
+            "opencode": {
+              "billing_source": "go",
+              "list_cost": 1.182e-05,
+              "allowance": 1.182e-05,
+              "tokens": {
+                "input": 16,
+                "output": 31,
+                "reasoning": 0,
+                "cache_read": 320,
+                "cache_write_5m": 0,
+                "cache_write_1h": 0
+              }
+            }
+          },
+          "cost_usd": 1.1816000000000002e-05,
+          "network": {
+            "host": "opencode.ai",
+            "no_proxy_extended": false
+          }
+        }
+      }
+    },
+    {
+      "check": "run_id_free",
+      "ok": true,
+      "detail": {
+        "run_id": "enhanced_dynamic_v1",
+        "collisions": []
+      }
+    }
+  ],
+  "failures": [],
+  "smoke": {
+    "deepseek": {
+      "status": "ok",
+      "http_status": 200,
+      "schema_ok": true,
+      "label": "not_vulnerable",
+      "attempts": 1,
+      "latency_seconds": 2.781,
+      "usage": {
+        "prompt_tokens": 358,
+        "completion_tokens": 37,
+        "total_tokens": 395,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 7.59e-05,
+          "allowance": 4.554e-05,
+          "tokens": {
+            "input": 358,
+            "output": 37,
+            "reasoning": 0,
+            "cache_read": 0,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "cost_usd": 7.589999999999999e-05,
+      "network": {
+        "host": "opencode.ai",
+        "no_proxy_extended": true
+      }
+    },
+    "mimo": {
+      "status": "ok",
+      "http_status": 200,
+      "schema_ok": true,
+      "label": "not_vulnerable",
+      "attempts": 1,
+      "latency_seconds": 3.138,
+      "usage": {
+        "prompt_tokens": 336,
+        "completion_tokens": 31,
+        "total_tokens": 367,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 320,
+          "cache_write_tokens": 0
+        },
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "reasoning_tokens": 0
+        },
+        "cost": 0,
+        "opencode": {
+          "billing_source": "go",
+          "list_cost": 1.182e-05,
+          "allowance": 1.182e-05,
+          "tokens": {
+            "input": 16,
+            "output": 31,
+            "reasoning": 0,
+            "cache_read": 320,
+            "cache_write_5m": 0,
+            "cache_write_1h": 0
+          }
+        }
+      },
+      "cost_usd": 1.1816000000000002e-05,
+      "network": {
+        "host": "opencode.ai",
+        "no_proxy_extended": false
+      }
+    }
+  },
+  "credentials": "presence checked; value never read into the report"
+}

@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cs224.local/benchmark/extensions/schemas/extension_metrics.schema.json",
+  "title": "Benchmark extension metrics",
+  "description": "Per-run metrics for an extension design. The parent metrics.json remains benchmark-metrics-v1 and is embedded under parent_metrics where applicable; this file adds design-specific endpoints, strata and diagnostics. It never pools designs or tiers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "extension_id",
+    "design",
+    "generated_at",
+    "run_ids",
+    "settings",
+    "counts",
+    "primary",
+    "metrics",
+    "cost",
+    "limitations",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "benchmark-extension-metrics-v1"
+    },
+    "extension_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "design": {
+      "enum": [
+        "position_debiased_pair",
+        "open_choice_pair",
+        "evidence_verification",
+        "evidence_retraction",
+        "fault_injected_dynamic",
+        "new_static_tool",
+        "enhanced_dynamic",
+        "hybrid_enhanced_dynamic"
+      ]
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "run_ids": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "primary": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "name",
+        "value",
+        "n",
+        "method"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "n": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "ci_low": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "ci_high": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "strata": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "comparisons": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "parent_metrics": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

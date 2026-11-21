@@ -1,0 +1,44 @@
+{
+  "run_id": "ext_pair_debias_mimo_forced",
+  "tier": "A",
+  "track": "secvuleval",
+  "pair_split": "splits/test_pairs_180.json",
+  "pairing_id": "pairset-mimo-forced-v1",
+  "method": {
+    "method_id": "llm.mimo.pair_debiased",
+    "family": "llm",
+    "name": "MiMo-V2.6-Flash / pair-debias forced",
+    "strategy": "pair_debiased",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_completion_tokens",
+        "reasoning_effort": "none"
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-13"
+    }
+  },
+  "orders": {
+    "fwd": {
+      "raw": "pair_joint/runs/test_mimo_180/results.jsonl",
+      "position_map": "pair_joint/runs/test_mimo_180/position_map.json",
+      "run_id": "ext_pair_debias_mimo_forced_fwd"
+    },
+    "rev": {
+      "raw": "pair_debias/runs/test_mimo_forced_rev/results.jsonl",
+      "position_map": "pair_debias/runs/test_mimo_forced_rev/position_map.json",
+      "run_id": "ext_pair_debias_mimo_forced_rev"
+    }
+  },
+  "out": "../runs/pair_debias/mimo/forced",
+  "include_rationale": true,
+  "notes": [
+    "real pair_debias forced_fwd from pair_joint; forced_rev from pair_debias"
+  ]
+}

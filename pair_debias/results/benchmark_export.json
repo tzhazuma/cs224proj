@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "method": "pair_debias",
+  "dataset_sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+  "dataset_units": 180,
+  "phase": "test",
+  "conditions": {
+    "forced_fwd": {
+      "deepseek-v4.1-flash": {
+        "n": 180,
+        "correct": 138,
+        "da": 0.766667,
+        "exchange_consistent_da": 0.616667
+      },
+      "mimo-v2.6-flash": {
+        "n": 180,
+        "correct": 156,
+        "da": 0.866667,
+        "exchange_consistent_da": 0.744444
+      }
+    },
+    "forced_rev": {
+      "deepseek-v4.1-flash": {
+        "n": 180,
+        "correct": 140,
+        "da": 0.777778,
+        "exchange_consistent_da": 0.616667
+      },
+      "mimo-v2.6-flash": {
+        "n": 180,
+        "correct": 147,
+        "da": 0.816667,
+        "exchange_consistent_da": 0.744444
+      }
+    },
+    "open_fwd": {
+      "deepseek-v4.1-flash": {
+        "n": 180,
+        "correct": 119,
+        "da": 0.661111,
+        "exchange_consistent_da": 0.555556
+      },
+      "mimo-v2.6-flash": {
+        "n": 180,
+        "correct": 119,
+        "da": 0.661111,
+        "exchange_consistent_da": 0.583333
+      }
+    },
+    "open_rev": {
+      "deepseek-v4.1-flash": {
+        "n": 180,
+        "correct": 115,
+        "da": 0.638889,
+        "exchange_consistent_da": 0.555556
+      },
+      "mimo-v2.6-flash": {
+        "n": 180,
+        "correct": 118,
+        "da": 0.655556,
+        "exchange_consistent_da": 0.583333
+      }
+    }
+  },
+  "cross_model": {
+    "forced_fwd": {
+      "difference_da_deepseek_minus_mimo": -0.1,
+      "mcnemar_p": 0.0009122341871261597,
+      "holm_p": 0.0036489367485046387
+    },
+    "forced_rev": {
+      "difference_da_deepseek_minus_mimo": -0.038889,
+      "mcnemar_p": 0.09228515625,
+      "holm_p": 0.27685546875
+    },
+    "open_fwd": {
+      "difference_da_deepseek_minus_mimo": 0.0,
+      "mcnemar_p": 1.0,
+      "holm_p": 1.0
+    },
+    "open_rev": {
+      "difference_da_deepseek_minus_mimo": -0.016667,
+      "mcnemar_p": 0.6900379657745361,
+      "holm_p": 1.0
+    }
+  },
+  "cross_model_matched": {
+    "forced_fwd": {
+      "n": 144,
+      "difference_da_deepseek_minus_mimo": -0.111111,
+      "mcnemar_p": 0.001543879508972168
+    },
+    "forced_rev": {
+      "n": 144,
+      "difference_da_deepseek_minus_mimo": -0.034722,
+      "mcnemar_p": 0.2265625
+    },
+    "open_fwd": {
+      "n": 144,
+      "difference_da_deepseek_minus_mimo": -0.020833,
+      "mcnemar_p": 0.6776394844055176
+    },
+    "open_rev": {
+      "n": 144,
+      "difference_da_deepseek_minus_mimo": -0.020833,
+      "mcnemar_p": 0.6776394844055176
+    }
+  },
+  "exchange": {
+    "deepseek-v4.1-flash": {
+      "forced": {
+        "da_both_orders": 0.616667,
+        "semantic_agreement_rate": 0.688889,
+        "same_letter_rate": 0.311111
+      },
+      "open": {
+        "da_both_orders": 0.555556,
+        "semantic_agreement_rate": 0.727778,
+        "same_letter_rate": 0.145038
+      }
+    },
+    "mimo-v2.6-flash": {
+      "forced": {
+        "da_both_orders": 0.744444,
+        "semantic_agreement_rate": 0.805556,
+        "same_letter_rate": 0.194444
+      },
+      "open": {
+        "da_both_orders": 0.583333,
+        "semantic_agreement_rate": 0.794444,
+        "same_letter_rate": 0.085938
+      }
+    }
+  },
+  "exchange_vs_length": {
+    "deepseek-v4.1-flash": {
+      "forced": {
+        "exchange_consistent_da": 0.616667,
+        "heuristic_da": 0.722222,
+        "heuristic_forward_da": 0.744444,
+        "mcnemar_p": 0.014453833533827731,
+        "holm_p": 0.028907667067655463
+      },
+      "open": {
+        "exchange_consistent_da": 0.555556,
+        "heuristic_da": 0.722222,
+        "heuristic_forward_da": 0.744444,
+        "mcnemar_p": 0.00017632711255144299,
+        "holm_p": 0.0007053084502057719
+      }
+    },
+    "mimo-v2.6-flash": {
+      "forced": {
+        "exchange_consistent_da": 0.744444,
+        "heuristic_da": 0.722222,
+        "heuristic_forward_da": 0.744444,
+        "mcnemar_p": 0.6439689563703723,
+        "holm_p": 0.6439689563703723
+      },
+      "open": {
+        "exchange_consistent_da": 0.583333,
+        "heuristic_da": 0.722222,
+        "heuristic_forward_da": 0.744444,
+        "mcnemar_p": 0.0015471669302425245,
+        "holm_p": 0.0046415007907275735
+      }
+    }
+  }
+}

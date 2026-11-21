@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cs224.local/benchmark/extensions/schemas/extension_manifest.schema.json",
+  "title": "Benchmark extension sidecar manifest",
+  "description": "One extension_manifest.json per canonical extension run. The parent run_manifest.json remains benchmark-run-v1 and is not extended, so this sidecar carries design/pairing/registry metadata without breaking the parent schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "extension_id",
+    "design",
+    "design_version",
+    "registry_version",
+    "parent_task",
+    "aggregation_unit",
+    "created_at",
+    "run_role"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "benchmark-extension-manifest-v1"
+    },
+    "extension_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "design": {
+      "enum": [
+        "position_debiased_pair",
+        "open_choice_pair",
+        "evidence_verification",
+        "evidence_retraction",
+        "fault_injected_dynamic",
+        "new_static_tool",
+        "enhanced_dynamic",
+        "hybrid_enhanced_dynamic"
+      ]
+    },
+    "design_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "registry_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parent_task": {
+      "enum": [
+        "detection",
+        "pair_detection",
+        "leak_detection"
+      ]
+    },
+    "aggregation_unit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "run_role": {
+      "enum": [
+        "single",
+        "order_ab",
+        "order_ba",
+        "fwd",
+        "rev"
+      ]
+    },
+    "presentation_order": {
+      "enum": [
+        "AB",
+        "BA",
+        "fwd",
+        "rev",
+        null
+      ]
+    },
+    "pairing_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 300
+    },
+    "sibling_run_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 200
+    },
+    "claim_manifest": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "count"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "fault_manifest": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "count"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "tool_registry": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "tool_id"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "tool_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "baseline_run": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "coverage_threshold": {
+      "oneOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "options": {
+      "type": "object"
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "design": {
+            "const": "position_debiased_pair"
+          }
+        },
+        "required": [
+          "design"
+        ]
+      },
+      "then": {
+        "properties": {
+          "run_role": {
+            "enum": [
+              "order_ab",
+              "order_ba",
+              "fwd",
+              "rev"
+            ]
+          },
+          "presentation_order": {
+            "enum": [
+              "AB",
+              "BA",
+              "fwd",
+              "rev"
+            ]
+          },
+          "pairing_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "presentation_order",
+          "pairing_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "design": {
+            "enum": [
+              "open_choice_pair",
+              "evidence_verification",
+              "evidence_retraction",
+              "fault_injected_dynamic",
+              "new_static_tool",
+              "enhanced_dynamic",
+              "hybrid_enhanced_dynamic"
+            ]
+          }
+        },
+        "required": [
+          "design"
+        ]
+      },
+      "then": {
+        "properties": {
+          "run_role": {
+            "const": "single"
+          },
+          "presentation_order": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "design": {
+            "const": "evidence_verification"
+          }
+        },
+        "required": [
+          "design"
+        ]
+      },
+      "then": {
+        "required": [
+          "claim_manifest"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "design": {
+            "const": "fault_injected_dynamic"
+          }
+        },
+        "required": [
+          "design"
+        ]
+      },
+      "then": {
+        "required": [
+          "fault_manifest"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "design": {
+            "const": "new_static_tool"
+          }
+        },
+        "required": [
+          "design"
+        ]
+      },
+      "then": {
+        "required": [
+          "tool_registry"
+        ]
+      }
+    }
+  ]
+}

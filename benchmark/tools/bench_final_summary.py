@@ -1792,7 +1792,17 @@ def build_markdown(summary: Mapping[str, Any]) -> str:
             f"| `{entry['run_id']}` | `{entry['group']}` | {entry.get('method_name')} | "
             f"{entry.get('n')} | {entry.get('reason')} |"
         )
-    lines.append("")
+    lines += [
+        "",
+        "## Extension layer (separate designs; not pooled)",
+        "",
+        "The extension designs (position/open-choice pair, evidence retraction, enhanced dynamic,",
+        "hybrid enhanced dynamic, CodeQL static tool) and the schema-recovery audit are summarized in",
+        "[`EXTENSIONS.md`](EXTENSIONS.md) with machine-readable [`extension_summary.json`](extension_summary.json).",
+        "They use separate denominators and are **not** pooled with any Tier A/B table above; no number in this",
+        "file is imported from the extension layer.",
+        "",
+    ]
     return "\n".join(lines)
 
 

@@ -8,7 +8,7 @@
 
 ## 1. 环境
 
-已在以下环境验证（2026-11-12，WSL2）：
+已在以下环境验证（2026-11-12 首次；2026-11-14 增补 CodeQL 与新实验，WSL2）：
 
 | 组件 | 版本/说明 |
 | --- | --- |
@@ -22,6 +22,8 @@
 | `jsonschema` | 4.19.2（`bench_validate.py --jsonschema` 可选） |
 | `openpyxl` | 3.1.5（仅 `build_datasets.py` 需要；本机未装） |
 | Tectonic | 0.17.0（报告 PDF 编译；本机在 `/tmp/secvul-tectonic/`） |
+| CodeQL | 2.27.4（Linux bundle，用户目录 `~/tools/codeql-2.27.4/`；不进入仓库） |
+| `codeql/cpp-queries` | 1.10.0；`cpp-all` 12.4.0（`~/.codeql/packages/`） |
 
 安装 Python 依赖（按需）：
 
@@ -51,6 +53,7 @@ cd cs224proj
 | `juliet/build/` | 27 MB | `python3 juliet/scripts/build_subset.py --jobs 6` 或 `verify.py --build` |
 | `traditional/dynamic/runs/*/cases/` | 326 MB | 重跑 `run_dynamic_eval.py` |
 | `**/runs/*/cache/` | 约 50 MB | 重跑对应 runner；缓存可由 `requests.jsonl` 重建 |
+| `dynamic_enhanced/runs/*/build/` | 约 56 KB | `run_dynamic_enhanced.py run` 重新编译 |
 | `juliet_repair/build/baselines/`、`sanitized/`、`support/`、`selftest/` | 约 14 MB | `juliet_repair/scripts/check_baselines.py` |
 | `repair_eval/packages/*/private/` | 约 100 KB | 不公开；盲评汇总仍保留在 `repair_eval/analysis/` |
 
@@ -128,8 +131,8 @@ python3 splits/make_splits.py verify
 | --- | --- | --- | --- |
 | **L0** | 否 | 自检、数据卡校验、JSON 解析、哈希核对 | 1–2 分钟 |
 | **L1** | 否 | 从已冻结 run 重算指标/leaderboard 到 `/tmp` | 1–5 分钟 |
-| **L2** | 否 | 重跑 Clang/Cppcheck、ASan/LSan、Valgrind | 10 秒–20 分钟 |
-| **L3** | 是 | 重跑 LLM/混合/修复实验 | 数分钟–数十分钟，按 API 计费 |
+| **L2** | 否 | 重跑 Clang/Cppcheck、ASan/LSan、Valgrind、CodeQL、动态增强 | 10 秒–24 分钟 |
+| **L3** | 是 | 重跑 LLM/混合/修复/配对/验证实验 | 数分钟–数十分钟，按 API 计费 |
 
 L0/L1/L2 是发布验收的核心；L3 受凭证、端点、价格和服务端非确定性影响。
 
@@ -154,6 +157,11 @@ python3 hybrid/selftest.py
 python3 pair_joint/selftest.py
 python3 juliet_repair/scripts/selftest.py
 python3 evidence_prompt/selftest.py
+python3 dynamic_enhanced/run_dynamic_enhanced.py selftest
+python3 pair_debias/selftest.py
+python3 evidence_verify/selftest.py
+python3 benchmark/extensions/tools/ext_selftest.py
+python3 analysis/schema_recovery/recover.py --selftest
 python3 -m repair_eval selftest
 ```
 
@@ -168,6 +176,11 @@ python3 -m repair_eval selftest
 | `pair_joint/selftest.py` | `all checks passed` |
 | `juliet_repair/scripts/selftest.py` | `status: PASS`，4/4 control |
 | `evidence_prompt/selftest.py` | prompt/validation/mapping/stats 全 `PASS` |
+| `dynamic_enhanced/run_dynamic_enhanced.py selftest` | `status: PASS`，6/6 controls（2026-11-14 实测） |
+| `pair_debias/selftest.py` | `all checks passed (2099 assertions)`（2026-11-14 实测） |
+| `evidence_verify/selftest.py` | **当前失败**：`matched_budget_table` 引用了未定义的 `valid_indices`（`evidence_verify/evidence_verify/baselines.py:458`）；修复前不要当验收门禁 |
+| `benchmark/extensions/tools/ext_selftest.py` | 五类 fixture 全 PASS；`ext_validate.py --check-registries` 为 8 designs / 6 tools / 10 fault types（本机为 17 条 static rules） |
+| `analysis/schema_recovery/recover.py --selftest` | `selftest: OK (tokenizer, K&R, Wilson, cost formula, key counts, 172 audit rows)` |
 | `python3 -m repair_eval selftest` | `SELFTEST PASSED`，临时目录已删除 |
 
 注意：`juliet_llm/selfcheck.py` 必须用 `python3 -m juliet_llm.selfcheck`（或 `juliet_llm/launch.py`），直接 `python3 juliet_llm/selfcheck.py` 会因相对导入失败。
@@ -203,7 +216,7 @@ grep -rIl -E 'sk-[A-Za-z0-9_-]{16,}|Bearer [A-Za-z0-9._-]{20,}' \
 
 ### 4.4 最终质量/泄漏审计
 
-`audit/final_audit.md` 是只读综合审计。**最新重跑（2026-11-11T21:45:48Z）为 58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`，must-fix 为空。** 5 个原 must-fix 均已关闭：
+`audit/` 目前有两代只读审计。旧一轮 `audit/final_audit.md`（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`，must-fix 为空**，覆盖 v2/postleakfix 工作树；它**不含** 2026-11-13/14 的 `pair_debias`、`evidence_verify`、`dynamic_enhanced`、`hybrid_dynamic_enhanced`、CodeQL、`analysis/schema_recovery` 与 `benchmark/extensions`。**最新一轮审计：[`audit/latest_audit.md`](../audit/latest_audit.md)，Overall `PASS`：56 PASS / 0 FAIL / 0 WARN（2026-11-14 最近重跑）**，发布门禁通过；先前的 A6/E6/F4/G3 已修复，不再作为当前审计项。旧一轮的 5 个原 must-fix 关闭证据如下：
 
 - **C3/D6**：`juliet_llm/cleaning.py` 已把 `benign`/`fixed`/`safe`/`clean` 纳入标识符与字符串清洗，prompt 版本升到 `juliet-llm-binary-2026-11-12.2`；`juliet_llm/build/audit_report.md` 的 11 类禁用 token 计数全为 0，`hybrid/inputs_v2` 的 700 条模板 / 1,400 条 run-level prompt 审计通过；v1 hybrid 的 6 个 test good 与 juliet_llm v1 的 8/200 全部保留为泄漏对照。
 - **I3**：repair all-in 统一为 `$0.082550`（headline `$0.032831`；含 `parser_dev/mimo_test70_v1` 的 `$0.005034`），审计重算 delta `-0.000000318`。
@@ -214,12 +227,18 @@ grep -rIl -E 'sk-[A-Za-z0-9_-]{16,}|Bearer [A-Za-z0-9._-]{20,}' \
 需要复核时在冻结工作树上重跑：
 
 ```bash
+# 旧一轮（v2/postleakfix）
 python3 audit/run_final_audit.py
 grep -n '^Overall:' audit/final_audit.md
 grep -n '^Checks:' audit/final_audit.md
+
+# 最新一轮
+LATEST_AUDIT="audit/latest_audit.md"
+grep -n '^Overall:' "$LATEST_AUDIT"
+grep -n '^Checks:' "$LATEST_AUDIT"
 ```
 
-预期 `Overall: **PASS_WITH_WARNINGS**`、`Checks: 58 PASS, 0 FAIL, 3 WARN, 1 INFO`。3 个 WARN 是 B5（Juliet bad/good 长度不对称，600.4 vs 937.9 字符）、D5（hybrid_v2 安慰剂 14/140 个 donor 文本与自身相同）、F4（repair prompt 仍含 `bad`/`CWE`/`Memory_Leak` 任务前提 token）；这些不阻断发布，但必须保留说明。
+旧一轮预期 `Overall: **PASS_WITH_WARNINGS**`、`Checks: 58 PASS, 0 FAIL, 3 WARN, 1 INFO`。3 个 WARN 是 B5（Juliet bad/good 长度不对称，600.4 vs 937.9 字符）、D5（hybrid_v2 安慰剂 14/140 个 donor 文本与自身相同）、F4（repair prompt 仍含 `bad`/`CWE`/`Memory_Leak` 任务前提 token）；这些不阻断发布，但必须保留说明。最新一轮的 PASS/WARN/FAIL 数以它的 `Overall`/`Checks` 行为准，不要沿用旧数字。当前最新一轮为 **PASS（56 PASS / 0 FAIL / 0 WARN）**；先前的 A6/E6/F4/G3 已修复，保留简短历史说明即可。
 
 ---
 
@@ -249,6 +268,19 @@ python3 benchmark/tools/bench_validate.py \
 
 读取已冻结的两层 leaderboard：`benchmark/results/tier_a_leaderboard.md`、`tier_b_leaderboard.md`、`LEADERBOARD.md`。
 
+扩展层只读校验（不调用模型/分析器，不改父表）：
+
+```bash
+python3 benchmark/extensions/tools/ext_validate.py --check-registries
+python3 benchmark/extensions/tools/ext_validate.py \
+  --run-dir benchmark/extensions/runs/dynamic_enhanced/test140_enhanced_v3 --jsonschema
+
+# 从 canonical run 重算扩展汇总（写到 /tmp，避免覆盖冻结汇总）
+python3 benchmark/tools/bench_ext_summary.py \
+  --out-json /tmp/secvul_ext/extension_summary.json \
+  --out-md /tmp/secvul_ext/EXTENSIONS.md
+```
+
 > **当前已知不一致（2026-11-12）**：`benchmark/results/` 现含 16 个 Tier A run（12 个正式矩阵 + 4 个创新导入），`bench_tier_a_summary.py` 仍断言 12 个，直接运行会失败。`bench_tier_b_summary.py` 是历史 5-tool 视图，主动排除 round-2 LLM/hybrid/repair，不再因 `hybrid_*` 报 `KeyError`；Tier B 的完整 v2 结果看 `final_summary.json` 与 `LEADERBOARD.md`。若必须重算 Tier A，先把 12 个 canonical run **复制**（不要用符号链接，汇总脚本不跟随 symlink）到临时 `--runs-root`，输出到 `/tmp`；不要覆盖 `benchmark/results/`。
 
 ### 5.2 Tier A 三策略聚合
@@ -262,6 +294,16 @@ python3 analysis/analyze_runs.py \
 ```
 
 预期：12 个 run 入组（DeepSeek/MiMo × 3 策略 × 2 任务），`bootstrap=10000`、`seed=42`；`status=ok`。如果出现 `no_real_runs`，说明扫描路径或 run 完整性不对，不要改用 `--allow-fixture`。
+
+schema 复分析（0 API；只读 12 个冻结 run）：
+
+```bash
+python3 analysis/schema_recovery/recover.py --out-dir /tmp/secvul_schema_check
+python3 analysis/schema_recovery/recover.py --check
+python3 analysis/schema_recovery/recover.py --selftest
+```
+
+`--check` 逐字节比较已有 `schema_recovery.json`、`schema_recovery.md`、`records.jsonl`；输出不一致说明脚本或输入变了，不要直接覆盖发布产物。
 
 ### 5.3 跨模型比较
 
@@ -348,6 +390,44 @@ python3 benchmark/tools/bench_collect_tier_b.py \
 ```
 
 该工具把 `traditional/static` 与 `traditional/dynamic` 的产物只读映射到冻结 200 单元；`--out-root` 写到临时目录，避免覆盖 `benchmark/results/tier_b/`。若源 run 已存在，需显式 `--force`；不要用它覆盖正式结果。
+
+### 6.4 扩展静态：CodeQL（2026-11-14）
+
+CodeQL 不随仓库分发；需要本地 bundle（约 418 MB）与查询包。安装步骤见 `static_extended/README.md` §2：官方 SHA-256 为 `393bf92b66596141ec93baf9b483f4a350f3749916c922fed0dd63c67706047d`，pack 从 GHCR 下载。WSL 内 GitHub 直连可能被阻断，本机使用镜像下载并校验；不要跳过哈希校验。
+
+```bash
+python3 static_extended/codeql_adapter.py \
+  --units juliet/subset_units.jsonl \
+  --juliet-root juliet \
+  --out static_extended/runs/repro_codeql_cwe401 \
+  --codeql ~/tools/codeql-2.27.4/codeql/codeql \
+  --jobs 6 --timeout 600
+
+python3 static_extended/compare_test140.py \
+  --units juliet/subset_units.jsonl \
+  --baseline traditional/static/runs/juliet_formal_20261112_clang_cppcheck_gnu/predictions.jsonl \
+  --codeql-run static_extended/runs/repro_codeql_cwe401 \
+  --out static_extended/runs/repro_codeql_cwe401/comparison_test140.json
+```
+
+- 预期：200 单元 194 `ok`、6 `compile_error`（`_82`，与 Clang 基线同一批）；test 140 为 136 可分析、68 TP / 23 FP / 47 TN / 2 FN。
+- 每个单元单独建库，墙钟约 1,434.7 s（6 并发）；`--out` 必须是新目录，适配器拒绝覆盖。
+- Semgrep/Infer 没有产出结果；不要用自写规则冒充工具能力，也不要把 CodeQL 的数字与 Clang 直接写成“谁更好”。
+
+### 6.5 动态增强：`realloc` 故障注入 + LSan 全局根（2026-11-13）
+
+```bash
+cd dynamic_enhanced
+python3 run_dynamic_enhanced.py selftest
+python3 run_dynamic_enhanced.py run --run-id repro_enhanced --jobs 8
+python3 run_dynamic_enhanced.py report --run-dir runs/repro_enhanced
+python3 run_dynamic_enhanced.py export --run-dir runs/repro_enhanced
+python3 run_dynamic_enhanced.py verify --run-dir runs/repro_enhanced
+```
+
+- 预期：140 单元 × 3 模式；`status=PASS`，70 `leak` / 70 `clean`，0 `compile_error`/`timeout`。
+- `realloc_fail` 只注入第一次非 NULL `realloc`；`nogobal` 关闭 LSan 全局根。两者都是条件性证据，不是“任意条件下都会泄漏”。
+- 本机总耗时 315.6 s；必须用新 `--run-id`，不要覆盖 `runs/test140_enhanced_v3`。
 
 ---
 
@@ -468,6 +548,50 @@ python3 -m repair_eval build \
 
 正式包需要两位评分者和第三人裁决；`repair_eval/analysis/repair_blind_v1/final/summary.md` 是已完成的 LLM 辅助盲评汇总（30 案例 / 81 候选 / VR=2 17/81），不是人类评审。
 
+### 7.9 Pair-debias：反向重复 + 开放四分类（2026-11-13/14）
+
+```bash
+python3 pair_debias/selftest.py
+bash pair_debias/run_pair_debias.sh full
+bash pair_debias/run_pair_debias.sh analyze
+```
+
+- `full` 只跑 3 个新条件（forced_rev、open_fwd、open_rev）× 2 模型 × 180 对，共 1,080 条记录（1,029 新请求 + 51 缓存复用）；`forced_fwd` 复用 `pair_joint/runs/test_*_180`，不重复计费。
+- 预期 1,080/1,080 ok，0 invalid，0 API error；脚本对已有 `manifest.json` 自动 `--resume`，按内容哈希缓存。
+- 结果：`pair_debias/results/summary.md`、`comparison.md`、`analysis_{deepseek,mimo}.json`。
+- 解读必须同时给单序 DA、交换一致 DA、两序长度启发式（72.22%）和开放 committed 准确率；“选较短版本”仍是强基线。
+
+### 7.10 Evidence verification：正例二次验证（4 臂）
+
+```bash
+python3 evidence_verify/selftest.py
+bash evidence_verify/run_verify.sh deepseek_self test
+bash evidence_verify/run_verify.sh deepseek_cross test
+bash evidence_verify/run_verify.sh mimo_self test
+bash evidence_verify/run_verify.sh mimo_cross test
+python3 evidence_verify/analyze.py
+```
+
+- 只对第一遍 schema-valid 正例各发一次验证请求；负例不动。预期 60/60、60/58、58/57、58/58（请求/ok），invalid 不修复。
+- 全部为 post-hoc、test seen；不能写成“独立确认”。
+- **当前 `python3 evidence_verify/selftest.py` 在 `matched_budget_table` 处有 `NameError: valid_indices`（`evidence_verify/evidence_verify/baselines.py:458`）**；修复后再把 selftest 当验收门禁。
+
+### 7.11 增强动态证据 + LLM（`hybrid_dynamic_enhanced`）
+
+```bash
+cd hybrid_dynamic_enhanced
+python3 run_hde.py build
+python3 run_hde.py preflight --smoke --run-id repro_hde
+python3 run_hde.py run --model all --run-id repro_hde --concurrency 10
+python3 run_hde.py analyze
+python3 run_hde.py report
+python3 run_hde.py verify
+```
+
+- 预期 280 请求（2 模型 × 140），0 invalid/API error；`verify` 12/12 PASS。
+- 基线 direct/dynamic/combined 是冻结的 v2 run，不重新请求；工具 140/140，LLM 增益不显著。
+- `--smoke` 每个模型发 1 次小请求，不计入 280；`run` 拒绝未通过 preflight 或输入 SHA 不匹配的 run。
+
 ---
 
 ## 8. 报告与 PDF
@@ -481,9 +605,13 @@ pdfinfo report/report_extended_zh.pdf | grep '^Pages'
 
 /tmp/secvul-tectonic/tectonic -X compile report/report_zh.tex --outdir report --keep-intermediates
 pdfinfo report/report_zh.pdf | grep '^Pages'
+
+# 最新版（2026-11-14）
+/tmp/secvul-tectonic/tectonic -X compile report/report_latest_zh.tex --outdir report --keep-intermediates
+pdfinfo report/report_latest_zh.pdf | grep '^Pages'
 ```
 
-预期：扩展版 `report_extended_zh.pdf` 为 **27 页**，基础版 `report_zh.pdf` 为 **17 页**；无 unresolved references/citations，无缺字。报告源稿中的唯一 `TODO` 是作者/单位信息，不是结果占位。
+预期：扩展版 `report_extended_zh.pdf` 为 **27 页**，基础版 `report_zh.pdf` 为 **17 页**；最新版 `report/report_latest_zh.pdf` 为 **35 页**（2026-11-14 02:12 CST，`pdfinfo` 实测）。三份都应无 unresolved references/citations、无缺字。报告源稿中的唯一 `TODO` 是作者/单位信息，不是结果占位。
 
 ---
 
@@ -491,7 +619,8 @@ pdfinfo report/report_zh.pdf | grep '^Pages'
 
 发布或提交前逐项确认：
 
-- [ ] `python3 benchmark/tools/selftest.py` 等 L0 自检全部通过（见 §4.1）。
+- [ ] `python3 benchmark/tools/selftest.py` 等 L0 自检全部通过（见 §4.1）；`evidence_verify/selftest.py` 的 `valid_indices` 问题修复后才能勾选。
+- [ ] `dynamic_enhanced/run_dynamic_enhanced.py selftest`、`pair_debias/selftest.py`、`benchmark/extensions/tools/ext_selftest.py`、`analysis/schema_recovery/recover.py --selftest` 通过；`ext_validate.py --check-registries` 为 8 designs。
 - [ ] `bench_validate_dataset.py --jsonschema` 返回 `ok: true`，200 units / 42 families。
 - [ ] `juliet/scripts/verify.py` 在恢复 raw 后输出 `PASS`。
 - [ ] 关键数据文件哈希与 §2.3 一致（`sha256sum` 逐项）。
@@ -499,7 +628,8 @@ pdfinfo report/report_zh.pdf | grep '^Pages'
 - [ ] `git ls-files` 中没有 >100 MB 文件；本地 `juliet/cache` 的 146 MB 归档是未跟踪缓存，`find` 会看到但不应被提交。
 - [ ] secret scan 无 `sk-...` / `Bearer ...` / `api_key` 值泄漏；`repair_eval/packages/*/private/` 未被跟踪。
 - [ ] `report/report_extended_zh.pdf` 可打开，`pdfinfo` 显示 27 页；基础版 `report/report_zh.pdf` 为 17 页。
-- [ ] `audit/final_audit.md` 为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO**、Overall `PASS_WITH_WARNINGS`；C3/D6/I3/I5/L4 已关闭，B5/D5/F4 的 WARN 说明保留。
+- [ ] 旧审计 `audit/final_audit.md` 为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO**、Overall `PASS_WITH_WARNINGS`；C3/D6/I3/I5/L4 已关闭，B5/D5/F4 的 WARN 说明保留。
+- [x] **最新一轮**审计已落盘（`audit/latest_audit.md`），为 **PASS（56 PASS / 0 FAIL / 0 WARN，2026-11-14 最近重跑）**；覆盖六个新结果组：`pair_debias`、`evidence_verify`、`dynamic_enhanced`、`hybrid_dynamic_enhanced`、`static_extended`、`analysis/schema_recovery`。`benchmark/extensions` 的 canonical 汇总由 `EXTENSIONS.md`/`extension_summary.json` 单独校验（16/16），不在该审计脚本范围内。
 - [ ] `benchmark/results/tier_a_leaderboard.md`、`tier_b_leaderboard.md` 与 `tier_a_summary.json`、`tier_b_summary.json` 时间戳/内容一致。
 - [ ] 没有把 Tier A 与 Tier B 的数字合并成“总排行榜”。
 
@@ -522,6 +652,10 @@ pdfinfo report/report_zh.pdf | grep '^Pages'
 11. **`repair_eval verify` 需要 private key**：公开仓库不含 `repair_eval/packages/*/private/`；只在保留 private 的原始工作区运行。
 12. **Tectonic 不在 PATH**：本机在 `/tmp/secvul-tectonic/tectonic`；换机器需安装 Tectonic 或 TeX Live。
 13. **`output/pdf/` 是空目录**：Git 不跟踪空目录；提交报告请用 `report/report_zh.pdf` 或显式放文件。
+14. **CodeQL 下载/版本**：bundle 约 418 MB，必须校验官方 SHA-256；查询包版本固定为 `cpp-queries` 1.10.0，升级会改变召回/误报。WSL 直连 GitHub 失败时用镜像，但不要把未校验的 bundle 用于正式结果。
+15. **`schema_recovery` 是 L0**：`usable_patch` 只表示结构完整 + 非注释实质改动；没有编译/测试/PoC。`--check` 必须逐字节一致，不要为了让 check 通过而改旧输出。
+16. **位置/长度不能靠单序**：`pair_debias` 的 forced_fwd 复用 `pair_joint`，新跑的是反序和开放条件；不要把单序 DA 与交换一致 DA 相减后当“提升”。
+17. **`evidence_verify/selftest.py` 当前有代码缺陷**：`matched_budget_table` 引用未定义的 `valid_indices`（`evidence_verify/evidence_verify/baselines.py:458`），修复前 L0 自检不能全绿；运行 `run_verify.sh`/`analyze.py` 不受该函数影响。
 
 ---
 
@@ -532,6 +666,7 @@ pdfinfo report/report_zh.pdf | grep '^Pages'
 - **随机分支**：约 256 个 Juliet 文件用 `srand(time(NULL))` + `rand()%2` 选分支；动态结果是单次真实运行样本，190 个 FN 中有 14 个归因于随机分支。
 - **Valgrind 版本/配置**：不同版本的 leak kind 分类与 still-reachable 语义可能不同；正式结果记录 3.27.1。
 - **LLM 盲评**：`repair_eval` 的评分是 LLM 辅助、主观 rubric；κ 只说明一致性，不说明正确性。
+- **跨日基线**：`pair_debias` 的 `forced_fwd` 来自 2026-11-12 的 `pair_joint`，反向/开放来自 2026-11-13/14；`hybrid_dynamic_enhanced` 的 direct/dynamic/combined 基线来自 2026-11-11。prompt 文本经 selftest 逐消息一致，但服务端路由/行为可能漂移，不能要求逐字节复现。
 
 ---
 
@@ -555,5 +690,16 @@ pdfinfo report/report_zh.pdf | grep '^Pages'
 | 传统静态 | `traditional/static/runs/*/metrics.json`、`metrics.md` |
 | 传统动态 | `traditional/dynamic/runs/*/metrics.json`、`metrics.md`、`results.jsonl` |
 | 最终审计 | `audit/final_audit.json`、`final_audit.md`（58 PASS / 0 FAIL / 3 WARN / 1 INFO，`PASS_WITH_WARNINGS`；见 §4.4） |
-| 报告 | `report/report_extended_zh.tex`、`report_extended_zh.pdf`（27 页）、`report/report_zh.tex`、`report_zh.pdf`（17 页）、`results_summary.md` |
+| 报告 | `report/report_latest_zh.pdf`（35 页，2026-11-14 最新）、`report/report_latest_zh.tex`（源稿）、`report/report_extended_zh.tex`、`report_extended_zh.pdf`（27 页）、`report/report_zh.tex`、`report_zh.pdf`（17 页）、`results_summary.md` |
 | 创新结论分级 | `research/innovation_findings.md` |
+| 文献索引 | `docs/LITERATURE.md`；`research/latest_llm_methods_2026.md`、`latest_evaluation_repair_2026.md`、`latest_memory_tools_2026.md` |
+| A/B 反向与开放四分类 | `pair_debias/report.md`、`pair_debias/results/comparison.json`、`summary.md` |
+| 正例二次验证 | `evidence_verify/analysis/report.md`、`metrics.json`、`retractions.jsonl` |
+| 动态增强 | `dynamic_enhanced/runs/test140_enhanced_v3/metrics.json`、`metrics.md`、`verify.json` |
+| 增强动态 + LLM | `hybrid_dynamic_enhanced/REPORT.md`、`results/enhanced_dynamic_metrics.json`、`audit.json` |
+| CodeQL 扩展静态 | `static_extended/runs/codeql_20261114_cwe401_full/metrics.json`、`comparison_test140.md` |
+| schema 复分析 | `analysis/schema_recovery/schema_recovery.json`、`schema_recovery.md`、`records.jsonl` |
+| 扩展 canonical runs | `benchmark/extensions/runs/`、`benchmark/extensions/README.md` |
+| 扩展最终汇总 | `benchmark/results/EXTENSIONS.md`、`benchmark/results/extension_summary.json`（16 canonical runs；不进入父主表） |
+| 最新结果摘要 | `report/latest_results_summary.md` |
+| 最新审计 | `audit/latest_audit.md`、`audit/latest_audit.json`（2026-11-14 最近重跑；`PASS`：56 PASS / 0 FAIL / 0 WARN） |

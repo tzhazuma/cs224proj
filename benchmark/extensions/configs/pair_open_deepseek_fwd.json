@@ -1,0 +1,34 @@
+{
+  "run_id": "ext_pair_debias_deepseek_open_fwd",
+  "tier": "A",
+  "track": "secvuleval",
+  "pair_split": "splits/test_pairs_180.json",
+  "pairing_id": "pairset-deepseek-open-v1",
+  "order": "fwd",
+  "position_map": "pair_debias/runs/test_deepseek_open_fwd/position_map.json",
+  "method": {
+    "method_id": "llm.deepseek.pair_debiased_open",
+    "family": "llm",
+    "name": "DeepSeek V4.1 Flash / pair-debias open fwd",
+    "strategy": "pair_debiased_open",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "deepseek",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_tokens"
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-13"
+    }
+  },
+  "raw": "pair_debias/runs/test_deepseek_open_fwd/results.jsonl",
+  "out": "../runs/pair_debias/deepseek/open_fwd",
+  "include_rationale": true,
+  "notes": [
+    "real pair_debias open_fwd"
+  ]
+}

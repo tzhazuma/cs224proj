@@ -1,0 +1,35 @@
+{
+  "run_id": "ext_pair_debias_mimo_open_rev",
+  "tier": "A",
+  "track": "secvuleval",
+  "pair_split": "splits/test_pairs_180.json",
+  "pairing_id": "pairset-mimo-open-v1",
+  "order": "rev",
+  "position_map": "pair_debias/runs/test_mimo_open_rev/position_map.json",
+  "method": {
+    "method_id": "llm.mimo.pair_debiased_open",
+    "family": "llm",
+    "name": "MiMo-V2.6-Flash / pair-debias open rev",
+    "strategy": "pair_debiased_open",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "opencode-go",
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "version": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_completion_tokens",
+        "reasoning_effort": "none"
+      },
+      "price_snapshot": "OpenCode Go list prices; 2026-11-13"
+    }
+  },
+  "raw": "pair_debias/runs/test_mimo_open_rev/results.jsonl",
+  "out": "../runs/pair_debias/mimo/open_rev",
+  "include_rationale": true,
+  "notes": [
+    "real pair_debias open_rev"
+  ]
+}

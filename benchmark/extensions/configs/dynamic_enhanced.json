@@ -1,0 +1,25 @@
+{
+  "run_id": "ext_dynamic_enhanced_test140_v3",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "unit_map": "juliet/subset_units.jsonl",
+  "split": "test",
+  "source_run_id": "test140_enhanced_v3",
+  "method": {
+    "method_id": "dynamic.enhanced.three_mode",
+    "family": "dynamic",
+    "name": "ASan/LSan + realloc-failure injection + LSan no-globals",
+    "tool": {
+      "name": "ASan/LSan enhanced harness",
+      "version": "gcc 15.3.0; LSan three-mode",
+      "command_template": "gcc -fsanitize=address ...; LSan use_globals=0; -Wl,--wrap=realloc",
+      "rules": [],
+      "license": "GPL-3.0-or-later (GCC); LLVM sanitizer runtime"
+    }
+  },
+  "raw": "dynamic_enhanced/runs/test140_enhanced_v3/results_units.jsonl",
+  "out": "../runs/dynamic_enhanced/test140_enhanced_v3",
+  "notes": [
+    "real dynamic_enhanced three-mode run; protocol clean is inconclusive"
+  ]
+}

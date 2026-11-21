@@ -1,0 +1,33 @@
+{
+  "run_id": "ext_static_codeql_cwe401_test140_20261114",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "unit_map": "juliet/subset_units.jsonl",
+  "split": "test",
+  "tool_id": "codeql",
+  "scope_kind": "target_file",
+  "source_run_id": "codeql_20261114_cwe401_full",
+  "method": {
+    "method_id": "static.codeql.cwe401",
+    "family": "static",
+    "name": "CodeQL 2.27.4 / CWE-401 leak queries",
+    "strategy": "static_analyzer",
+    "tool": {
+      "name": "CodeQL CLI",
+      "version": "2.27.4 (codeql/cpp-queries 1.10.0; codeql/cpp-all 12.4.0)",
+      "command_template": "codeql database create <db> --language=cpp --command=<compile> && codeql database analyze <db> cpp/memory-never-freed cpp/memory-may-not-be-freed --format=sarif-latest",
+      "rules": [
+        "cpp/memory-never-freed",
+        "cpp/memory-may-not-be-freed"
+      ],
+      "license": "GitHub CodeQL Terms and Conditions"
+    }
+  },
+  "raw": "static_extended/runs/codeql_20261114_cwe401_full/predictions.jsonl",
+  "out": "../runs/new_static_tool/codeql_cwe401_test140_20261114",
+  "notes": [
+    "real CodeQL 2.27.4 run on the frozen Juliet CWE-401 test split; copied from producer raw, diagnostics re-normalized and recounted, not re-run",
+    "200 raw records (dev 60 + test 140); only the test split is imported, dev is reference-only",
+    "4 test compile errors are preserved as compile_error and count wrong in strict, never as y_pred=0"
+  ]
+}

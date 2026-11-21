@@ -11,7 +11,9 @@
 
 > 所有报告数字都来自已落盘的运行产物；没有用 mock、fixture 或估计值填充正式结果表。`selftest` 和临时 fixture 只用于工具自检，不是实验结果。
 >
-> 最终只读审计：[`audit/final_audit.md`](audit/final_audit.md)，**2026-11-11T21:45:48Z 重跑：58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**。5 个 must-fix 均已关闭：C3/D6 由清洗器 prompt `.2` 与 `hybrid_v2` 修复，I3 的 repair all-in 改为 `$0.082550`，I5 按峰谷价 + `normalized` 口径解释，L4 的 `analysis/aggregation.json` 已用仓库内路径重生成；新增的 L5（v1 泄漏对照保留）与 I7（normalized 成本账）也通过。3 个 WARN（B5/D5/F4）见 §8。
+> **审计状态分两代，不能混用。** 旧一轮只读审计 [`audit/final_audit.md`](audit/final_audit.md)（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**，覆盖 v2/postleakfix 工作树；它**早于** 2026-11-13/14 的 `pair_debias`、`evidence_verify`、`dynamic_enhanced`、`hybrid_dynamic_enhanced`、CodeQL、`analysis/schema_recovery` 与 `benchmark/extensions`，**不覆盖**这些新产物。
+>
+> **最新一轮审计：** [`audit/latest_audit.md`](audit/latest_audit.md)，**Overall `PASS`：56 PASS / 0 FAIL / 0 WARN（56 checks，2026-11-14 最近重跑）**，发布门禁通过。先前的 A6（缓存复用披露）、E6（F1(V) 标注）、F4（schema 成本价卡）、G3（文献快照时效）已修复，保留简短历史说明见 §8.28。旧审计的 3 个 WARN（B5/D5/F4）仍见 §8。
 
 ---
 
@@ -33,6 +35,11 @@
 - 证据行提示显著提高召回（+9.45/+10.92 pp，Holm p=0.0055/0.0010），但 FPR 同向上升、BA/MCC 不升；证据行的 ±3 命中率接近随机。
 - 工具证据在泄漏修复后的 `hybrid_v2` 上没有复现 v1 的提升：DeepSeek direct 135/140 → combined 136/140（+1，McNemar p=1），MiMo 136/140 → 136/140（0，p=1）；v1 的 140/140 在 v2 回落到 136/140。**不能宣称工具证据有效**。
 - 修复在 58 个 LSan 可观测 bad 单元上 58/58；全 70 的 strict 是 58/70，12 个单元是“不可评估”，不是“通过”。
+- **单序 A/B 的 76.67%/86.67% 不是稳定的跨版本推理。** 反向重复后，交换一致 DA 只剩 61.67%（DeepSeek）/74.44%（MiMo）；两序“选较短版本”启发式为 72.22%，DeepSeek 显著低于它（p=0.0145），MiMo 仅高 2.22 pp（p=0.644，不显著）。开放四分类把位置偏差压到不显著，但 17.22%–22.22% 的输出是 `both`/`neither`，总体 DA 只有 63.89%–66.11%。
+- **动态增强把 12 个旧 ASan 不可观测的 bad 变成了可复核证据。** `realloc_fail` + `nogobal` 与 `default` 的并集在 test 140 上为 70 TP / 0 FP / 70 TN / 0 FN；但把这份证据交给 LLM 只到 137/140（DeepSeek）和 136/140（MiMo），相对 direct +2/0，Holm 后均不显著。
+- **二次验证没有选择性撤销假阳性。** 四个臂的撤销精确率仅 14.3%–23.1%（正例中 FP 基准率 18.3%–19.0%），Holm p≥0.8367；post macro-F1 低于 pre。它把操作点变保守，不是判别力提升。
+- **CodeQL 用召回换精确率。** test 140 端到端 68 TP / 23 FP / 47 TN / 2 FN（P 0.747、R 0.971、macro-F1 0.817、MCC 0.674），Clang 为 53/0/70/17（macro-F1 0.877、MCC 0.781）；23 个误报全部是 C++ good 单元。
+- **schema 失败主要是可回收的格式问题，不是修复能力。** DeepSeek 102 条 invalid 中 93 条只缺 `explanation`；code-only admission 把 usable patch 从 552/924 提到 619/924（+7.25 pp），但 usable 只是结构代理（L0），不是编译/测试/PoC 正确率。
 
 ---
 
@@ -72,6 +79,8 @@ Tier B 的传统方法：
 - **动态**：ASan/LSan + Valgrind 3.27.1，全量 3,316 个 case；`clean` 只表示“执行路径上未观察到 definite/indirect leak”，不是安全证明。
 - **LLM/混合**：`juliet_llm/`、`hybrid/`、`juliet_repair/` 是独立探索性实验。`benchmark/` 当前状态：B5（MiMo Juliet LLM，Xiaomi fallback）、B6（static evidence）、B7（dynamic evidence）、B11/B12 已 `done_frozen`；B4（DeepSeek Juliet LLM）无结果，B8（cascade）未做，B9 仍为 `partial`（sanitizer/prompt 审计 200/200 通过，label-only baseline 未跑）。`benchmark/results/LEADERBOARD.md`（2026-11-11T21:31:43Z）已把 **hybrid_v2** 与 **juliet_llm postleakfix** 作为 Tier B 主行，`hybrid_v1` / pre-leakfix 只作为泄漏对照、不出现在主表；LLM/混合数字仍必须带 B9 caveat。
 
+2026-11-14 的扩展层（pair_debias、evidence_verify、dynamic_enhanced、hybrid_dynamic_enhanced、CodeQL、schema_recovery）在 `benchmark/results/EXTENSIONS.md` 与 `extension_summary.json` 中单独汇总；主 leaderboard 只加链接，不导入其数字，也不与 Tier A/B 池化。
+
 ### 2.3 创新与诊断实验
 
 | 目录 | 实验 | 回答的问题 |
@@ -82,6 +91,13 @@ Tier B 的传统方法：
 | `juliet_repair/` | 编译 + LSan + 行为差分 | 模型补丁是否真的编译、消除泄漏、保持可观测行为？ |
 | `juliet_llm/` | Juliet LLM 直接二分类 | 在去标签、去路径、去 CWE 的源码视图上，LLM 能检测 CWE-401 吗？ |
 | `repair_eval/` | 修复质量盲评 | 在固定 rubric 下，LLM 辅助评审认为补丁处理了根因吗？ |
+| `pair_debias/` | A/B 反向重复 + 开放四分类 + 长度匹配 | 单序 DA 有多少来自位置？控制位置后还超过长度启发式吗？ |
+| `evidence_verify/` | 正例二次验证/撤销（4 臂） | 验证器能选择性撤销假阳性吗，还是只是把操作点变保守？ |
+| `dynamic_enhanced/` | `realloc` 故障注入 + LSan 全局根控制 | 旧 ASan 看不到的 12 个 bad 能否变成可复核证据？ |
+| `hybrid_dynamic_enhanced/` | 增强动态证据 + LLM（两模型） | 新证据提升判定，还是只被复述？ |
+| `static_extended/` | CodeQL CWE-401 扩展静态基线 | 新静态工具的召回/误报与 Clang/Cppcheck 如何？ |
+| `analysis/schema_recovery/` | 零 API schema 复分析 | 102 条 invalid 里有多少只是可回收的格式问题？ |
+| `benchmark/extensions/` | 8 个 design 的 canonical 接入层 | 新方法如何在不改父协议的前提下汇总？ |
 
 ---
 
@@ -154,7 +170,25 @@ DeepSeek 有两套 list price：`$0.30/$1.20/$0.006`（高峰价，也是 `runne
 | Juliet LLM（`juliet_llm`） | MiMo 140/140 有效，accuracy 0.9500、F1 0.9510、MCC 0.9008（修复后正式/复现相同）；修复前 0.9571 保留 | MiMo 走 Xiaomi 官方端点 fallback，不是 OpenCode Go；修复只改变 1 条预测（`int_malloc_22__good` 由 TN 变 FP）。正式/复现有 2 个 bad 单元不同、混淆矩阵相同，说明服务端非确定性。DeepSeek 因 401/402/403 **没有** Juliet LLM 结果。 |
 | 修复盲评（`repair_eval`） | 30 案例 / 81 候选；VR=2 为 17/81（21.0%）；MIN 二次加权 κ=0.015；compile_status 81/81 `NOT_RUN` | LLM 辅助评审，不是人类评审；没有编译/PoC；只能写“在该 rubric 下 17/81 被认为处理了根因”。 |
 
-### 3.4 不能声称的事
+### 3.4 2026-11-13/14 最新一轮（新增，尚未进入主 leaderboard）
+
+这一轮补的是“收益是不是真的”，而不是再换模型：位置/长度、验证器选择性、动态不可观测单元、证据被复制、静态工具召回、schema 可回收性。全部为单次运行；除 `analysis/schema_recovery` 外都调用过真实模型或工具。
+
+| 实验 | 主数字 | 诚实结论 |
+| --- | --- | --- |
+| A/B 反向重复（`pair_debias`） | DeepSeek 正/反序 76.67%/77.78%，交换一致 61.67%；MiMo 86.67%/81.67%，交换一致 74.44%；两序长度启发式 72.22%；DeepSeek vs 启发式 p=0.0145（Holm 0.0289），MiMo p=0.644；开放 DA 63.89%–66.11%，弃权 17.22%–22.22%，committed 77.18%–84.40%；1,080 条记录（1,029 新请求 + 51 缓存复用）$0.676605，合计 1,440 请求 $0.902001 | 单序 DA 的增量主要来自位置：强制条件下“只对一序”的配对全部是两序同字母（DeepSeek 56/56，MiMo 35/35）。控制位置后 DeepSeek 显著低于长度启发式，MiMo 不显著高于它。开放格式降低位置偏差，但用弃权换覆盖。 |
+| 正例二次验证（`evidence_verify`，4 臂） | post macro-F1 0.2181/0.3522/0.3221/0.2226；撤销精确率 20.4%/23.1%/14.3%/21.6%；超几何 Holm p=0.8380/0.8380/0.8494/0.8367；事后 refutation-only 规则 macro-F1 0.3645–0.4075 | 验证器撤销的 TP 远多于 FP，未显示“识别假阳性”。主规则几乎撤销全部正例是 `insufficient_evidence` 语义所致；事后规则没有预注册，只能作敏感性。 |
+| 动态增强（`dynamic_enhanced`） | test 140：70 TP / 0 FP / 70 TN / 0 FN；12 个旧不可观测 bad 全部有证据；`default` 与旧 ASan 判定 140/140 一致；新模式并集 vs 旧 128/140，差异恰好 12 个 bad；140 单元 × 3 模式 315.6 s | 7 个 `malloc_realloc` 由真实 `realloc` 失败注入、5 个 `_68` 由关闭 LSan 全局根解决；good 0 FP。`clean` 仍只是单路径观测，不是无泄漏证明。 |
+| 增强证据 + LLM（`hybrid_dynamic_enhanced`） | DeepSeek 135→137/140（97.86%，p=0.5）；MiMo 136→136/140（97.14%，p=1.0）；工具 140/140；280 请求 $0.023561；字节数复述率 92.86%/88.57% | 工具满分使“照抄”与“独立判断”不可分；增益不显著；证据被读取和引用，但没有语义推理提升。 |
+| CodeQL 扩展静态（`static_extended`） | test 140 端到端：68 TP / 23 FP / 47 TN / 2 FN；P 0.7473、R 0.9714、macro-F1 0.8173、MCC 0.6739（canonical 导入 valid-only macro-F1 0.8259）；Clang：53/0/70/17，macro-F1 0.8768、MCC 0.7805；200 单元 194 ok、6 compile_error；墙钟 1,434.7 s | CodeQL 补回 15 个 Clang 漏掉的 bad、未漏 Clang 检出的 bad；代价是 23 个 C++ good 误报。召回更高、精确率和 MCC 更低，不能写成“更好的工具”。 |
+| schema 复分析（`analysis/schema_recovery`） | DeepSeek repair 924 请求：official 822（88.96%）、code-only 915（99.03%）、usable 552→619（+7.25 pp）；102 invalid = 93 missing explanation + 9 truncation；salvage usable 67（canonical）/69（K&R-aware）；MiMo 61 条 field drift，label 一致仅 28/61；0 API | 格式门槛只解释 7.3–7.9 pp；从 code-only 到 usable 仍有约 32 pp 是 no-change/空白/注释/结构问题。salvage 不是正确率，oracle 级别 L0。 |
+| canonical 扩展层（`benchmark/extensions`） | 8 个 design、16 个 canonical run：pair_debias 8、evidence_verify 4、dynamic_enhanced 1、hybrid_dynamic_enhanced 2、CodeQL 1；16/16 校验通过，16 项父指标 + 37 项设计算术 0 不一致；汇总在 `benchmark/results/EXTENSIONS.md` / `extension_summary.json` | 只读导入，不是新实验；八个 design 各有主终点，不能池化；父 schema/PROTOCOL 未改，LEADERBOARD 只加链接不导数字。 |
+
+读法：这一轮的主结论是**负结果和口径修正**，不是新的 SOTA。特别是 (1) 单序 A/B 必须同时给交换一致 DA 与两序长度基线；(2) 验证器的“撤销”必须与同预算随机/廉价规则比较；(3) 动态 `clean` 的 70/70 只成立于三种条件模式的并集；(4) 工具 140/140 时 LLM 准确率无法区分照抄与推理；(5) CodeQL 的高召回伴随 23 个 C++ 误报；(6) schema salvage 只到结构代理。
+
+来源：`pair_debias/report.md`、`evidence_verify/analysis/report.md`、`dynamic_enhanced/runs/test140_enhanced_v3/metrics.md`、`hybrid_dynamic_enhanced/REPORT.md`、`static_extended/runs/codeql_20261114_cwe401_full/comparison_test140.md`、`analysis/schema_recovery/schema_recovery.md`、`benchmark/extensions/README.md`。
+
+### 3.5 不能声称的事
 
 - 不能把 Tier A 与 Tier B 的数字放在同一张排行榜，或计算“总体 F1”。
 - 不能把 `hybrid_v1` 的 140/140、`juliet_repair` 的 58/58、`juliet_llm` 的 0.9500 直接写成“检测/修复达到 SOTA”。
@@ -163,6 +197,12 @@ DeepSeek 有两套 list price：`$0.30/$1.20/$0.006`（高峰价，也是 `runne
 - 不能把联合 A/B 的增益全部归因于“跨版本推理”；长度、强制二选一和位置偏差都是已量化的混淆。
 - 不能把证据行提示的召回提升写成“判别力提升”或“没有增加假阳性”。
 - 不能宣称某个模型总体更强：12 个 run 的模型轴是 post-hoc，所有模型比较经 Holm 后都不显著。
+- 不能把单序 `pair_joint` / `pair_debias` 的 76.67%/86.67% 写成跨版本推理；必须同时报告交换一致 DA 和两序长度启发式。
+- 不能因为开放四分类 DA 更低就说模型“更差”；必须同时给弃权率和 committed 准确率。
+- 不能把 `dynamic_enhanced` 的 70/70 外推为“动态检测 100%”；它是单 test split、三种条件模式的并集。
+- 不能把 `hybrid_dynamic_enhanced` 的 +2 写成证据带来的语义提升；工具满分、增益不显著。
+- 不能把 CodeQL 的高召回写成“优于 Clang”；它的精确率/MCC 更低，23 个 FP 全是 C++ good。
+- 不能把 `schema_recovery` 的 usable 当作修复正确率；它没有编译/测试/PoC。
 
 ---
 
@@ -176,15 +216,16 @@ cs224proj/
 ├── docs/
 │   ├── REPRODUCIBILITY.md        # 环境、数据恢复、分层复现命令、验收清单
 │   ├── SECURITY.md               # 凭证处理、发布前检查、残余风险
+│   ├── LITERATURE.md             # 文献索引：2025–2026 最新调研与引用分级
 │   └── GITHUB_RELEASE.md         # GitHub 私有仓库发布步骤、门禁与推送验证
-├── audit/                        # 最终质量/泄漏审计（PASS_WITH_WARNINGS；0 FAIL，3 WARN）
+├── audit/                        # 只读审计（旧一轮 PASS_WITH_WARNINGS；最新一轮见 §9）
 ├── SecVulEval.xlsx               # 上游数据集（18.8 MB，保留）
 ├── build_datasets.py             # 从 Excel 抽样生成 datasets/
 ├── datasets/                     # 200 独立函数 + 200 对（JSON）
 ├── splits/                       # secvul-split-v1 冻结划分与 few-shot 示例
 ├── runner/                       # SecVulEval LLM runner（direct/few-shot/context）
 ├── mimo/                         # MiMo 兼容性排查与 12-run test 结果
-├── analysis/                     # 三策略统计、bootstrap、McNemar、模型比较、成本归一化
+├── analysis/                     # 三策略统计、bootstrap、McNemar、成本归一化、schema 复分析
 ├── baseline/                     # 数据审计与无需模型的透明基线
 ├── juliet/                       # Juliet CWE-401 冻结子集与构建脚本
 │   ├── raw/                      # [ignored] 上游 CWE-401 源码（58 MB）
@@ -195,20 +236,26 @@ cs224proj/
 │   └── dynamic/                  # ASan/LSan + Valgrind 全量结果
 │       └── runs/*/cases/         # [ignored] 逐 case 二进制与日志（326 MB）
 ├── benchmark/                    # 统一协议、schema、validator、分层 leaderboard
+│   └── extensions/               # 8 个新 design 的 canonical 接入层（不改父协议）
 ├── juliet_llm/                   # Juliet LLM 直接检测（含 Xiaomi fallback）
 ├── hybrid/                       # 静态/动态/组合/安慰剂证据实验（v2 主结果）
+├── hybrid_dynamic_enhanced/      # 增强动态证据 + LLM（test 140，两模型）
+├── dynamic_enhanced/             # realloc 故障注入 + LSan 全局根控制（test 140）
 ├── evidence_prompt/              # 证据行/反事实提示（Tier A）
+├── evidence_verify/              # 正例二次验证/撤销（4 臂，post-hoc）
 ├── pair_joint/                   # 联合 A/B 配对判别
+├── pair_debias/                  # A/B 反向重复、开放四分类、长度匹配
+├── static_extended/              # CodeQL CWE-401 扩展静态基线
 ├── juliet_repair/                # 编译/LSan/行为闭环修复评测
 ├── repair_eval/                  # 修复质量盲评工具与最终汇总
 ├── qualitative/                  # 10 个定性案例
 ├── report/                       # 中文 IEEE 报告源稿、PDF、结果摘要
-├── research/                     # 协议、相关工作、创新结论与限制
+├── research/                     # 协议、相关工作、最新文献、创新结论与限制
 ├── proposal/                     # 课程 proposal 源稿与图
 └── output/                       # 预留输出目录
 ```
 
-每个子目录有自己的 `README.md`，包含该模块的方法、产物、验证命令和限制。根目录只负责总览与发布边界。
+每个模块目录都有 README 或分析报告，包含该模块的方法、产物、验证命令和限制（`evidence_verify/` 的主报告在 `analysis/report.md`）。根目录只负责总览与发布边界。
 
 ---
 
@@ -224,6 +271,7 @@ cs224proj/
 | Clang / Clang++ | 22.1.8 |
 | Cppcheck | 2.21.0（本机未装系统包；正式 run 用解包二进制） |
 | Valgrind | 3.27.1（本机未装系统包；正式 run 用 `/tmp` 解包） |
+| CodeQL | 2.27.4（用户目录 bundle；`cpp-queries` 1.10.0；不进入仓库） |
 | `httpx` | 0.28.1（runner 依赖） |
 | `openpyxl` | 3.1.5（仅 `build_datasets.py` 需要） |
 
@@ -245,11 +293,16 @@ python3 hybrid/selftest.py                          # prompt 对齐、inconclusi
 python3 pair_joint/selftest.py                      # A/B 映射、泄漏审计、解析
 python3 juliet_repair/scripts/selftest.py           # 编译/LSan/行为 control
 python3 evidence_prompt/selftest.py                 # 输入隔离、校验、证据映射
+python3 dynamic_enhanced/run_dynamic_enhanced.py selftest  # 故障注入/全局根 6 control
+python3 pair_debias/selftest.py                     # 反向映射、开放解析、长度审计
+python3 evidence_verify/selftest.py                 # 验证器 prompt、schema、撤销统计
+python3 benchmark/extensions/tools/ext_selftest.py  # 8 design 合成 fixture
+python3 analysis/schema_recovery/recover.py --selftest  # K&R/成本/计数断言
 python3 -m repair_eval selftest                     # 盲评包/评分/kappa
 python3 benchmark/tools/bench_validate_dataset.py --jsonschema
 ```
 
-这些命令只读冻结产物或在临时目录创建 fixture；不会调用模型，也不会覆盖正式结果。
+这些命令只读冻结产物或在临时目录创建 fixture；不会调用模型，也不会覆盖正式结果。**注意：`evidence_verify/selftest.py` 当前在 `matched_budget_table` 处有 `NameError: valid_indices`（`evidence_verify/evidence_verify/baselines.py:458`）；在修复前不要把它当验收门禁。**
 
 ### 5.2 恢复 Juliet 原始数据并校验
 
@@ -293,6 +346,13 @@ python3 analysis/analyze_runs.py \
   --bootstrap 10000 --seed 42
 ```
 
+schema 复分析不调用模型，只读 12 个冻结 run；默认写本目录，复核时写到 `/tmp`：
+
+```bash
+python3 analysis/schema_recovery/recover.py --out-dir /tmp/secvul_schema_check
+python3 analysis/schema_recovery/recover.py --check
+```
+
 ### 5.4 重跑传统静态/动态
 
 静态主结果（需要 Clang；Cppcheck 需自行安装或用 `--cppcheck-bin` 指定；若系统已安装可把 `/path/to/cppcheck` 换成 `$(command -v cppcheck)`）：
@@ -324,9 +384,43 @@ python3 run_dynamic_eval.py run \
 
 若系统没有 Valgrind，可按 `traditional/dynamic/README.md` §1.2 解包到 `/tmp`，并用 `--valgrind-bin` + `VALGRIND_LIB` 指定；没有 Valgrind 时 `detectors.valgrind.status=unavailable`，不会被当成 clean。全量 3,316 case 约 16.5 分钟（8 workers，本机）。
 
+#### 5.4.1 扩展静态：CodeQL（新增，需本地 418 MB bundle）
+
+CodeQL CLI **2.27.4** + `codeql/cpp-queries` **1.10.0** 已对 200 个冻结单元完成真实运行（test 136/140 可分析，4 个 `_82` 与 Clang 同样 `compile_error`）。工具装在用户目录，不进入仓库；WSL 内 GitHub 直连可能被阻断，本机通过镜像下载并用官方 SHA-256 `393bf92b66596141ec93baf9b483f4a350f3749916c922fed0dd63c67706047d` 校验。安装与查询包下载步骤见 `static_extended/README.md` §2。
+
+```bash
+python3 static_extended/codeql_adapter.py \
+  --units juliet/subset_units.jsonl \
+  --juliet-root juliet \
+  --out static_extended/runs/repro_codeql_cwe401 \
+  --codeql ~/tools/codeql-2.27.4/codeql/codeql \
+  --jobs 6 --timeout 600
+
+python3 static_extended/compare_test140.py \
+  --units juliet/subset_units.jsonl \
+  --baseline traditional/static/runs/juliet_formal_20261112_clang_cppcheck_gnu/predictions.jsonl \
+  --codeql-run static_extended/runs/repro_codeql_cwe401 \
+  --out static_extended/runs/repro_codeql_cwe401/comparison_test140.json
+```
+
+`bash static_extended/run_codeql.sh` 会自动选新目录；适配器拒绝覆盖非空目录。本机 200 单元墙钟 1,434.7 s（6 并发），单单元均值 42.5 s；换机器会变。
+
+#### 5.4.2 动态增强：故障注入 + 全局根（无网络）
+
+```bash
+cd dynamic_enhanced
+python3 run_dynamic_enhanced.py selftest
+python3 run_dynamic_enhanced.py run --run-id repro_enhanced --jobs 8
+python3 run_dynamic_enhanced.py report --run-dir runs/repro_enhanced
+python3 run_dynamic_enhanced.py export --run-dir runs/repro_enhanced
+python3 run_dynamic_enhanced.py verify --run-dir runs/repro_enhanced
+```
+
+140 单元 × 3 模式；`realloc_fail` 只让第一次非 NULL `realloc` 失败，`nogobal` 关闭 LSan 全局根。`run` 拒绝写入已存在的目录，必须用新 `--run-id`。本机总耗时 315.6 s。
+
 ### 5.5 重跑 LLM 实验
 
-LLM 请求需要有效的 provider 凭证。**不要把 key 写进命令、脚本或文件**；使用环境变量或 `runner/run_with_kimi_config.py` 从本地 Kimi Code TOML 读入进程内存。部分脚本（`pair_joint/run_pair_joint.sh`、`hybrid/run_hybrid.py`、`juliet_repair/scripts/run_repair.py` 默认值）把 config 路径写死为 `/mnt/c/Users/tzh03/.kimi-code/config.toml`；换机器/用户名时先改脚本顶部或传 `--kimi-config`（支持该参数的工具）。
+LLM 请求需要有效的 provider 凭证。**不要把 key 写进命令、脚本或文件**；使用环境变量或 `runner/run_with_kimi_config.py` 从本地 Kimi Code TOML 读入进程内存。部分脚本（`pair_joint/run_pair_joint.sh`、`pair_debias/run_pair_debias.sh`、`evidence_verify/run_verify.sh`、`hybrid/run_hybrid.py`、`hybrid_dynamic_enhanced/run_hde.py`、`juliet_repair/scripts/run_repair.py` 的默认值）把 config 路径写死为 `/mnt/c/Users/tzh03/.kimi-code/config.toml`；换机器/用户名时先改脚本顶部或传 `--kimi-config`（支持该参数的工具）。
 
 ```bash
 # 例：Tier A 单策略（模型 ID 必须显式指定）
@@ -369,6 +463,27 @@ bash pair_joint/run_pair_joint.sh full
 
 python3 evidence_prompt/analyze.py
 
+# Pair-debias：反向 + 开放四分类（需凭证；复用 pair_joint 正序，不重复计费）
+python3 pair_debias/selftest.py
+bash pair_debias/run_pair_debias.sh full
+bash pair_debias/run_pair_debias.sh analyze
+
+# 正例二次验证：4 臂（需凭证；只对 schema-valid 正例各发一次验证请求）
+python3 evidence_verify/selftest.py  # 当前有 valid_indices NameError，修复后再跑
+bash evidence_verify/run_verify.sh deepseek_self test
+bash evidence_verify/run_verify.sh deepseek_cross test
+bash evidence_verify/run_verify.sh mimo_self test
+bash evidence_verify/run_verify.sh mimo_cross test
+python3 evidence_verify/analyze.py
+
+# 增强动态证据 + LLM（需凭证；2 模型 × 140）
+cd hybrid_dynamic_enhanced
+python3 run_hde.py build
+python3 run_hde.py preflight --smoke --run-id repro_hde
+python3 run_hde.py run --model all --run-id repro_hde --concurrency 10
+python3 run_hde.py analyze && python3 run_hde.py report && python3 run_hde.py verify
+cd ..
+
 # 成本归一化（只读原始 results，重写 analysis/cost_normalization*）
 python3 analysis/cost_normalization/rebuild.py
 ```
@@ -389,11 +504,13 @@ python3 qualitative/build_cases.py --check-only
 # 因此 verify 只应在保留 private/ 的原始工作区运行。
 python3 -m repair_eval verify --package repair_eval/packages/repair_blind_v1
 
-cd report && /tmp/secvul-tectonic/tectonic -X compile report_extended_zh.tex --outdir .
-cd report && /tmp/secvul-tectonic/tectonic -X compile report_zh.tex --outdir .
+/tmp/secvul-tectonic/tectonic -X compile report/report_extended_zh.tex --outdir report
+/tmp/secvul-tectonic/tectonic -X compile report/report_zh.tex --outdir report
+# 最新版报告（2026-11-14）
+/tmp/secvul-tectonic/tectonic -X compile report/report_latest_zh.tex --outdir report
 ```
 
-报告 PDF 已提交：扩展版 `report/report_extended_zh.pdf`（27 页，Tectonic 0.17.0，`pdfinfo` 实测）与基础版 `report/report_zh.pdf`（17 页，保留未改）。重新编译需要 Tectonic 或 TeX Live。
+报告 PDF 已提交：扩展版 `report/report_extended_zh.pdf`（27 页，Tectonic 0.17.0，`pdfinfo` 实测）与基础版 `report/report_zh.pdf`（17 页，保留未改）。**最新报告是 [`report/report_latest_zh.pdf`](report/report_latest_zh.pdf)**（35 页，2026-11-14 02:12 CST，`pdfinfo` 实测），源稿为 [`report/report_latest_zh.tex`](report/report_latest_zh.tex)，覆盖 2026-11-13/14 的配对去偏、二次验证、动态增强、CodeQL 与 schema 复分析。重新编译需要 Tectonic 或 TeX Live。
 
 更多环境细节、数据哈希、验收清单和已知坑见 [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md)。
 
@@ -405,7 +522,8 @@ cd report && /tmp/secvul-tectonic/tectonic -X compile report_zh.tex --outdir .
 - `runner` 和 `juliet_llm` 对响应体做 `sk-...` / `Bearer ...` 脱敏；`api.session` 记录非敏感的 `x-opencode-session` 随机值及其 SHA-256，不是密钥。
 - `.gitignore` 排除 `.env`、`creds/`、`credentials/`、`secrets/`、`*.key`、`*.pem`、`auth.json`、`opencode.json`、`*_api_key.json`、`repair_eval/packages/*/private/` 等。
 - 发布前请按 [`docs/SECURITY.md`](docs/SECURITY.md) 的清单做一次 secret scan 和文件体积检查。**不要把任何 key 粘进 issue、PR、commit message 或截图。**
-- GitHub 私有仓库已创建并推送：<https://github.com/tzhazuma/cs224proj>（PRIVATE）。发布/重建步骤仍见 [`docs/GITHUB_RELEASE.md`](docs/GITHUB_RELEASE.md)：包含 `gh` 安装/校验、`git init`、暂存区体积与密钥扫描、`gh repo create cs224proj --private --source=. --remote=origin --push` 以及推送后验证；当前仓库不要重复执行 `gh repo create`。发布门禁是 `audit/final_audit.md` 的 FAIL=0（当前 58 PASS / 0 FAIL / 3 WARN / 1 INFO，`PASS_WITH_WARNINGS`）。
+- GitHub 私有仓库已创建并推送：<https://github.com/tzhazuma/cs224proj>（PRIVATE）。发布/重建步骤仍见 [`docs/GITHUB_RELEASE.md`](docs/GITHUB_RELEASE.md)：包含 `gh` 安装/校验、`git init`、暂存区体积与密钥扫描、`gh repo create cs224proj --private --source=. --remote=origin --push` 以及推送后验证；当前仓库不要重复执行 `gh repo create`。发布门禁是**最新一轮**审计的 FAIL=0（当前 56 PASS / 0 FAIL / 0 WARN，Overall `PASS`）；旧一轮 `audit/final_audit.md`（58 PASS / 0 FAIL / 3 WARN / 1 INFO）只覆盖 v2/postleakfix 工作树，不能给 2026-11-13/14 的新目录背书。
+- 2026-11-14 工作树按 `.gitignore` 估算约 **10,836 个文件 / 333.3 MiB**，最大单文件仍是 `traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`（40.55 MB），没有 ≥100 MB 文件。新增目录已计入：`pair_debias`（38 MB）、`dynamic_enhanced`（29 MB）、`static_extended`（15 MB）、`benchmark/extensions`（14 MB）、`evidence_verify`（9 MB）、`hybrid_dynamic_enhanced`（3.3 MB）、`analysis/schema_recovery`（0.6 MB）。最终以暂存区 `git ls-files` 为准。
 - 本仓库不包含个人账号、cookie、SSH key 或云凭证；如果发现疑似泄漏，先轮换凭证，再清理历史。
 
 ---
@@ -414,7 +532,7 @@ cd report && /tmp/secvul-tectonic/tectonic -X compile report_zh.tex --outdir .
 
 - **SecVulEval**：根目录 `SecVulEval.xlsx` 为课程提供的上游数据集；`datasets/` 与 `splits/` 是从该工作簿抽样、冻结的派生数据。上游数据的引用与许可请遵循其原始发布页面。
 - **Juliet**：NIST SARD 的 Juliet Test Suite for C/C++ v1.3，官方归档 URL 与 SHA-256 见 `juliet/README.md`。`juliet/raw/` 不随仓库分发（体积原因），用 `fetch_juliet.py` 从官方来源恢复。
-- **模型输出**：`runner/runs/`、`juliet_llm/runs/`、`hybrid/runs/`、`pair_joint/runs/`、`juliet_repair/runs/` 保存真实模型响应与 usage；它们是研究产物，不构成对代码安全性或补丁正确性的保证。
+- **模型输出**：`runner/runs/`、`juliet_llm/runs/`、`hybrid/runs/`、`pair_joint/runs/`、`juliet_repair/runs/`、`pair_debias/runs/`、`evidence_verify/runs/`、`hybrid_dynamic_enhanced/runs/` 保存真实模型响应与 usage；`dynamic_enhanced/runs/`、`static_extended/runs/` 保存本地工具证据。它们是研究产物，不构成对代码安全性或补丁正确性的保证。
 - **许可**：本仓库目前没有附 LICENSE 文件；在重新分发或用于课程之外之前，请先核对上游数据集条款并补充合适的许可证。
 - **单文件体积**：GitHub 单文件上限 100 MB。按 `.gitignore` 估算，当前最大的待提交文件是 `traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`（约 40.5 MB）；146 MB 的 Juliet 归档和 326 MB 的逐 case 二进制已被忽略。发布前仍建议用 `find` 检查一次。
 
@@ -438,9 +556,18 @@ cd report && /tmp/secvul-tectonic/tectonic -X compile report_zh.tex --outdir .
 14. **`analysis/aggregation.json` 已用仓库内路径重生成（审计 L4 已修复）。** 2026-11-12 04:48 版本的 14 个 run 路径均存在；重算仍建议 `--runs-root runner/runs --out-json /tmp/...`，不要覆盖冻结产物。
 15. **hybrid 安慰剂只有一个 derangement（审计 D5 WARN）。** v2 仍是 14/140 个单元的 donor 文本与自身相同，placebo 对这些单元是 no-op；单次抽样不能估计 placebo 分布。
 16. **Juliet bad/good 存在长度不对称（审计 B5 WARN）。** bad 平均 600.4 字符、good 937.9（ratio 0.640），来自 Juliet 原始结构而非清洗；这是潜在捷径信号。
-17. **Repair prompt 不是完全 label-neutral（审计 F4 WARN）。** 70/70 个 repair prompt 仍含 `bad`/`CWE`/`Memory_Leak` 任务前提 token（good 标识符 0/70）；这是任务语义所需，但模型可利用该前缀。
+17. **Repair prompt 不是完全 label-neutral（旧一轮审计 F4，WARN）。** 70/70 个 repair prompt 仍含 `bad`/`CWE`/`Memory_Leak` 任务前提 token（good 标识符 0/70）；这是任务语义所需，但模型可利用该前缀。
 18. **Repair all-in 成本已统一为 `$0.082550`（审计 I3 已修复）。** headline 两个 final run 为 `$0.032831`；all-in 含 `parser_dev/mimo_test70_v1` 的 `$0.005034` 与 smoke，configured `$0.082550`、normalized `$0.052549`。引用时用 run 目录的 `summary.json`，不要用旧汇总。
 19. **`hybrid_v2` 是单次重跑。** 6 个被清洗单元的 17 条预测变化中 16 条由对变错；134 个未变单元仍有 1 条端点波动。v2 的小幅下降不能全部归因于清洗，也不能把单次 v2 当成稳定估计。
+20. **单序 A/B 受位置信号抬高。** `pair_joint`/`pair_debias` 的正向 DA 不能单独引用：DeepSeek 交换一致只有 61.67%，且 31.11 pp 的 A 偏好反向复现；MiMo 交换一致 74.44%，与两序长度启发式 72.22% 差异不显著。强制格式下“只对一序”的配对全部是两序同字母，说明增量来自槽位。
+21. **开放四分类的 DA 把弃权记为错误。** `both`/`neither` 占 17.22%–22.22%，总体 DA 63.89%–66.11%，但 committed 准确率 77.18%–84.40%。committed 是“愿意表态”的后处理子集，不是随机对照；不能把弃权一律算对或算错。
+22. **`dynamic_enhanced` 仍是单路径观测。** `realloc_fail` 只让第一次非 NULL `realloc` 失败；`nogobal` 是全局根总开关，不是逐变量根映射；Valgrind 未重跑。`clean` 只表示该执行路径没有归因泄漏，不是无泄漏证明；70/70 只适用于冻结 test 140。
+23. **增强证据的 LLM 结果受工具天花板限制。** `hybrid_dynamic_enhanced` 的工具是 140/140，因此“与工具一致率”等于准确率，无法区分照抄与独立判断；DeepSeek 137/140、MiMo 136/140，相对 direct +2/0，Holm 后不显著。理由分析是词法的（字节数复述），不是因果。
+24. **CodeQL 不是全面更优。** 每个单元单独建库、单 TU 近似，用 gcc/g++ 15.3 建库而 Clang/Cppcheck 用 clang 22.1.8；查询版本固定为 2.27.4 + `cpp-queries` 1.10.0。test 140 的 23 个 FP 全是 C++ good；高召回（0.971）伴随低精确率（0.747）和更低 MCC（0.674）。
+25. **`schema_recovery` 只到 L0。** 结构检查是词法代理，不是 C/C++ parser/compiler；有 2 条 K&R 定义被 canonical 规则误判。`usable_patch` 没有编译、测试、sanitizer、PoC 或人工评审，不能叫修复正确率。
+26. **`benchmark/extensions` 是只读导入层，不是新实验。** 16 个 canonical run 来自 producer 的真实产物；八个 design 各有主终点，不能池化，也不能与父 Tier A/B 主表直接相减。CodeQL 已导入为 `new_static_tool`，但父 schema/PROTOCOL 未被修改，LEADERBOARD 只加了指向 `EXTENSIONS.md` 的链接。
+27. **最新一轮尚未进入主 leaderboard，但已通过只读审计。** 2026-11-13/14 的实验默认都是单次运行；除 `schema_recovery` 外都有 API/工具调用。`benchmark/results/` 的主表仍只覆盖 v2/postleakfix 工作树；最新审计（[`audit/latest_audit.md`](audit/latest_audit.md)，2026-11-14 最近重跑）为 56 PASS / 0 FAIL / 0 WARN，Overall `PASS`；发布门禁通过。
+28. **最新审计先前的 A6/E6/F4/G3 告警已修复（历史说明）。** A6 曾要求披露 `pair_debias` 的 1,080 条记录含 51 条缓存复用（1,029 次新请求）；E6 曾要求 CodeQL 区分 positive-class F1(V) 0.8447 与主终点 macro-F1 0.8173；F4 曾要求注明 `schema_recovery` 的 “normalized” 是 configured `$0.30/$1.20` 的 cache-aware 重算，不是 off-peak `$0.15/$0.60`；G3 曾指出 2026-11-13 文献快照的“未实现”状态已过时。当前审计已清零这 4 项。
 
 ---
 
@@ -448,15 +575,20 @@ cd report && /tmp/secvul-tectonic/tectonic -X compile report_zh.tex --outdir .
 
 | 文档 | 内容 |
 | --- | --- |
+| [`docs/LITERATURE.md`](docs/LITERATURE.md) | 文献索引：2025–2026 最新 LLM/评估/内存工具调研、引用分级与阅读顺序 |
 | [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) | 环境、数据恢复、分层复现命令、产物哈希、验收清单、常见坑 |
 | [`docs/SECURITY.md`](docs/SECURITY.md) | 凭证处理、忽略规则、发布前 secret scan、残余风险、事件响应 |
 | [`docs/GITHUB_RELEASE.md`](docs/GITHUB_RELEASE.md) | GitHub 私有仓库发布：`gh` 安装、git 初始化、门禁、推送与验证 |
-| [`audit/final_audit.md`](audit/final_audit.md) | 最终质量/泄漏审计：58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`；审计时间与发布门禁见 [`docs/GITHUB_RELEASE.md`](docs/GITHUB_RELEASE.md) §2.1 |
+| [`audit/final_audit.md`](audit/final_audit.md) | 旧一轮只读审计：58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`；**只覆盖 v2/postleakfix，不含 2026-11-13/14 新目录** |
+| [`audit/latest_audit.md`](audit/latest_audit.md) | **最新一轮（2026-11-14 最近重跑）：Overall `PASS`，56 PASS / 0 FAIL / 0 WARN；发布门禁通过**。先前的 A6/E6/F4/G3 已修复（见 §8.28） |
 | [`benchmark/PROTOCOL.md`](benchmark/PROTOCOL.md) | 统一评测协议：标签、指标、失败、统计、成本、Tier A/B |
-| [`benchmark/results/LEADERBOARD.md`](benchmark/results/LEADERBOARD.md) | 两层 leaderboard 索引（不跨层排名；Tier B 主行为 hybrid_v2 / postleakfix） |
+| [`benchmark/results/LEADERBOARD.md`](benchmark/results/LEADERBOARD.md) | 两层 leaderboard 索引（不跨层排名；Tier B 主行为 hybrid_v2 / postleakfix；末尾链接扩展汇总） |
 | [`juliet/README.md`](juliet/README.md) | Juliet 子集来源、宏门控、dev/test、近重复、复现 |
 | [`traditional/static/README.md`](traditional/static/README.md) | Clang/Cppcheck 适配器、CWE-401 规则、200 单元结果 |
 | [`traditional/dynamic/README.md`](traditional/dynamic/README.md) | ASan/LSan + Valgrind 全量结果与 190 个 FN 归因 |
+| [`report/report_latest_zh.pdf`](report/report_latest_zh.pdf) | 2026-11-14 最新报告（35 页）：配对去偏、二次验证、动态增强、CodeQL、schema 复分析；源稿为 [`report_latest_zh.tex`](report/report_latest_zh.tex) |
+| [`report/latest_results_summary.md`](report/latest_results_summary.md) | 2026-11-14 最新六组实验的统一结果摘要（配对去偏、二次验证、动态增强、增强混合、CodeQL、schema） |
+| [`benchmark/results/EXTENSIONS.md`](benchmark/results/EXTENSIONS.md) | 扩展层最终汇总：16 个 canonical run、各 design 主终点与限制；机器可读版 `extension_summary.json` |
 | [`report/results_summary.md`](report/results_summary.md) | Tier A 三策略结果、成本、修复结构、盲评摘要 |
 | [`research/innovation_findings.md`](research/innovation_findings.md) | 创新点的证据分级：哪些能写、哪些不能写 |
 | [`pair_joint/report.md`](pair_joint/report.md) | 联合 A/B 的完整结果、长度/位置混淆 |
@@ -466,6 +598,16 @@ cd report && /tmp/secvul-tectonic/tectonic -X compile report_zh.tex --outdir .
 | [`juliet_repair/README.md`](juliet_repair/README.md) | 编译/LSan/行为闭环与 58/58 的口径 |
 | [`juliet_llm/README.md`](juliet_llm/README.md) | Juliet LLM 清洗、审计、MiMo fallback、DeepSeek 阻塞证据 |
 | [`repair_eval/README.md`](repair_eval/README.md) | 修复盲评 rubric、κ、裁决与限制 |
+| [`pair_debias/report.md`](pair_debias/report.md) | A/B 反向重复、开放四分类、长度匹配与交换一致 DA |
+| [`evidence_verify/analysis/report.md`](evidence_verify/analysis/report.md) | 正例二次验证/撤销的 4 臂、同预算基线与事后规则 |
+| [`dynamic_enhanced/README.md`](dynamic_enhanced/README.md) | `realloc` 故障注入 + LSan 全局根控制、12 个不可观测单元的逐条证据 |
+| [`hybrid_dynamic_enhanced/REPORT.md`](hybrid_dynamic_enhanced/REPORT.md) | 增强动态证据 + 两模型 LLM 的准确率、成本与一致性诊断 |
+| [`static_extended/README.md`](static_extended/README.md) | CodeQL 2.27.4 CWE-401 扩展静态基线与 test 140 对比 |
+| [`analysis/schema_recovery/schema_recovery.md`](analysis/schema_recovery/schema_recovery.md) | 102 条 invalid 的零 API schema 复分析与 usable 阶梯 |
+| [`benchmark/extensions/README.md`](benchmark/extensions/README.md) | 8 个 design 的 canonical 映射、校验、指标与已导入 run |
+| [`research/latest_llm_methods_2026.md`](research/latest_llm_methods_2026.md) | 2025–2026 LLM/agentic 检测、结构化输出、验证反馈文献（22 A + 18 B + 7 C） |
+| [`research/latest_evaluation_repair_2026.md`](research/latest_evaluation_repair_2026.md) | 位置/长度/配对/placebo/judge/补丁过拟合/故障注入/差分测试文献（56 条） |
+| [`research/latest_memory_tools_2026.md`](research/latest_memory_tools_2026.md) | CodeQL/Semgrep/Infer/SVF/Clang/LSan/Valgrind 与条件分配失败、still reachable（47 条） |
 
 ---
 
@@ -474,3 +616,5 @@ cd report && /tmp/secvul-tectonic/tectonic -X compile report_zh.tex --outdir .
 This repository contains the artefacts of a CS224 course project that evaluates vulnerability detection and repair under one auditable contract while keeping two tiers separate. **Tier A** uses frozen SecVulEval splits (160 real-project C/C++ functions for detection; 180 vulnerable/fixed pairs) and compares two models across three prompt strategies. **Tier B** uses a frozen 200-unit Juliet CWE-401 subset and compares Clang Static Analyzer, Cppcheck, ASan/LSan and Valgrind. The project also contains diagnostic studies on joint A/B pair discrimination, evidence-line prompting, tool-evidence conditioning with a placebo, compile/LSan/behaviour repair evaluation, and an LLM-assisted repair rubric.
 
 The main methodological claim is negative and reproducible: several apparently large gains are explained by task framing, length, position, operating-point shifts or ceiling effects. No model comparison survives Holm correction; joint A/B gains are inseparable from forced choice and length; dynamic “clean” is not a verified true negative; the original hybrid 140/140 did not survive the label-leak fix (v2 combined is 136/140); and the repair 58/58 is limited to 58 observable synthetic units. All reported numbers come from recorded runs; no mock or estimated values are used in the result tables.
+
+The 2026-11-13/14 round adds a position-debiased A/B replication (swap-consistent DA 61.67% for DeepSeek and 74.44% for MiMo against a 72.22% two-order length heuristic), fault-injected plus global-root LSan runs that make all 12 previously unobservable bad units observable (70/70 with 0 false positives), enhanced-evidence LLM reruns with no significant gain, a CodeQL baseline with higher recall but lower precision and MCC than Clang, and a zero-API schema salvage analysis (67–69 structurally usable patches out of 102 invalid responses, L0 only). These results are recorded and covered by the latest release audit (56 PASS / 0 FAIL / 0 WARN), but are not yet merged into the main leaderboard.
