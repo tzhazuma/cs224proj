@@ -23,10 +23,19 @@
 \usepackage{array}
 \usepackage[hidelinks]{hyperref}
 \urlstyle{tt}
-\hypersetup{pdfauthor={Yu Zhang}}
+\hypersetup{pdfauthor={Yu Zhang and MingDong Wu and Zhixiong Zhang and Zhihao Tang}}
 \renewcommand{\abstractname}{摘要}
 \renewcommand{\IEEEkeywordsname}{关键词}
 \renewcommand{\refname}{参考文献}
+
+% Keep four full author blocks in two centered rows.
+\makeatletter
+\newcommand{\linebreakand}{%
+    \end{@IEEEauthorhalign}
+    \hfill\mbox{}\par
+    \mbox{}\hfill\begin{@IEEEauthorhalign}
+}
+\makeatother
 
 \title{C/C++ 漏洞检测评估研究计划\\基于独立函数与漏洞修复配对数据}
 \author{
@@ -39,6 +48,16 @@ Shanghai, China\\
 \IEEEauthorblockA{ShanghaiTech University\\
 Shanghai, China\\
 \href{mailto:wumd2024@shanghaitech.edu.cn}{wumd2024@shanghaitech.edu.cn}}
+\linebreakand
+\IEEEauthorblockN{Zhixiong Zhang}
+\IEEEauthorblockA{ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:zhangzhx2026@shanghaitech.edu.cn}{zhangzhx2026@shanghaitech.edu.cn}}
+\and
+\IEEEauthorblockN{Zhihao Tang}
+\IEEEauthorblockA{ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:tangzhh2026@shanghaitech.edu.cn}{tangzhh2026@shanghaitech.edu.cn}}
 }
 
 \begin{document}
@@ -167,6 +186,7 @@ G(\mathcal{D}_{\mathrm{ind}})\cap G(\mathcal{D}_{\mathrm{pair}})&=\varnothing.
 \label{tab:eval-split}
 \centering
 \small
+\setlength{\tabcolsep}{2pt}
 \begin{tabular}{@{}lccc@{}}
 \toprule
 子集 & 构建 & dev & 冻结 test\\

@@ -1,77 +1,93 @@
-# IEEE 格式研究计划：中文与英文
+# C/C++ 漏洞检测研究计划
 
-- `proposal_zh.tex`：中文版本，使用 `IEEEtran` 会议双栏布局和 `ctex` 中文支持。
-- `proposal_en.tex`：英文版本，与中文版本的研究设计相对应。
-- `references.bib`：两版共用的参考文献，采用 `IEEEtran` BibTeX 样式。
-- `figures/cwe_distribution_zh.pdf` 和 `figures/cwe_distribution_en.pdf`：已嵌入正文的中英文 CWE 数量柱状图，使用矢量格式。
-- `figures/cwe_counts.json`：完整分类数量、统计口径、来源哈希及拆分标签涉及的原始索引。
-- `build_cwe_figures.py`：使用 Python 标准库统计 JSON 并生成 PGFPlots 图形源码。
-- 编译预览位于项目根目录的 `output/pdf/proposal_zh.pdf` 和 `output/pdf/proposal_en.pdf`。
-- `ieee_proposal_sources.zip`：包含两版 `.tex`、共享参考文献、图形及其源码、统计结果、绘图脚本和本说明，可直接上传 Overleaf。
+本目录保存中英文研究计划、可编辑的 LaTeX 源码、共享参考文献和 CWE 分布图。两版采用 IEEE 会议双栏格式，中文稿使用 `ctex`；当前中文 PDF 为 4 页，英文 PDF 为 5 页。
 
-## 写作范围
+研究计划围绕三个问题展开：单函数漏洞识别、漏洞版本与修复版本的差异辨识，以及两类评估任务的互补性。正文包含研究背景、研究问题、数据构建、有效性限制、评估计划和拟比较的 LLM 策略与模型六个部分。
 
-两版均已填写摘要、研究背景、研究问题、数据构建、研究限制及预期贡献。实验方法、实验模型、实验结果仅保留章节标题，填写提示位于 LaTeX 注释中，不出现在 PDF 正文。
+本文保留研究计划的时态和范围，不作为已完成实验的结果报告。项目当前实现与实验结果见[项目总览](../README.md)、[统一评测协议](../benchmark/PROTOCOL.md)和[扩展结果摘要](../report/extended_results_summary.md)。
 
-两版作者信息均为 Yu Zhang，单位为 ShanghaiTech University，城市与国家为 Shanghai, China，邮箱为 [Zhangyu12026@shanghaitech.edu.cn](mailto:Zhangyu12026@shanghaitech.edu.cn)。PDF 作者元数据亦为 Yu Zhang。研究对象是漏洞检测器，尚未锁定特定算法或模型，也未编造性能数值。
+## 文件说明
 
-两组数据的统计单位分别为 200 条独立函数（160 条有漏洞、40 条无漏洞）和 200 对漏洞／修复版本（400 条函数记录），合计 600 条不同的函数记录。正文使用现有 JSON 元数据与 `datasets/README.md` 中已实现的构建约束；没有将两个评估子集解释为训练集与测试集。
+| 文件 | 用途 |
+| --- | --- |
+| [proposal_zh.pdf](proposal_zh.pdf) / [proposal_en.pdf](proposal_en.pdf) | 最新中英文阅读版 |
+| [proposal_zh.tex](proposal_zh.tex) / [proposal_en.tex](proposal_en.tex) | 中英文可编辑源码 |
+| [references.bib](references.bib) | 两版共用的参考文献，采用 IEEEtran BibTeX 样式 |
+| [ieee_proposal_sources.zip](ieee_proposal_sources.zip) | 可上传 Overleaf 的源码包 |
+| [build_cwe_figures.py](build_cwe_figures.py) | 读取项目数据集，统计 CWE 并生成图形源码 |
+| [figures/cwe_counts.json](figures/cwe_counts.json) | CWE 计数、统计口径及来源哈希 |
+| `figures/cwe_distribution_zh.*` / `figures/cwe_distribution_en.*` | 中英文矢量图 PDF 与对应 LaTeX 源码 |
+| [.gitignore](.gitignore) | 本目录的编译中间文件及构建目录忽略规则 |
 
-## 模板与来源
+源码 ZIP 包含两版主 `.tex`、参考文献、README、绘图脚本，以及完整的 `figures/` 图形材料；不包含主文档 PDF、原始数据集或编译中间文件。更新源码或本说明后，应同步重建 ZIP。
 
-使用 `\documentclass[conference]{IEEEtran}`，保留类文件默认双栏布局、字号和页边距；未使用 `geometry`、手动缩放或修改行距。西文字体显式选用与 Times、Helvetica 和 Courier 兼容的 TeX Gyre Termes、Heros 和 Cursor，以支持 XeLaTeX；中文使用 Fandol 字体。模板选择依据：
+## 作者
 
-- [IEEE Author Center：Authoring Tools and Templates](https://conferences.ieeeauthorcenter.ieee.org/write-your-paper/authoring-tools-and-templates/)
-- [IEEE 官方会议 LaTeX 模板](https://www.overleaf.com/latex/templates/ieee-conference-template/grfzhhncsfqn)
+作者顺序与两版正文、PDF 元数据一致。单位均为 ShanghaiTech University，地址均为 Shanghai, China。
 
-中文稿是适配中文阅读的 IEEE 布局版本。正式投稿应以目标会议或期刊指定模板、语言和页数要求为准；这里没有指定投稿 venue，也不宣称已经通过 IEEE PDF eXpress 检查。
+| 作者 | 邮箱 |
+| --- | --- |
+| Yu Zhang | [Zhangyu12026@shanghaitech.edu.cn](mailto:Zhangyu12026@shanghaitech.edu.cn) |
+| MingDong Wu | [wumd2024@shanghaitech.edu.cn](mailto:wumd2024@shanghaitech.edu.cn) |
+| Zhixiong Zhang | [zhangzhx2026@shanghaitech.edu.cn](mailto:zhangzhx2026@shanghaitech.edu.cn) |
+| Zhihao Tang | [tangzhh2026@shanghaitech.edu.cn](mailto:tangzhh2026@shanghaitech.edu.cn) |
 
-研究背景文献已经核对：
+## 数据与评估设计
 
-1. [SecVulEval 正式会议论文](https://doi.org/10.1145/3805760.3814932)：Md Basim Uddin Ahmed 等，*SecVulEval: Context-Aware Benchmarking of LLMs for Vulnerability Detection*，发表于 *Proceedings of the 3rd ACM International Conference on AI-Powered Software (AIware '26)*，2026 年，第 388–396 页，ACM。正文引用及 BibTeX 均采用正式发表版本。题名、作者、会议和 DOI 已与 [AIware 2026 官方论文页面](https://2026.aiwareconf.org/details/aiware-2026-benchmark---dataset-track/11/SecVulEval-Context-Aware-Benchmarking-of-LLMs-for-Vulnerability-Detection) 核对，页码亦见作者在约克大学存档的学位论文前言。
-2. [PrimeVul 正式会议论文](https://doi.org/10.1109/ICSE55347.2025.00038)，发表于 ICSE 2025。
-3. [SecVulEval 数据卡](https://huggingface.co/datasets/arag0rn/SecVulEval/blob/main/README.md)。
+两个层级分别报告，不能合并为总体分数或统一排名。
 
-## 编译
+| 层级 | 构建规模 | Dev | 冻结 Test |
+| --- | --- | --- | --- |
+| Tier A：SecVulEval 独立检测 | 200 函数，160 漏洞 / 40 非漏洞 | 40 函数，32 / 8 | 160 函数，128 / 32 |
+| Tier A：SecVulEval 配对判别 | 200 对，400 函数记录 | 20 对 | 180 对，360 函数记录 |
+| Tier B：Juliet CWE-401 | 200 单元，100 bad / 100 good | 60 单元 | 140 单元 |
 
-LaTeX 编译依赖 TeX Live 或 MiKTeX，不依赖 Conda 的 `pap` 环境。需要 XeLaTeX、BibTeX，以及 `IEEEtran`、`ctex`、`fontspec`、Fandol 和 TeX Gyre 字体、`cite`、`amsmath`、`amssymb`、`booktabs`、`graphicx`、`balance`、`xurl` 和 `hyperref`。重新生成图形还需要 `standalone`、`pgfplots` 和 `fix-cm`。本机使用 TeX Live 2025。
+Tier A 的两个构建子集共含 600 条不同记录，不共享原始索引或 `(project, commit_id)` 分组。检测和配对任务各自的 dev/test 按项目隔离，但存在跨任务项目重叠，不能声称全局项目互斥。
 
-在 `proposal` 目录中执行：
+主比较固定同一模型，对照 `direct`、`few-shot` 和 `context` 三种提示策略；候选模型为 DeepSeek V4.1 Flash 和 MiMo-V2.6-Flash。Tier B 单独比较静态工具、动态工具与 LLM / 混合策略。计划同时报告主指标、coverage、valid-only 与 strict 口径，并控制输入泄漏、成本口径和多重比较。
+
+## 本地编译
+
+使用 TeX Live 或 MiKTeX 提供的 XeLaTeX 和 BibTeX；不要求特定 Conda 环境。两版所需资源包括 `IEEEtran`、`fontspec`、`cite`、`amsmath`、`amssymb`、`booktabs`、`graphicx`、`balance`、`xurl`、`tabularx`、`array`、`hyperref` 和 TeX Gyre 字体；中文稿还需 `ctex` 与 Fandol 字体。
+
+在本目录打开 PowerShell 执行下列命令。中间文件集中到 `.build/`，完成后仅将阅读版 PDF 复制回本目录：
 
 ```powershell
-xelatex -interaction=nonstopmode -halt-on-error proposal_zh.tex
-bibtex proposal_zh
-xelatex -interaction=nonstopmode -halt-on-error proposal_zh.tex
-xelatex -interaction=nonstopmode -halt-on-error proposal_zh.tex
+New-Item -ItemType Directory -Force .build | Out-Null
 
-xelatex -interaction=nonstopmode -halt-on-error proposal_en.tex
-bibtex proposal_en
-xelatex -interaction=nonstopmode -halt-on-error proposal_en.tex
-xelatex -interaction=nonstopmode -halt-on-error proposal_en.tex
+foreach ($name in @('proposal_zh', 'proposal_en')) {
+    xelatex -interaction=nonstopmode -halt-on-error -output-directory=.build "$name.tex"
+    if ($LASTEXITCODE -ne 0) { throw "XeLaTeX failed: $name" }
+    bibtex ".build/$name"
+    if ($LASTEXITCODE -ne 0) { throw "BibTeX failed: $name" }
+    xelatex -interaction=nonstopmode -halt-on-error -output-directory=.build "$name.tex"
+    if ($LASTEXITCODE -ne 0) { throw "XeLaTeX failed: $name" }
+    xelatex -interaction=nonstopmode -halt-on-error -output-directory=.build "$name.tex"
+    if ($LASTEXITCODE -ne 0) { throw "XeLaTeX failed: $name" }
+    Copy-Item -LiteralPath ".build/$name.pdf" -Destination "$name.pdf"
+}
 ```
 
-也可以直接上传源码 ZIP 到 Overleaf，选择 XeLaTeX 编译器，并将希望编译的语言版本设为 Main document。手动上传时，须同时保留 `figures` 文件夹中的两张 PDF，不能仅上传主 `.tex` 和参考文献。
+在 Overleaf 中上传源码 ZIP，选择 XeLaTeX，并将 `proposal_zh.tex` 或 `proposal_en.tex` 设为主文档。须保留共享参考文献及 `figures/`；直接编译现有文档不需要原始 JSON 数据集。
 
-原始的源文件索引、标签、修复关联和漏洞说明用于数据追溯；正文已提示，后续实验应另行确定模型输入字段，避免标签泄露。
+## CWE 图形
 
-## CWE 柱状图的统计口径
+图形统计独立集的 160 条漏洞函数和配对集的 200 条漏洞版本；不计入独立集负样本及修复版本，每条函数对同一 CWE 最多计数一次。连写的 CWE 编号在统计时拆分并在函数内去重，原始数据不变。
 
-图中蓝色为独立集的 160 条有漏洞函数，橙色为配对集的 200 条漏洞版本。40 条独立集无漏洞函数和全部 200 条修复版本均不计入漏洞数量。每条漏洞函数对其每个 CWE 类型最多贡献一次计数。
+图中包含合计 57 种数字 CWE 和两种 NVD 占位标记，共 59 类，分为三个采用相同横轴刻度的面板。多标签使标签归属总数大于函数数，不能将两者混用。详细计数见 `figures/cwe_counts.json`。
 
-源记录包含 `CWE-125CWE-787` 这样的连写标签，绘图时按编号拆分并在单个函数内去重，保留原始 JSON 不变。两组各覆盖 39 种数字 CWE，合并为 57 种；另将 `NVD-CWE-noinfo`、`NVD-CWE-Other` 两类占位标记单独展示，图中分别简写为 `NVD-noinfo`、`NVD-Other`。占位标记不是具体漏洞类型。
-
-图中展示全部 59 个观测类别，没有省略长尾类别；按两组计数之和降序排列，分为三个面板，横轴刻度保持一致。独立集和配对集分别有 10 条和 11 条多标签漏洞函数。计入 NVD 占位标记的标签归属总数分别为 173 和 213，其中数字 CWE 归属分别为 163 和 198，因此标签归属总数不能等同于漏洞函数数量。
-
-在 `proposal` 目录中重新统计并生成矢量图：
+仅在数据或图形需要更新时，从本目录执行：
 
 ```powershell
-conda run -n pap python build_cwe_figures.py
+python build_cwe_figures.py
 xelatex -interaction=nonstopmode -halt-on-error -output-directory=figures figures/cwe_distribution_zh.tex
 xelatex -interaction=nonstopmode -halt-on-error -output-directory=figures figures/cwe_distribution_en.tex
 ```
 
-统计脚本通过相对路径读取项目中的两份数据集，使用 Python 标准库；绘图由 PGFPlots 完成，不需要额外安装 Python 绘图库。ZIP 已包含编译好的图形，仅编译 proposal 时无需重新统计或提供原始 JSON。图表属于数据描述，实验方法、实验模型和实验结果章节仍保持空白。
+统计脚本只使用 Python 标准库，并通过相对路径读取 `../datasets/`。图形编译还需 `standalone`、`pgfplots` 和 `fix-cm`。
 
-## 本机验证
+## 文件维护
 
-加入柱状图后，两版均已通过 XeLaTeX 与 BibTeX 编译，每版 3 页、Letter 纸张、双栏排版，图形跨双栏放置。已逐页检查渲染预览，确认没有文字溢出、缺字或未解析引用，PDF 字体均已嵌入。三个实验章节的可见正文为空，仅保留标题；数据数量与现有 JSON 元数据一致。
+保留主文档与图形的 `.tex` / `.pdf`、`references.bib`、统计 JSON、绘图脚本、README、忽略规则和源码 ZIP。`.aux`、`.log`、`.out`、`.synctex.gz`、`.bbl`、`.blg` 等均可通过编译再生，不纳入源码包；`.build/` 可在编译完成后清理。
+
+更新文档后应检查四位作者及邮箱、数据分母、参考文献和交叉引用，并逐页检查标题、双栏、表格及图形是否越界。仅检查编译退出码不能替代排版检查。
