@@ -19,6 +19,8 @@
 \usepackage{graphicx}
 \usepackage{balance}
 \usepackage{xurl}
+\usepackage{tabularx}
+\usepackage{array}
 \usepackage[hidelinks]{hyperref}
 \urlstyle{tt}
 \hypersetup{pdfauthor={Yu Zhang}}
@@ -32,6 +34,11 @@
 \IEEEauthorblockA{ShanghaiTech University\\
 Shanghai, China\\
 \href{mailto:Zhangyu12026@shanghaitech.edu.cn}{Zhangyu12026@shanghaitech.edu.cn}}
+\and
+\IEEEauthorblockN{MingDong Wu}
+\IEEEauthorblockA{ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:wumd2024@shanghaitech.edu.cn}{wumd2024@shanghaitech.edu.cn}}
 }
 
 \begin{document}
@@ -143,21 +150,106 @@ G(\mathcal{D}_{\mathrm{ind}})\cap G(\mathcal{D}_{\mathrm{pair}})&=\varnothing.
 
 样本规模较小，且没有按 CWE 分层，因而覆盖范围有限。同一配对内的两个版本是相关观测，不能将其中 400 条函数视为 400 个互不相关的评估单元。标签、修复索引、提交说明、CVE 及变更标注用于保留可追溯性；未来实验必须明确哪些字段可作为模型输入，避免泄露待预测答案。失败处理及额外开发集的设计也有待确定。
 
-\section{预期贡献}
-本研究拟提供可复现的双子集评估资源，明确区分单函数检测与漏洞修复差异辨识，并为分析两种评估情形下的行为差异建立可追溯基础。目前已有数据构建产物，尚未形成关于实验方法、模型优劣或性能的结论。
+\section{评估计划}
+\label{sec:eval-plan}
 
-\section{实验方法}
-\label{sec:methods}
-% 按要求暂留空白。后续补充实验流程、输入字段、评价指标、
-% 失败处理及统计分析，不在当前版本预设实验方案。
+本节说明计划采用的评估协议，而非最终实验结果。当前已完成数据构建与冻结划分，检测实验尚未运行，因此不报告性能结论。正式实验前将冻结比较轴、输入白名单、主要指标、成本口径和失败处理规则；dev 仅用于 pilot 与提示配置，test 只用于最终报告。
 
-\section{实验模型}
-\label{sec:models}
-% 按要求暂留空白。后续补充模型名称、版本及配置。
+\subsection{数据与冻结划分}
+\label{sec:eval-data}
 
-\section{实验结果}
-\label{sec:results}
-% 按要求暂留空白。完成实验后填写实测结果及分析。
+计划使用两个独立层级的数据集，分层报告、不跨层合并。Tier A 为主比较层；Tier B 作为扩展验证层，不进入 Tier A 的主比较。
+
+\textbf{Tier A（SecVulEval）}：从本地 SecVulEval 快照按固定种子 42 构建。构建规模为 200 条独立函数（160 条漏洞、40 条非漏洞）和 200 对漏洞/修复版本（400 条函数记录），合计 600 条不同原始记录；两个子集不共享原始索引或“项目与提交”分组。冻结划分 \texttt{secvul-split-v1} 按项目分组、CWE 家族和函数长度分层，结果如表~\ref{tab:eval-split}。
+
+\begin{table}[t]
+\caption{Tier A 构建规模与冻结划分}
+\label{tab:eval-split}
+\centering
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+子集 & 构建 & dev & 冻结 test\\
+\midrule
+独立检测 & 200（160V/40NV） & 40（32V/8NV） & 160（128V/32NV）\\
+配对判别 & 200 对 & 20 对 & 180 对（360 函数）\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+检测任务内 dev 与 test 的项目集合不重叠；配对任务内 dev 与 test 的项目集合不重叠。两个任务独立划分，因此存在跨任务项目重叠。该重叠作为已知限制报告，不声称全局项目互斥。
+
+\textbf{Tier B（Juliet CWE-401，扩展层）}：从 NIST SARD Juliet Test Suite for C/C++ v1.3 提取 CWE-401 子集，构建 200 个单元（100 bad / 100 good），dev 60 / test 140，按近重复连通分量做 family-disjoint 划分。标签依据 \texttt{OMITBAD}/\texttt{OMITGOOD} 宏门控；不可观测单元不记 0/1，不作为负例。Tier B 仅用于扩展验证，不与 Tier A 合并排名。
+
+\textbf{口径说明}：Tier A 的 200/200 是构建规模，160/180 是冻结 test；Tier B 的 200 是构建规模，140 是冻结 test。dev 只用于 few-shot、pilot 和提示配置，不进入测试结论。
+
+\subsection{输入控制与泄漏检查}
+\label{sec:eval-input}
+
+\textbf{Tier A}：模型请求只包含函数源码。\texttt{direct} 仅源码；\texttt{context} 追加白名单小节（执行环境、外部函数、函数参数、全局变量、类型声明）；\texttt{few-shot} 追加来自 dev 的固定示例。标签字段、修复索引、变更行、CVE/CWE 列表、提交信息、项目/路径/函数名等字段不进入 prompt；示例加载时检查示例索引不与评估集重叠。
+
+初步检查表明，独立集中漏洞样本与非漏洞样本的 \texttt{context} 空/非空分布明显不同，因此 \texttt{context} 策略的差异与“上下文是否可用”存在混杂。评估时按空/非空分层报告，不把差异单独归因于“上下文推理”。
+
+\textbf{Tier B}：LLM 输入只含清洗后的源码视图。清洗管线删除注释、解析条件编译、内联局部头文件，并将含标签暗示的标识符和字符串字面量替换为中性词；清洗后禁用 token 计数为零才进入评估。静态/动态工具只读取单元源码与预注册 harness，不读取标签；混合方法的证据中不含真实标签、路径或 bad/good 名称。
+
+\subsection{比较设计与评价指标}
+\label{sec:eval-design}
+
+主比较轴固定为提示策略：在同一 base 模型内比较 \texttt{direct} / \texttt{few-shot} / \texttt{context}（Tier A）。模型间比较作为 post-hoc 分析，只在同策略、同任务内进行；不在一次比较中同时改变模型和策略。Tier B 的传统工具与 hybrid 策略作为扩展层单独报告。
+
+\textbf{基线}：检测任务报告多数类基线；配对任务报告随机指定一侧和“选较短版本”长度启发式。没有基线对照的单一 accuracy 不作为结论。
+
+\textbf{Tier A 检测指标}：主终点为 macro-F1；同时报告 precision、recall、specificity、balanced accuracy、MCC 和 coverage。不以 accuracy 作为主指标，因为多数类基线即可达到较高 accuracy，而 specificity 与 MCC 可能为 0。
+
+\textbf{Tier A 配对指标}：主终点为 \texttt{pair\_da}，即漏洞侧判 1 且修复侧判 0 的 pair 比例除以有效 pair 数；同时报告 both-safe、both-flagged、swapped 比例和 coverage。不以每函数 accuracy 替代 \texttt{pair\_da}，因为“每对一个对一个错”的常量基线会在每函数 accuracy 下得到 50\%。
+
+\textbf{Tier B 扩展指标}：主终点为 macro-F1 与 MCC，同时报告 recall、specificity、coverage 和可观测性分层。动态 clean 且覆盖率不足记为 inconclusive，不写成 safe。
+
+\textbf{辅助任务}：\texttt{pair\_joint} 在同一 prompt 内强制 A/B 二选一，作为独立任务报告 DA、四类计数和位置偏差，不与分侧 \texttt{pair\_da} 直接合并。
+
+\subsection{成本、失败处理与统计原则}
+\label{sec:eval-cost}
+
+\textbf{成本口径}：区分运行配置值、统一价卡重算值和 provider 额度扣减；API USD 与本地工具 CPU/Valgrind 时间分开报告，不设单一“性价比”总分。成本按每 100 单元、每 1000 请求和总 USD 报告。
+
+\textbf{失败处理}：所有结果保留状态，不静默删除。schema 无效、API 错误、超时和工具错误分别按 valid-only 与 strict 两种口径报告；不可适用单元不记 0 或负例。覆盖率单独报告，不把失败请求当作预测结果。
+
+\textbf{统计原则}：比例区间使用 Wilson 95\%；F1/macro-F1/MCC 和策略差值使用按项目/配对/功能家族聚类的 bootstrap 区间；配对二值正确性使用 McNemar，并按预注册 family 做多重比较校正，作为次要证据。不以两个独立区间是否重叠判断差异；不以 accuracy 单独排名；不事后选择种子、阈值或指标。
+
+\subsection{试点与定性分析计划}
+\label{sec:eval-pilot}
+
+正式运行前用 5--10 条 dev 样本做 pilot，检查标签、prompt 格式、解析器和静态工具可适用性；pilot 结果只用于修正管线，不进入测试结论。若静态工具在 pilot 中可适用率过低，只报告可适用率和失败类别，不计算 F1。
+
+定性分析计划按 CWE 家族、函数长度、上下文空/非空、配对失败类型（both-safe、both-flagged、swapped）和位置偏差分层，报告误报、漏报和策略间分歧案例。错误分析用于解释定量结果，不替代预注册指标。
+
+
+\section{拟比较的 LLM 策略与模型}
+\label{sec:approaches}
+
+主比较轴为提示策略，固定同一 base 模型，比较三种 LLM 使用方式（表~\ref{tab:approaches}）。三种策略在同一冻结 test 集和同一评分规则下运行；dev 仅用于示例选择和提示配置。
+
+\begin{table}[t]
+\caption{拟比较的三种 LLM 提示策略}
+\label{tab:approaches}
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+策略 & 输入 & 作用\\
+\midrule
+L1 Direct & 任务说明 + 函数源码 & 基线\\
+L2 Few-shot & L1 + dev 固定示例 & 示例学习\\
+L3 Context & L1 + 白名单上下文 & 上下文消融\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+候选 base 模型为 DeepSeek V4.1 Flash 与 MiMo-V2.6-Flash。两模型使用相同的任务、数据、提示模板和评分规则；模型间比较作为 post-hoc 分析，不作为主比较轴。具体端点、解码参数、prompt 版本和价卡将在实验前写入运行清单，并在最终论文中报告，不在 proposal 阶段固定。
+
+Tier B 扩展层计划比较传统静态工具（Clang Static Analyzer、Cppcheck）、传统动态工具（ASan/LSan、Valgrind）与 LLM 策略；传统工具与 LLM 的输入、分母和成本口径不同，只在 Tier B 分层内并列，不合并成总排名。
+
+所有策略在正式实验前冻结输入白名单、主要指标和失败处理规则。
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

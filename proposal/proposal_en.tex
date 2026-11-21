@@ -14,27 +14,38 @@
 \usepackage{graphicx}
 \usepackage{balance}
 \usepackage{xurl}
+\usepackage{tabularx}
+\usepackage{array}
 \usepackage[hidelinks]{hyperref}
 \urlstyle{tt}
-\hypersetup{pdfauthor={Yu Zhang}}
+\hypersetup{
+    pdfauthor={Yu Zhang and MingDong Wu},
+    pdftitle={A Research Proposal for Evaluating C/C++ Vulnerability Detection with Independent Functions and Vulnerable--Fixed Pairs}
+}
 
-\title{Evaluating C/C++ Vulnerability Detection with Independent Functions and Vulnerable--Fixed Pairs}
+\title{C/C++ Vulnerability Detection Research Proposal\\
+Independent Functions and Vulnerable--Fixed Pairs}
 \author{
 \IEEEauthorblockN{Yu Zhang}
 \IEEEauthorblockA{ShanghaiTech University\\
 Shanghai, China\\
 \href{mailto:Zhangyu12026@shanghaitech.edu.cn}{Zhangyu12026@shanghaitech.edu.cn}}
+\and
+\IEEEauthorblockN{MingDong Wu}
+\IEEEauthorblockA{ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:wumd2024@shanghaitech.edu.cn}{wumd2024@shanghaitech.edu.cn}}
 }
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-This proposal investigates function-level vulnerability detection and discrimination between vulnerable code and its fixed version. Two evaluation subsets are constructed from local SecVulEval data. The first contains 200 functions: 160 labeled vulnerable and 40 labeled non-vulnerable, without annotated vulnerable--fixed relationships among selected functions. The second contains 200 vulnerable--fixed pairs, corresponding to 400 function records. Pairing follows explicit repair references. The subsets share neither source-record identifiers nor project--commit groups, yielding 600 distinct records. This proposal defines the research questions, sampling constraints, reproducibility information, and validity considerations. Experimental methods, models, and empirical results remain to be specified.
+This proposal investigates a vulnerability detector's ability to identify individual vulnerable functions and distinguish a vulnerable function from its corresponding fixed version. Two complementary evaluation subsets are constructed from local SecVulEval data. The first contains 200 functions: 160 labeled vulnerable and 40 labeled non-vulnerable, without annotated vulnerable--fixed relationships among selected functions. The second contains 200 vulnerable--fixed pairs, corresponding to 400 function records. Pairing follows the source dataset's explicit repair indices. The subsets share neither source-record identifiers nor project--commit groups, yielding 600 distinct records. This proposal defines the research questions, sampling constraints, reproducibility information, and validity limitations, establishing a basis for function-level detection and repair-sensitive discrimination. The evaluation protocol and candidate models are outlined as planned work; empirical results will be reported after experimentation.
 \end{abstract}
 
 \begin{IEEEkeywords}
-vulnerability detection, C/C++, paired evaluation, datasets
+vulnerability detection, C/C++, evaluation datasets, paired evaluation, reproducibility
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -92,7 +103,7 @@ where $x_j^{v}$ is labeled vulnerable and $x_j^{f}$ is its corresponding fixed v
 \begin{equation}
 \texttt{fixed\_func\_idx}(x_j^{v})=\texttt{idx}(x_j^{f}).
 \end{equation}
-Both versions must share project, commit identifier, file path, and function name, with different trimmed function bodies. The shared commit identifier is an annotation-grouping key; \texttt{fixed\_func\_idx} establishes the version relationship. At most one pair is selected per project--commit group.
+Both versions must share project, commit identifier, file path, and function name, with different trimmed function bodies. The shared commit identifier is an annotation-grouping key; \texttt{fixed\_func\_idx} establishes the version relationship, rather than inferring temporal order from different commit identifiers. At most one pair is selected per project--commit group.
 
 The 200 pairs comprise 400 function records. Correct labeling of both versions is the target; separate or joint presentation remains a protocol choice.
 
@@ -128,7 +139,6 @@ The generator \path{build_datasets.py} runs in Conda \texttt{pap} with Python 3.
 \subsection{CWE Type Distribution}
 Figure~\ref{fig:cwe-distribution} reports Common Weakness Enumeration (CWE) counts for the 160 independent vulnerable functions and the 200 vulnerable versions in the paired subset. The 40 independent negatives and 200 fixed counterparts are excluded. For this descriptive analysis, concatenated identifiers such as \texttt{CWE-125CWE-787} are split into individual CWE identifiers and deduplicated within each function; the source JSON files are unchanged. Each vulnerable subset covers 39 numeric CWE types, with 57 types in their union. Including the two NVD placeholder categories, the label-assignment totals are 173 and 213. These exceed function counts because some functions carry multiple CWE labels.
 
-\balance
 \section{Study Scope and Validity Considerations}
 The independent subset deliberately contains 80\% vulnerable functions. This is an experimental composition and should not be interpreted as real-world vulnerability prevalence. The paired subset has balanced labels by construction. Aggregate outcomes across the two subsets would consequently require careful interpretation.
 
@@ -136,22 +146,111 @@ The study inherits source labels and repair links. A non-vulnerable label, or a 
 
 The small sample size and absence of CWE stratification limit coverage. Versions within a pair are related observations, so 400 paired records should not be treated as 400 unrelated evaluation units. Labels, repair references, commit messages, CVE identifiers, and change annotations will be retained for traceability; the future protocol must specify which fields are exposed as model inputs to avoid revealing the answer. Failure handling and any additional development split also remain to be defined.
 
-\section{Expected Contributions}
-The planned contributions are reproducible evaluation subsets and a traceable basis for distinguishing individual-function detection from vulnerable--fixed discrimination. Construction artifacts are available; model-performance conclusions await experimentation.
+\section{Evaluation Plan}
+\label{sec:eval-plan}
 
-\section{Experimental Methods}
-\label{sec:methods}
-% Intentionally blank. Add the experimental protocol, inputs, metrics,
-% failure handling and statistical analysis after the design is finalized.
+This section describes the planned evaluation protocol rather than final experimental results. Dataset construction and the frozen splits are complete, but detection experiments have not yet been conducted at this proposal stage; no performance conclusions are reported. Before the formal experiments, we will freeze the comparison axes, input allowlists, primary metrics, cost accounting, and failure-handling rules. The development split (dev) will be used only for pilot runs and prompt configuration; the test split will be reserved for final reporting.
 
-\section{Experimental Models}
-\label{sec:models}
-% Intentionally blank. Add model identities, versions and configurations.
+\subsection{Datasets and Frozen Splits}
+\label{sec:eval-data}
 
-\section{Experimental Results}
-\label{sec:results}
-% Intentionally blank. Add only measured results and supporting analysis.
+The evaluation will use two separate dataset tiers. Results will be reported within each tier, without pooling across tiers. Tier A is the primary comparison tier; Tier B provides extended validation and does not enter the main Tier A comparison.
 
+\textbf{Tier A (SecVulEval):} The local SecVulEval snapshot is sampled with the fixed seed 42. The constructed resources contain 200 independent functions (160 vulnerable and 40 non-vulnerable) and 200 vulnerable--fixed pairs (400 function records), totaling 600 distinct source records. The two subsets share neither source indices nor project--commit groups. The frozen split, \texttt{secvul-split-v1}, groups examples by project and stratifies by CWE family and function length. Table~\ref{tab:eval-split} summarizes the resulting sizes.
+
+\begin{table}[t]
+\caption{Tier A Construction Sizes and Frozen Splits}
+\label{tab:eval-split}
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.66in}*{3}{>{\centering\arraybackslash}X}@{}}
+\toprule
+Subset & Constructed & Dev & Frozen test\\
+\midrule
+Detection & 200 functions\newline (160 V/40 NV) & 40 functions\newline (32 V/8 NV) & 160 functions\newline (128 V/32 NV)\\
+Paired task & 200 pairs & 20 pairs & 180 pairs\newline (360 functions)\\
+\bottomrule
+\end{tabularx}
+\vspace{3pt}
+\parbox{\columnwidth}{\footnotesize V: vulnerable; NV: non-vulnerable.}
+\end{table}
+
+Within the detection task, dev and test have disjoint project sets; the same holds within the paired task. The two tasks are split independently, so cross-task project overlap remains. This overlap will be reported as a known limitation; we do not claim global project disjointness.
+
+\textbf{Tier B (Juliet CWE-401, extended tier):} A CWE-401 subset is extracted from the NIST SARD Juliet Test Suite for C/C++ v1.3. It contains 200 units (100 bad and 100 good), split into 60 dev and 140 test units. Near-duplicate connected components are kept together to obtain a family-disjoint split. Labels follow the \texttt{OMITBAD}/\texttt{OMITGOOD} macro gates. Unobservable units will not be assigned a binary outcome or treated as negatives. Tier B is used only for extended validation and will not be pooled with Tier A in a ranking.
+
+\textbf{Counting conventions:} For Tier A, 200 functions and 200 pairs are construction sizes; 160 functions and 180 pairs are the frozen test sizes. For Tier B, 200 units is the construction size and 140 units is the frozen test size. Dev is reserved for few-shot examples, pilot runs, and prompt configuration, and will not contribute to test conclusions.
+
+\subsection{Input Controls and Leakage Checks}
+\label{sec:eval-input}
+
+\textbf{Tier A:} Function source code is the core model input. The \texttt{direct} strategy uses source code alone; \texttt{context} adds allowlisted sections describing the execution environment, external functions, function arguments, globals, and type declarations; \texttt{few-shot} adds fixed examples from dev. Label fields, repair indices, changed lines, CVE/CWE lists, commit information, and separate project, path, and function-name metadata fields will not enter the prompt. Example loading checks that example indices do not overlap the evaluation set.
+
+Preliminary inspection shows that empty versus non-empty \texttt{context} is distributed very differently between vulnerable and non-vulnerable independent samples. The effect of the \texttt{context} strategy is therefore confounded with context availability. Evaluation will report empty and non-empty strata separately and will not attribute their differences solely to contextual reasoning.
+
+\textbf{Tier B:} LLM inputs contain only sanitized source views. The cleaning pipeline removes comments, resolves conditional compilation, inlines local headers, and replaces label-bearing identifiers and string literals with neutral terms. A unit enters evaluation only when the sanitized view has zero forbidden-token hits. Static and dynamic tools read only unit source code and the preregistered harness, not ground-truth labels. Evidence supplied to hybrid methods excludes true labels, source paths, and bad/good names.
+
+\subsection{Comparison Design and Evaluation Metrics}
+\label{sec:eval-design}
+
+The primary comparison axis is prompt strategy: \texttt{direct}, \texttt{few-shot}, and \texttt{context} are compared within the same base model in Tier A. Cross-model comparisons are post-hoc analyses restricted to the same strategy and task; a single comparison will not change both model and strategy. Traditional tools and hybrid strategies in Tier B are reported separately as an extended evaluation.
+
+\textbf{Baselines:} Detection will include a majority-class baseline. Paired discrimination will include randomly selecting one side and the ``choose the shorter version'' length heuristic. An isolated accuracy value without a baseline comparison will not support a conclusion.
+
+\textbf{Tier A detection:} The primary endpoint is macro-F1. Precision, recall, specificity, balanced accuracy, Matthews correlation coefficient (MCC), and coverage will also be reported. Accuracy is not the primary metric: a majority-class baseline can achieve high accuracy while specificity and MCC are zero.
+
+\textbf{Tier A paired discrimination:} The primary endpoint is \texttt{pair\_da}: the number of valid pairs for which the vulnerable side is predicted as 1 and the fixed side as 0, divided by the number of valid pairs. We will also report the proportions of both-safe, both-flagged, and swapped pairs, together with coverage. Per-function accuracy will not replace \texttt{pair\_da}, because a constant prediction that gets one version right and the other wrong in every pair obtains 50\% per-function accuracy.
+
+\textbf{Tier B extended metrics:} The primary endpoints are macro-F1 and MCC, accompanied by recall, specificity, coverage, and observability strata. A dynamic clean result with insufficient execution coverage is inconclusive, not evidence that the code is safe.
+
+\textbf{Auxiliary task:} \texttt{pair\_joint} presents both versions in one prompt and requires an A/B forced choice. It will be reported as a separate task using discrimination accuracy (DA), the four outcome counts, and positional bias, without directly pooling it with separately elicited \texttt{pair\_da}.
+
+\subsection{Cost, Failure Handling, and Statistical Principles}
+\label{sec:eval-cost}
+
+\textbf{Cost accounting:} We distinguish costs recorded under the run's configured prices, costs recomputed under a common price card, and provider allowance deductions. API costs in USD and local CPU/Valgrind time will be reported separately; there will be no single cost-effectiveness score. Costs will be reported per 100 units, per 1,000 requests, and as total USD.
+
+\textbf{Failure handling:} Every result retains its status; failures will not be silently discarded. Schema-invalid outputs, API errors, timeouts, and tool errors will be distinguished and reported under both valid-only and strict views. In the strict view, failed units count as incorrect. Inapplicable units will not be assigned 0 or treated as negatives. Coverage will be reported separately, and failed requests will not be presented as predictions.
+
+\textbf{Statistical principles:} Proportions will use Wilson 95\% intervals. F1, macro-F1, MCC, and strategy differences will use bootstrap intervals clustered by project, pair, or functional family as appropriate. Paired binary correctness will use McNemar's test with multiplicity correction within preregistered comparison families, as secondary evidence. Differences will not be inferred from overlap between two independently computed intervals. Methods will not be ranked solely by accuracy, and seeds, thresholds, and metrics will not be selected after observing results.
+
+\subsection{Pilot Runs and Qualitative Analysis}
+\label{sec:eval-pilot}
+
+Before formal execution, a pilot of 5--10 dev examples will check labels, prompt format, parsers, and static-tool applicability. Pilot results are used only to correct the pipeline and will not enter test conclusions. If static-tool applicability is too low in the pilot, we will report only applicability and failure categories rather than compute F1.
+
+Qualitative analysis will be stratified by CWE family, function length, empty versus non-empty context, paired failure type (both-safe, both-flagged, or swapped), and positional bias. It will report false positives, false negatives, and cases where strategies disagree. Error analysis will explain quantitative results rather than replace preregistered metrics.
+
+\section{Proposed LLM Strategies and Models}
+\label{sec:approaches}
+
+Prompt strategy is the primary comparison axis. With the base model held fixed, we will compare the three ways of using an LLM in Table~\ref{tab:approaches}. All strategies use the same frozen test set and scoring rules. Dev is reserved for selecting examples and configuring prompts.
+
+\begin{table}[t]
+\caption{Three Proposed LLM Prompting Strategies}
+\label{tab:approaches}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\columnwidth}{@{}l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{0.79in}@{}}
+\toprule
+Strategy & Input & Purpose\\
+\midrule
+L1 Direct & Task instructions + function source & Baseline\\
+L2 Few-shot & L1 + fixed dev examples & Learning from examples\\
+L3 Context & L1 + allowlisted context & Context ablation\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The candidate base models are DeepSeek V4.1 Flash and MiMo-V2.6-Flash. Both will use the same tasks, datasets, prompt templates, and scoring rules. Cross-model comparisons are post-hoc analyses rather than the primary comparison axis. Exact endpoints, decoding parameters, prompt versions, and price cards will be written to the run manifests before experimentation and reported in the final paper; they are not fixed at the proposal stage.
+
+The Tier B extension will compare traditional static tools (Clang Static Analyzer and Cppcheck), traditional dynamic tools (ASan/LSan and Valgrind), and LLM strategies. Traditional tools and LLMs differ in inputs, denominators, and cost accounting; their results will be presented within the Tier B strata rather than combined into an overall ranking.
+
+Input allowlists, primary metrics, and failure-handling rules will be frozen before the formal experiments for all strategies.
+
+\balance
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 \end{document}
