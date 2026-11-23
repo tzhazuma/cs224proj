@@ -82,3 +82,61 @@ Known LSan blind spots (label bad, `asan_leak=false`, recorded as `mismatch ... 
   one of its four paths (`ALLOCA` + `free(data)`), which ASan aborts as
   `attempting free on address which was not malloc()-ed` (16 bad units, identical in original). This is
   in the raw Juliet code, not the construction; no good unit has any ASan error.
+
+## Layer 3 (stress) and placebo (PLAN 2.5)
+
+Both are derived from layer 1 for all 3,316 units (same unit_id, label and split fields) by `stress.py`;
+records add `transform` = {kind, guards [{name, value, op, const, truth}], inserted [{line, guard_line,
+file, file_line, stmt, guard, role, reachable: false}], wrapped_real_frees [{line, guard_line, file,
+file_line, stmt, guard}], seed, guard_values, pointer, dead_stmt_form, n_dead, n_flaw_sites,
+extra_position}. `line`/`guard_line` are model_text lines of the guarded statement / its `if(` line.
+
+```sh
+python3 stress.py build                       # ~10 s: build/layer3.jsonl, placebo.jsonl, programs_layer3/, programs_placebo/
+nohup python3 verify_layer3.py --jobs 6 &     # ~11 min: build/verify_layer3.jsonl + verify_layer3_report.md
+python3 stress.py build                       # merge the verify results into the records
+python3 check_layer3.py                       # structural checks; exit 0 = pass
+.venv/bin/python probes_layer3.py             # build/probes_layer3.json + probes_layer3_report.md
+python3 stress.py demo --unit-id CWE401_Memory_Leak__char_malloc_84__good --kind stress   # diff vs layer 1
+```
+
+Stress construction (seed 20261123):
+
+- every real `free(x)` / `delete x` / `delete[] x` of both labels is wrapped in an always-true guard;
+- every flaw site (layer-1 `;` where the good sink frees) is replaced by a dead free of the sink pointer
+  under an always-false guard; the dead form matches the allocation (C `free`, `new` → `delete`,
+  `new[]` → `delete[]`); empty destructors (destructor_01 bad) get the dead free inside;
+- extra dead frees: `e ∈ {0,1}` drawn per group (`Random("20261123:<group_id>")`), placed before/after the
+  same anchor in bad and good (the flaw site in bad, the real free of the same pointer in good; realloc:
+  right after `x = realloc(...)`, freeing the new pointer: bad `data`, good `tmpData`); realloc_fail and
+  virtual_destructor (no flaw site) get one more in both labels. Result: free-statement count and guard
+  count are equal within every pair (distribution 1:720, 2:838, 3:98, 4:2 groups);
+- guards: `static const int sym_N = V;` after the leading `#include` lines of the file that uses them,
+  `N` drawn from the unused names in 10..99, `V ∈ {4,5}`, comparison drawn from the six PLAN forms
+  (`==5 >4 !=4 !=5 <5 ==4`); for a form, the value that gives the needed truth is used, so every form
+  occurs as true and as false guard. No globals, no external functions.
+
+Placebo: identical insertion points, guards and counts, but the dead statement is
+`printLine("<Processing|Value checked|Status ok|Step complete>");` and real frees are not wrapped.
+
+Deviations from PLAN 2.5 (all decided on dev only, see `probes_layer3.py --dev-check`, leave-variant-out
+BoW AUROC on dev B2G): (1) PLAN form with fixed `k = 5` → 0.989 (true guards are exactly `==5 >4 !=4`, so
+the form tells which free is real); constants 4/5 with every form used both ways → 0.605; plus random
+guard names instead of sequential `sym_N` → 0.572 (chosen). (2) G2B goods also have a flaw site (`;`),
+which gets a dead free too, so G2B goods carry 1–2 dead frees and real-free-less G2B goods look like bad
+units (needed for count matching). (3) realloc_fail/virtual_destructor: 1–2 dead frees in both labels.
+(4) object `delete`s (e.g. `delete baseObject`) are wrapped like data frees.
+
+Verification (`verify_layer3.py`, 6 jobs, LSAN `use_stacks=0`): gcc and clang 23 compile 3,316/3,316 in
+both layers; all 3,236 non-variant-12 units per layer have the stage-1 verdict; goods 0 leaks.
+Variant 12 (random branches): layer3 67/80, placebo 71/80 same verdict, varying between runs in both
+directions as in stage 1. The only non-leak ASan error is Juliet's own variant-12 `ALLOCA` bad-free:
+every occurrence (21 layer3, 15 placebo) was rerun and located at a real free/delete, never at an
+inserted dead statement.
+
+Probes (eval, `probes_layer3_report.md`), layer 3: format probes ≤ 0.525, grep v0 B2G 0.333, v1 0.333,
+v2 0.498, BoW AUROC B2G 0.609 (all 0.810; G2B 0.986 because ALLOCA / stack buffers are intrinsic to G2B
+goods) → PASS. Placebo: format probes PASS; grep and BoW stay at layer-1 level (0.70–0.99) by design.
+`stress.py` is importable without side effects: `transform_unit(record, kind, seed, n_dead)` and
+`transform_source(code, language, func=None, ...)` (best effort on any single C/C++ file, raises
+`ValueError`). Both builds are deterministic (two runs, same SHA-256; lines added to SHA256SUMS).

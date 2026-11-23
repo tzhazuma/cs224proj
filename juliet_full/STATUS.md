@@ -37,7 +37,7 @@ Last update: 2026-11-23 11:12 PST (dell clock is America/Los_Angeles; Beijing = 
 ## 4. Lanes
 | lane | dir (write boundary) | run id (latest) | status | next |
 |---|---|---|---|---|
-| data | juliet_full/data/ | ce4bccc8 (resumed 24301f44) | DONE stage 1 (report: lane_reports/2026-11-23_data_stage1.md) | stage 3: build layer ③ and placebo (Phase D; maybe earlier for the demo) |
+| data | juliet_full/data/ | a5fa0f86 (stage 3 done) | stages 1+3 DONE (lane_reports/2026-11-23_data_stage{1,3}.md): layer3.jsonl sha 033945a8…, placebo.jsonl 1ce6d2fe…; §2.6 probes pass; ASan/LSan verdicts identical outside variant 12 | idle |
 | static | juliet_full/static/, juliet_full/analysis/ | 3c1d3649 (resumed 02f56008) | RUNNING: mapping, full clang/cppcheck/grep, evidence, CodeQL/Infer, score.py | — |
 | llm | juliet_full/llm/ | 4c6356a0 (stage 2b; earlier 6d6db797/60c2c8f6) | stage 2a DONE (lane_reports/2026-11-23_llm_stage2a.md): DeepSeek dev macro-F1 L1 1.000 / L2 1.000 / L3 0.997; Jev 0.977 / 0.950 / 0.987 (AUC ≥0.999). RUNNING stage 2b: DeepSeek eval L1,L2 → Jev dev+eval ×3 → DeepSeek L3 (waits EVIDENCE_FROZEN) → repeats → latency300 c1 → L4 dev design (no eval) | parent freezes L4 |
 | gpu | juliet_full/gpu/, 184-toast ~/disk4/cs224/gpu | 9f90dfc5 (resumed 046b1350) | DONE stage 1 (report: lane_reports/2026-11-23_gpu_stage1.md) | after FT: restart services, add a fine-tuned-model endpoint, Qwen and Intern-Decision zero-shot runs |
@@ -61,6 +61,8 @@ Last update: 2026-11-23 11:12 PST (dell clock is America/Los_Angeles; Beijing = 
   - LoRA has 32,464,896 trainable parameters; fla 0.6.0 Triton kernels are used. Speed: L1 4.5 s per step (20.3 GB, no grad checkpointing).
   - Merged and unmerged scores differ by up to 0.36 (mean 0.23; BF16 merge rounding), while dev AUROC is the same. TODO: decide which scores to report once each job's merge_check arrives.
   - Latency is measured server-side for now; dell-side latency comes via :8003.
+
+- Layer ③ (stress) and placebo layer (data stage 3): all 3,316 units; probes on eval (all / B2G): grep v0 .333/.333, v1 .333/.333, v2 .498/.499, BoW AUROC .810/.609 (limit B2G ≤.65; G2B subset .986 from ALLOCA/new = task-intrinsic); format probes ≤.525. Deviations from PLAN §2.5 (decided on dev): guard constants take values 4 or 5 so every comparison form occurs as both true & false (fixed 5 → BoW B2G .989); random guard names sym_10–sym_99; G2B goods also get 1–2 dead frees (flaw-site match); realloc_fail/destructor families get 1–2 dead frees in both labels; object deletes wrapped. Verification gcc/clang 3316/3316 both layers; same verdict as stage 1 for all 3,236 non-variant-12 units (variant 12 random path: 67/80 and 71/80).
 
 ## 6. Budget
 - DeepSeek (11:20 PST, demo check.sh): ledger total ≈ ¥3.09, balance ¥8.58 (LLM stage 2b eval runs in progress). Earlier: ledger total ≈ ¥0.362 (stage 2a ¥0.329) + parent probes ≈ ¥0.02; balance ¥10.50 at 11:00 PST. Ledger `juliet_full/llm/ledger.jsonl`.
