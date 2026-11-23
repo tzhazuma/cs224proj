@@ -6,7 +6,7 @@ It records progress and is how information passes between the parent and the lan
 - Plan (Chinese): `PLAN.md`.
 - Each lane's final report is copied to `juliet_full/lane_reports/<date>_<lane>_<stage>.md`.
 
-Last update: 2026-11-23 11:02 PST (dell clock is America/Los_Angeles; Beijing = PST + 16 h).
+Last update: 2026-11-23 11:12 PST (dell clock is America/Los_Angeles; Beijing = PST + 16 h).
 
 ## 1. Decisions log (newest first; source = user message or parent)
 - 2026-11-23 user: DeepSeek main experiment may use the FULL eval set (2,656 units) instead of the 1,328-unit api_subset. Total DeepSeek spend is still capped at CNY 10, with a client hard stop at CNY 9.5. Priority order: main L1 → L3 → L2 → L4 → repeats → stress layer ③ → placebo → original Juliet.
@@ -23,7 +23,7 @@ Last update: 2026-11-23 11:02 PST (dell clock is America/Los_Angeles; Beijing = 
 - `juliet_full/data/build/SHA256SUMS`: layer1.jsonl `d4d913c4…cafad9`, original.jsonl `bf7d3538…7abb`, subsets.json `4380855f…8c83`. `changed_units.json` is empty.
 - **LLM prompts FROZEN 2026-11-23 11:08 PST** (parent, after stage-2a dev check; lane_reports/2026-11-23_llm_stage2a.md). Files `juliet_full/llm/prompts/*` at commit of this freeze; L2 examples rebuilt from full dev (strdup_char_18 bad, new_int_41 good, new_int_65 bad, int_malloc_73 good; both units of these 4 groups excluded from dev runs). Prompt-set hashes: chat L1 `ed8676d1…`, L2 `a932f4394ee07909…`, L3 `1b4e5f65…`; Jev L1 `6de1c2a4…`, L2 `b623ac7f8d24e75b…`, L3 `668f6ef9…`. L4 NOT frozen (dev design continues). Any later change = new prompt hash + rerun of that strategy.
 - Jev decision threshold: primary = fixed 0.5 (zero-shot, no tuning; pre-registered); secondary = threshold chosen on dev macro-F1, reported as such; AUROC always reported.
-- L3 evidence: waits for `juliet_full/static/results/clang_sa/layer1/EVIDENCE_FROZEN` (static lane writes run id + sha; currently evidence.jsonl == full_v2.evidence.jsonl, sha 00897f54…).
+- L3 evidence FROZEN by the static lane: `static/results/clang_sa/layer1/EVIDENCE_FROZEN` = `full_v2 00897f5445fbc1085cedac05f549886ccbdf9e3f3d5e1737bc78f9196890eec5`. The Clang SA baseline that gets reported must be this same run, full_v2.
 
 ## 3. Machines, tools, endpoints
 - dell (this host): every client and CPU tool. Tools live under `~/tools/cs224/`; see `VERSIONS.txt`: clang 23.1.6, cppcheck 2.22.0, valgrind 3.28.0, codeql 2.27.5, infer 1.3.0, souffle 2.5.
@@ -39,11 +39,11 @@ Last update: 2026-11-23 11:02 PST (dell clock is America/Los_Angeles; Beijing = 
 |---|---|---|---|---|
 | data | juliet_full/data/ | ce4bccc8 (resumed 24301f44) | DONE stage 1 (report: lane_reports/2026-11-23_data_stage1.md) | stage 3: build layer ③ and placebo (Phase D; maybe earlier for the demo) |
 | static | juliet_full/static/, juliet_full/analysis/ | 3c1d3649 (resumed 02f56008) | RUNNING: mapping, full clang/cppcheck/grep, evidence, CodeQL/Infer, score.py | — |
-| llm | juliet_full/llm/ | 6d6db797 (stage 2a done) | stage 2a DONE (lane_reports/2026-11-23_llm_stage2a.md): DeepSeek dev macro-F1 L1 1.000 / L2 1.000 / L3 0.997; Jev 0.977 / 0.950 / 0.987 (AUC ≥0.999); prompts frozen | stage 2b: eval runs |
+| llm | juliet_full/llm/ | 4c6356a0 (stage 2b; earlier 6d6db797/60c2c8f6) | stage 2a DONE (lane_reports/2026-11-23_llm_stage2a.md): DeepSeek dev macro-F1 L1 1.000 / L2 1.000 / L3 0.997; Jev 0.977 / 0.950 / 0.987 (AUC ≥0.999). RUNNING stage 2b: DeepSeek eval L1,L2 → Jev dev+eval ×3 → DeepSeek L3 (waits EVIDENCE_FROZEN) → repeats → latency300 c1 → L4 dev design (no eval) | parent freezes L4 |
 | gpu | juliet_full/gpu/, 184-toast ~/disk4/cs224/gpu | 9f90dfc5 (resumed 046b1350) | DONE stage 1 (report: lane_reports/2026-11-23_gpu_stage1.md) | after FT: restart services, add a fine-tuned-model endpoint, Qwen and Intern-Decision zero-shot runs |
 | decision_ft | juliet_full/decision_ft/, 184-toast ~/disk4/cs224/decision_ft | abb53eac | RUNNING: pipeline, speed test, queue of 6 jobs | collect predictions when the jobs finish |
 | slides | presentation/pre/ | a1c38326 | RUNNING: Beamer metropolis 16:9, figures pipeline (`make figures`), notes.md speaker script | parent refreshes figures once results land |
-| demo | presentation/demo/ | 4467045b | RUNNING: rich TUI demo.py (grep / Clang SA / FT decision model :8003 with fallbacks / DeepSeek / Jev), live dead-free insertion, --replay/--record, check.sh, record.sh | needs :8003 endpoint after FT; record backup video |
+| demo | presentation/demo/ | 4467045b | stage 1 DONE (lane_reports/2026-11-23_demo_stage1.md): demo.py rich TUI, grep/Clang/DeepSeek L1+L3/Jev live verified on dev group char_malloc_18, attack via data stress.py transform_unit, replay/record, check.sh, record.sh (asciinema+agg+ffmpeg) | after :8003 up: check.sh, `./demo.py --allow-eval --allow-peak --no-attack`, then `REC_NAME=stage_final ./record.sh --allow-eval --allow-peak`; pick a stage group Clang catches |
 
 ## 5. Results so far (sanity checks / preliminary, NOT final)
 - Data probes, eval macro-F1, original → layer 1: static-void 1.000 → 0.333; function count 0.924 → 0.499; lines 0.906 → 0.544; grep v0 0.935 → 0.701 (B2G 0.959, G2B 0.354); BoW LR 1.000 → 0.979 (AUROC 0.982; the cues are free/delete/ALLOCA, which are task-intrinsic).
@@ -62,7 +62,8 @@ Last update: 2026-11-23 11:02 PST (dell clock is America/Los_Angeles; Beijing = 
 - Jev: ledger total $0.0427 of $4.8.
 
 ## 7. Open items / TODO (parent)
-1. Freeze the prompts after the stage-2a report, then launch LLM stage 2b (DeepSeek full eval L1/L3/L2, Jev full, in off-peak windows).
+0. Key finding to watch: DeepSeek is at the ceiling on the debiased dev set (macro-F1 1.000), so layer ③ stress, placebo, and latency/cost become the differentiators. A contamination caveat applies (Juliet is public).
+1. ✅ Prompts frozen at 11:08 PST (commit 780ec1e). LLM stage 2b launched (4c6356a0); its budget is ≤ ¥4.0 and ≤ $1.30.
 2. After FT: restart the services; add an FT-model forward endpoint (for latency from dell and for the demo); run Qwen L1–L3 and Intern-Decision zero-shot on full dev+eval.
 3. Static: review the checker mapping, then run CodeQL/Infer (batched if needed).
 4. Slides lane plus demo lane (live demo; backup recording).

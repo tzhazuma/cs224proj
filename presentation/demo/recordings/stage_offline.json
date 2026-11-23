@@ -1,0 +1,302 @@
+{
+ "format": "cs224-demo-run/1",
+ "created_utc": "2026-11-23T19:16:20Z",
+ "run_id": "demo_20261123T191617Z",
+ "host": "barton-OptiPlex-5000",
+ "argv": [
+  "--offline",
+  "--no-pause",
+  "--no-clear",
+  "--record",
+  "recordings/stage_offline.json"
+ ],
+ "methods": [
+  "grep",
+  "clang",
+  "ft"
+ ],
+ "cases": [
+  {
+   "key": "bad",
+   "title": "leaking unit",
+   "truth": 1,
+   "highlight": [],
+   "unit": {
+    "unit_id": "CWE401_Memory_Leak__int_malloc_01__bad",
+    "group_id": "CWE401_Memory_Leak__int_malloc_01",
+    "language": "c",
+    "set": "eval",
+    "fold": 0,
+    "flow_category": "01",
+    "mechanism": "c_alloc",
+    "good_kind": null,
+    "model_text": "// ---- part 1 ----\n#include <wchar.h>\n\nvoid sym_0()\n{\n    int * data;\n    data = NULL;\n\n    data = (int *)malloc(100*sizeof(int));\n    if (data == NULL) {exit(-1);}\n\n    data[0] = 5;\n    printIntLine(data[0]);\n\n    ;\n}\n\nint main(int argc, char * argv[])\n{\n    srand( (unsigned)time(NULL) );\n    sym_0();\n    return 0;\n}",
+    "transform": null
+   }
+  },
+  {
+   "key": "good",
+   "title": "good twin (B2G)",
+   "truth": 0,
+   "highlight": [],
+   "unit": {
+    "unit_id": "CWE401_Memory_Leak__int_malloc_01__good",
+    "group_id": "CWE401_Memory_Leak__int_malloc_01",
+    "language": "c",
+    "set": "eval",
+    "fold": 0,
+    "flow_category": "01",
+    "mechanism": "c_alloc",
+    "good_kind": "B2G",
+    "model_text": "// ---- part 1 ----\n#include <wchar.h>\n\nvoid sym_0()\n{\n    int * data;\n    data = NULL;\n\n    data = (int *)malloc(100*sizeof(int));\n    if (data == NULL) {exit(-1);}\n\n    data[0] = 5;\n    printIntLine(data[0]);\n\n    free(data);\n}\n\nint main(int argc, char * argv[])\n{\n    srand( (unsigned)time(NULL) );\n    sym_0();\n    return 0;\n}",
+    "transform": null
+   }
+  },
+  {
+   "key": "attacked",
+   "title": "+ dead free",
+   "truth": 1,
+   "highlight": [
+    3,
+    4,
+    17,
+    18,
+    19,
+    20
+   ],
+   "unit": {
+    "unit_id": "CWE401_Memory_Leak__int_malloc_01__bad__stress",
+    "group_id": "CWE401_Memory_Leak__int_malloc_01",
+    "language": "c",
+    "set": "eval",
+    "fold": 0,
+    "flow_category": "01",
+    "mechanism": "c_alloc",
+    "good_kind": null,
+    "model_text": "// ---- part 1 ----\n#include <wchar.h>\n\nstatic const int sym_29 = 5;\n\nvoid sym_0()\n{\n    int * data;\n    data = NULL;\n\n    data = (int *)malloc(100*sizeof(int));\n    if (data == NULL) {exit(-1);}\n\n    data[0] = 5;\n    printIntLine(data[0]);\n\n    if(sym_29 == 4)\n    {\n        free(data);\n    }\n}\n\nint main(int argc, char * argv[])\n{\n    srand( (unsigned)time(NULL) );\n    sym_0();\n    return 0;\n}",
+    "transform": {
+     "kind": "stress",
+     "guards": [
+      {
+       "name": "sym_29",
+       "value": 5,
+       "op": "==",
+       "const": 4,
+       "truth": false
+      }
+     ],
+     "inserted": [
+      {
+       "line": 19,
+       "file": "unit_1.c",
+       "file_line": 19,
+       "guard_line": 17,
+       "stmt": "free(data);",
+       "guard": "sym_29",
+       "role": "site",
+       "reachable": false
+      }
+     ],
+     "wrapped_real_frees": [],
+     "seed": 20261123,
+     "guard_values": [
+      4,
+      5
+     ],
+     "pointer": "data",
+     "dead_stmt_form": "free",
+     "n_dead": 1,
+     "n_flaw_sites": 1,
+     "extra_position": "before",
+     "inserter": "stress",
+     "source_unit_id": "CWE401_Memory_Leak__int_malloc_01__bad"
+    }
+   }
+  }
+ ],
+ "attack": {
+  "kind": "stress",
+  "guards": [
+   {
+    "name": "sym_29",
+    "value": 5,
+    "op": "==",
+    "const": 4,
+    "truth": false
+   }
+  ],
+  "inserted": [
+   {
+    "line": 19,
+    "file": "unit_1.c",
+    "file_line": 19,
+    "guard_line": 17,
+    "stmt": "free(data);",
+    "guard": "sym_29",
+    "role": "site",
+    "reachable": false
+   }
+  ],
+  "wrapped_real_frees": [],
+  "seed": 20261123,
+  "guard_values": [
+   4,
+   5
+  ],
+  "pointer": "data",
+  "dead_stmt_form": "free",
+  "n_dead": 1,
+  "n_flaw_sites": 1,
+  "extra_position": "before",
+  "inserter": "stress",
+  "source_unit_id": "CWE401_Memory_Leak__int_malloc_01__bad"
+ },
+ "results": {
+  "bad": {
+   "grep": {
+    "method": "grep",
+    "status": "ok",
+    "pred": 1,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 1.176722002128372,
+    "backend": null,
+    "detail": "no free/delete",
+    "extra": {}
+   },
+   "clang": {
+    "method": "clang",
+    "status": "ok",
+    "pred": 1,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 20.64859599704505,
+    "backend": null,
+    "detail": "line 13: Potential leak of memory pointed to by 'data'",
+    "extra": {
+     "warnings": [
+      {
+       "checker": "unix.Malloc",
+       "message": "Potential leak of memory pointed to by 'data'",
+       "source_file": "unit_1.c",
+       "source_line": 13,
+       "model_text_line": 13,
+       "statement_text": "printIntLine(data[0]);"
+      }
+     ]
+    }
+   },
+   "ft": {
+    "method": "ft",
+    "status": "offline",
+    "pred": null,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": null,
+    "backend": "decision model: offline",
+    "detail": "ft: RemoteDisconnected; intern: RemoteDisconnected; qwen: RemoteDisconnected",
+    "extra": {}
+   }
+  },
+  "good": {
+   "grep": {
+    "method": "grep",
+    "status": "ok",
+    "pred": 0,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 0.6537480003316887,
+    "backend": null,
+    "detail": "free/delete found",
+    "extra": {}
+   },
+   "clang": {
+    "method": "clang",
+    "status": "ok",
+    "pred": 0,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 18.25722899957327,
+    "backend": null,
+    "detail": "no leak warning",
+    "extra": {
+     "warnings": []
+    }
+   },
+   "ft": {
+    "method": "ft",
+    "status": "offline",
+    "pred": null,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": null,
+    "backend": "decision model: offline",
+    "detail": "ft: RemoteDisconnected; intern: RemoteDisconnected; qwen: RemoteDisconnected",
+    "extra": {}
+   }
+  },
+  "attacked": {
+   "grep": {
+    "method": "grep",
+    "status": "ok",
+    "pred": 0,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 0.3589529987948481,
+    "backend": null,
+    "detail": "free/delete found",
+    "extra": {}
+   },
+   "clang": {
+    "method": "clang",
+    "status": "ok",
+    "pred": 1,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 19.46298699840554,
+    "backend": null,
+    "detail": "line 15: Potential leak of memory pointed to by 'data'",
+    "extra": {
+     "warnings": [
+      {
+       "checker": "unix.Malloc",
+       "message": "Potential leak of memory pointed to by 'data'",
+       "source_file": "unit_1.c",
+       "source_line": 15,
+       "model_text_line": 15,
+       "statement_text": "printIntLine(data[0]);"
+      }
+     ]
+    }
+   },
+   "ft": {
+    "method": "ft",
+    "status": "offline",
+    "pred": null,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": null,
+    "backend": "decision model: offline",
+    "detail": "ft: RemoteDisconnected; intern: RemoteDisconnected; qwen: RemoteDisconnected",
+    "extra": {}
+   }
+  }
+ },
+ "summary": [
+  "grep fooled, Clang SA robust, decision model offline",
+  "good twin: no false alarm"
+ ],
+ "spent": {
+  "deepseek": 0.0,
+  "jev": 0.0
+ }
+}
