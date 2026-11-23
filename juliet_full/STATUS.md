@@ -41,7 +41,7 @@ Last update: 2026-11-23 11:12 PST (dell clock is America/Los_Angeles; Beijing = 
 | static | juliet_full/static/, juliet_full/analysis/ | 3c1d3649 (resumed 02f56008) | RUNNING: mapping, full clang/cppcheck/grep, evidence, CodeQL/Infer, score.py | — |
 | llm | juliet_full/llm/ | 4c6356a0 (stage 2b; earlier 6d6db797/60c2c8f6) | stage 2a DONE (lane_reports/2026-11-23_llm_stage2a.md): DeepSeek dev macro-F1 L1 1.000 / L2 1.000 / L3 0.997; Jev 0.977 / 0.950 / 0.987 (AUC ≥0.999). RUNNING stage 2b: DeepSeek eval L1,L2 → Jev dev+eval ×3 → DeepSeek L3 (waits EVIDENCE_FROZEN) → repeats → latency300 c1 → L4 dev design (no eval) | parent freezes L4 |
 | gpu | juliet_full/gpu/, 184-toast ~/disk4/cs224/gpu | 9f90dfc5 (resumed 046b1350) | DONE stage 1 (report: lane_reports/2026-11-23_gpu_stage1.md) | after FT: restart services, add a fine-tuned-model endpoint, Qwen and Intern-Decision zero-shot runs |
-| decision_ft | juliet_full/decision_ft/, 184-toast ~/disk4/cs224/decision_ft | abb53eac | RUNNING: pipeline, speed test, queue of 6 jobs | collect predictions when the jobs finish |
+| decision_ft | juliet_full/decision_ft/, 184-toast ~/disk4/cs224/decision_ft | abb53eac (stage 1 done) | stage 1 DONE (lane_reports/2026-11-23_decision_ft_stage1.md). Queue RUNNING on both GPUs: L1 fold0/1 training → L1 fold2, L3 fold0/1/2; ETA all done ≈ 13:40 PST (21:40 UTC). Monitor `ssh 184-toast 'bash ~/disk4/cs224/decision_ft/server/status.sh'`; collect `juliet_full/decision_ft/collect.sh` | after ETA: collect, check selection + merge_check, then gpu lane builds :8003 and restarts services |
 | slides | presentation/pre/ | a1c38326 | RUNNING: Beamer metropolis 16:9, figures pipeline (`make figures`), notes.md speaker script | parent refreshes figures once results land |
 | demo | presentation/demo/ | 4467045b | stage 1 DONE (lane_reports/2026-11-23_demo_stage1.md): demo.py rich TUI, grep/Clang/DeepSeek L1+L3/Jev live verified on dev group char_malloc_18, attack via data stress.py transform_unit, replay/record, check.sh, record.sh (asciinema+agg+ffmpeg) | after :8003 up: check.sh, `./demo.py --allow-eval --allow-peak --no-attack`, then `REC_NAME=stage_final ./record.sh --allow-eval --allow-peak`; pick a stage group Clang catches |
 
@@ -57,8 +57,13 @@ Last update: 2026-11-23 11:12 PST (dell clock is America/Los_Angeles; Beijing = 
 - DeepSeek per call (off-peak, measured): L1 ¥0.00045, L2 ¥0.00041, L3 ¥0.00026–0.0005, L4 ¥0.00047. Smoke correct/20 on L1/L2/L3: DeepSeek 19/20/20, Jev 19/19/19, Qwen 18/18/19 (L3 on mock evidence, meaningless).
 - L4: DeepSeek facts parse 12/12 and agree with the truth on 10/12. Failure mode: identical facts for the leaking and fixed realloc versions, plus one hallucinated free.
 
+- Decision FT (stage 1): step-0 head = tied Yes/No rows exactly (diff 0.0). Zero-shot L1 dev AUROC 0.8825 (base lm head) / 0.8842 (head, bs1). After half an epoch, dev AUROC is 1.000 (fold0) and 0.9995 (fold1), and train loss reaches about 1e-8. So layer ① is easy for a trained model, which matches the BoW LR 0.979: free/delete/ALLOCA are task-intrinsic cues. Layer ③ is where robustness will be measured, and the FT model is trained only on layer ①.
+  - LoRA has 32,464,896 trainable parameters; fla 0.6.0 Triton kernels are used. Speed: L1 4.5 s per step (20.3 GB, no grad checkpointing).
+  - Merged and unmerged scores differ by up to 0.36 (mean 0.23; BF16 merge rounding), while dev AUROC is the same. TODO: decide which scores to report once each job's merge_check arrives.
+  - Latency is measured server-side for now; dell-side latency comes via :8003.
+
 ## 6. Budget
-- DeepSeek: ledger total ≈ ¥0.362 (stage 2a ¥0.329) + parent probes ≈ ¥0.02; balance ¥10.50 at 11:00 PST. Ledger `juliet_full/llm/ledger.jsonl`.
+- DeepSeek (11:20 PST, demo check.sh): ledger total ≈ ¥3.09, balance ¥8.58 (LLM stage 2b eval runs in progress). Earlier: ledger total ≈ ¥0.362 (stage 2a ¥0.329) + parent probes ≈ ¥0.02; balance ¥10.50 at 11:00 PST. Ledger `juliet_full/llm/ledger.jsonl`.
 - Jev: ledger total $0.0427 of $4.8.
 
 ## 7. Open items / TODO (parent)
