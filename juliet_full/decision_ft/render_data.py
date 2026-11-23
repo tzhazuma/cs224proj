@@ -1,13 +1,16 @@
 """Render the decision_ft inputs (README "Data") on dell.
 
-For strategy L1 / L3 and fold k in {0,1,2} writes data/<strategy>/fold<k>/{train,dev,pred}.jsonl:
+Layer 1 (default): for strategy L1 / L3 and fold k in {0,1,2} writes data/<strategy>/fold<k>/{train,dev,pred}.jsonl:
   train = eval units with fold != k, dev = all dev units, pred = eval units with fold == k.
+Other layers (--layer layer3|placebo|original, prediction only): data/<layer>/<strategy>/eval.jsonl = all eval units
+  of data/build/<layer>.jsonl (each is scored by the model of its fold). L3 needs frozen Clang SA evidence of that
+  layer (static/results/clang_sa/<layer>/EVIDENCE_FROZEN); `original` has none, so it gets L1 only.
 Each row: unit metadata, `text` = Qwen chat template applied to
   system = llm/prompts/task.txt, user = PromptSet(strategy).user_body(unit, evidence) + "\\n\\n" + QUESTION
 with add_generation_prompt=True, enable_thinking=False, and `n_tokens` of that text.
 data/manifest.json records the input hashes (units, evidence, prompt files, chat template) and counts.
 
-Run: PYTHONPYCACHEPREFIX=/tmp/dft-pycache .venv/bin/python render_data.py --strategy L1 [--strategy L3]
+Run: PYTHONPYCACHEPREFIX=/tmp/dft-pycache .venv/bin/python render_data.py --strategy L1 [--strategy L3] [--layer L]
      [--dev-only]   (pipeline tests before the data freeze: only data/<strategy>/dev_only/dev.jsonl)
 """
 
@@ -26,9 +29,9 @@ from llmlane.prompts import PromptAuditError, PromptSet, audit, read_prompt, ren
 from juliet_llm.cleaning import PROMPT_FORBIDDEN_PATTERNS, scan  # noqa: E402  (path set by llmlane.prompts)
 from llmlane.units import file_sha256, load_evidence  # noqa: E402
 
-UNITS_PATH = JULIET_FULL / "data" / "build" / "layer1.jsonl"
-SHA256SUMS_PATH = JULIET_FULL / "data" / "build" / "SHA256SUMS"
-EVIDENCE_PATH = JULIET_FULL / "static" / "results" / "clang_sa" / "layer1" / "evidence.jsonl"
+BUILD_DIR = JULIET_FULL / "data" / "build"
+SHA256SUMS_PATH = BUILD_DIR / "SHA256SUMS"
+CLANG_DIR = JULIET_FULL / "static" / "results" / "clang_sa"
 MODEL_DIR = Path("/home/barton/tools/cs224/models/Qwen3.5-4B")
 OUT_DIR = HERE / "data"
 QUESTION = "Does the executed code unit leak heap memory? Answer Yes or No."
@@ -36,12 +39,25 @@ META_KEYS = ("unit_id", "group_id", "family", "variant", "flow_category", "mecha
              "set", "fold", "label", "truth", "good_kind")
 
 
-def frozen_units_sha() -> str:
+def frozen_units_sha(units_path: Path) -> str:
     for line in SHA256SUMS_PATH.read_text().splitlines():
         digest, name = line.split()
-        if name == UNITS_PATH.name:
+        if name == units_path.name:
             return digest
-    raise SystemExit("layer1.jsonl missing from SHA256SUMS")
+    raise SystemExit(f"{units_path.name} missing from SHA256SUMS")
+
+
+def frozen_evidence_path(layer: str) -> Path:
+    """static/results/clang_sa/<layer>/EVIDENCE_FROZEN = "<run_id> <sha256>" -> <run_id>.evidence.jsonl (sha checked).
+    Layer 1 was rendered from evidence.jsonl, a copy of the frozen full_v2 file (same sha256)."""
+    marker = CLANG_DIR / layer / "EVIDENCE_FROZEN"
+    if not marker.exists():
+        raise SystemExit(f"{layer}: no frozen Clang SA evidence ({marker})")
+    run_id, digest = marker.read_text().split()
+    path = CLANG_DIR / layer / ("evidence.jsonl" if layer == "layer1" else f"{run_id}.evidence.jsonl")
+    if file_sha256(path) != digest:
+        raise SystemExit(f"{path} does not match {marker}")
+    return path
 
 
 def render(strategy: str, units: list[dict], evidence: dict | None, tokenizer) -> list[dict]:
@@ -90,8 +106,10 @@ def check_groups(rows: list[dict]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strategy", action="append", choices=("L1", "L3"), required=True)
+    parser.add_argument("--layer", choices=("layer1", "layer3", "placebo", "original"), default="layer1")
     parser.add_argument("--dev-only", action="store_true")
     args = parser.parse_args()
+    units_path = BUILD_DIR / f"{args.layer}.jsonl"
 
     from transformers import AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained(str(MODEL_DIR))
@@ -99,21 +117,24 @@ def main() -> None:
     if len(yes) != 1 or len(no) != 1:
         raise SystemExit(f"Yes/No are not single tokens: {yes} {no}")
 
-    units_sha = file_sha256(UNITS_PATH)
+    units_sha = file_sha256(units_path)
     frozen = SHA256SUMS_PATH.exists()
     if not args.dev_only:
-        if not frozen or units_sha != frozen_units_sha():
-            raise SystemExit("layer1.jsonl is not frozen or does not match SHA256SUMS")
-    units = [json.loads(line) for line in UNITS_PATH.read_text(encoding="utf-8").splitlines() if line.strip()]
+        if not frozen or units_sha != frozen_units_sha(units_path):
+            raise SystemExit(f"{units_path.name} is not frozen or does not match SHA256SUMS")
+    units = [json.loads(line) for line in units_path.read_text(encoding="utf-8").splitlines() if line.strip()]
     if args.dev_only:
         units = [u for u in units if u["set"] == "dev"]
+    elif args.layer != "layer1":
+        units = [u for u in units if u["set"] == "eval"]
 
     manifest_path = OUT_DIR / "manifest.json"
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     for strategy in args.strategy:
-        evidence = None
+        evidence = evidence_path = None
         if strategy == "L3":
-            evidence = load_evidence(EVIDENCE_PATH)
+            evidence_path = frozen_evidence_path(args.layer)
+            evidence = load_evidence(evidence_path)
             missing = {u["unit_id"] for u in units} - set(evidence)
             if missing:
                 raise SystemExit(f"L3: {len(missing)} units have no Clang SA evidence record")
@@ -122,9 +143,9 @@ def main() -> None:
         prompts = PromptSet(strategy)
         user_file = "user_L3.txt" if strategy == "L3" else "user_L1.txt"
         entry = {
-            "units_file": str(UNITS_PATH), "units_sha256": units_sha, "units_frozen": frozen,
-            "evidence_file": str(EVIDENCE_PATH) if evidence is not None else None,
-            "evidence_sha256": file_sha256(EVIDENCE_PATH) if evidence is not None else None,
+            "layer": args.layer, "units_file": str(units_path), "units_sha256": units_sha, "units_frozen": frozen,
+            "evidence_file": str(evidence_path) if evidence is not None else None,
+            "evidence_sha256": file_sha256(evidence_path) if evidence is not None else None,
             "prompt_files": {"task.txt": prompts.files["task.txt"], user_file: prompts.files[user_file]},
             "question": QUESTION, "question_sha256": sha256_text(QUESTION),
             "chat_template_sha256": sha256_text(tokenizer.chat_template),
@@ -132,6 +153,17 @@ def main() -> None:
             "tokenizer_dir": str(MODEL_DIR), "yes_token_id": yes[0], "no_token_id": no[0],
             "dev_only": args.dev_only, "files": {},
         }
+        if args.layer != "layer1":
+            path = OUT_DIR / args.layer / strategy / "eval.jsonl"
+            write_jsonl(path, rows)
+            lengths = [r["n_tokens"] for r in rows]
+            entry["files"][f"{args.layer}/{strategy}/eval.jsonl"] = {
+                "n_units": len(rows), "n_groups": len({r["group_id"] for r in rows}),
+                "tokens_mean": round(sum(lengths) / len(lengths), 1), "tokens_max": max(lengths),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+            manifest[f"{args.layer}/{strategy}"] = entry
+            print(args.layer, strategy, json.dumps(entry["files"], indent=1))
+            continue
         jobs = {"dev_only": None} if args.dev_only else {f"fold{k}": k for k in (0, 1, 2)}
         for job, fold in jobs.items():
             splits = {"dev": [r for r in rows if r["set"] == "dev"]}

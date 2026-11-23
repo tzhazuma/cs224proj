@@ -1,0 +1,62 @@
+{
+  "method": "decision_ft",
+  "strategy": "L3",
+  "model": "qwen3.5-4b-lora-L3-fold2",
+  "layer": "layer1",
+  "run_id": "dev_L3_fold2_v1",
+  "split": "dev",
+  "n_units": 660,
+  "base_model": "/home/zhangzx/disk4/cs224/models/Qwen3.5-4B",
+  "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+  },
+  "prompt_files": {
+    "task.txt": "aa12d68878ff890f78e3c1a9341846f83c15a164369279f84831e691d5fe86a2",
+    "user_L3.txt": "06aab5226705ccc05e7e0fdc42af2097b6d94d9edd904b006fe82ca6f02363db"
+  },
+  "question_sha256": "8b780fccdfeabf59445858167b73e744e577c34e6417b14a692f8ea37cf761b6",
+  "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+  "units_sha256": "d4d913c438e8a86fe8fa3c0560aab6320d8bb90b6eca584e1f70ad8183cafad9",
+  "evidence_sha256": "00897f5445fbc1085cedac05f549886ccbdf9e3f3d5e1737bc78f9196890eec5",
+  "selection": {
+    "checkpoint": "step336",
+    "epoch": 3.0,
+    "threshold": -0.27812719345092773,
+    "dev_macro_f1_at_threshold": 1.0,
+    "dev_auroc": 1.0,
+    "dev_loss": 1.7357595538669557e-07,
+    "threshold_rule": "dev macro-F1 on merged batch-1 dev scores; pred = s > threshold",
+    "selection_rule": "dev AUROC every half epoch (step-0 is not a candidate); tie -> lower dev loss"
+  },
+  "merge_check": {
+    "max_abs_merged_minus_unmerged": 0.3479166030883789,
+    "mean_abs_merged_minus_unmerged": 0.12287716865539551,
+    "dev_auroc_unmerged_bs1": 1.0,
+    "dev_auroc_merged_bs1": 1.0,
+    "latency_median_unmerged_s": 0.15127897169440985,
+    "latency_median_merged_s": 0.11902017472311854
+  },
+  "start_utc": "2026-11-23T20:47:35Z",
+  "end_utc": "2026-11-23T21:38:32Z",
+  "host": "Toast-184",
+  "concurrency": 1,
+  "loadavg_end": [
+    5.30322265625,
+    2.71728515625,
+    2.2265625
+  ],
+  "latency_note": "latency_s = server-side time per unit at batch size 1 on one RTX 3090 with no other job on that GPU: host tensor build + H2D + forward (LoRA merged) + head + readout; excludes tokenisation and network",
+  "auroc_heldout": 1.0,
+  "note": "stage-1 file (dft.py train) with the final model name"
+}

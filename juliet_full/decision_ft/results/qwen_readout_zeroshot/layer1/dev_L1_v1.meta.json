@@ -1,0 +1,69 @@
+{
+  "method": "qwen_readout_zeroshot",
+  "strategy": "L1",
+  "model": "qwen3.5-4b",
+  "layer": "layer1",
+  "run_id": "dev_L1_v1",
+  "split": "dev",
+  "n_units": 660,
+  "base_model": "/home/zhangzx/disk4/cs224/models/Qwen3.5-4B",
+  "readout": "base Qwen3.5-4B (no adapter), FP32 2x2560 head = tied output rows of Yes/No (= step-0 head of decision_ft), s = logit_Yes - logit_No at the last prompt position, same prompts as decision_ft",
+  "primary_rule": "pred = s > 0",
+  "secondary_rule": {
+    "dev_threshold": -1.2032041549682617,
+    "dev_macro_f1_at_dev_threshold": 0.7935127674258109,
+    "note": "threshold maximising macro-F1 on layer-1 dev; extra.pred_at_dev_threshold"
+  },
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+  "units_sha256": "d4d913c438e8a86fe8fa3c0560aab6320d8bb90b6eca584e1f70ad8183cafad9",
+  "evidence_file": null,
+  "evidence_sha256": null,
+  "prompt_files": {
+    "task.txt": "aa12d68878ff890f78e3c1a9341846f83c15a164369279f84831e691d5fe86a2",
+    "user_L1.txt": "50f50397398879b1894169c534186af7d049c10ebfb349a4e8d9b69f2ebcb00a"
+  },
+  "question_sha256": "8b780fccdfeabf59445858167b73e744e577c34e6417b14a692f8ea37cf761b6",
+  "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+  "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+  },
+  "host": "Toast-184",
+  "concurrency": 1,
+  "start_utc": "2026-11-23T22:29:00Z",
+  "end_utc": "2026-11-23T22:39:35Z",
+  "loadavg_start": [
+    2.82177734375,
+    2.64501953125,
+    2.65185546875
+  ],
+  "loadavg_end": [
+    2.390625,
+    2.47314453125,
+    2.55517578125
+  ],
+  "latency_note": "latency_s = server-side time per unit at batch size 1 on one RTX 3090 with no other job on that GPU: host tensor build + H2D + forward + head + readout; excludes tokenisation and network",
+  "latency_median_s": 0.08770174300298095,
+  "metrics_at_0": {
+    "n": 660,
+    "auroc": 0.8842011019283746,
+    "macro_f1": 0.3564785326817017,
+    "accuracy": 0.5106060606060606
+  },
+  "metrics_at_dev_threshold": {
+    "n": 660,
+    "auroc": 0.8842011019283746,
+    "macro_f1": 0.7935127674258109,
+    "accuracy": 0.793939393939394
+  }
+}

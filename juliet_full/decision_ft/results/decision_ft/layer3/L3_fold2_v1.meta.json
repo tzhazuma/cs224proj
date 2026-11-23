@@ -1,0 +1,68 @@
+{
+  "method": "decision_ft",
+  "strategy": "L3",
+  "model": "qwen3.5-4b-lora-L3-fold2",
+  "base_model": "/home/zhangzx/disk4/cs224/models/Qwen3.5-4B",
+  "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+  },
+  "host": "Toast-184",
+  "cuda_visible_devices": "0",
+  "concurrency": 1,
+  "selection": {
+    "checkpoint": "step336",
+    "epoch": 3.0,
+    "threshold": -0.27812719345092773,
+    "dev_macro_f1_at_threshold": 1.0,
+    "dev_auroc": 1.0,
+    "dev_loss": 1.7357595538669557e-07,
+    "threshold_rule": "dev macro-F1 on merged batch-1 dev scores; pred = s > threshold",
+    "selection_rule": "dev AUROC every half epoch (step-0 is not a candidate); tie -> lower dev loss"
+  },
+  "latency_note": "latency_s = server-side time per unit at batch size 1 on one RTX 3090 with no other job on that GPU: host tensor build + H2D + forward + head + readout; excludes tokenisation and network",
+  "layer": "layer3",
+  "run_id": "L3_fold2_v1",
+  "split": "heldout_fold",
+  "merged": true,
+  "n_units": 864,
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+  "units_sha256": "033945a8799a51e5881c9cb4a209d0348b857d8bbf0b869b1f112c043bc65111",
+  "evidence_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/clang_sa/layer3/full_v1.evidence.jsonl",
+  "evidence_sha256": "5362698a63948c8bbf59fa3ee827c6f113d2d130efa2e5d41bb185c57eccd9aa",
+  "prompt_files": {
+    "task.txt": "aa12d68878ff890f78e3c1a9341846f83c15a164369279f84831e691d5fe86a2",
+    "user_L3.txt": "06aab5226705ccc05e7e0fdc42af2097b6d94d9edd904b006fe82ca6f02363db"
+  },
+  "question_sha256": "8b780fccdfeabf59445858167b73e744e577c34e6417b14a692f8ea37cf761b6",
+  "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+  "start_utc": "2026-11-23T22:25:16Z",
+  "end_utc": "2026-11-23T22:27:01Z",
+  "loadavg_start": [
+    2.39697265625,
+    2.5341796875,
+    2.62841796875
+  ],
+  "loadavg_end": [
+    2.6982421875,
+    2.615234375,
+    2.64794921875
+  ],
+  "metrics_at_threshold": {
+    "n": 864,
+    "auroc": 0.888320901920439,
+    "macro_f1": 0.7657457365181791,
+    "accuracy": 0.7685185185185185
+  },
+  "latency_median_s": 0.11850978387519717
+}

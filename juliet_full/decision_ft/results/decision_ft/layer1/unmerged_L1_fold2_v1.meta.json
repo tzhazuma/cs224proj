@@ -1,0 +1,68 @@
+{
+  "method": "decision_ft",
+  "strategy": "L1",
+  "model": "qwen3.5-4b-lora-L1-fold2",
+  "base_model": "/home/zhangzx/disk4/cs224/models/Qwen3.5-4B",
+  "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+  },
+  "host": "Toast-184",
+  "cuda_visible_devices": "0",
+  "concurrency": 1,
+  "selection": {
+    "checkpoint": "step336",
+    "epoch": 3.0,
+    "threshold": -2.086155891418457,
+    "dev_macro_f1_at_threshold": 1.0,
+    "dev_auroc": 1.0,
+    "dev_loss": 2.2144004674373718e-07,
+    "threshold_rule": "dev macro-F1 on merged batch-1 dev scores; pred = s > threshold",
+    "selection_rule": "dev AUROC every half epoch (step-0 is not a candidate); tie -> lower dev loss"
+  },
+  "latency_note": "latency_s = server-side time per unit at batch size 1 on one RTX 3090 with no other job on that GPU: host tensor build + H2D + forward + head + readout; excludes tokenisation and network",
+  "layer": "layer1",
+  "run_id": "unmerged_L1_fold2_v1",
+  "split": "heldout_fold",
+  "merged": false,
+  "n_units": 864,
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+  "units_sha256": "d4d913c438e8a86fe8fa3c0560aab6320d8bb90b6eca584e1f70ad8183cafad9",
+  "evidence_file": null,
+  "evidence_sha256": null,
+  "prompt_files": {
+    "task.txt": "aa12d68878ff890f78e3c1a9341846f83c15a164369279f84831e691d5fe86a2",
+    "user_L1.txt": "50f50397398879b1894169c534186af7d049c10ebfb349a4e8d9b69f2ebcb00a"
+  },
+  "question_sha256": "8b780fccdfeabf59445858167b73e744e577c34e6417b14a692f8ea37cf761b6",
+  "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+  "start_utc": "2026-11-23T21:57:08Z",
+  "end_utc": "2026-11-23T21:58:59Z",
+  "loadavg_start": [
+    2.55224609375,
+    2.57421875,
+    2.55322265625
+  ],
+  "loadavg_end": [
+    2.47265625,
+    2.54833984375,
+    2.54443359375
+  ],
+  "metrics_at_threshold": {
+    "n": 864,
+    "auroc": 1.0,
+    "macro_f1": 1.0,
+    "accuracy": 1.0
+  },
+  "latency_median_s": 0.11831982480362058
+}

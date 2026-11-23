@@ -94,13 +94,15 @@ prediction file count as invalid.
 - **184-toast** (`ssh 184-toast`, LAN IP 10.15.89.184): 2× RTX 3090; venv `~/disk4/cs224/venv`
   (torch 2.14.0+cu130, vllm 0.34.0, transformers 5.22.2, peft 0.22.0); models in `~/disk4/cs224/models/`
   (copied from dell `~/tools/cs224/models/`). Use only `~/disk4`. Do not restart the stopped `cs253-pre-*` containers.
-- Planned endpoints: Qwen3.5-4B via vLLM OpenAI API at `http://10.15.89.184:8001/v1` (served name `qwen3.5-4b`, GPU 0);
+- Endpoints: Qwen3.5-4B via vLLM OpenAI API at `http://10.15.89.184:8001/v1` (served name `qwen3.5-4b`; now GPU 1);
   Intern-Decision-4B read-out at `http://10.15.89.184:8002` (GPU 1). The gpu lane documents the final details in
   `juliet_full/gpu/README.md`.
-- Status 2026-11-23 10:46 PST: both services are STOPPED while decision-model fine-tuning runs. Before any GPU job,
-  source `~/disk4/cs224/gpu/server/env.sh` on 184-toast (it sets the caches, HF offline mode, and the CPATH for Python.h).
-- Planned endpoint (not built yet; it will be built after fine-tuning): the fine-tuned decision model at
-  `http://10.15.89.184:8003`.
+- Status 2026-11-23 15:05 PST: Qwen :8001 and Intern-Decision :8002 run together on GPU 1; the fine-tuned decision
+  model :8003 runs on GPU 0. Before any GPU job, source `~/disk4/cs224/gpu/server/env.sh` on 184-toast (it sets the
+  caches, HF offline mode, and the CPATH for Python.h).
+- Fine-tuned decision model endpoint (LIVE since 2026-11-23 ~14:55 PST, GPU 0, 6 models, ~211 ms to switch model):
+  `http://10.15.89.184:8003`. Start/stop/status: `bash ~/disk4/cs224/decision_ft/server/serve.sh start|stop|status`
+  (see `juliet_full/decision_ft/README.md` §10). Use the held-out fold model for an eval unit (unit `fold` = k).
   - `GET /health` returns `{"ok": true, "models": [...]}`.
   - `POST /score` takes `{"code": <model_text>, "language": "c"|"cpp", "strategy": "L1"|"L3", "evidence": <list or null>, "model": "qwen3.5-4b-lora-<L1|L3>-fold<k>"}`
     and returns `{"score": s, "threshold": t, "pred": 0|1, "latency_ms_server": ..., "model": ...}`.

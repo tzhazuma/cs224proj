@@ -1,0 +1,45 @@
+{
+  "method": "decision_ft",
+  "strategy": "L3",
+  "layer": "layer1",
+  "run_id": "latency300_L3_v1",
+  "subset": "latency300",
+  "n_units": 300,
+  "endpoint": "http://10.15.89.184:8003",
+  "host": "barton-OptiPlex-5000",
+  "concurrency": 1,
+  "grouping": "requests grouped by fold model, 5 warm-up requests per model",
+  "lock": "/tmp/cs224_latency.lock (flock)",
+  "lock_acquired_utc": "2026-11-23T22:56:05Z",
+  "loadavg_at_lock": [
+    1.15576171875,
+    1.48974609375,
+    1.63916015625
+  ],
+  "quiet_wait_s": 0.0,
+  "quiet_rule": "load1 < 2.5, wait <= 20 min",
+  "under_load": false,
+  "start_utc": "2026-11-23T22:56:40Z",
+  "end_utc": "2026-11-23T22:57:22Z",
+  "loadavg_start": [
+    1.60546875,
+    1.56396484375,
+    1.65869140625
+  ],
+  "loadavg_end": [
+    2.15673828125,
+    1.72509765625,
+    1.7109375
+  ],
+  "latency_note": "latency_s = end-to-end on dell (JSON request over LAN + server render/tokenise + forward); extra.server_latency_s = server handler time (render + tokenise + forward), extra.server_forward_s = GPU forward only",
+  "median_s": {
+    "end_to_end": 0.1328980260004755,
+    "server": 0.11283280001953244,
+    "server_forward": 0.11155298305675387
+  },
+  "p90_s": {
+    "end_to_end": 0.14820928900007857,
+    "server": 0.11645237682387233,
+    "server_forward": 0.11481313174590468
+  }
+}

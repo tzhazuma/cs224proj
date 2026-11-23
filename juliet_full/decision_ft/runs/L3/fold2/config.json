@@ -1,0 +1,155 @@
+{
+  "job": "L3_fold2",
+  "run_id": "L3_fold2_v1",
+  "strategy": "L3",
+  "fold": 2,
+  "seed": 20261123,
+  "model_dir": "/home/zhangzx/disk4/cs224/models/Qwen3.5-4B",
+  "lora": {
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.05,
+    "target_regex": "model\\.layers\\.\\d+\\.(?:self_attn\\.(?:q_proj|k_proj|v_proj|o_proj)|linear_attn\\.(?:in_proj_qkv|in_proj_z|in_proj_a|in_proj_b|out_proj)|mlp\\.(?:gate_proj|up_proj|down_proj))",
+    "n_params": 32464896,
+    "dtype": "torch.float32"
+  },
+  "head": {
+    "shape": [
+      2,
+      2560
+    ],
+    "dtype": "float32",
+    "init": "tied output rows of Yes/No",
+    "token_ids": [
+      9175,
+      2665
+    ]
+  },
+  "score": "s = logit_Yes - logit_No at last prompt position (post final norm); pred = s > threshold",
+  "loss": {
+    "ce": "class-balanced CE over 2 logits",
+    "rank": "-log sigmoid((s_bad - s_good)/tau)",
+    "tau": 1.0,
+    "lambda": 1.0
+  },
+  "optim": {
+    "name": "AdamW",
+    "lr_lora": 0.0001,
+    "lr_head": 0.001,
+    "weight_decay": 0.0,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "warmup_frac": 0.05,
+    "schedule": "linear warmup then cosine to 0",
+    "max_grad_norm": 1.0,
+    "groups_per_step": 8,
+    "groups_per_micro": 1
+  },
+  "max_epochs": 3,
+  "gc_above_tokens": 1200,
+  "selection": "dev AUROC every half epoch (step-0 is not a candidate); tie -> lower dev loss",
+  "threshold": "dev macro-F1 on merged batch-1 dev scores; pred = s > threshold",
+  "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+  },
+  "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "data_manifest": {
+    "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+    "units_sha256": "d4d913c438e8a86fe8fa3c0560aab6320d8bb90b6eca584e1f70ad8183cafad9",
+    "units_frozen": true,
+    "evidence_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/clang_sa/layer1/evidence.jsonl",
+    "evidence_sha256": "00897f5445fbc1085cedac05f549886ccbdf9e3f3d5e1737bc78f9196890eec5",
+    "prompt_files": {
+      "task.txt": "aa12d68878ff890f78e3c1a9341846f83c15a164369279f84831e691d5fe86a2",
+      "user_L3.txt": "06aab5226705ccc05e7e0fdc42af2097b6d94d9edd904b006fe82ca6f02363db"
+    },
+    "question": "Does the executed code unit leak heap memory? Answer Yes or No.",
+    "question_sha256": "8b780fccdfeabf59445858167b73e744e577c34e6417b14a692f8ea37cf761b6",
+    "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+    "chat_template_kwargs": {
+      "add_generation_prompt": true,
+      "enable_thinking": false
+    },
+    "tokenizer_dir": "/home/barton/tools/cs224/models/Qwen3.5-4B",
+    "yes_token_id": 9175,
+    "no_token_id": 2665,
+    "dev_only": false,
+    "files": {
+      "L3/fold0/dev.jsonl": {
+        "n_units": 660,
+        "n_groups": 330,
+        "tokens_mean": 541.5,
+        "tokens_max": 651,
+        "sha256": "5ae0905db14d1e49a7e405a18ef9b2745be84ac74e6d110ff45ddc56561b0c31"
+      },
+      "L3/fold0/train.jsonl": {
+        "n_units": 1712,
+        "n_groups": 856,
+        "tokens_mean": 564.8,
+        "tokens_max": 830,
+        "sha256": "27518390d81c452d9750f9d59c7b2d65531be981734d30f7b346b983dfb0019e"
+      },
+      "L3/fold0/pred.jsonl": {
+        "n_units": 944,
+        "n_groups": 472,
+        "tokens_mean": 554.6,
+        "tokens_max": 783,
+        "sha256": "e873b86335957cbbdd3ba8bb1c3b3c3ab3e1be0b611a165b3e547983459f0d22"
+      },
+      "L3/fold1/dev.jsonl": {
+        "n_units": 660,
+        "n_groups": 330,
+        "tokens_mean": 541.5,
+        "tokens_max": 651,
+        "sha256": "5ae0905db14d1e49a7e405a18ef9b2745be84ac74e6d110ff45ddc56561b0c31"
+      },
+      "L3/fold1/train.jsonl": {
+        "n_units": 1808,
+        "n_groups": 904,
+        "tokens_mean": 556.7,
+        "tokens_max": 783,
+        "sha256": "d8661f4484c63dea6899c74ce3e9f19832b271076d1b1e65df98b14671c979d3"
+      },
+      "L3/fold1/pred.jsonl": {
+        "n_units": 848,
+        "n_groups": 424,
+        "tokens_mean": 570.6,
+        "tokens_max": 830,
+        "sha256": "2b3ad421e79f38501c3ba1e358b5bc25a3ac30f8d744812ee4eea2c8c0ff02b4"
+      },
+      "L3/fold2/dev.jsonl": {
+        "n_units": 660,
+        "n_groups": 330,
+        "tokens_mean": 541.5,
+        "tokens_max": 651,
+        "sha256": "5ae0905db14d1e49a7e405a18ef9b2745be84ac74e6d110ff45ddc56561b0c31"
+      },
+      "L3/fold2/train.jsonl": {
+        "n_units": 1792,
+        "n_groups": 896,
+        "tokens_mean": 562.1,
+        "tokens_max": 830,
+        "sha256": "130ab3e8da7ff60b0950302a0c90623a69af09a81f4e85f30e949d967f94bb2b"
+      },
+      "L3/fold2/pred.jsonl": {
+        "n_units": 864,
+        "n_groups": 432,
+        "tokens_mean": 559.1,
+        "tokens_max": 698,
+        "sha256": "71561325e22d308f6ae5574bcd158158eb23f8298078902b0467e72bc96769ae"
+      }
+    }
+  }
+}
