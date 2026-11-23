@@ -49,43 +49,14 @@
 \end{frame}
 
 % ------------------------------------------------------------------------------
-\begin{frame}{Are the labels still right? Compile and run every unit}
-  \begin{columns}[T]
-    \begin{column}{0.50\textwidth}
-      \begin{itemize}
-        \item gcc and clang compile \textbf{3,316 / 3,316} units (both layers)
-        \item ASan/LSan: \textbf{1,658 / 1,658} good units leak-free
-        \item Labels are never changed; disagreements are explained, not relabelled
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.47\textwidth}
-      {\small LSan reports a leak on the \emph{bad} unit\\[2pt]
-      \begin{tabular}{@{}lr@{}}
-        \toprule
-        Mechanism & detected \\
-        \midrule
-        C \code{malloc}-family & 914 / 960 \\
-        C++ \code{new} & 558 / 588 \\
-        destructor & 2 / 2 \\
-        \code{realloc} failure & \alert{0 / 108} \\
-        \bottomrule
-      \end{tabular}}
-    \end{column}
-  \end{columns}
-  \vfill
-  {\small Dynamic tools are a \textbf{reference line}, not an upper bound: misses need a failing \code{realloc},
-  memory still reachable from a global at exit, or a random branch (appendix).}
-\end{frame}
-
-% ------------------------------------------------------------------------------
-\begin{frame}[fragile]{Three evaluation layers}
+\begin{frame}[fragile]{Layer \ding{174}: frees that never run (+ placebo)}
   \centering
   \begin{tikzpicture}[node distance=5mm and 9mm]
     \node[hero, minimum width=30mm, minimum height=11mm] (l1) {\textbf{\ding{172} Debiased main}\\{\scriptsize 3,316 units}};
-    \node[data, right=14mm of l1, yshift=7mm, minimum width=40mm] (l2) {\textbf{\ding{173} Natural hard subset}\\{\scriptsize bad units that do contain a free}};
-    \node[warn, right=14mm of l1, yshift=-7mm, minimum width=40mm] (l3) {\textbf{\ding{174} Stress test + placebo}\\{\scriptsize add frees that never run}};
-    \draw[arr] (l1.east) -- node[lbl, above, sloped] {filter} (l2.west);
-    \draw[arr] (l1.east) -- node[lbl, below, sloped] {transform} (l3.west);
+    \node[warn, right=14mm of l1, yshift=7mm, minimum width=44mm] (l3) {\textbf{\ding{174} Stress test}\\{\scriptsize add a \code{free} under a decidable guard}};
+    \node[box, right=14mm of l1, yshift=-7mm, minimum width=44mm] (pl) {\textbf{Placebo}\\{\scriptsize same guard, no \code{free}}};
+    \draw[arr] (l1.east) -- node[lbl, above, sloped] {transform} (l3.west);
+    \draw[arr] (l1.east) -- node[lbl, below, sloped] {control} (pl.west);
   \end{tikzpicture}
   \vspace{2pt}
   \begin{columns}[T]
@@ -109,7 +80,8 @@ if (sym_7 != 5) { printLine("..."); }
     \end{column}
   \end{columns}
   \vfill
-  {\scriptsize All 3,316 units; guards are decidable inside one file; both labels get guarded frees (grep: macro-F1 0.333 on \ding{174}).\\ Every transformed unit compiles (gcc, clang) and is re-checked with ASan/LSan.\par}
+  {\scriptsize All 3,316 units; guards are decidable inside one file; both labels get guarded frees, so ``has a \code{free}'' says nothing.
+  Every transformed unit compiles (gcc, clang); labels re-checked with ASan/LSan. Layer \ding{173} (natural hard subset): in the report.\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------

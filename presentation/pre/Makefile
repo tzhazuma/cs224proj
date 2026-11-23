@@ -4,7 +4,7 @@ export PATH := $(HOME)/.local/bin:$(PATH)
 # Local fontconfig (Fira from the user's TeX Live) so metropolis finds "Fira Sans" by name.
 export FONTCONFIG_FILE := $(CURDIR)/fontconfig/fonts.conf
 PYTHON ?= python3
-FIGS := figures/probes.pdf figures/prf1.pdf figures/pareto.pdf figures/heatmap.pdf
+FIGS := $(addprefix figures/,probes.pdf prf1.pdf prf1_full.pdf pareto.pdf robustness.pdf robustness_full.pdf lora.pdf heatmap.pdf mechanism.pdf)
 
 .PHONY: all figures pdf pngs check clean
 all: figures pdf

@@ -1,0 +1,18 @@
+key,latency_s,shown,source,note
+grep,0.000001,<0.001,juliet_full/static/results/grep_v0/layer1/lat300_c1.jsonl,median of 300 units (1 µs)
+cppcheck,0.008,0.008,juliet_full/lane_reports/2026-11-23_static_stage2.md,lat300 per unit
+clang_sa,0.018,0.018,juliet_full/lane_reports/2026-11-23_static_stage2.md,lat300 per unit
+infer,0.278,0.278,juliet_full/lane_reports/2026-11-23_static_stage2.md,lat300 per unit
+codeql,7.36,7.36,juliet_full/lane_reports/2026-11-23_static_stage2.md,per unit: database creation + queries (20 units)
+codeql_amortized,0.318,0.318,juliet_full/lane_reports/2026-11-23_static_stage2.md,50 units per database; amortized (hollow marker)
+linevul,0.006,0.006,juliet_full/lane_reports/2026-11-23_gpu_stage1.md,GPU (RTX 3090)
+linevul_cpu,0.088,0.088,juliet_full/gpu/results/linevul_cpu/layer1/lat300_cpu_quiet.jsonl,CPU 6 threads; quiet; median of 300
+deepseek_L1,0.721,0.721,juliet_full/lane_reports/2026-11-23_llm_stage2b.md,lat300_c1_L1 at load ~21; quiet 0.640 s on 30 dev units (llm_stage2a)
+qwen_L1,0.665,0.665,juliet_full/lane_reports/2026-11-23_gpu_stage1.md,vLLM from dell; 30 requests
+jev_L1,0.961,0.961,juliet_full/lane_reports/2026-11-23_llm_stage2b.md,lat300_c1_L1 at load ~22
+intern_L1,0.083,0.083,juliet_full/lane_reports/2026-11-23_gpu_stage1.md,/decide read-out from dell (82.7 ms)
+lora_L1,0.105,0.105,juliet_full/lane_reports/2026-11-23_decision_ft_stage2.md,latency300; dell end-to-end
+lora_L3,0.133,0.133,juliet_full/lane_reports/2026-11-23_decision_ft_stage2.md,latency300; dell end-to-end
+asan_lsan,0.134,0.134,juliet_full/lane_reports/2026-11-23_data_stage4.md,lat300_c1; compile included
+valgrind,0.407,0.407,juliet_full/lane_reports/2026-11-23_data_stage4.md,lat300_c1; compile included
+dynamic_enhanced,1.194,1.194,juliet_full/lane_reports/2026-11-23_data_stage4.md,lat300_c1; compile included
