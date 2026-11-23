@@ -111,7 +111,8 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     p.add_argument("--set", required=True, choices=["dev", "eval"])
     p.add_argument("--subset", help="key of data/build/subsets.json (group ids)")
     p.add_argument("--subsets-file", type=Path, default=SUBSETS_PATH)
-    p.add_argument("--layer", default="layer1", choices=["layer1", "original", "stress", "placebo"])
+    p.add_argument("--layer", default="layer1", choices=["layer1", "original", "stress", "layer3", "placebo"],
+                   help="layer3 = stress layer (name used by data/build and static/results)")
     p.add_argument("--unit-ids", type=Path, help="file with one unit_id per line")
     p.add_argument("--limit", type=int, help="first N units in stratified round-robin order")
     p.add_argument("--keep-l2-examples", action="store_true",

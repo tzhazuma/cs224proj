@@ -16,7 +16,8 @@ on the CWE-401 units of `../data/build/*.jsonl`. Predictions and meta files foll
 | `llmlane/l4.py`, `l4/leak.dl` | L4: fact parser (schema, grounding, `delete`→`free` alias) + Souffle rules; `l4/SCHEMA.md`, `l4/FREEZE_PROPOSAL.md` (v3c, dev numbers) |
 | `l4_eval.py` | offline re-parse/re-derive of stored L4 raw logs with the current parser and rules (no API calls) |
 | `stage2b.py` | stage-2b nohup driver (frozen-prompt eval, repeats, latency300 c1); status in `scratch/stage2b/status.txt`; scores to `results/scores/<method>/<run_id>.json` |
-| `summarize.py` | builds `results/SUMMARY.md` (all scored runs, breakdowns, repeat agreement) and `results/jev_thresholds.json` (Jev secondary threshold by dev macro-F1) |
+| `stage2c.py` | stage-2c nohup driver (DeepSeek L4 eval; layer3/placebo/original runs on nested25 and `dev_check/api_rest332_subsets.json` = api_subset − nested25; Jev full-eval layer3/placebo/original; quiet latency remeasure serialized via `flock /tmp/cs224_latency.lock`); restartable, status in `scratch/stage2c/status.txt` |
+| `summarize.py` | builds `results/SUMMARY.md` (all scored runs, breakdowns, L4 fact quality, Jev at the frozen thresholds, repeat agreement, ROBUSTNESS via `analysis/robustness.py` with JSON in `results/robustness/`, DeepSeek-vs-Jev on the same subsets, layer3 errors by transform category, original-Juliet FP analysis); `results/jev_thresholds.json` (frozen; only computed if missing) |
 | `build_l2_examples.py` | deterministic L2 example selection → `prompts/l2_examples.{txt,json}` |
 | `make_dev_check.py`, `dev_check/` | `dev_minus_l2_subsets.json` = dev minus the L2 example groups (326 groups; use it to score full-dev runs); stratified DEV check sample (150 groups, flow_category x mechanism, seed 20261123, L2 groups excluded) as a `--subsets-file`; score.py reports `dev_check/score_*.json`; `latency30_unit_ids.txt` = 30 other dev units for the concurrency-1 latency probe |
 | `prompts/` | all prompt text; `meta.prompt_files` records each file's SHA-256, `meta.prompt_hash` the combination |
@@ -40,6 +41,9 @@ on the CWE-401 units of `../data/build/*.jsonl`. Predictions and meta files foll
   derives `leak/2` (`never_freed`, `realloc_fail`); pred = 1 iff a leak is derived. JSON mode is off for L4.
 - Jev: `jev_question.json` (one `noul` question); pred = 1 iff score >= 0.5 (primary). Secondary threshold per
   strategy, chosen on `dev_<L>_r1` by macro-F1, is applied only in `summarize.py`.
+- `--layer`: `layer1` (main), `layer3` (stress: dead frees under always-false guards, real frees of B2G/realloc goods
+  wrapped in always-true guards), `placebo`, `original`; units from `data/build/<layer>.jsonl`, L3 evidence from
+  `static/results/clang_sa/<layer>/`.
 - Eval runs refuse unless the prompt hash equals `run_llm.py:FROZEN_PROMPT_HASHES` (L1-L3, commit 780ec1e); L3
   eval uses only the evidence named by `static/results/clang_sa/<layer>/EVIDENCE_FROZEN` (sha verified, meta
   `evidence_frozen`).
