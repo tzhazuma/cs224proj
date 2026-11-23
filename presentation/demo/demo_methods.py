@@ -52,7 +52,8 @@ WORK_ROOT = Path(tempfile.gettempdir()) / "cs224_demo" / "clang_work"
 METHODS = {
     "grep": ("grep v0", "grep"),
     "clang": ("Clang SA 23", "Clang SA"),
-    "ft": ("Decision model", "decision model"),
+    "ft": ("Decision model L1", "decision model L1"),
+    "ft_l3": ("Decision model L3", "decision model L3"),
     "ds_l1": ("DeepSeek L1", "DeepSeek L1"),
     "ds_l3": ("DeepSeek L3", "DeepSeek L3"),
     "jev": ("Jev L1", "Jev"),
@@ -61,7 +62,7 @@ METHOD_NOTES = {
     "grep": "no free/delete in code → leak",
     "clang": "unix.Malloc · NewDeleteLeaks",
     "ds_l1": "deepseek-flash · code only",
-    "ds_l3": "deepseek-flash · + Clang SA warnings",
+    "ds_l3": "deepseek-flash · + Clang warnings",
     "jev": "jev-latest · code only",
 }
 PAID = {"ds_l1": "deepseek", "ds_l3": "deepseek", "jev": "jev"}
@@ -117,16 +118,16 @@ class DemoContext:
     def __init__(self, run_id: str, allow_peak: bool = False, allow_eval: bool = False,
                  max_cost_cny: float = 0.02, max_cost_usd: float = 0.002, ft_url: str = FT_URL,
                  intern_url: str = INTERN_URL, qwen_url: str = QWEN_URL, ft_fold: int = 0,
-                 ft_strategy: str = "L1", ledger: Ledger | None = None) -> None:
+                 ledger: Ledger | None = None) -> None:
         self.run_id = run_id
         self.allow_peak = allow_peak
         self.allow_eval = allow_eval
         self.caps = {"deepseek": max_cost_cny, "jev": max_cost_usd}
         self.ft_url, self.intern_url, self.qwen_url = ft_url.rstrip("/"), intern_url.rstrip("/"), qwen_url.rstrip("/")
         self.ft_fold = ft_fold
-        self.ft_strategy = ft_strategy
         self.ledger = ledger or Ledger()
         self._lock = threading.Lock()
+        self.ft_lock = threading.Lock()  # serialises /score requests of this run (see run_decision)
         self._budgets: dict[str, Budget] = {}
         self._decision: tuple[str, Any] | None = None
         self.spent = {"deepseek": 0.0, "jev": 0.0}
@@ -221,28 +222,48 @@ def run_clang(unit: dict[str, Any]) -> tuple[Result, dict[str, Any] | None]:
 
 
 # -------------------------------------------------------------------- decision model (LAN)
-def run_decision(ctx: DemoContext, unit: dict[str, Any]) -> Result:
+def ft_model_name(strategy: str, fold: int) -> str:
+    """The decision_ft adapter for a strategy; eval units use their held-out fold (juliet_full/README.md §6)."""
+    return f"qwen3.5-4b-lora-{strategy}-fold{fold}"
+
+
+def run_decision(ctx: DemoContext, unit: dict[str, Any], strategy: str = "L1",
+                 evidence: dict[str, Any] | None = None) -> Result:
+    """Decision model: the fine-tuned endpoint (:8003 /score) first, else the zero-shot fallbacks (L1 only).
+
+    For L3 `evidence` is the live Clang SA evidence record; the endpoint gets its `warnings` list."""
+    method = "ft" if strategy == "L1" else "ft_l3"
     kind, info = ctx.decision_backend()
     if kind == "offline":
-        return Result("ft", "offline", backend="decision model: offline", detail="; ".join(info))
+        return Result(method, "offline", backend="decision model: offline", detail="; ".join(info))
+    if strategy != "L1" and kind != "ft":
+        return Result(method, "offline", backend="decision model L3: FT endpoint down",
+                      detail=f"FT :8003 down, {kind} fallback is L1 only")
     t0 = time.perf_counter()
     try:
         if kind == "ft":
+            if strategy == "L3" and evidence is None:
+                return Result(method, "skipped", backend="FT L3", detail="no Clang SA evidence")
             fold = unit.get("fold") if unit.get("fold") is not None else ctx.ft_fold
-            wanted = f"qwen3.5-4b-lora-{ctx.ft_strategy}-fold{fold}"
+            wanted = ft_model_name(strategy, fold)
             models = [str(m) for m in info]
-            model = wanted if wanted in models else next((m for m in models if f"-{ctx.ft_strategy}-" in m), models[0])
-            status, payload = lan_json("POST", f"{ctx.ft_url}/score", {
-                "code": unit["model_text"], "language": unit["language"], "strategy": ctx.ft_strategy,
-                "evidence": None, "model": model}, REMOTE_TIMEOUT_S)
-            latency = ms_since(t0)
+            model = wanted if wanted in models else next((m for m in models if f"-{strategy}-" in m), models[0])
+            with ctx.ft_lock:  # the endpoint serves one request at a time: time ours, not the queue
+                t0 = time.perf_counter()
+                status, payload = lan_json("POST", f"{ctx.ft_url}/score", {
+                    "code": unit["model_text"], "language": unit["language"], "strategy": strategy,
+                    "evidence": evidence["warnings"] if strategy == "L3" else None, "model": model}, REMOTE_TIMEOUT_S)
+                latency = ms_since(t0)
             if status != 200 or not isinstance(payload, dict):
-                return Result("ft", "error", latency_ms=latency, backend=model, detail=f"HTTP {status}")
+                detail = payload.get("detail") if isinstance(payload, dict) else payload
+                return Result(method, "error", latency_ms=latency, backend=model,
+                              detail=f"HTTP {status}" + (f": {detail}"[:80] if detail else ""))
             note = "" if model == wanted else f" (wanted {wanted})"
-            return Result("ft", "ok", pred=int(payload["pred"]), score=float(payload["score"]), score_kind="logit",
-                          threshold=float(payload["threshold"]), latency_ms=latency,
+            return Result(method, "ok", pred=int(payload["pred"]), score=float(payload["score"]),
+                          score_kind="logit", threshold=float(payload["threshold"]), latency_ms=latency,
                           backend=f"{payload.get('model', model)}{note}",
-                          extra={"latency_ms_server": payload.get("latency_ms_server")})
+                          extra={key: payload.get(key) for key in ("latency_ms_server", "forward_ms", "switch_ms",
+                                                                     "checkpoint", "n_tokens", "prompt_sha256")})
         if kind == "intern":
             import bench_decide  # QUESTION / OPTIONS of the gpu lane's read-out
             status, payload = lan_json("POST", f"{ctx.intern_url}/decide", {
@@ -250,10 +271,10 @@ def run_decision(ctx: DemoContext, unit: dict[str, Any]) -> Result:
                 REMOTE_TIMEOUT_S)
             latency = ms_since(t0)
             if status != 200 or not isinstance(payload, dict):
-                return Result("ft", "error", latency_ms=latency, backend="Intern-Decision-4B (fallback)",
+                return Result(method, "error", latency_ms=latency, backend="Intern-Decision-4B (fallback)",
                               detail=f"HTTP {status}")
             p_leak = float(payload["probs"]["leak"])
-            return Result("ft", "ok", pred=int(payload["decision"] == "leak"), score=p_leak, score_kind="p",
+            return Result(method, "ok", pred=int(payload["decision"] == "leak"), score=p_leak, score_kind="p",
                           latency_ms=latency, backend="Intern-Decision-4B zero-shot (fallback)",
                           extra={"latency_ms_server": payload.get("latency_ms_server")})
         client = clients.qwen_client(base_url=ctx.qwen_url,
@@ -262,16 +283,16 @@ def run_decision(ctx: DemoContext, unit: dict[str, Any]) -> Result:
         result = client.complete(messages, CHAT_MAX_TOKENS)
         latency = ms_since(t0)
         if result.status != "ok":
-            return Result("ft", result.status, latency_ms=latency, backend="Qwen3.5-4B zero-shot (fallback)",
+            return Result(method, result.status, latency_ms=latency, backend="Qwen3.5-4B zero-shot (fallback)",
                           detail=result.error)
         verdict = parse_verdict(result.content)
-        return Result("ft", verdict.status, pred=verdict.pred, score=verdict.score, score_kind="p",
+        return Result(method, verdict.status, pred=verdict.pred, score=verdict.score, score_kind="p",
                       latency_ms=latency, backend="Qwen3.5-4B zero-shot L1 (fallback)", detail=verdict.note)
     except (urllib.error.URLError, OSError) as exc:
         status = "timeout" if "timed out" in str(exc).lower() else "error"
-        return Result("ft", status, latency_ms=ms_since(t0), backend=kind, detail=type(exc).__name__)
+        return Result(method, status, latency_ms=ms_since(t0), backend=kind, detail=type(exc).__name__)
     except (KeyError, TypeError, ValueError, PromptAuditError, clients.FatalApiError) as exc:
-        return Result("ft", "error", latency_ms=ms_since(t0), backend=kind, detail=f"{exc}"[:100])
+        return Result(method, "error", latency_ms=ms_since(t0), backend=kind, detail=f"{exc}"[:100])
 
 
 # -------------------------------------------------------------------- paid APIs (thin caller)

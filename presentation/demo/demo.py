@@ -48,9 +48,10 @@ import dead_free  # noqa: E402
 import demo_methods as dm  # noqa: E402
 
 UNITS_PATH = dm.JULIET_FULL / "data" / "build" / "layer1.jsonl"
+LAYER3_PATH = dm.JULIET_FULL / "data" / "build" / "layer3.jsonl"  # the stored stress layer the experiments ran on
 SUPPORT_DIR = dm.PROJECT_ROOT / "juliet" / "raw" / "testcasesupport"
 RECORDINGS = DEMO_DIR / "recordings"
-DEFAULT_GROUP = "CWE401_Memory_Leak__int_malloc_01"  # eval fold 0, C, flow 01, good twin = B2G
+DEFAULT_GROUP = "CWE401_Memory_Leak__strdup_char_01"  # eval fold 0, C, flow 01, good twin = B2G
 WARM_UNIT = "CWE401_Memory_Leak__char_malloc_18__bad"  # dev unit, Clang SA reports its leak
 DEFAULT_METHODS = ["grep", "clang", "ft", "ds_l1", "ds_l3"]
 RECORD_FORMAT = "cs224-demo-run/1"
@@ -189,13 +190,32 @@ def diff_panel(original: dict[str, Any], attacked: dict[str, Any]) -> Panel:
     body = "\n".join(line for line in diff if not line.startswith(("---", "+++")))
     info = attacked["unit"].get("transform") or {}
     if info.get("guards"):  # data lane (stress.py): one constant per guard, several guard forms
-        consts = ", ".join(f"{g['name']} = {g['value']}" for g in info["guards"])
+        consts = ", ".join(f"{g['name']} = {g['value']}" for g in info["guards"] if not g.get("truth"))
+        if any(g.get("truth") for g in info["guards"]):
+            consts += "; real frees wrapped in always-true guards"
     else:
         consts = f"{info.get('guard_name', 'sym_k')} = {info.get('guard_value', 5)}"
     what = "dead free inserted" if info.get("kind", "stress") == "stress" else "placebo edit inserted"
     return Panel(Syntax(body, "diff", theme="ansi_dark", background_color="default"),
                  title=f"[b]attack: {what}[/b] (guard always false: {consts}, file-local constant)",
-                 subtitle=f"inserter: {info.get('inserter', '?')} · truth stays LEAK", border_style="yellow")
+                 subtitle=f"inserter: {info.get('inserter', '?')}{layer3_note(attacked['unit'])} · truth stays LEAK",
+                 border_style="yellow")
+
+
+def layer3_note(unit: dict[str, Any]) -> str:
+    """' = stored layer 3' when the attacked code is exactly the experiments' layer-3 unit."""
+    match = (unit.get("transform") or {}).get("matches_layer3")
+    return "" if match is None else " = stored layer 3" if match else " ≠ stored layer 3"
+
+
+def matches_layer3(source_unit_id: str, model_text: str) -> bool | None:
+    """None when the unit has no stored layer-3 record (dev groups have one too; custom files do not)."""
+    if not LAYER3_PATH.exists():
+        return None
+    for line in LAYER3_PATH.read_text().splitlines():
+        if f'"unit_id": "{source_unit_id}"' in line:
+            return json.loads(line)["model_text"] == model_text
+    return None
 
 
 def score_text(r: dm.Result) -> str:
@@ -210,6 +230,12 @@ def latency_text(ms: float | None) -> str:
     if ms is None:
         return ""
     return f"{ms:.2f} ms" if ms < 1 else f"{ms:.0f} ms" if ms < 10_000 else f"{ms / 1000:.1f} s"
+
+
+def server_ms_text(r: dm.Result) -> str:
+    """Server-side handler time of the decision model (excludes the LAN round trip and an adapter switch)."""
+    server_ms = r.extra.get("latency_ms_server") if r.extra else None
+    return f"server {latency_text(server_ms)}" if isinstance(server_ms, (int, float)) else ""
 
 
 def verdict_cell(r: dm.Result | None, truth: int | None, before: dm.Result | None) -> Any:
@@ -227,6 +253,9 @@ def verdict_cell(r: dm.Result | None, truth: int | None, before: dm.Result | Non
         top = Text(f"✘ {verdict}", style="bold red")
     if before is not None and before.status == "ok" and before.pred is not None and before.pred != r.pred:
         top.append("  ⚡flipped", style="bold yellow")
+    if r.score_kind == "logit":  # decision model: score vs threshold, then end-to-end and server-side time
+        timing = " · ".join(x for x in (latency_text(r.latency_ms), server_ms_text(r)) if x)
+        return Text.assemble(top, "\n", (score_text(r), "dim"), "\n", (timing, "dim"))
     bottom = " · ".join(x for x in (score_text(r), latency_text(r.latency_ms)) if x)
     return Text.assemble(top, "\n", (bottom, "dim"))
 
@@ -234,7 +263,7 @@ def verdict_cell(r: dm.Result | None, truth: int | None, before: dm.Result | Non
 def method_cell(method: str, results: dict[str, dict[str, dm.Result | None]]) -> Text:
     name = dm.METHODS[method][0]
     note = dm.METHOD_NOTES.get(method, "")
-    if method == "ft":
+    if method in ("ft", "ft_l3"):
         backends = [r.backend for per in results.values() if (r := per.get(method)) is not None and r.backend]
         note = backends[0] if backends else "fine-tuned Qwen3.5-4B LoRA"
     return Text.assemble((name, "bold"), "\n", (note[:34], "dim"))
@@ -309,22 +338,24 @@ def run_cases(ctx: dm.DemoContext, cases: list[dict[str, Any]], methods: list[st
         for c in cases:
             unit = c["unit"]
             results[c["key"]] = {m: None for m in methods}
-            clang = pool.submit(dm.run_clang, unit) if {"clang", "ds_l3"} & set(methods) else None
+            clang = pool.submit(dm.run_clang, unit) if {"clang", "ds_l3", "ft_l3"} & set(methods) else None
 
-            def l3(unit: dict[str, Any] = unit, clang: concurrent.futures.Future = clang) -> dm.Result:
+            def with_evidence(runner: Callable[[dict[str, Any], dict[str, Any] | None], dm.Result],
+                              unit: dict[str, Any] = unit, clang: concurrent.futures.Future = clang) -> dm.Result:
                 clang_result, evidence = clang.result()
-                r = dm.run_deepseek(ctx, unit, "L3", evidence)
+                r = runner(unit, evidence)
                 if r.latency_ms is not None and clang_result.latency_ms is not None:
                     r.extra["clang_ms"] = clang_result.latency_ms
-                    r.latency_ms += clang_result.latency_ms  # pipeline time: analyzer + LLM
+                    r.latency_ms += clang_result.latency_ms  # pipeline time: analyzer + model
                 return r
 
             jobs: dict[str, Callable[[], dm.Result]] = {
                 "grep": lambda unit=unit: dm.run_grep(unit),
                 "clang": lambda clang=clang: clang.result()[0],
                 "ft": lambda unit=unit: dm.run_decision(ctx, unit),
+                "ft_l3": lambda wrap=with_evidence: wrap(lambda u, ev: dm.run_decision(ctx, u, "L3", ev)),
                 "ds_l1": lambda unit=unit: dm.run_deepseek(ctx, unit, "L1"),
-                "ds_l3": l3,
+                "ds_l3": lambda wrap=with_evidence: wrap(lambda u, ev: dm.run_deepseek(ctx, u, "L3", ev)),
                 "jev": lambda unit=unit: dm.run_jev(ctx, unit),
             }
             for method in methods:
@@ -412,7 +443,10 @@ def endpoint_rows(ctx: dm.DemoContext) -> list[tuple[str, str, str]]:
         try:
             status, payload = dm.lan_json(method, url, None, dm.HEALTH_TIMEOUT_S)
             ok = status == 200
-            detail = json.dumps(payload)[:70] if ok else f"HTTP {status}"
+            if ok and isinstance(payload, dict) and isinstance(payload.get("models"), list):  # the FT endpoint
+                detail = f"{len(payload['models'])} adapters, active {payload.get('active')}"
+            else:
+                detail = json.dumps(payload)[:70] if ok else f"HTTP {status}"
         except Exception as exc:  # noqa: BLE001
             ok, detail = False, type(exc).__name__
         rows.append((name, "up" if ok else "DOWN", f"{detail} ({dm.ms_since(t0):.0f} ms)"))
@@ -433,6 +467,36 @@ def warm_clang() -> tuple[str, str, str]:
     r, _ = dm.run_clang(unit)
     ok = r.status == "ok" and r.pred == 1
     return ("Clang SA warm-up", "ok" if ok else "FAIL", f"{r.status} pred={r.pred} {latency_text(r.latency_ms)}")
+
+
+def warm_decision(ctx: dm.DemoContext) -> tuple[str, str, str]:
+    """One /score request per fine-tuned adapter on a dev unit (first-request CUDA setup, adapter load).
+
+    The L1 adapter of the default stage group goes last, so the first stage request needs no adapter switch."""
+    kind, info = ctx.decision_backend()
+    if kind != "ft":
+        return ("decision FT warm-up", "SKIP", f"FT endpoint not up (backend: {kind})")
+    units = load_units()
+    unit = next(u for u in units if u["unit_id"] == WARM_UNIT)
+    stage_fold = next(u["fold"] for u in units if u["group_id"] == DEFAULT_GROUP)
+    server, failed = [], []
+    for model in sorted(info, key=lambda m: m == dm.ft_model_name("L1", stage_fold)):
+        strategy = "L3" if "-L3-" in model else "L1"
+        try:
+            status, payload = dm.lan_json("POST", f"{ctx.ft_url}/score", {
+                "code": unit["model_text"], "language": unit["language"], "strategy": strategy,
+                "evidence": [] if strategy == "L3" else None, "model": model}, dm.REMOTE_TIMEOUT_S)
+            ok = status == 200 and isinstance(payload, dict) and payload.get("model") == model
+        except Exception:  # noqa: BLE001
+            ok, payload = False, None
+        if ok:
+            server.append(float(payload["latency_ms_server"]))
+        else:
+            failed.append(model)
+    detail = f"{len(server)}/{len(info)} adapters answered"
+    if server:
+        detail += f", server {min(server):.0f}-{max(server):.0f} ms"
+    return ("decision FT warm-up", "ok" if not failed else "FAIL", detail + (f"; failed {failed}" if failed else ""))
 
 
 def doctor(ctx: dm.DemoContext, console: Console, full: bool) -> int:
@@ -466,6 +530,8 @@ def doctor(ctx: dm.DemoContext, console: Console, full: bool) -> int:
     add(warm_clang())
     for row in endpoint_rows(ctx):
         add(row)
+    if not full:
+        add(warm_decision(ctx))
     if full:
         balance = dm.clients.deepseek_balance()
         if balance:
@@ -520,6 +586,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     run.add_argument("--methods", default=",".join(DEFAULT_METHODS),
                      help=f"comma list from {','.join(dm.METHODS)} (default {','.join(DEFAULT_METHODS)})")
     run.add_argument("--jev", action="store_true", help="add Jev L1")
+    run.add_argument("--ft-l3", action="store_true", help="add the decision model L3 row (code + Clang SA warnings)")
     run.add_argument("--offline", action="store_true", help="no paid API calls (drops DeepSeek and Jev)")
     run.add_argument("--allow-peak", action="store_true", help="allow DeepSeek in Beijing peak hours (2x price)")
     run.add_argument("--allow-eval", action="store_true", help="allow paid calls on eval units")
@@ -533,8 +600,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     run.add_argument("--attack-kind", default="stress", choices=("stress", "placebo"))
     run.add_argument("--attack-seed", type=int, default=None,
                      help="inserter seed (default: data lane SEED; local inserter: constant 5)")
-    run.add_argument("--attack-n-dead", type=int, default=1,
-                     help="dead frees to insert (default 1 = the smallest diff; 0 = inserter default)")
+    run.add_argument("--attack-n-dead", type=int, default=0,
+                     help="dead frees to insert (default 0 = inserter default; with stress.py that is exactly the "
+                          "stored layer-3 unit)")
     ui = p.add_argument_group("stage")
     ui.add_argument("--record", nargs="?", const="auto", help="save the run (default recordings/demo_<ts>.json)")
     ui.add_argument("--replay", type=Path, help="replay a recorded run (no network, no tools)")
@@ -551,6 +619,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     unknown = [m for m in methods if m not in dm.METHODS]
     if unknown:
         p.error(f"unknown method(s) {unknown}")
+    if args.ft_l3 and "ft_l3" not in methods:
+        methods.insert(methods.index("ft") + 1 if "ft" in methods else len(methods), "ft_l3")
     if args.jev and "jev" not in methods:
         methods.append("jev")
     if args.offline:
@@ -574,6 +644,9 @@ def attack_case(args: argparse.Namespace, original: dict[str, Any]) -> dict[str,
     _, transform = dead_free.transformer(args.inserter)
     unit = transform(original["unit"], kind=args.attack_kind, seed=args.attack_seed,
                      n_dead=args.attack_n_dead or None)
+    if args.attack_kind == "stress" and original["key"] != "custom":
+        unit["transform"] = {**unit.get("transform", {}),
+                             "matches_layer3": matches_layer3(original["unit"]["unit_id"], unit["model_text"])}
     old, new = original["unit"]["model_text"].split("\n"), unit["model_text"].split("\n")
     matcher = difflib.SequenceMatcher(a=old, b=new, autojunk=False)
     lines = [j + 1 for tag, _, _, j1, j2 in matcher.get_opcodes() if tag in ("insert", "replace")
@@ -613,7 +686,7 @@ def main(argv: list[str] | None = None) -> int:
         attacked = None
         methods = args.method_list
         replay_note = None
-        if "ft" in methods:  # probe the decision-model endpoints while the code is on screen
+        if {"ft", "ft_l3"} & set(methods):  # probe the decision-model endpoints while the code is on screen
             concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(ctx.decision_backend)
 
     show = Show(console, args, replay_note)

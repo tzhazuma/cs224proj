@@ -1,4 +1,5 @@
-"""Offline smoke test of the demo: grep v0, Clang SA and dead-free insertion on 2 dev groups (no network).
+"""Offline smoke test of the demo on 2 dev groups: grep v0, Clang SA, dead-free insertion, decision-model client
+(against a local fake of the :8003 contract), record + replay. No network beyond 127.0.0.1.
 
 Run: .venv/bin/python -m pytest -q tests/test_smoke.py
 """
@@ -82,3 +83,70 @@ def test_summary_is_built_from_results(groups, tmp_path):
     assert record["summary"][0] == "grep fooled, Clang SA robust"
     assert record["spent"] == {"deepseek": 0.0, "jev": 0.0}
     assert demo.main(["--replay", str(out), "--no-pause", "--no-clear", "--replay-cap", "0"]) == 0
+
+
+def test_stress_attack_is_the_stored_layer3_unit(groups):
+    """With the default --attack-n-dead (0 = data lane default) the demo's attack equals the stored layer-3 unit."""
+    used, _ = dead_free.transformer("auto")
+    if used != "auto":
+        pytest.skip("juliet_full/data/stress.py not available")
+    args = demo.parse_args(["--group", DEV_GROUPS[0], "--offline"])
+    attacked = demo.attack_case(args, demo.case("bad", "leaking unit", groups[DEV_GROUPS[0]]["bad"], 1))
+    assert attacked["unit"]["transform"]["matches_layer3"] is True
+
+
+class _FakeDecisionEndpoint:
+    """A local stand-in for the :8003 contract (juliet_full/README.md §6); records the /score bodies."""
+
+    def __init__(self) -> None:
+        import http.server
+        import threading
+
+        self.bodies: list[dict] = []
+        outer = self
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def log_message(self, *args):  # quiet
+                pass
+
+            def _send(self, payload: dict) -> None:
+                data = json.dumps(payload).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+
+            def do_GET(self):
+                self._send({"ok": True, "models": [f"qwen3.5-4b-lora-{s}-fold{k}" for s in ("L1", "L3")
+                                                   for k in (0, 1, 2)]})
+
+            def do_POST(self):
+                body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+                outer.bodies.append(body)
+                self._send({"score": -3.5, "threshold": 2.5, "pred": 0, "latency_ms_server": 42.0,
+                            "switch_ms": 0.0, "model": body["model"]})
+
+        self.server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        self.url = f"http://127.0.0.1:{self.server.server_address[1]}"
+        threading.Thread(target=self.server.serve_forever, daemon=True).start()
+
+
+def test_decision_model_uses_fold_adapter_and_clang_evidence(groups):
+    fake = _FakeDecisionEndpoint()
+    try:
+        ctx = dm.DemoContext("demo_test", ft_url=fake.url, intern_url="http://127.0.0.1:9", qwen_url="http://127.0.0.1:9")
+        unit = dict(groups[DEV_GROUPS[0]]["bad"], fold=2)
+        r1 = dm.run_decision(ctx, unit)
+        _, evidence = dm.run_clang(unit)
+        r3 = dm.run_decision(ctx, unit, "L3", evidence)
+    finally:
+        fake.server.shutdown()
+    assert [b["model"] for b in fake.bodies] == ["qwen3.5-4b-lora-L1-fold2", "qwen3.5-4b-lora-L3-fold2"]
+    assert fake.bodies[0]["evidence"] is None and fake.bodies[1]["evidence"] == evidence["warnings"]
+    assert fake.bodies[0]["code"] == unit["model_text"] and fake.bodies[0]["language"] == "c"
+    for r, method in ((r1, "ft"), (r3, "ft_l3")):
+        assert (r.method, r.status, r.pred, r.score_kind, r.threshold) == (method, "ok", 0, "logit", 2.5)
+        assert r.backend.startswith("qwen3.5-4b-lora-") and r.extra["latency_ms_server"] == 42.0
+    cell = demo.verdict_cell(r1, 1, None)
+    assert "s=-3.50 (thr +2.50)" in cell.plain and "server 42 ms" in cell.plain
