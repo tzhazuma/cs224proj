@@ -1,16 +1,18 @@
 # juliet_full/static — static-analysis lane
 
-Static baselines for the CWE-401 layer-1 benchmark (contract: `juliet_full/README.md` sections 3–5).
+Static baselines for the CWE-401 benchmark (contract: `juliet_full/README.md` sections 3–5): layer 1 (main),
+layer 3 (stress), placebo and original Juliet (stage 2, section "Stage 2" below).
 
 | file | purpose |
 |---|---|
 | `run_static.py` | runs one tool over a units JSONL, writes contract predictions + `.meta.json` (+ Clang L3 evidence) |
 | `merge_runs.py` | merges runs by `unit_id` (a later run replaces earlier lines) for partial reruns |
 | `../analysis/score.py` | scorer (contract section 5), paired McNemar + Holm, `--self-test` |
-| `results/<tool>/layer1/<run_id>.jsonl` | predictions; `<run_id>.meta.json`; raw tool output in `raw_logs/` (git-ignored) |
-| `results/clang_sa/layer1/evidence.jsonl` | L3 evidence for all 3,316 units, frozen = `full_v2.evidence.jsonl` (`EVIDENCE_FROZEN`) |
-| `results/scores/` | score reports (`<tool>_<dev|eval|eval_api>.json`) and `SUMMARY.md` |
-| `scratch/` (git-ignored) | fixture builder, dev mapping tables (`rule_table.py`, `checker_table.py`), `score_all.py`, logs |
+| `../analysis/robustness.py` | layer1 → layer3 flip rates and Δ with placebo control, family-cluster bootstrap CIs, `--self-test` |
+| `results/<tool>/<layer>/<run_id>.jsonl` | predictions; `<run_id>.meta.json`; raw tool output in `raw_logs/` (git-ignored) |
+| `results/clang_sa/<layer>/evidence.jsonl` | L3 evidence for all 3,316 units; frozen (`EVIDENCE_FROZEN`): layer1 `full_v2`, layer3 and placebo `full_v1` |
+| `results/scores/` | `SUMMARY.md` (all layers), `ROBUSTNESS.md` + `ROBUSTNESS.json` (layer3/placebo/original deltas), layer1 reports `<tool>_<dev|eval|eval_api|eval_n25>.json`, other layers `<layer>/<tool>_<slice>.json`, `robustness/<tool>_<slice>.json` |
+| `scratch/` (git-ignored) | fixture builder, dev mapping tables (`rule_table.py`, `checker_table.py`), `score_all.py` (stage 1), `score_layers.py` (writes `SUMMARY.md`), `stage2_runs.sh`, `lat300.py`, `make_guard_probes.py`, logs |
 
 ## Usage
 
@@ -22,6 +24,11 @@ python3 merge_runs.py --out results/codeql/layer1/<id>_merged.jsonl <base>.jsonl
 python3 ../analysis/score.py --pred results/clang_sa/layer1/full_v2.jsonl --set eval [--subset api_subset] \
     [--compare results/codeql/layer1/full_batch50_merged.jsonl]
 python3 ../analysis/score.py --self-test
+python3 ../analysis/robustness.py --base results/clang_sa/layer1/full_v2.jsonl \
+    --stress results/clang_sa/layer3/full_v1.jsonl --placebo results/clang_sa/placebo/full_v1.jsonl --set eval \
+    [--subset nested25] [--json] [--out report.json]     # labels/families from data/build/layer1.jsonl
+python3 ../analysis/robustness.py --self-test
+python3 scratch/score_layers.py                      # rewrites results/scores/SUMMARY.md (all layers)
 ```
 
 Defaults: concurrency 1 (`timing_mode=per_unit_c1`), timeout 60 s per unit (batch: 60 s x units).
@@ -96,7 +103,7 @@ Decisions:
 `results/clang_sa/layer1/evidence.jsonl` has one row per unit (3,316), with `warnings: []` when nothing was
 found. It contains the mapped leak warnings only:
 `{checker, message, source_file, source_line, model_text_line, statement_text}`. `model_text_line` comes from the
-unit's `line_map` (null if unmapped; all 1,309 warnings of `full_v2` are mapped), and `statement_text` is that
+unit's `line_map` (null if unmapped; all 1,337 warnings of `full_v2` are mapped, one per unit with pred 1), and `statement_text` is that
 `model_text` line, stripped. Clang reports a leak where the last reference dies, so the line is often a closing
 `}` or the statement after the leak. Frozen: `EVIDENCE_FROZEN` = `full_v2 00897f54…`.
 
@@ -125,6 +132,27 @@ as `full_v2` on dev), `full_v1` (before the `_67` fix: 28 more `_67` bad units m
 
 At c1, per-unit CodeQL would take about 22 h for 3,316 units, so the CodeQL baseline uses batched mode. Per-unit
 Infer is cheap enough, so it runs per unit.
+
+### Quiet latency (latency300: 150 eval groups = 300 units, layer1, c1, `--no-evidence`) — report these
+
+Measured last, by `scratch/lat300.py` under `flock /tmp/cs224_latency.lock` (shared with the other lanes). After
+the lock was acquired (lock wait 661 s), it waited until load1 < 2.5 for 60 s, then ran the tools one after
+another. Each `.meta.json` has `latency_protocol` (lock wait, quiet samples, load before/after). Latency =
+wall time per unit of the tool subprocess(es), including the compile/capture step; grep_v0 runs in-process.
+
+| tool | run | mode | n | median | p90 | mean | load1 before → after |
+|---|---|---|---|---|---|---|---|
+| clang_sa | `lat300_c1` | per unit, c1 | 300 | 0.018 s | 0.022 s | 0.024 s | 1.99 → 1.99 |
+| cppcheck | `lat300_c1` | per unit, c1 | 300 | 0.008 s | 0.010 s | 0.009 s | 1.99 → 1.99 |
+| grep_v0 | `lat300_c1` | in-process | 300 | < 0.001 s | < 0.001 s | < 0.001 s | 1.99 → 1.99 |
+| infer | `lat300_c1` | per unit, c1, per_file capture | 300 | 0.278 s | 0.647 s | 0.362 s | 1.99 → 2.68 |
+| codeql | `lat300_per_unit20_c1` | per unit, c1 (database create + 3 queries), first 20 units | 20 | 7.36 s | 7.91 s | 7.50 s | 2.68 → 4.02 |
+| codeql | `lat300_batch50_c1` | batched, 50 units/db, c1, amortized = batch wall / 50 | 300 | 0.318 s | 0.334 s | 0.310 s | 4.02 → 4.95 |
+
+Load1 rose to 4–5 during the CodeQL runs. CodeQL runs with `--threads=1`, but its JVM still uses extra GC/JIT
+threads, which likely accounts for most of the rise. Load from other processes outside the lock cannot be ruled out. The quiet c1 numbers
+are 2–3× below the loaded figures above. Predictions of every latency run equal the full runs, except 2 CodeQL
+batch units (see notes on CodeQL batching below).
 
 ## Scores
 
@@ -171,3 +199,112 @@ Notes:
   good units (0.58–0.69), caused by `memory-may-not-be-freed`. Cppcheck is precise but finds almost only
   realloc-failure leaks. grep_v0 has specificity 0 on G2B good units by construction.
 - Old Tier-B (140 units, different construction): Clang SA 0.888, CodeQL 0.817, Cppcheck 0.588.
+
+## Stage 2: layer 3 (stress), placebo, original Juliet
+
+Same frozen configuration as layer 1, with no re-tuning: same `run_static.py` code paths, checker mapping, flags,
+TU modes (wrapper / wrapper_guarded; per_file for Infer), and CodeQL batching (50 units per database, `sym_N`
+renamed per unit). Driver: `scratch/stage2_runs.sh`. Before the runs, a rerun of the current `run_static.py` on
+layer1 (clang_sa, cppcheck; to /tmp, `--no-evidence`) reproduced `full_v2` exactly: 3,316/3,316 predictions and
+leak-finding lists identical. All 3 × 5 runs: 3,316 units each, all `status=ok`.
+
+| layer | clang_sa | cppcheck | grep_v0 | codeql (batched 50, -j 3) | infer (per_file, -j 2) |
+|---|---|---|---|---|---|
+| layer3 | `full_v1` 190 s | `full_v1` 79 s | `full_v1` | `full_batch50` 987 s | `full_per_file` 1321 s |
+| placebo | `full_v1` 202 s | `full_v1` 84 s | `full_v1` | `full_batch50` 1017 s | `full_per_file` 1315 s |
+| original | `full_v1` 198 s | `full_v1` 89 s | `full_v1` | `full_batch50` 954 s | `full_per_file` 956 s |
+
+These wall times were measured under load (loadavg 5–23, other lanes running), so they are not latency figures.
+
+- **Multi-file units:** the wrapper logic still holds. Each multi-file unit gets the same TU mode on every layer:
+  single 2,068, wrapper 964, wrapper_guarded 284, per_file_fallback 0. Layer 3 adds a `static const int sym_NN`
+  guard to each file, and these do not collide inside the wrapper TU.
+- **Original Juliet goods:** these are whole OMITBAD programs with both G2B and B2G, 2–6 files. On 29 of them (one
+  per multi-file variant and language), batched and per-unit CodeQL verdicts agree on all 29. Original-good
+  predictions are a superset of the layer-1 good predictions for the same group (the other good kind adds FPs),
+  with one exception: 5 CodeQL units go 1 → 0 (four `_08` B2G, one `_61` G2B). The four `_08` cases are a
+  batching artifact, see the next bullet.
+- **CodeQL batching artifact (found at the end, not corrected because the configuration is frozen):** `_08` units
+  define file-local helpers `staticReturnsTrue()`/`staticReturnsFalse()`. These are not `sym_N`, so they are not
+  renamed per unit, and a 50-unit database holds many same-named definitions. CodeQL then cannot resolve the
+  guard, and `memory-may-not-be-freed` fires.
+  - A per-unit rerun of all 80 `_08` units (layer1, `/tmp/v08_per_unit.jsonl`) differs from `full_batch50_merged`
+    on exactly 4 eval B2G goods: batched 1 (FP), per-unit 0. The same 4 FPs are in layer3 and placebo; original
+    has 0.
+  - The effect on eval is specificity −0.003 (4/1,328) and macro-F1 about −0.002 on every batched CodeQL layer,
+    inside the CIs. It does not touch the layer-3 deltas, since the artifact is identical in layer1 and layer3.
+  - One more composition effect: `int64_t_calloc_74__bad` is detected in `full_batch50` and per-unit, but missed
+    in `lat300_batch50_c1`, where the batch composition is different.
+  - Fix for a future run: extend the per-unit renaming to every non-`main` function defined in the unit.
+- **Robustness report:** `results/scores/ROBUSTNESS.md` and `ROBUSTNESS.json`, written by
+  `scratch/score_layers.py` via `analysis/robustness.py`. They cover eval, eval_api and eval_n25, with CIs for
+  layer3, placebo and original.
+- **L3 evidence for layers 3 and placebo:** `results/clang_sa/{layer3,placebo}/evidence.jsonl`, 3,316 rows each,
+  1,337 warnings each, all mapped to `model_text` lines. Frozen:
+  - `layer3/EVIDENCE_FROZEN` = `full_v1 5362698a63948c8bbf59fa3ee827c6f113d2d130efa2e5d41bb185c57eccd9aa`
+  - `placebo/EVIDENCE_FROZEN` = `full_v1 75d861def8958821a3244abc7577487d6cf440627cf954d5fb36e1e6730f4199`
+
+  `original/evidence.jsonl` also exists but is not frozen. The layer-1 evidence was not touched: sha256 is still
+  `00897f54…`.
+
+### Robustness (eval, 2,656 units; full tables with CIs in `results/scores/SUMMARY.md`)
+
+| tool | macro-F1 L1 → L3 | Δmacro-F1 (adjusted for placebo) | bad flip L3 | good flip L3 | placebo flips | macro-F1 original |
+|---|---|---|---|---|---|---|
+| clang_sa | 0.855 → 0.855 | +0.000 | 0.000 | 0.000 | 0 / 0 | 0.822 |
+| infer | 0.815 → 0.815 | +0.000 | 0.000 | 0.000 | 0 / 0 | 0.770 |
+| cppcheck | 0.493 → 0.493 | +0.000 | 0.000 | 0.000 | 0 / 0 | 0.467 |
+| codeql | 0.882 → 0.766 | −0.116 [−0.132, −0.097] | 0.233 [0.196, 0.265] (all lost detections) | 0.000 | 0 / 0 | 0.785 |
+| grep_v0 | 0.701 → 0.333 | −0.368 [−0.383, −0.352] | 0.870 (all lost) | 0.452 (all wrong → right: G2B goods gain a dead free) | 0 / 0 | 0.935 |
+
+- **Clang SA, Infer and Cppcheck:** not a single verdict changes on the 3,316 units of layer 3, in either
+  direction. Dead frees under always-false guards do not hide leaks, and real frees wrapped in always-true guards
+  cause no FP.
+- **Placebo:** dead `printLine` statements change no verdict for any tool. So the layer-3 effect is the dead
+  free itself, and the adjusted Δ equals the raw Δ.
+- **CodeQL:** loses 309 of its 1,279 layer-1 detections on eval bad units. By variant: every detected unit of 32,
+  45, 66, 67, 74, 83 and 84; 20 of 34 in 21, 22, 44 and 51–54. On layer 1, `memory-never-freed` caught these bad units because no `free` of the
+  allocation exists anywhere. On layer 3, a `free` exists, even if dead, so `memory-never-freed` is silent.
+  - When the dead free is in the allocating function, `memory-may-not-be-freed` takes over (628 eval bad units
+    switch rule and stay detected).
+  - When the dead free is in a callee (a sink function, another file, or a virtual/container flow), the
+    may-not-be-freed query treats the call as a release and reports nothing.
+  - So CodeQL's leak verdict is partly lexical (does a `free` exist?) and is not path-sensitive across calls.
+  - Its good-side verdicts do not change.
+- **grep_v0:** collapses as designed. Every layer-3 unit contains `free(`/`delete`, so it predicts no-leak
+  everywhere (macro-F1 0.333).
+- **Original Juliet control:** bad units are the same, so recall is unchanged. Whole OMITBAD good programs
+  contain both good paths, so FPs add up: specificity of clang .941 → .873, codeql .802 → .619, infer .956 →
+  .862. grep_v0 jumps to 0.935, because original goods always contain a `free`/`delete`, which is the lexical
+  shortcut layer 1 removes.
+
+### Which tools prune infeasible branches (`scratch/make_guard_probes.py`, 14 probe units)
+
+Each probe is one C function: calloc, then a free under a guard. In the bad probe the guard is always false (the
+free is dead), in the good probe it is always true. The table gives pred bad / pred good; the correct answer is
+1 / 0.
+
+| guard form | clang_sa | codeql | infer | cppcheck | grep_v0 |
+|---|---|---|---|---|---|
+| none (no free / plain free) | 1 / 0 | 1 / 0 | 1 / 0 | 1 / 0 | 1 / 0 |
+| literal `if(4 > 4)` | 1 / 0 | 1 / 0 | 1 / 0 | 1 / 0 | 0 / 0 |
+| `static const int g = 4` (layer-3 form) | 1 / 0 | 1 / 0 | 1 / 0 | 1 / 0 | 0 / 0 |
+| `enum { g = 4 }` | 1 / 0 | 1 / 0 | 1 / 0 | 1 / 0 | 0 / 0 |
+| `static int g = 4` (never written) | 1 / 1 | 1 / 0 | 1 / 1 | 1 / 0 | 0 / 0 |
+| `int g = 4` (external, never written) | 1 / 1 | 1 / 0 | 1 / 1 | 0 / 0 | 0 / 0 |
+| `static const` guard, free in a callee | 1 / 0 | **0** / 0 | 1 / 0 | 0 / 0 | 0 / 0 |
+
+- **Clang SA and Infer Pulse:** both read the initializer of a `static const` global (and literals/enums) as a
+  constant, so they prune the infeasible branch, intra- and interprocedurally. A non-const global counts as
+  unknown even if it is never written: both report the path where the guard is false, which is a sound "may"
+  answer and an FP on the always-true probe.
+- **CodeQL:** `memory-may-not-be-freed` resolves the guard, including a never-written global with an
+  initializer. With a truly unknown guard (`rand()`, `extern int`) it reports for both conditions. But a guarded
+  free in a callee silences both queries.
+- **Cppcheck:** prunes constant guards. Its low recall comes from elsewhere: it assumes an unknown callee such as
+  `printLine(data)` may take ownership.
+- **grep_v0:** purely lexical.
+
+So the headline "path-sensitive tools are robust to dead frees under decidable guards; lexical rules collapse"
+holds for Clang SA and Infer (0 flips). CodeQL sits in between, because its strongest leak rule is a whole-program
+"is there any free" check.

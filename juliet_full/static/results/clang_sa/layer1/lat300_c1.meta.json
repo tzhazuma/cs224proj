@@ -1,0 +1,149 @@
+{
+  "method": "clang_sa",
+  "layer": "layer1",
+  "run_id": "lat300_c1",
+  "versions": {
+    "clang": "clang version 23.1.6 (https://github.com/llvm/llvm-project 5b10d2d74929eae78912771222c9855af97496f4)",
+    "clang_cfg_files": {
+      "/home/barton/tools/cs224/llvm-23.1.6/bin/clang.cfg": "--gcc-install-dir=/usr/lib/gcc/x86_64-linux-gnu/13",
+      "/home/barton/tools/cs224/llvm-23.1.6/bin/clang++.cfg": "--gcc-install-dir=/usr/lib/gcc/x86_64-linux-gnu/13"
+    }
+  },
+  "command_template": "/home/barton/tools/cs224/llvm-23.1.6/bin/clang --analyze -fno-color-diagnostics -Xanalyzer -analyzer-output=text -Xanalyzer -analyzer-opt-analyze-headers -x <c|c++> -std=<build.std> -I <build.include_dirs> -D<build.defines> -D_GNU_SOURCE -include alloca.h  <TU> (tu_mode=wrapper: one wrapper file #including all unit sources when >1 source; if program_dir has headers or repeated struct typedefs, the wrapper includes a copy whose headers end with '#pragma once' and whose repeated typedef blocks are blanked); on compile error of the wrapper: same command with the unit sources (per_file_fallback)",
+  "argv": [
+    "/usr/bin/python3",
+    "run_static.py",
+    "--tool",
+    "clang_sa",
+    "--units",
+    "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+    "--set",
+    "eval",
+    "--subset",
+    "latency300",
+    "--layer",
+    "layer1",
+    "--no-evidence",
+    "--run-id",
+    "lat300_c1"
+  ],
+  "script_sha256": "0b277037ef304999c9572896d1cf2a40759b41a62e04ba0bce1d4be0859a6aae",
+  "git_head": "aa46b64a307859da7877ccbbe119ef86d1bf3f2f",
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+  "units_sha256": "d4d913c438e8a86fe8fa3c0560aab6320d8bb90b6eca584e1f70ad8183cafad9",
+  "set": "eval",
+  "subset": "latency300",
+  "n_units": 300,
+  "timeout_s_per_unit": 60.0,
+  "tu_mode": "wrapper",
+  "compat_defines": [
+    "_GNU_SOURCE"
+  ],
+  "compat_compiler_args": [
+    "-include",
+    "alloca.h"
+  ],
+  "leak_mapping": {
+    "unix.Malloc": "\\bleak\\b",
+    "cplusplus.NewDeleteLeaks": "\\bleak\\b"
+  },
+  "concurrency": 1,
+  "timing_mode": "per_unit_c1",
+  "batch_size": null,
+  "latency_note": "latency_s = wall time of the per-unit step (TU preparation + tool run + parsing)",
+  "host": "barton-OptiPlex-5000",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.39",
+  "cpu_count": 12,
+  "loadavg_start": [
+    1.99072265625,
+    2.2578125,
+    4.3671875
+  ],
+  "start_utc": "2026-11-23T21:24:33+00:00",
+  "end_utc": "2026-11-23T21:24:41+00:00",
+  "loadavg_end": [
+    1.99169921875,
+    2.25341796875,
+    4.35400390625
+  ],
+  "wall_total_s": 7.247,
+  "status_counts": {
+    "ok": 300
+  },
+  "predictions": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/clang_sa/layer1/lat300_c1.jsonl",
+  "raw_logs": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/clang_sa/layer1/raw_logs/lat300_c1.raw.jsonl.gz",
+  "latency_protocol": {
+    "lock": "/tmp/cs224_latency.lock (flock)",
+    "lock_wait_s": 660.8,
+    "quiet_rule": "load1 < 2.5 for 60 s after the lock was acquired",
+    "quiet_check": {
+      "quiet": true,
+      "waited_s": 60.0,
+      "samples_tail": [
+        [
+          0.0,
+          2.43
+        ],
+        [
+          5.0,
+          2.4
+        ],
+        [
+          10.0,
+          2.36
+        ],
+        [
+          15.0,
+          2.25
+        ],
+        [
+          20.0,
+          2.23
+        ],
+        [
+          25.0,
+          2.38
+        ],
+        [
+          30.0,
+          2.27
+        ],
+        [
+          35.0,
+          2.24
+        ],
+        [
+          40.0,
+          2.38
+        ],
+        [
+          45.0,
+          2.27
+        ],
+        [
+          50.0,
+          2.17
+        ],
+        [
+          55.0,
+          2.08
+        ],
+        [
+          60.0,
+          1.99
+        ]
+      ]
+    },
+    "loadavg_before": [
+      1.99072265625,
+      2.2578125,
+      4.3671875
+    ],
+    "loadavg_after": [
+      1.99169921875,
+      2.25341796875,
+      4.35400390625
+    ],
+    "position_in_sequence": 0
+  }
+}
