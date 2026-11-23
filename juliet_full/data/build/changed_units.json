@@ -1,0 +1,6 @@
+{
+ "baseline": "layer1.jsonl / original.jsonl written 2026-11-23 10:23 (layer1 sha256 5c15ac96b738876db30db8b98832f482f3e2e0c747ab617f3d5d97f2b483b0d3)",
+ "changed_units": [],
+ "code_changes": "none: unit_ids, model_text, line_map, build specs and program files are byte-identical; only the verify field was filled (it was null in the 10:23 files)",
+ "asan_bad_free_explanation": "the 16 'attempting free on address which was not malloc()-ed' errors are all variant-12 BAD units: 16 in layer1 and the same 16 in original (original bad == layer1 bad); 8 of them also leaked in another run (asan_leak=true), 8 never leaked in 6 runs (mismatch, variant-12 blind spot). They come from Juliet's own bad function: branch 1 picks malloc or ALLOCA at random, branch 2 picks no-op or free(data) at random, so the ALLOCA+free path frees a stack buffer. Present verbatim in juliet/raw/testcases/CWE401_Memory_Leak/s01/*_12.c; no good unit has any ASan error. Not a construction bug; documented, nothing changed."
+}

@@ -1,0 +1,194 @@
+{
+ "original": {
+  "n_eval": 2656,
+  "n_dev": 660,
+  "static_void": {
+   "rule": "contains 'static void' -> good",
+   "macro_f1": {
+    "all": 1.0,
+    "B2G": 1.0,
+    "G2B": 1.0
+   },
+   "rate_good": 1.0,
+   "rate_bad": 0.0
+  },
+  "func_count": {
+   "rule": "func_count < 4 -> leak",
+   "dev_macro_f1": 0.9818,
+   "macro_f1": {
+    "all": 0.9237,
+    "B2G": 0.9222,
+    "G2B": 0.9353
+   },
+   "mean_bad": 2.74,
+   "mean_good": 6.08
+  },
+  "length_lines": {
+   "rule": "length_lines < 39 -> leak",
+   "dev_macro_f1": 0.9667,
+   "macro_f1": {
+    "all": 0.9063,
+    "B2G": 0.8988,
+    "G2B": 0.9168
+   },
+   "mean_bad": 29.88,
+   "mean_good": 66.75
+  },
+  "length_tokens": {
+   "rule": "length_tokens < 233 -> leak",
+   "dev_macro_f1": 0.9042,
+   "macro_f1": {
+    "all": 0.8509,
+    "B2G": 0.8494,
+    "G2B": 0.8653
+   },
+   "mean_bad": 204.55,
+   "mean_good": 443.08
+  },
+  "grep_v0": {
+   "rule": "no free( and no delete -> leak",
+   "macro_f1": {
+    "all": 0.9346,
+    "B2G": 0.9589,
+    "G2B": 0.9702
+   }
+  },
+  "bow_lr": {
+   "auroc": {
+    "all": 1.0,
+    "B2G": 1.0,
+    "G2B": 1.0
+   },
+   "macro_f1": {
+    "all": 1.0,
+    "B2G": 1.0,
+    "G2B": 1.0
+   },
+   "top_leak_features": [
+    "> void",
+    "; void",
+    "{ void",
+    "; sym_1",
+    "data !=",
+    "{ ;",
+    "} data",
+    "; data",
+    "sym_1 =",
+    "* sym_3"
+   ],
+   "top_noleak_features": [
+    "static void",
+    "static",
+    "} void",
+    "} static",
+    "void sym_2",
+    "sym_2 (",
+    "delete",
+    "sym_3",
+    "sym_4",
+    "free ("
+   ]
+  }
+ },
+ "layer1": {
+  "n_eval": 2656,
+  "n_dev": 660,
+  "static_void": {
+   "rule": "contains 'static void' -> good",
+   "macro_f1": {
+    "all": 0.3333,
+    "B2G": 0.3333,
+    "G2B": 0.3333
+   },
+   "rate_good": 0.0,
+   "rate_bad": 0.0
+  },
+  "func_count": {
+   "rule": "func_count >= 3 -> leak",
+   "dev_macro_f1": 0.4961,
+   "macro_f1": {
+    "all": 0.4995,
+    "B2G": 0.4971,
+    "G2B": 0.4989
+   },
+   "mean_bad": 2.74,
+   "mean_good": 2.75
+  },
+  "length_lines": {
+   "rule": "length_lines < 27 -> leak",
+   "dev_macro_f1": 0.5564,
+   "macro_f1": {
+    "all": 0.5438,
+    "B2G": 0.5473,
+    "G2B": 0.5278
+   },
+   "mean_bad": 29.88,
+   "mean_good": 30.51
+  },
+  "length_tokens": {
+   "rule": "length_tokens < 174 -> leak",
+   "dev_macro_f1": 0.523,
+   "macro_f1": {
+    "all": 0.5007,
+    "B2G": 0.5162,
+    "G2B": 0.4949
+   },
+   "mean_bad": 204.55,
+   "mean_good": 208.36
+  },
+  "grep_v0": {
+   "rule": "no free( and no delete -> leak",
+   "macro_f1": {
+    "all": 0.7012,
+    "B2G": 0.9589,
+    "G2B": 0.3545
+   }
+  },
+  "bow_lr": {
+   "auroc": {
+    "all": 0.9816,
+    "B2G": 0.9773,
+    "G2B": 0.9838
+   },
+   "macro_f1": {
+    "all": 0.9785,
+    "B2G": 0.9799,
+    "G2B": 0.9799
+   },
+   "top_leak_features": [
+    "; ;",
+    "= new",
+    "new",
+    "{ ;",
+    ": ;",
+    "data !=",
+    "} data",
+    "1 )",
+    "exit (",
+    "data =="
+   ],
+   "top_noleak_features": [
+    "free",
+    "free (",
+    "delete",
+    "delete data",
+    "{ free",
+    "{ delete",
+    "delete [",
+    "] data",
+    ") ALLOCA",
+    "ALLOCA ("
+   ]
+  }
+ },
+ "acceptance": {
+  "limit": 0.6,
+  "checks": {
+   "static_void": true,
+   "func_count": true,
+   "length_lines": true,
+   "length_tokens": true
+  },
+  "pass": true
+ }
+}

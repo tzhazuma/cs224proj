@@ -1,0 +1,171 @@
+Reference examples with their verdicts:
+
+Example 1:
+```c
+// ---- part 1 ----
+#include <wchar.h>
+
+void sym_0()
+{
+    int64_t * data;
+    data = NULL;
+    goto source;
+source:
+
+    data = (int64_t *)realloc(data, 100*sizeof(int64_t));
+    if (data == NULL) {exit(-1);}
+
+    data[0] = 5LL;
+    printLongLongLine(data[0]);
+    goto sink;
+sink:
+
+    ;
+}
+
+int main(int argc, char * argv[])
+{
+    srand( (unsigned)time(NULL) );
+    sym_0();
+    return 0;
+}
+```
+Verdict: vulnerable
+
+Example 2:
+```cpp
+// ---- part 1 ----
+#include <wchar.h>
+namespace sym_1
+{
+
+void sym_2(twoIntsStruct * data)
+{
+
+    ;
+}
+
+void sym_0()
+{
+    twoIntsStruct * data;
+    data = NULL;
+
+    twoIntsStruct sym_3[100];
+    data = sym_3;
+
+    data[0].intOne = 0;
+    data[0].intTwo = 0;
+    printStructLine(&data[0]);
+    sym_2(data);
+}
+}
+
+int main(int argc, char * argv[])
+{
+    srand( (unsigned)time(NULL) );
+    sym_1::sym_0();
+    return 0;
+}
+```
+Verdict: not_vulnerable
+
+Example 3:
+```cpp
+// ---- part 1 ----
+#include <wchar.h>
+namespace sym_1
+{
+
+void sym_2(int * data);
+
+void sym_0()
+{
+    int * data;
+
+    void (*funcPtr) (int *) = sym_2;
+    data = NULL;
+
+    data = new int;
+
+    *data = 5;
+    printIntLine(*data);
+
+    funcPtr(data);
+}
+}
+
+int main(int argc, char * argv[])
+{
+    srand( (unsigned)time(NULL) );
+    sym_1::sym_0();
+    return 0;
+}
+
+// ---- part 2 ----
+#include <wchar.h>
+namespace sym_1
+{
+
+void sym_2(int * data)
+{
+
+    ;
+}
+}
+```
+Verdict: vulnerable
+
+Example 4:
+```cpp
+// ---- part 1 ----
+#include <list>
+#include <wchar.h>
+
+using namespace std;
+namespace sym_1
+{
+
+void sym_2(list<char *> dataList);
+
+void sym_0()
+{
+    char * data;
+    list<char *> dataList;
+    data = NULL;
+
+    data = (char *)ALLOCA(100*sizeof(char));
+
+    strcpy(data, "A String");
+    printLine(data);
+
+    dataList.push_back(data);
+    dataList.push_back(data);
+    dataList.push_back(data);
+    sym_2(dataList);
+}
+}
+
+int main(int argc, char * argv[])
+{
+    srand( (unsigned)time(NULL) );
+    sym_1::sym_0();
+    return 0;
+}
+
+// ---- part 2 ----
+#include <list>
+#include <wchar.h>
+
+using namespace std;
+namespace sym_1
+{
+
+void sym_2(list<char *> dataList)
+{
+    char * data = dataList.back();
+
+    ;
+}
+}
+```
+Verdict: not_vulnerable

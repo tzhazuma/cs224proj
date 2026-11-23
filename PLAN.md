@@ -96,7 +96,7 @@
   - 第 0 折（472 组）：01 05 09 11 14 22 32 42 43 52 61 62 67 81 83
   - 第 1 折（424 组）：02 08 12 15 16 44 45 54 63 66 72 84
   - 第 2 折（432 组）：03 06 07 13 21 33 34 51 53 64 74 82
-- 零样本方法在整个评测集上跑一遍。需要训练的方法（目前只有 decision model 微调）按三折轮换：用两折加 dev（约 1,215 组）训练，预测剩下一折。**只用第 ① 层数据训练**，第 ③ 层只用来预测。
+- 零样本方法在整个评测集上跑一遍。需要训练的方法（目前只有 decision model 微调）按三折轮换：**只用另外两折训练**（856–904 组，约 1,712–1,808 个单元），预测剩下一折；**dev 只作验证集**，用来选 epoch 和阈值【已定，2026-11-23，取代原来的“两折加 dev 训练”】。dev 的 9 个流变体与三折都不重叠，所以在 dev 上选择相当于模拟“没见过的流变体”，留出折完全不参与任何选择。**只用第 ① 层数据训练**，第 ③ 层只用来预测。
 - **DeepSeek 预算子集**【已定，2026-11-23。原因：DeepSeek 总花费控制在 ¥10 以内，见 5.1】：
   - API 子集：评测集 1,328 组按“流变体类别 × 机制”分层，随机抽 50%（664 组，1,328 个单元），种子 20261123，写进切分文件。DeepSeek 的第 ① 层只跑这个子集。
   - 嵌套 25%：从 API 子集里再抽一半（332 组，664 个单元），DeepSeek 的第 ③ 层、安慰剂层和原始 Juliet 对照都只跑这部分。
@@ -111,12 +111,12 @@
 | 类别 | 方法 | 策略或用法 | 运行位置 |
 |---|---|---|---|
 | **基线：词法** | grep（没有 free/delete 就判泄漏） | — | CPU |
-| **基线：静态分析** | Cppcheck 2.21.0、Clang Static Analyzer 22.1.8、CodeQL、Infer（Pulse） | — | CPU |
+| **基线：静态分析** | Cppcheck 2.22.0、Clang Static Analyzer 23.1.6、CodeQL 2.27.5、Infer 1.3.0（Pulse） | — | CPU |
 | **基线：预训练漏洞模型** | LineVul（公开的 Big-Vul 微调权重，**不再微调**，零样本；输入上限 512 token） | 只有“代码 → 概率”一种用法 | CPU 和 GPU 各测一次延迟 |
 | **LLM 线** | DeepSeek V4.1 Flash（API） | L1、L2、L3、L4 | API |
 | **SLM 线** | Qwen/Qwen3.5-4B（本地，vLLM） | L1、L2、L3、L4 | 2× RTX 3090 |
 | **decision model 线** | Jev（TypeSafe API，`jev-latest`）；internlm/Intern-Decision-4B（零样本）；在 Qwen3.5-4B 上 LoRA 微调（三折） | L1、L2、L3（微调模型只做 L1 和 L3 两种输入） | API / GPU |
-| **参考线（不参与排名）** | ASan/LSan、Valgrind 3.27.1、dynamic_enhanced（realloc 失败注入，并关闭 LSan 的全局根） | — | CPU |
+| **参考线（不参与排名）** | ASan/LSan（gcc 13.3）、Valgrind 3.28.0、dynamic_enhanced（realloc 失败注入，并关闭 LSan 的全局根） | — | CPU |
 | 附录（可选） | VulnLLM-R-7B（Virtue-AI-HUB/VulnLLM-R-7B）L1；AnyJev 读出 Qwen3.5-4B；SecVulEval 已有结果 | — | — |
 
 说明：
@@ -136,12 +136,16 @@
 
 ### 3.2 “同一个 4B 模型，三种用法”（创新点 1 和 3 的连接）
 说明：全计划中唯一的训练就是下面的 ③，即 **decision model 的训练**。SLM 线的 Qwen3.5-4B 不训练，直接用提示词运行。
-同一份 Qwen3.5-4B 权重：① 生成回答（SLM 线 L1–L4）；② 只读出选项概率（decision model 零样本，Intern-Decision-4B 和 AnyJev 读出都基于 Qwen3.5）；③ 在任务上微调（LoRA r16、α32、dropout 0.05，二分类头，打分为 s = ℓleak − ℓno_leak；损失为类别平衡交叉熵加同组 bad/good 排序损失，τ=1、λ=1，训练 3 个 epoch；参考 Cyber-JEV）【默认】。
+同一份 Qwen3.5-4B 权重：① 生成回答（SLM 线 L1–L4）；② 只读出选项概率（decision model 零样本，Intern-Decision-4B 和 AnyJev 读出都基于 Qwen3.5）；③ 在任务上微调（LoRA r16、α32、dropout 0.05，二分类头，打分为 s = ℓleak − ℓno_leak；损失为类别平衡交叉熵加同组 bad/good 排序损失，τ=1、λ=1，最多训练 3 个 epoch；参考 Cyber-JEV）【默认】。
+
+**验证与选择规则**【已定，2026-11-23，训练前固定】：每半个 epoch 在 dev 上评估一次；按 dev AUROC 选检查点（打平时选 dev loss 更低的）；阈值在 dev 上按 macro-F1 选，每个折模型各选一个；同时报告不依赖阈值的 AUROC；dev 上的分数不进入结果表。三个折模型都对 dev 做预测，用来衡量模型稳定性。
+
+**任务与并行**【已定，2026-11-23】：共 6 个互相独立的任务（3 折 × L1/L3 两种输入），两张 3090 各跑一个，用队列调度。先训 3 个 L1 任务；L3 任务等 Clang 证据覆盖全部单元后再开始。两个任务不放在同一张卡上（显存不够，GPU 已满载也不会更快）。如果速度测试预计墙钟时间超过 6 小时，就改为最多 2 个 epoch。微调开始前停掉 184-toast 上的 vLLM 和 Intern-Decision 服务，微调完成后再重新启动，用于零样本运行。
 
 【已定】只微调 Qwen3.5-4B 这一个 decision model（选项 A）。不加 Qwen3.5-0.8B，也不对生成式 SLM 做监督微调。
 
 **训练产物与使用方式**【默认】
-- **产物**：每折产出一份 LoRA 适配器（PEFT 格式：`adapter_config.json` 和 `adapter_model.safetensors`）、一个二分类头，以及训练配置和日志。三折共三份，放在 184-toast 的 `~/disk4/cs224/decision_ft/fold{0,1,2}/`。底座权重不修改，也不重新保存；SLM 线和 decision model 共用同一份底座。
+- **产物**：每折产出一份 LoRA 适配器（PEFT 格式：`adapter_config.json` 和 `adapter_model.safetensors`）、一个二分类头，以及训练配置和日志。3 折 × 2 种输入共六份，放在 184-toast 的 `~/disk4/cs224/decision_ft/{L1,L3}/fold{0,1,2}/`。底座权重不修改，也不重新保存；SLM 线和 decision model 共用同一份底座。
 - **LoRA 加在哪些层**：语言模型 32 层中的全部线性投影。包括 8 层全注意力的 `q_proj`、`k_proj`、`v_proj`、`o_proj`，24 层线性注意力的 `in_proj_qkv`、`in_proj_z`、`in_proj_a`、`in_proj_b`、`out_proj`，以及 32 层 MLP 的 `gate_proj`、`up_proj`、`down_proj`。
   - 不加在视觉编码器（`model.visual`，约 3.3 亿参数）、MTP 模块（`mtp`）和词表矩阵上。Qwen3.5-4B 是多模态模型，而 PEFT 的 `all-linear` 会把视觉编码器也包括进去，所以要用正则表达式显式列出模块。
   - r=16 时，LoRA 共 32,464,896 个参数，约占全模型的 0.70%；用 FP32 保存约 130 MB，转成 BF16 约 65 MB。这个数字是按官方 `config.json` 和权重索引计算的。
@@ -219,12 +223,10 @@ decision model 先判断；置信度低于阈值的单元交给 DeepSeek L3 或 
 - **dell**（主机名 `barton-OptiPlex-5000`，i5-12500，12 线程，31 GB 内存，没有 GPU）：运行全部测试。包括 grep、静态工具、动态工具、LineVul（CPU）、L4 的 Soufflé，以及对 DeepSeek、Jev 和 184-toast 的 API 请求。
   - 系统是 Ubuntu 24.04.2，sudo 不需要密码。网络上能访问 GitHub、Hugging Face、PyPI 和 apt.llvm.org。
   - 现有 gcc 13.3，ASan 和 LSan 已实测可用。
-  - 待安装的工具及来源【默认】：
-    - Clang 22：从 apt.llvm.org 安装，Ubuntu 自带的只有 18。
-    - Cppcheck 2.21：从源码编译，apt 里只有 2.13。
-    - Valgrind：用 apt 的 3.22，它只作参考线。
-    - Soufflé：用 GitHub release 的 .deb，apt 里没有。
-    - CodeQL CLI bundle 和 Infer：从 GitHub release 下载。
+  - 工具【已定，2026-11-23 已安装】：全部放在 `~/tools/cs224/` 下（脚本 `~/tools/cs224/install.sh`），没有用 apt，也不改系统文件。
+    - LLVM/Clang 23.1.6（官方 release 二进制）。clang++ 默认选中没有 libstdc++ 头文件的 gcc 14 目录，导致 C++ 单元无法编译；已在 `bin/clang.cfg` 和 `bin/clang++.cfg` 中写入 `--gcc-install-dir=/usr/lib/gcc/x86_64-linux-gnu/13`。
+    - Cppcheck 2.22.0 和 Valgrind 3.28.0：从源码编译。
+    - CodeQL 2.27.5（C/C++ bundle）、Infer 1.3.0、Soufflé 2.5（解开 .deb）：GitHub release。
   - 全部版本号都写入运行清单。
 - **184-toast**（主机名 `Toast-184`，已用 `ssh 184-toast` 连通：2× RTX 3090 24 GB，各有约 1.6 GB 被其他进程占用；96 线程；235 GB 内存；驱动 580.178.04）：负责模型部署和微调。
   - 用 vLLM 提供 OpenAI 兼容 API，部署 Qwen3.5-4B、Intern-Decision-4B，可选 VulnLLM-R-7B；另外部署 LineVul 的 GPU 推理。
@@ -274,9 +276,9 @@ decision model 先判断；置信度低于阈值的单元交给 DeepSeek L3 或 
 - 184-toast 上的模型没有 token 费用，SLM 线和 decision model 都在全量上运行。
 
 ### 5.2 微调的时间与显存预估
-- 训练量：每折约 2,430 个单元（约 1,215 组）。每条样本在 L1 输入下约 400 token，在 L3 输入下约 520 token。训练 3 个 epoch，覆盖 L1 和 L3 两种输入，共 3 折，合计约 20M token。
+- 训练量：每折约 1,712–1,808 个单元（856–904 组，只用两折；dev 只作验证）。每条样本在 L1 输入下约 400 token，在 L3 输入下约 520 token。最多 3 个 epoch，覆盖 L1 和 L3 两种输入，共 3 折，合计约 15M token；另外每半个 epoch 在 dev（660 个单元）上做一次只前向的评估。
 - Qwen3.5-4B（实际 4.66B 参数，BF16 权重约 9.3 GB；32 层，其中每 4 层有 1 层是全注意力，其余是线性注意力）：
-  - LoRA 加梯度检查点时，每个 token 约需 6 × 4.66B 次浮点运算。按 3090 的 BF16 实际可达到约 20 TFLOPS 估算，合计约 8 GPU 小时。两张卡并行跑不同的折，墙钟时间约 4 小时；只训 L1 输入则减半。
+  - LoRA 加梯度检查点时，每个 token 约需 6 × 4.66B 次浮点运算。按 3090 的 BF16 实际可达到约 20 TFLOPS 估算，合计约 6 GPU 小时。两张卡并行跑不同的任务，墙钟时间约 3–3.5 小时；只训 L1 输入则减半。以速度测试为准。
   - 显存约 12–16 GB：权重 9.3 GB；LoRA 参数、梯度和 Adam 状态合计约 0.5 GB（LoRA 共 3,250 万个参数，全部按 FP32 计）；批量 8、序列 512、开启梯度检查点时激活值约 2–5 GB。前提是只在最后一个位置计算两个候选 token 的分数，不输出完整的 248k 词表 logits；否则 logits 本身就要约 4 GB。**一张 24 GB 的 3090 够用**。
   - 全参数微调大约需要 75 GB，放不下，所以只用 LoRA。
 - 风险：Qwen3.5 的线性注意力层需要较新版本的 transformers 和 vLLM，以及对应的算子库。没有专用算子时训练可能慢数倍。先在 dev 上跑 100 步，实测速度后再定排期。
@@ -308,7 +310,7 @@ decision model 先判断；置信度低于阈值的单元交给 DeepSeek L3 或 
 | 11-24 | grep 基线在全集上运行 | grep 的 P/R/F1 |
 | 11-25 | 尽量安装 Cppcheck、Clang SA，在第 ① 层（全量或分层抽样）上运行 | 静态基线的初步结果 |
 | 11-25 | prompt 先在本地 Qwen3.5-4B 上调，DeepSeek 在 dev 上终检后冻结。DeepSeek 在嵌套 25% 的约 300 个单元上试跑 L1 和 L3（约 ¥0.3；prompt 之后不改的话，结果直接计入正式结果）。Qwen3.5-4B 和 Jev 的 L1 也试跑 | LLM、SLM 和 decision model 的初步点 |
-| 11-25 至 26 | 做 pre 的幻灯片 | 15–20 分钟 |
+| 11-25 至 26 | 做 pre 的幻灯片【已定：Beamer，英文】 | 15–20 分钟 |
 
 pre 的内容结构：
 1. 动机：Juliet 的捷径（`static void` 100%、grep 0.94）；
@@ -327,7 +329,7 @@ pre 里可以说明“最终结果采用三折交叉验证，并加入压力测�
 
 ### 阶段 C：创新部分（12-01 至 12-12）
 - L4：在 dev 上设计事实模式和规则并验证，之后冻结，再在评测集上跑 DeepSeek 和 Qwen。
-- decision model 微调：三折，在 2× 3090 上训练。估计总共 6–8 GPU 小时，未实测。
+- decision model 微调：【已定，2026-11-23】提前到 11-23 开始，趁 GPU 空闲时先做（L1 先训，L3 等 Clang 证据）。三折，在 2× 3090 上训练，估计约 6 GPU 小时，未实测。
 - 第 ③ 层和安慰剂层：构造、验证、探针验收。
 
 ### 阶段 D：鲁棒性、级联与统计（12-10 至 12-16）

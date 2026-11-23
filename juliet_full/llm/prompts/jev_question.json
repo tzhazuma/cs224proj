@@ -1,0 +1,8 @@
+{
+  "type": "noul",
+  "instructions": "Does the executed code unit leak heap memory, so that the verdict is \"vulnerable\"?",
+  "criteria": {
+    "true": "Some heap memory obtained on an executed path is never released before the program ends (including memory lost when a reallocation fails or still held by a global or static pointer at exit).",
+    "false": "Every heap allocation on every executed path is released before the program ends."
+  }
+}

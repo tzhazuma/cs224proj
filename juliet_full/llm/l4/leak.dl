@@ -1,0 +1,81 @@
+// L4: derive CWE-401 leaks from LLM-extracted heap facts (schema: l4/SCHEMA.md).
+// Flow-insensitive, Andersen-style inclusion points-to over (scope, variable) nodes;
+// facts the model marks as dead (never-executing branch) are dropped before propagation.
+
+.type Sym <: symbol
+
+.decl alloc(o: Sym, v: Sym, f: Sym)
+.decl free(v: Sym, f: Sym)
+.decl assign(d: Sym, s: Sym, f: Sym)
+.decl pass(callee: Sym, param: Sym, arg: Sym, f: Sym)
+.decl retval(d: Sym, callee: Sym, f: Sym)
+.decl ret(f: Sym, v: Sym)
+.decl call(caller: Sym, callee: Sym)
+.decl global(v: Sym)
+.decl dead(f: Sym, v: Sym, k: Sym)
+.decl realloc_fail(o: Sym, f: Sym)
+.input alloc, free, assign, pass, retval, ret, call, global, dead, realloc_fail
+
+// ---- functions executed from main -------------------------------------------------
+.decl func(f: Sym)
+func(f) :- alloc(_, _, f).
+func(f) :- free(_, f).
+func(f) :- assign(_, _, f).
+func(f) :- pass(_, _, _, f).
+func(g) :- pass(g, _, _, _).
+func(f) :- retval(_, _, f).
+func(f) :- ret(f, _).
+func(f) :- call(f, _).
+func(g) :- call(_, g).
+
+.decl has_main()
+has_main() :- func("main").
+
+.decl reach(f: Sym)
+reach("main").
+reach(g) :- reach(f), call(f, g).
+reach(g) :- reach(f), pass(g, _, a, f), !dead(f, a, "pass").
+reach(g) :- reach(f), retval(_, g, f).
+// No main in the facts: treat every mentioned function as executed.
+reach(f) :- func(f), !has_main().
+
+// ---- variable nodes: globals and Class::member share one scope ------------------
+.decl mention(f: Sym, v: Sym)
+mention(f, v) :- alloc(_, v, f).
+mention(f, v) :- free(v, f).
+mention(f, v) :- assign(v, _, f).
+mention(f, v) :- assign(_, v, f).
+mention(f, v) :- pass(_, _, v, f).
+mention(g, p) :- pass(g, p, _, _).
+mention(f, v) :- retval(v, _, f).
+mention(f, v) :- ret(f, v).
+
+.decl scope(f: Sym, v: Sym, s: Sym)
+scope(f, v, "@global") :- mention(f, v), global(v).
+scope(f, v, "@global") :- mention(f, v), !global(v), contains("::", v).
+scope(f, v, f) :- mention(f, v), !global(v), !contains("::", v).
+
+// ---- points-to ------------------------------------------------------------------
+.decl live_alloc(o: Sym, v: Sym, f: Sym)
+live_alloc(o, v, f) :- alloc(o, v, f), reach(f), !dead(f, v, "alloc").
+
+.decl pts(s: Sym, v: Sym, o: Sym)
+pts(s, v, o) :- live_alloc(o, v, f), scope(f, v, s).
+pts(sd, d, o) :- assign(d, x, f), reach(f), !dead(f, d, "assign"), !dead(f, x, "assign"),
+                 scope(f, d, sd), scope(f, x, sx), pts(sx, x, o).
+// Parameters alias their argument in both directions (out-parameters, references).
+pts(sp, p, o) :- pass(g, p, a, f), reach(f), !dead(f, a, "pass"),
+                 scope(f, a, sa), scope(g, p, sp), pts(sa, a, o).
+pts(sa, a, o) :- pass(g, p, a, f), reach(f), !dead(f, a, "pass"),
+                 scope(f, a, sa), scope(g, p, sp), pts(sp, p, o).
+pts(sd, d, o) :- retval(d, g, f), reach(f), scope(f, d, sd),
+                 ret(g, r), scope(g, r, sr), pts(sr, r, o).
+
+// ---- leaks ----------------------------------------------------------------------
+.decl freed(o: Sym)
+freed(o) :- free(v, f), reach(f), !dead(f, v, "free"), scope(f, v, s), pts(s, v, o).
+
+.decl leak(o: Sym, reason: Sym)
+leak(o, "never_freed") :- live_alloc(o, _, _), !freed(o).
+leak(o, "realloc_fail") :- realloc_fail(o, f), reach(f).
+.output leak
