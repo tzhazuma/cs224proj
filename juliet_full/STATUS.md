@@ -38,7 +38,7 @@ Last update: 2026-11-23 11:12 PST (dell clock is America/Los_Angeles; Beijing = 
 | lane | dir (write boundary) | run id (latest) | status | next |
 |---|---|---|---|---|
 | data | juliet_full/data/ | a5fa0f86 (stage 3 done) | stages 1+3 DONE (lane_reports/2026-11-23_data_stage{1,3}.md): layer3.jsonl sha 033945a8…, placebo.jsonl 1ce6d2fe…; §2.6 probes pass; ASan/LSan verdicts identical outside variant 12 | idle |
-| static | juliet_full/static/, juliet_full/analysis/ | 3c1d3649 (resumed 02f56008) | RUNNING: mapping, full clang/cppcheck/grep, evidence, CodeQL/Infer, score.py | — |
+| static | juliet_full/static/, juliet_full/analysis/ | 3c1d3649 (stage 1 done) | stage 1 DONE (lane_reports/2026-11-23_static_stage1.md): final layer1 runs clang_sa full_v2 (= frozen L3 evidence), cppcheck full_v2, grep_v0 full_v1, codeql full_batch50_merged (batched 50/db, sym_N uniquified), infer full_per_file_merged; eval macro-F1 clang .855 [.806,.899], codeql .882, infer .815, grep .701, cppcheck .493 | stage 2: layer3/placebo/original runs + c1 latency |
 | llm | juliet_full/llm/ | 4c6356a0 (stage 2b; earlier 6d6db797/60c2c8f6) | stage 2a DONE (lane_reports/2026-11-23_llm_stage2a.md): DeepSeek dev macro-F1 L1 1.000 / L2 1.000 / L3 0.997; Jev 0.977 / 0.950 / 0.987 (AUC ≥0.999). RUNNING stage 2b: DeepSeek eval L1,L2 → Jev dev+eval ×3 → DeepSeek L3 (waits EVIDENCE_FROZEN) → repeats → latency300 c1 → L4 dev design (no eval) | parent freezes L4 |
 | gpu | juliet_full/gpu/, 184-toast ~/disk4/cs224/gpu | 9f90dfc5 (resumed 046b1350) | DONE stage 1 (report: lane_reports/2026-11-23_gpu_stage1.md) | after FT: restart services, add a fine-tuned-model endpoint, Qwen and Intern-Decision zero-shot runs |
 | decision_ft | juliet_full/decision_ft/, 184-toast ~/disk4/cs224/decision_ft | abb53eac (stage 1 done) | stage 1 DONE (lane_reports/2026-11-23_decision_ft_stage1.md). Queue RUNNING on both GPUs: L1 fold0/1 training → L1 fold2, L3 fold0/1/2; ETA all done ≈ 13:40 PST (21:40 UTC). Monitor `ssh 184-toast 'bash ~/disk4/cs224/decision_ft/server/status.sh'`; collect `juliet_full/decision_ft/collect.sh` | after ETA: collect, check selection + merge_check, then gpu lane builds :8003 and restarts services |
@@ -63,6 +63,20 @@ Last update: 2026-11-23 11:12 PST (dell clock is America/Los_Angeles; Beijing = 
   - Latency is measured server-side for now; dell-side latency comes via :8003.
 
 - Layer ③ (stress) and placebo layer (data stage 3): all 3,316 units; probes on eval (all / B2G): grep v0 .333/.333, v1 .333/.333, v2 .498/.499, BoW AUROC .810/.609 (limit B2G ≤.65; G2B subset .986 from ALLOCA/new = task-intrinsic); format probes ≤.525. Deviations from PLAN §2.5 (decided on dev): guard constants take values 4 or 5 so every comparison form occurs as both true & false (fixed 5 → BoW B2G .989); random guard names sym_10–sym_99; G2B goods also get 1–2 dead frees (flaw-site match); realloc_fail/destructor families get 1–2 dead frees in both labels; object deletes wrapped. Verification gcc/clang 3316/3316 both layers; same verdict as stage 1 for all 3,236 non-variant-12 units (variant 12 random path: 67/80 and 71/80).
+
+- PRELIMINARY layer-① eval scores (2,656 units; parent ran analysis/score.py at 11:30 PST; static runs not yet final). Columns are P / R / F1(leak) / macro-F1, then median latency.
+  - DeepSeek L1 .991 / 1.000 / .996 / .995, 0.76 s (c16 bulk; p90 5.7 s queueing).
+  - DeepSeek L2 .996 / 1.000 / .998 / .998.
+  - DeepSeek L3 .990 / 1.000 / .995 / .995.
+  - Jev L1 .953 / .991 / .972 / .971, 0.89 s.
+  - Jev L2 .947 / .999 / .973 / .972.
+  - Jev L3 .962 / 1.000 / .980 / .980.
+  - Clang SA full_v2 .928 / .771 / .842 / .855, 36 ms.
+  - CodeQL batch50_merged .829 / .963 / .891 / .882.
+  - Infer: the per-unit run gave .925 / .398 / .556 / .655 at 0.39 s and is SUPERSEDED. The final run, full_per_file_merged, gives macro-F1 .815 [.741, .874].
+  - Cppcheck .897 / .171 / .287 / .493, 9–15 ms.
+  - grep v0 .658 / .870 / .749 / .701.
+  - LineVul .510 / .666 / .577 / .501, 5.9 ms (GPU).
 
 ## 6. Budget
 - DeepSeek (11:20 PST, demo check.sh): ledger total ≈ ¥3.09, balance ¥8.58 (LLM stage 2b eval runs in progress). Earlier: ledger total ≈ ¥0.362 (stage 2a ¥0.329) + parent probes ≈ ¥0.02; balance ¥10.50 at 11:00 PST. Ledger `juliet_full/llm/ledger.jsonl`.

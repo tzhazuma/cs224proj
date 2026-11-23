@@ -1,0 +1,78 @@
+{
+  "method": "codeql",
+  "layer": "layer1",
+  "run_id": "full_batch50_rerun67",
+  "versions": {
+    "codeql": "CodeQL command-line toolchain release 2.27.5.",
+    "queries": [
+      "/home/barton/tools/cs224/codeql-2.27.5/codeql/qlpacks/codeql/cpp-queries/1.10.1/Critical/MemoryNeverFreed.ql",
+      "/home/barton/tools/cs224/codeql-2.27.5/codeql/qlpacks/codeql/cpp-queries/1.10.1/Critical/MemoryMayNotBeFreed.ql",
+      "/home/barton/tools/cs224/codeql-2.27.5/codeql/qlpacks/codeql/cpp-queries/1.10.1/experimental/Security/CWE/CWE-401/MemoryLeakOnFailedCallToRealloc.ql"
+    ],
+    "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "g++": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0"
+  },
+  "command_template": "/home/barton/tools/cs224/codeql-2.27.5/codeql/codeql database create <db> --language=cpp --source-root=<common ancestor of work dir and all program_dirs> --overwrite --threads=1 --command='bash <work>/build.sh' (build.sh: <gcc|g++> -std=<build.std> -I <build.include_dirs> -D<build.defines> -D_GNU_SOURCE -include alloca.h [-Dsym_N=sym_N_u<k> for every sym_N of unit k when units per database > 1] -c <TU> (tu_mode=wrapper: one wrapper file #including all unit sources when >1 source; if program_dir has headers or repeated struct typedefs, the wrapper includes a copy whose headers end with '#pragma once' and whose repeated typedef blocks are blanked) -o <obj>, one line per TU); /home/barton/tools/cs224/codeql-2.27.5/codeql/codeql database analyze <db> Critical/MemoryNeverFreed.ql Critical/MemoryMayNotBeFreed.ql experimental/Security/CWE/CWE-401/MemoryLeakOnFailedCallToRealloc.ql --format=sarif-latest --output=<sarif> --threads=1 --compilation-cache=<cache>  (units per database: 50)",
+  "argv": [
+    "/usr/bin/python3",
+    "run_static.py",
+    "--tool",
+    "codeql",
+    "--units",
+    "scratch/units_v67.jsonl",
+    "--layer",
+    "layer1",
+    "--batch-size",
+    "50",
+    "-j",
+    "2",
+    "--run-id",
+    "full_batch50_rerun67"
+  ],
+  "script_sha256": "bf2c3bca7863412490b2548fd1970db3949a9cfbb23473d16cc4587ce956efac",
+  "git_head": "d2e6def88985dc331990d53a5259527bfb59b0bf",
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/scratch/units_v67.jsonl",
+  "units_sha256": "6030377c3c843dc516040d44c6b920ff3f73f92664fa990c1afed2d256a53872",
+  "set": null,
+  "subset": null,
+  "n_units": 68,
+  "timeout_s_per_unit": 60.0,
+  "tu_mode": "wrapper",
+  "compat_defines": [
+    "_GNU_SOURCE"
+  ],
+  "compat_compiler_args": [
+    "-include",
+    "alloca.h"
+  ],
+  "leak_mapping": [
+    "cpp/memory-leak-on-failed-call-to-realloc",
+    "cpp/memory-may-not-be-freed",
+    "cpp/memory-never-freed"
+  ],
+  "concurrency": 2,
+  "timing_mode": "batched",
+  "batch_size": 50,
+  "latency_note": "latency_s = batch wall time / units in batch (amortized)",
+  "host": "barton-OptiPlex-5000",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.39",
+  "cpu_count": 12,
+  "loadavg_start": [
+    9.8447265625,
+    12.71240234375,
+    11.7412109375
+  ],
+  "start_utc": "2026-11-23T18:57:47+00:00",
+  "end_utc": "2026-11-23T18:58:03+00:00",
+  "loadavg_end": [
+    10.3095703125,
+    12.6640625,
+    11.74072265625
+  ],
+  "wall_total_s": 16.381,
+  "status_counts": {
+    "ok": 68
+  },
+  "predictions": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/codeql/layer1/full_batch50_rerun67.jsonl",
+  "raw_logs": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/codeql/layer1/raw_logs/full_batch50_rerun67.raw.jsonl.gz"
+}

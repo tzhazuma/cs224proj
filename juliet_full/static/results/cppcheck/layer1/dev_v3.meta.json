@@ -1,0 +1,70 @@
+{
+  "method": "cppcheck",
+  "layer": "layer1",
+  "run_id": "dev_v3",
+  "versions": {
+    "cppcheck": "Cppcheck 2.22.0"
+  },
+  "command_template": "/home/barton/tools/cs224/cppcheck-2.22.0/bin/cppcheck --enable=warning,performance,portability --inconclusive --quiet --xml --xml-version=2 --output-file=<report.xml> --language=<c|c++> --std=<build.std> -I<include_dirs> -D<build.defines> -D_GNU_SOURCE  <TU> (tu_mode=wrapper: one wrapper file #including all unit sources when >1 source; if program_dir has headers, the wrapper includes a copy whose headers end with '#pragma once')",
+  "argv": [
+    "/usr/bin/python3",
+    "run_static.py",
+    "--tool",
+    "cppcheck",
+    "--units",
+    "../data/build/layer1.jsonl",
+    "--set",
+    "dev",
+    "--layer",
+    "layer1",
+    "--run-id",
+    "dev_v3"
+  ],
+  "script_sha256": "f130ccb9a89d59b6ef97d251ea80c138fc29c8ede9c129c5c74637010b8f20e8",
+  "git_head": "190679cd8626d165b7636dc282b6a13ff106c6b9",
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+  "units_sha256": "5c15ac96b738876db30db8b98832f482f3e2e0c747ab617f3d5d97f2b483b0d3",
+  "set": "dev",
+  "subset": null,
+  "n_units": 660,
+  "timeout_s_per_unit": 60.0,
+  "tu_mode": "wrapper",
+  "compat_defines": [
+    "_GNU_SOURCE"
+  ],
+  "compat_compiler_args": [
+    "-include",
+    "alloca.h"
+  ],
+  "leak_mapping": [
+    "leakNoVarFunctionCall",
+    "leakReturnValNotUsed",
+    "memleak",
+    "memleakOnRealloc"
+  ],
+  "concurrency": 1,
+  "timing_mode": "per_unit_c1",
+  "batch_size": null,
+  "latency_note": "latency_s = wall time of the per-unit step (TU preparation + tool run + parsing)",
+  "host": "barton-OptiPlex-5000",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.39",
+  "cpu_count": 12,
+  "loadavg_start": [
+    20.6484375,
+    12.35595703125,
+    7.61572265625
+  ],
+  "start_utc": "2026-11-23T18:32:40+00:00",
+  "end_utc": "2026-11-23T18:33:00+00:00",
+  "loadavg_end": [
+    20.603515625,
+    12.74853515625,
+    7.8203125
+  ],
+  "wall_total_s": 19.439,
+  "status_counts": {
+    "ok": 660
+  },
+  "predictions": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/cppcheck/layer1/dev_v3.jsonl",
+  "raw_logs": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/cppcheck/layer1/raw_logs/dev_v3.raw.jsonl.gz"
+}
