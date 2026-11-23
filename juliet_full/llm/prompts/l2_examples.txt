@@ -7,16 +7,17 @@ Example 1:
 
 void sym_0()
 {
-    int64_t * data;
+    char * data;
     data = NULL;
     goto source;
 source:
+    {
+        char myString[] = "myString";
 
-    data = (int64_t *)realloc(data, 100*sizeof(int64_t));
-    if (data == NULL) {exit(-1);}
+        data = strdup(myString);
 
-    data[0] = 5LL;
-    printLongLongLine(data[0]);
+        printLine(data);
+    }
     goto sink;
 sink:
 
@@ -39,7 +40,7 @@ Example 2:
 namespace sym_1
 {
 
-void sym_2(twoIntsStruct * data)
+void sym_2(int * data)
 {
 
     ;
@@ -47,15 +48,14 @@ void sym_2(twoIntsStruct * data)
 
 void sym_0()
 {
-    twoIntsStruct * data;
+    int * data;
     data = NULL;
 
-    twoIntsStruct sym_3[100];
-    data = sym_3;
+    int sym_3;
+    data = &sym_3;
 
-    data[0].intOne = 0;
-    data[0].intTwo = 0;
-    printStructLine(&data[0]);
+    *data = 5;
+    printIntLine(*data);
     sym_2(data);
 }
 }
@@ -125,19 +125,19 @@ using namespace std;
 namespace sym_1
 {
 
-void sym_2(list<char *> dataList);
+void sym_2(list<int *> dataList);
 
 void sym_0()
 {
-    char * data;
-    list<char *> dataList;
+    int * data;
+    list<int *> dataList;
     data = NULL;
 
-    data = (char *)ALLOCA(100*sizeof(char));
+    data = (int *)malloc(100*sizeof(int));
+    if (data == NULL) {exit(-1);}
 
-    strcpy(data, "A String");
-    printLine(data);
-
+    data[0] = 5;
+    printIntLine(data[0]);
     dataList.push_back(data);
     dataList.push_back(data);
     dataList.push_back(data);
@@ -160,11 +160,11 @@ using namespace std;
 namespace sym_1
 {
 
-void sym_2(list<char *> dataList)
+void sym_2(list<int *> dataList)
 {
-    char * data = dataList.back();
+    int * data = dataList.back();
 
-    ;
+    free(data);
 }
 }
 ```

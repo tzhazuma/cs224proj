@@ -1,0 +1,172 @@
+{
+  "endpoint": "http://10.15.89.184:8001",
+  "units_source": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+  "max_tokens": 128,
+  "prompt": "bench/l1_probe_prompt.txt",
+  "start_utc": "2026-11-23T18:45:08.163998+00:00",
+  "verify": [
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_31__good",
+      "truth": 0,
+      "content": "{\"label\": \"not_vulnerable\", \"confidence\": 1.0, \"reason\": \"ALLOCA allocates on the stack, not the heap. No malloc/new calls exist, so no heap leaks occur.\"}",
+      "json_ok": true,
+      "thinking_text": false,
+      "usage": {
+        "prompt_tokens": 505,
+        "total_tokens": 552,
+        "completion_tokens": 47,
+        "completion_tokens_details": null
+      },
+      "model": "qwen3.5-4b",
+      "latency_s": 0.7095
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__strdup_wchar_t_65__good",
+      "truth": 0,
+      "content": "{\"label\": \"not_vulnerable\", \"confidence\": 1.0, \"reason\": \"Memory allocated by wcsdup is freed by sym_1 before program exit. No leaks.\"}",
+      "json_ok": true,
+      "thinking_text": false,
+      "usage": {
+        "prompt_tokens": 513,
+        "total_tokens": 553,
+        "completion_tokens": 40,
+        "completion_tokens_details": null
+      },
+      "model": "qwen3.5-4b",
+      "latency_s": 0.5834
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_realloc_18__good",
+      "truth": 0,
+      "content": "{\"label\": \"vulnerable\", \"confidence\": 1.0, \"reason\": \"ALLOCA memory allocated at source is never freed before program exit, causing a heap leak.\"}",
+      "json_ok": true,
+      "thinking_text": false,
+      "usage": {
+        "prompt_tokens": 466,
+        "total_tokens": 506,
+        "completion_tokens": 40,
+        "completion_tokens_details": null
+      },
+      "model": "qwen3.5-4b",
+      "latency_s": 0.5609
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_73__bad",
+      "truth": 1,
+      "content": "{\"label\": \"vulnerable\", \"confidence\": 0.95, \"reason\": \"Heap memory allocated via calloc is passed to sym_2, which discards the pointer. No free() is called before program exit, causing a leak.\"}",
+      "json_ok": true,
+      "thinking_text": false,
+      "usage": {
+        "prompt_tokens": 626,
+        "total_tokens": 679,
+        "completion_tokens": 53,
+        "completion_tokens_details": null
+      },
+      "model": "qwen3.5-4b",
+      "latency_s": 0.7597
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_realloc_73__bad",
+      "truth": 1,
+      "content": "{\"label\": \"vulnerable\", \"confidence\": 0.95, \"reason\": \"Pointer 'data' is added to the list but never freed. Since the list is not cleared or deleted, the memory remains leaked at program exit.\"}",
+      "json_ok": true,
+      "thinking_text": false,
+      "usage": {
+        "prompt_tokens": 610,
+        "total_tokens": 662,
+        "completion_tokens": 52,
+        "completion_tokens_details": null
+      },
+      "model": "qwen3.5-4b",
+      "latency_s": 0.748
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_wchar_t_41__good",
+      "truth": 0,
+      "content": "{\"label\": \"vulnerable\", \"confidence\": 0.95, \"reason\": \"C++ new requires delete, but C delete is invalid. Memory allocated for wchar_t is never freed, causing a leak.\"}",
+      "json_ok": true,
+      "thinking_text": false,
+      "usage": {
+        "prompt_tokens": 479,
+        "total_tokens": 526,
+        "completion_tokens": 47,
+        "completion_tokens_details": null
+      },
+      "model": "qwen3.5-4b",
+      "latency_s": 0.6507
+    }
+  ],
+  "latency_c1": {
+    "n": 30,
+    "median_s": 0.6593,
+    "p90_s": 0.75,
+    "mean_s": 0.6957,
+    "completion_tokens_median": 47.0,
+    "server": {
+      "time_to_first_token_mean_ms": 97.44,
+      "request_queue_time_mean_ms": 0.02,
+      "request_prefill_time_mean_ms": 90.0,
+      "request_decode_time_mean_ms": 593.13,
+      "inter_token_latency_mean_ms": 12.34,
+      "prompt_tokens_total": 15876.0,
+      "generation_tokens_total": 1472.0,
+      "prefix_cache_queries_total": 15876.0,
+      "prefix_cache_hits_total": 0.0
+    }
+  },
+  "throughput": [
+    {
+      "concurrency": 16,
+      "requests": 128,
+      "wall_s": 15.23,
+      "req_per_s": 8.4,
+      "units_per_hour": 30254,
+      "prompt_tok_per_s": 4404,
+      "gen_tok_per_s": 388,
+      "latency": {
+        "n": 128,
+        "median_s": 1.7828,
+        "p90_s": 2.2571,
+        "mean_s": 1.8498
+      },
+      "server": {
+        "time_to_first_token_mean_ms": 262.82,
+        "request_queue_time_mean_ms": 27.53,
+        "request_prefill_time_mean_ms": 191.19,
+        "request_decode_time_mean_ms": 1577.43,
+        "inter_token_latency_mean_ms": 34.88,
+        "prompt_tokens_total": 67081.0,
+        "generation_tokens_total": 5917.0,
+        "prefix_cache_queries_total": 67081.0,
+        "prefix_cache_hits_total": 0.0
+      }
+    },
+    {
+      "concurrency": 32,
+      "requests": 256,
+      "wall_s": 27.53,
+      "req_per_s": 9.3,
+      "units_per_hour": 33470,
+      "prompt_tok_per_s": 4917,
+      "gen_tok_per_s": 424,
+      "latency": {
+        "n": 256,
+        "median_s": 3.2971,
+        "p90_s": 4.3622,
+        "mean_s": 3.3828
+      },
+      "server": {
+        "time_to_first_token_mean_ms": 459.8,
+        "request_queue_time_mean_ms": 106.27,
+        "request_prefill_time_mean_ms": 281.2,
+        "request_decode_time_mean_ms": 2911.68,
+        "inter_token_latency_mean_ms": 65.33,
+        "prompt_tokens_total": 135378.0,
+        "generation_tokens_total": 11665.0,
+        "prefix_cache_queries_total": 135378.0,
+        "prefix_cache_hits_total": 0.0
+      }
+    }
+  ],
+  "end_utc": "2026-11-23T18:46:16.022087+00:00"
+}

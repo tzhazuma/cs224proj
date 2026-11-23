@@ -97,6 +97,16 @@ prediction file count as invalid.
 - Planned endpoints: Qwen3.5-4B via vLLM OpenAI API at `http://10.15.89.184:8001/v1` (served name `qwen3.5-4b`, GPU 0);
   Intern-Decision-4B read-out at `http://10.15.89.184:8002` (GPU 1). The gpu lane documents the final details in
   `juliet_full/gpu/README.md`.
+- Status 2026-11-23 10:46 PST: both services are STOPPED while decision-model fine-tuning runs. Before any GPU job,
+  source `~/disk4/cs224/gpu/server/env.sh` on 184-toast (it sets the caches, HF offline mode, and the CPATH for Python.h).
+- Planned endpoint (not built yet; it will be built after fine-tuning): the fine-tuned decision model at
+  `http://10.15.89.184:8003`.
+  - `GET /health` returns `{"ok": true, "models": [...]}`.
+  - `POST /score` takes `{"code": <model_text>, "language": "c"|"cpp", "strategy": "L1"|"L3", "evidence": <list or null>, "model": "qwen3.5-4b-lora-<L1|L3>-fold<k>"}`
+    and returns `{"score": s, "threshold": t, "pred": 0|1, "latency_ms_server": ..., "model": ...}`.
+  - The server renders the prompt itself, using the same template as training (decision_ft lane).
+- Parent progress and decisions log: `juliet_full/STATUS.md` (read it for the current state). Lane reports are in
+  `juliet_full/lane_reports/`.
 
 ## 7. Budget rules (API)
 

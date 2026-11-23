@@ -1,0 +1,139 @@
+{
+  "endpoint": "http://10.15.89.184:8002",
+  "units_source": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+  "question": "Does the executed code unit leak heap memory (memory from malloc, calloc, realloc, strdup or new/new[] that is not released with free, delete or delete[] before the program ends, on some path)?",
+  "options": {
+    "leak": "The code leaks heap memory on at least one executed path.",
+    "no_leak": "All heap memory is released on every executed path, or no heap memory is used."
+  },
+  "start_utc": "2026-11-23T18:45:02.191659+00:00",
+  "verify": [
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_31__good",
+      "truth": 0,
+      "probs": {
+        "leak": 0.14720923592665844,
+        "no_leak": 0.8527907640733415
+      },
+      "probs_raw": {
+        "leak": 0.02931223064661026,
+        "no_leak": 0.970687747001648
+      },
+      "decision": "no_leak",
+      "input_tokens": 399,
+      "latency_ms_server": 146.62,
+      "latency_s": 0.1606
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__strdup_wchar_t_65__good",
+      "truth": 0,
+      "probs": {
+        "leak": 0.778122175998967,
+        "no_leak": 0.22187782400103293
+      },
+      "probs_raw": {
+        "leak": 0.9241418242454529,
+        "no_leak": 0.07585817575454712
+      },
+      "decision": "leak",
+      "input_tokens": 409,
+      "latency_ms_server": 88.05,
+      "latency_s": 0.0909
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int_realloc_18__good",
+      "truth": 0,
+      "probs": {
+        "leak": 0.13214384255458153,
+        "no_leak": 0.8678561574454184
+      },
+      "probs_raw": {
+        "leak": 0.022977370768785477,
+        "no_leak": 0.977022647857666
+      },
+      "decision": "no_leak",
+      "input_tokens": 360,
+      "latency_ms_server": 76.2,
+      "latency_s": 0.0789
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_73__bad",
+      "truth": 1,
+      "probs": {
+        "leak": 0.9439168356016766,
+        "no_leak": 0.0560831643983235
+      },
+      "probs_raw": {
+        "leak": 0.9964063763618469,
+        "no_leak": 0.0035936026833951473
+      },
+      "decision": "leak",
+      "input_tokens": 530,
+      "latency_ms_server": 110.24,
+      "latency_s": 0.113
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__int64_t_realloc_73__bad",
+      "truth": 1,
+      "probs": {
+        "leak": 0.9053865123447689,
+        "no_leak": 0.09461348765523125
+      },
+      "probs_raw": {
+        "leak": 0.9890130758285522,
+        "no_leak": 0.01098694372922182
+      },
+      "decision": "leak",
+      "input_tokens": 514,
+      "latency_ms_server": 109.19,
+      "latency_s": 0.1121
+    },
+    {
+      "unit_id": "CWE401_Memory_Leak__new_wchar_t_41__good",
+      "truth": 0,
+      "probs": {
+        "leak": 0.6659927647326706,
+        "no_leak": 0.3340072352673295
+      },
+      "probs_raw": {
+        "leak": 0.7981867790222168,
+        "no_leak": 0.2018132209777832
+      },
+      "decision": "leak",
+      "input_tokens": 372,
+      "latency_ms_server": 76.38,
+      "latency_s": 0.0791
+    }
+  ],
+  "latency_c1": {
+    "n": 30,
+    "median_s": 0.0826,
+    "p90_s": 0.0852,
+    "mean_s": 0.0837,
+    "server_latency": {
+      "median_ms": 79.93,
+      "p90_ms": 82.52,
+      "mean_ms": 81.056
+    },
+    "server_forward": {
+      "median_ms": 78.34,
+      "p90_ms": 80.87,
+      "mean_ms": 79.462
+    },
+    "client_minus_server": {
+      "median_ms": 2.6234,
+      "p90_ms": 2.7288,
+      "mean_ms": 2.6238
+    },
+    "input_tokens_median": 418.0
+  },
+  "throughput_c4": {
+    "requests": 32,
+    "wall_s": 2.7,
+    "req_per_s": 11.84,
+    "median_s": 0.3316,
+    "p90_s": 0.358,
+    "mean_s": 0.3221
+  },
+  "end_utc": "2026-11-23T18:45:08.040811+00:00"
+}

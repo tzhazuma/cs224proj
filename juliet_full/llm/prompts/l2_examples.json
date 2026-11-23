@@ -1,27 +1,27 @@
 {
   "rule": "(deterministic, documented in README.md):\n  four slots, balanced 2 bad / 2 good, one per dev flow category, both good kinds, both\n  allocation families:\n    1. bad,            flow 02-22, mechanism c_alloc\n    2. good (G2B),     flow 31-45, mechanism cpp_new\n    3. bad,            flow 51-68, mechanism cpp_new\n    4. good (B2G),     flow 71-84, mechanism c_alloc\n  In each slot take the unit with the shortest model_text (ties: unit_id), each slot from a\n  different group. If a slot has no candidate, constraints are relaxed in this order: drop\n  good_kind, else drop mechanism, else drop both; every relaxation is written to\n  l2_examples.json.",
-  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1_sample.jsonl",
-  "units_sha256": "60e81b402173eff1d8b2f08ce7c598b19be9155b7e80c13cc7d4428c45f7eacc",
-  "text_sha256": "21284c8fd86896cce9a726d6385ead3f8f1d6420cd275d96d792c7c0edf8e9b6",
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+  "units_sha256": "d4d913c438e8a86fe8fa3c0560aab6320d8bb90b6eca584e1f70ad8183cafad9",
+  "text_sha256": "dbde147e0946acc81b5045531cd0113a2a292ce8926e778e3da4246d9273789c",
   "examples": [
     {
-      "unit_id": "CWE401_Memory_Leak__int64_t_realloc_18__bad",
-      "group_id": "CWE401_Memory_Leak__int64_t_realloc_18",
+      "unit_id": "CWE401_Memory_Leak__strdup_char_18__bad",
+      "group_id": "CWE401_Memory_Leak__strdup_char_18",
       "label": "bad",
       "flow_category": "02-22",
       "mechanism": "c_alloc",
       "good_kind": null,
-      "model_text_chars": 392,
+      "model_text_chars": 354,
       "relaxed": []
     },
     {
-      "unit_id": "CWE401_Memory_Leak__new_array_twointsStruct_41__good",
-      "group_id": "CWE401_Memory_Leak__new_array_twointsStruct_41",
+      "unit_id": "CWE401_Memory_Leak__new_int_41__good",
+      "group_id": "CWE401_Memory_Leak__new_int_41",
       "label": "good",
       "flow_category": "31-45",
       "mechanism": "cpp_new",
       "good_kind": "G2B",
-      "model_text_chars": 418,
+      "model_text_chars": 345,
       "relaxed": []
     },
     {
@@ -35,16 +35,14 @@
       "relaxed": []
     },
     {
-      "unit_id": "CWE401_Memory_Leak__char_malloc_73__good",
-      "group_id": "CWE401_Memory_Leak__char_malloc_73",
+      "unit_id": "CWE401_Memory_Leak__int_malloc_73__good",
+      "group_id": "CWE401_Memory_Leak__int_malloc_73",
       "label": "good",
       "flow_category": "71-84",
       "mechanism": "c_alloc",
-      "good_kind": "G2B",
-      "model_text_chars": 708,
-      "relaxed": [
-        "good_kind"
-      ]
+      "good_kind": "B2G",
+      "model_text_chars": 737,
+      "relaxed": []
     }
   ]
 }

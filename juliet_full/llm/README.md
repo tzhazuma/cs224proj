@@ -15,6 +15,7 @@ on the CWE-401 units of `../data/build/*.jsonl`. Predictions and meta files foll
 | `llmlane/units.py` | unit loading (final schema; old `{lab, variant, code}` adapter), subsets, stratified `--limit`, evidence loading |
 | `llmlane/l4.py`, `l4/leak.dl` | L4 draft: fact parser + Souffle rules |
 | `build_l2_examples.py` | deterministic L2 example selection → `prompts/l2_examples.{txt,json}` |
+| `make_dev_check.py`, `dev_check/` | stratified DEV check sample (150 groups, flow_category x mechanism, seed 20261123, L2 groups excluded) as a `--subsets-file`; score.py reports `dev_check/score_*.json`; `latency30_unit_ids.txt` = 30 other dev units for the concurrency-1 latency probe |
 | `prompts/` | all prompt text; `meta.prompt_files` records each file's SHA-256, `meta.prompt_hash` the combination |
 | `tests/` | `python3 -m unittest discover -s tests` (32 tests, offline: local mock server, simulated clocks) |
 | `scratch/` (gitignored) | smoke-test outputs, mock evidence, raw logs of smoke runs |
@@ -26,8 +27,8 @@ on the CWE-401 units of `../data/build/*.jsonl`. Predictions and meta files foll
   bad 02-22 c_alloc, good G2B 31-45 cpp_new, bad 51-68 cpp_new, good B2G 71-84 c_alloc; shortest
   `model_text` per slot, distinct groups; relaxation order good_kind, then mechanism, then both
   (recorded in `l2_examples.json`). Both units of every example group are dropped from all runs unless
-  `--keep-l2-examples`. Current examples come from `layer1_sample.jsonl` (48 units); rerun
-  `python3 build_l2_examples.py --units <full dev unit file>` once it exists (the L2 prompt hash then changes).
+  `--keep-l2-examples`. Current examples come from the full dev set of `layer1.jsonl` (d4d913c4…):
+  strdup_char_18__bad, new_int_41__good, new_int_65__bad, int_malloc_73__good (no relaxation needed).
 - **L3** = L1 + Clang SA warnings from `static/results/clang_sa/<layer>/evidence.jsonl` (`--evidence` overrides),
   schema of `static/run_static.py:evidence_row` (`model_text_line`; fallback via `line_map`). No record →
   "The analyzer produced no result for this code unit."; empty list → "The analyzer reported no warnings."
