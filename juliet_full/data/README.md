@@ -140,3 +140,41 @@ goods) → PASS. Placebo: format probes PASS; grep and BoW stay at layer-1 level
 `stress.py` is importable without side effects: `transform_unit(record, kind, seed, n_dead)` and
 `transform_source(code, language, func=None, ...)` (best effort on any single C/C++ file, raises
 `ValueError`). Both builds are deterministic (two runs, same SHA-256; lines added to SHA256SUMS).
+
+## Dynamic reference line (stage 4)
+
+Predictions in the contract format (`juliet_full/README.md` §4) under `results/<method>/<layer>/<run_id>.jsonl`
++ `.meta.json`; `full_v1` = all 3,316 units per layer (bulk, 6 jobs, latency not meaningful), `lat300_c1` =
+latency300 subset of layer 1 at concurrency 1. Code: `dynamic_runs.py` (`bulk --jobs 6`, `latency --wait-quiet`;
+resumable via `results/_work/<run_id>/rows.jsonl`), `dynamic/inject.c` (link-time hooks), `dynamic/latency.sh`
+(`flock /tmp/cs224_latency.lock`, quiet check load1 < 2.5 for one minute only after the lock is held; meta records
+lock wait, quiet wait, load before/after), `dynamic_report.py` → `results/dynamic_report.md`, `results/dynamic_scores.json`,
+`results/scores/*.json` (score.py output, eval set, bootstrap 2000).
+
+Methods (all gcc/g++ 13, `-O0 -g -fno-omit-frame-pointer`, stdin closed, timeout 10 s):
+- `asan_lsan`: `-fsanitize=address`, `LSAN_OPTIONS=use_stacks=0`, one run; pred = 1 iff a leak report is
+  attributed to the unit. Attribution: first stack frame with an absolute source path, skipping sanitizer frames,
+  `inject.c` and glibc frames (relative paths such as `wcsmbs/wcsdup.c`); it must lie in the unit's program dir.
+  Non-leak ASan errors (Juliet's variant-12 ALLOCA bad-free) go to `extra.asan_error`, pred from leaks only.
+- `asan_lsan_default`: same with default LSan options (stale `-O0` stack slots hide ~10% of bad leaks).
+- `valgrind`: plain build, `--leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=definite,indirect`;
+  pred = 1 iff definitely + indirectly lost > 0; still-reachable bytes (total and first-frame-in-unit) in `extra`.
+- `dynamic_enhanced`: ASan build linked with `inject.c` (`-Wl,--wrap=realloc -Wl,--wrap=time`); 3 configs × 8
+  seeds = 24 executions, pred = OR: `base` (as asan_lsan), `globals` (`use_globals=0`: memory still reachable only
+  from globals at exit counts as leak; stdio buffers are dropped by the attribution rule because their first
+  absolute frame is `io.c`), `realloc` (`DYNENH_REALLOC_FAIL=1`: the first `realloc` of a non-NULL pointer returns
+  NULL). Seeds: `time()` returns 1..8 (`DYNENH_TIME`), which covers all four branch combinations of variant 12's
+  two `rand()%2` decisions under glibc `srand`. FP risk checked on all goods of layer1/stress/placebo: 0 flagged;
+  the realloc_fail goods were injected in 108/108 and show no leak under injection; goods never leave unit memory
+  reachable from globals.
+
+Bulk was run once (11,606 unit jobs) and the 336 jobs of family `strdup_wchar_t` were rerun after the attribution
+fix (wcsdup allocates inside glibc; the first pass took `wcsmbs/wcsdup.c` as leak site and missed all 48 bad units).
+No other job had non-unit leak blocks outside `use_globals=0` runs. Valgrind's still-reachable attribution keeps
+the first non-`vg_replace` frame, so the 4 wcsdup units of variants 45/68 count as non-unit there (extra only).
+
+Eval scores (2,656 units, P/R/macro-F1): asan_lsan layer1 1.000/0.891/0.945, original same, stress 0.897 R / 0.948,
+placebo 0.895 / 0.947; asan_lsan_default 1.000/0.786/0.892; valgrind 1.000/0.892/0.946; dynamic_enhanced
+1.000/1.000/1.000 on layer1, stress and placebo. Misses of asan_lsan/valgrind: realloc_fail (84 eval), variants
+45/68 (global), variant-12 random branch. Latency c1 (median / p90 s, compile included): asan_lsan 0.134/0.209,
+valgrind 0.407/0.548, dynamic_enhanced 1.194/2.203 (load1 1.7 → 2.4). Details in `results/dynamic_report.md`.

@@ -1,0 +1,56 @@
+{
+ "run_id": "lat300_c1",
+ "host": "barton-OptiPlex-5000",
+ "concurrency": 1,
+ "start_utc": "2026-11-23T21:13:05+00:00",
+ "loadavg_start": [
+  1.65380859375,
+  3.54052734375,
+  6.8505859375
+ ],
+ "quiet_check_load1_samples": [
+  2.06005859375,
+  1.97509765625,
+  2.0576171875,
+  1.97265625,
+  1.97509765625,
+  1.9775390625,
+  1.89892578125,
+  1.9072265625,
+  1.83447265625,
+  1.84814453125,
+  1.77978515625,
+  1.7978515625
+ ],
+ "tools": {
+  "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "g++": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "valgrind": "valgrind-3.28.0"
+ },
+ "lock": "/tmp/cs224_latency.lock (flock)",
+ "lock_wait_s": 138.8,
+ "quiet_wait_start_utc": "2026-11-23T21:12:05+00:00",
+ "quiet_wait_s": 60.0,
+ "subset": "latency300",
+ "note": "concurrency 1; each method compiled and run on its own (latency_s = compile + its executions)",
+ "end_utc": "2026-11-23T21:23:33+00:00",
+ "loadavg_end": [
+  2.43115234375,
+  2.35693359375,
+  4.53955078125
+ ],
+ "method": "valgrind",
+ "layer": "layer1",
+ "units": 300,
+ "options": {
+  "build": "gcc/g++ -O0 -g -fno-omit-frame-pointer (no sanitizer)",
+  "valgrind": [
+   "--leak-check=full",
+   "--show-leak-kinds=all",
+   "--errors-for-leak-kinds=definite,indirect",
+   "--error-exitcode=42"
+  ],
+  "pred": "definitely_lost + indirectly_lost > 0",
+  "timeout_s": 60
+ }
+}

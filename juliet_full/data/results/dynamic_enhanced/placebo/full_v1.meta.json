@@ -1,0 +1,74 @@
+{
+ "run_id": "full_v1",
+ "host": "barton-OptiPlex-5000",
+ "concurrency": 6,
+ "start_utc": "2026-11-23T21:06:22+00:00",
+ "loadavg_start": [
+  2.2841796875,
+  5.51318359375,
+  8.76708984375
+ ],
+ "tools": {
+  "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "g++": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "valgrind": "valgrind-3.28.0"
+ },
+ "note": "bulk run; latency_s measured under concurrency, not the reported latency (see lat300_c1)",
+ "end_utc": "2026-11-23T21:08:05+00:00",
+ "loadavg_end": [
+  7.23291015625,
+  6.37744140625,
+  8.728515625
+ ],
+ "method": "dynamic_enhanced",
+ "layer": "placebo",
+ "units": 3316,
+ "options": {
+  "build": "gcc/g++ -O0 -g -fno-omit-frame-pointer -fsanitize=address + dynamic/inject.c hooks -Wl,--wrap=realloc -Wl,--wrap=time",
+  "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+  "timeout_s": 10,
+  "attribution": "first frame with an absolute source path (sanitizer, inject.c and relative-path glibc frames skipped) inside program_dir",
+  "configs": {
+   "base": {
+    "env": {},
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0"
+   },
+   "globals": {
+    "env": {},
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_globals=0"
+   },
+   "realloc": {
+    "env": {
+     "DYNENH_REALLOC_FAIL": "1"
+    },
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0"
+   }
+  },
+  "seeds (DYNENH_TIME)": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "pred": "OR over 24 executions"
+ },
+ "passes": [
+  {
+   "start_utc": "2026-11-23T19:43:00+00:00",
+   "end_utc": "2026-11-23T21:04:10+00:00",
+   "jobs": 11606,
+   "concurrency": 6,
+   "note": "first pass; loadavg 20-26 for most of it (other lanes' static analyzers)"
+  },
+  {
+   "start_utc": "2026-11-23T21:06:22+00:00",
+   "end_utc": "2026-11-23T21:08:05+00:00",
+   "jobs": 336,
+   "note": "rerun of the strdup_wchar_t family (all layers) after fixing leak attribution: wcsdup allocates inside glibc (frame wcsmbs/wcsdup.c), which the first pass took as the leak site; no other job had non-unit leak blocks outside the use_globals=0 runs"
+  }
+ ]
+}
