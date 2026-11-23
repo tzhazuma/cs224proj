@@ -1,0 +1,57 @@
+\section{Demo and plan}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Live demo}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \textbf{Step 1: one unit, four detectors}
+      \begin{itemize}
+        \item a bad unit and its good twin from the eval set
+        \item grep $\cdot$ Clang SA $\cdot$ fine-tuned decision model (fold it never saw) $\cdot$ DeepSeek
+        \item compare verdicts and latency
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \textbf{Step 2: insert a free that never runs}
+      \begin{itemize}
+        \item add {\footnotesize\texttt{if (sym\_7 != 5) free(data);}}
+        \item still a leak: which verdicts flip?
+        \item the layer-\ding{174} transformation, live
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vfill
+  {\small Code: \texttt{presentation/demo/} (\texttt{demo.py}); recorded replay as backup.}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Next steps and timeline}
+  \centering
+  \begin{tikzpicture}[x=2.4mm, y=6.6mm]
+    % day axis: 0 = Nov 26 ... 28 = Dec 24; task names on the left
+    \foreach \d/\t in {0/Nov 26, 5/Dec 1, 10/Dec 6, 15/Dec 11, 20/Dec 16, 28/Dec 24}{
+      \draw[NeutDraw!50] (\d,0.3) -- (\d,-4.1);
+      \node[lbl] at (\d,0.7) {\t};
+    }
+    \foreach \y/\s/\e/\c/\name in {
+        0/1/10/HeroFill/{Main runs on layer \ding{172} (all methods)},
+        1/5/16/DataFill/{L4 eval, LoRA folds, layer \ding{174} + placebo},
+        2/14/20/WarnFill/{Robustness, cascade, significance tests},
+        3/18/28/NeutFill/{Final report (IEEE{,} $\ge$ 10 pages)}}{
+      \fill[\c, draw=NeutDraw, rounded corners=1.5pt] (\s,-\y-0.2) rectangle (\e,-\y-0.85);
+      \node[anchor=east, font=\small] at (-1,-\y-0.52) {\name};
+    }
+  \end{tikzpicture}
+  \vspace{4pt}
+  \begin{itemize}\small
+    \item Budget: DeepSeek $\le$ CNY 10 in total (hard stop at 9.5); Qwen, Intern-Decision and LoRA run on 2$\times$RTX 3090
+    \item If API models saturate layer \ding{172}, layer \ding{174} and latency/cost decide the ranking
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}[standout]
+  Thank you!\\[8pt]
+  {\normalsize Questions?}\\[14pt]
+  {\small Do detectors read code or templates? Rebuild the benchmark before you rank them.}
+\end{frame}

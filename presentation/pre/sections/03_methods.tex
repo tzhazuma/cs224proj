@@ -1,0 +1,112 @@
+\section{Methods}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Method matrix}
+  \footnotesize
+  \renewcommand{\arraystretch}{0.98}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Line & Method & Program-analysis idea (lecture) \\
+    \midrule
+    Static & grep: is there a \code{free}/\code{delete}? & lexical baseline \\
+           & Cppcheck 2.22 & intraprocedural dataflow \\
+           & Clang Static Analyzer 23.1.6 & path-sensitive symbolic execution \\
+           & CodeQL 2.27.5 & Datalog-style queries over dataflow \\
+           & Infer 1.3 (Pulse) & interprocedural summaries, pointers \\
+    Learned & LineVul, zero-shot & token classifier (CodeBERT) \\
+    LLM API & DeepSeek V4.1 Flash, L1--L4 & L4: LLM facts + Datalog points-to \\
+    SLM & Qwen3.5-4B, L1--L4 & same prompts, local GPU \\
+    Decision & Jev 1.14 API; Intern-Decision-4B, zero-shot & read option probability \\
+             & Qwen3.5-4B + LoRA, 3-fold CV & fine-tuned binary head \\
+    \midrule
+    \textcolor{NeutDraw}{Reference} & \textcolor{NeutDraw}{ASan/LSan, Valgrind} & \textcolor{NeutDraw}{dynamic; shown, not ranked} \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  {\scriptsize Missing output, timeout or compile error counts as a wrong prediction; coverage reported separately.}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Four prompting strategies}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{description}[L4]
+        \item[L1] direct: code $\to$ \code{\{label, confidence\}}
+        \item[L2] few-shot: + fixed dev examples (cache-friendly prefix)
+        \item[L3] analysis-guided: + Clang SA warnings for this unit
+        \item[L4] neuro-symbolic: LLM lists heap facts, \textbf{Datalog} decides
+      \end{description}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}
+        \item Same prompt text for DeepSeek and Qwen
+        \item Temperature 0, thinking mode off
+        \item Prompts frozen in git before any eval run
+        \item L3 latency includes Clang; L4 includes Souffl\'e
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vfill
+  {\small Decision models answer the same question as options (\emph{leak / no leak}) and we read the option
+  probability; L4 does not apply to them.}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}[fragile]{L4: the LLM extracts facts, Datalog derives the leak}
+  \centering
+  \begin{tikzpicture}[node distance=4mm and 5mm]
+    \node[box] (code) {unit\\code};
+    \node[hero, right=of code] (llm) {LLM\\{\scriptsize DeepSeek / Qwen}};
+    \node[data, right=8mm of llm, font=\scriptsize, align=left] (facts) {%
+      \texttt{alloc realloc free}\\
+      \texttt{assign pass ret call}\\
+      \texttt{global dead(line)}};
+    \node[hero, right=of facts] (dl) {Souffl\'e\\{\scriptsize \texttt{leak.dl}}};
+    \node[warn, right=of dl] (out) {\texttt{leak(o,\,why)}\\{\scriptsize non-empty $\Rightarrow$ leak}};
+    \draw[arr] (code) -- (llm);
+    \draw[arr] (llm) -- node[lbl, above] {JSON} (facts);
+    \draw[arr] (facts) -- (dl);
+    \draw[arr] (dl) -- (out);
+  \end{tikzpicture}
+  \vspace{3pt}
+\begin{lstlisting}[style=dl]
+reach("main").
+reach(g)         :- reach(f), call(f, g, l), !dead(l).          // + pass, retval
+new_obj(o, v, f) :- alloc(o, v, f, l), reach(f), !dead(l).      // + realloc
+pts(s, v, o)     :- new_obj(o, v, f), scope(f, v, s).           // Andersen-style
+pts(sd, d, o)    :- assign(d, x, f, l), reach(f), !dead(l), ..., pts(sx, x, o).
+freed(o)         :- free(v, f, l), reach(f), !dead(l), ..., pts(s, v, o).
+(*\textcolor{OIblue}{\bfseries leak(o, "never\_freed")}*)  :- new_obj(o, _, _), !freed(o).
+(*\textcolor{OIblue}{\bfseries leak(o, "realloc\_fail")}*) :- realloc(n, v, v, f, l), ..., pts(s, v, o), o != n.
+\end{lstlisting}
+  {\scriptsize Abridged from \texttt{juliet\_full/llm/l4/leak.dl} (v3). Flow-insensitive; parameters alias arguments both ways;
+  facts on dead lines are ignored; facts whose line does not hold the statement are dropped first.}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{One 4B model, three uses}
+  \centering
+  \begin{tikzpicture}[node distance=3mm and 12mm]
+    \node[hero, minimum height=16mm, minimum width=22mm] (m) {\textbf{Qwen3.5-4B}\\{\scriptsize same weights}};
+    \node[box, right=of m, minimum width=55mm, align=left] (u2) {\textbf{read-out}: P(Yes) vs P(No), no generation\\
+      {\scriptsize zero-shot decision model (Intern-Decision-4B, same base)}};
+    \node[box, above=of u2, minimum width=55mm, align=left] (u1) {\textbf{generate}: SLM answers L1--L4\\
+      {\scriptsize JSON label, or facts for L4}};
+    \node[data, below=of u2, minimum width=55mm, align=left] (u3) {\textbf{fine-tune}: LoRA + binary head\\
+      {\scriptsize $s=\ell_{\text{Yes}}-\ell_{\text{No}}$; balanced CE + bad$>$good ranking loss}};
+    \draw[arr] (m.east) -- (u1.west);
+    \draw[arr] (m.east) -- (u2.west);
+    \draw[arr] (m.east) -- (u3.west);
+  \end{tikzpicture}
+  \vspace{4pt}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      {\small LoRA r16, $\alpha$32 on all LM projections: 32.5\,M trainable = \textbf{0.70\%};
+      3 folds $\times$ \{L1, L3\}; merged at inference (no latency cost).}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      {\small \textbf{Deployment}: IDE / pre-commit on a laptop CPU $\cdot$ CI runner $\cdot$ nightly GPU server.
+      Cascade: decision model first, low confidence $\to$ DeepSeek L3/L4.}
+    \end{column}
+  \end{columns}
+\end{frame}

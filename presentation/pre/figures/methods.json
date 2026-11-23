@@ -1,0 +1,29 @@
+{
+  "_doc": "Registry read by make_figures.py. Paths are globs relative to juliet_full/. 'pick' = best single file (eval coverage >= min_coverage; earlier glob wins, then newest file); 'union' = merge all matching files (newer file wins per unit). 'strategy' filters rows by their strategy field. 'own_fold' keeps rows whose extra.fold == extra.unit_fold (3-fold CV: each LoRA predicts only its held-out fold). Rows with ranked=false are reference lines only.",
+  "min_coverage": 0.9,
+  "methods": [
+    {"key": "grep", "label": "grep", "family": "Static", "globs": ["static/results/grep_v0/layer1/full*.jsonl"]},
+    {"key": "cppcheck", "label": "Cppcheck", "family": "Static", "globs": ["static/results/cppcheck/layer1/full*.jsonl"]},
+    {"key": "clang_sa", "label": "Clang SA", "family": "Static", "globs": ["static/results/clang_sa/layer1/full*.jsonl"]},
+    {"key": "codeql", "label": "CodeQL", "family": "Static", "globs": ["static/results/codeql/layer1/full*_merged.jsonl", "static/results/codeql/layer1/full*.jsonl"]},
+    {"key": "infer", "label": "Infer", "family": "Static", "globs": ["static/results/infer/layer1/full*_merged.jsonl", "static/results/infer/layer1/full*.jsonl"]},
+    {"key": "linevul", "label": "LineVul", "family": "Learned", "globs": ["gpu/results/linevul_gpu/layer1/*.jsonl"]},
+    {"key": "deepseek_L1", "label": "L1", "family": "DeepSeek", "strategy": "L1", "globs": ["llm/results/deepseek_flash/layer1/eval_*.jsonl", "llm/results/deepseek_flash/layer1/*.jsonl"]},
+    {"key": "deepseek_L2", "label": "L2", "family": "DeepSeek", "strategy": "L2", "globs": ["llm/results/deepseek_flash/layer1/eval_*.jsonl", "llm/results/deepseek_flash/layer1/*.jsonl"]},
+    {"key": "deepseek_L3", "label": "L3", "family": "DeepSeek", "strategy": "L3", "globs": ["llm/results/deepseek_flash/layer1/eval_*.jsonl", "llm/results/deepseek_flash/layer1/*.jsonl"]},
+    {"key": "deepseek_L4", "label": "L4", "family": "DeepSeek", "strategy": "L4", "globs": ["llm/results/deepseek_flash/layer1/eval_*.jsonl", "llm/results/deepseek_flash/layer1/*.jsonl"]},
+    {"key": "qwen_L1", "label": "L1", "family": "Qwen3.5-4B", "strategy": "L1", "globs": ["llm/results/qwen3_5_4b/layer1/eval_*.jsonl", "llm/results/qwen3_5_4b/layer1/*.jsonl"]},
+    {"key": "qwen_L2", "label": "L2", "family": "Qwen3.5-4B", "strategy": "L2", "globs": ["llm/results/qwen3_5_4b/layer1/eval_*.jsonl", "llm/results/qwen3_5_4b/layer1/*.jsonl"]},
+    {"key": "qwen_L3", "label": "L3", "family": "Qwen3.5-4B", "strategy": "L3", "globs": ["llm/results/qwen3_5_4b/layer1/eval_*.jsonl", "llm/results/qwen3_5_4b/layer1/*.jsonl"]},
+    {"key": "qwen_L4", "label": "L4", "family": "Qwen3.5-4B", "strategy": "L4", "globs": ["llm/results/qwen3_5_4b/layer1/eval_*.jsonl", "llm/results/qwen3_5_4b/layer1/*.jsonl"]},
+    {"key": "jev_L1", "label": "Jev L1", "family": "Decision", "strategy": "L1", "globs": ["llm/results/jev/layer1/eval_*.jsonl", "llm/results/jev/layer1/*.jsonl"]},
+    {"key": "jev_L2", "label": "Jev L2", "family": "Decision", "strategy": "L2", "globs": ["llm/results/jev/layer1/eval_*.jsonl", "llm/results/jev/layer1/*.jsonl"]},
+    {"key": "jev_L3", "label": "Jev L3", "family": "Decision", "strategy": "L3", "globs": ["llm/results/jev/layer1/eval_*.jsonl", "llm/results/jev/layer1/*.jsonl"]},
+    {"key": "intern_L1", "label": "Intern-D L1", "family": "Decision", "strategy": "L1", "globs": ["gpu/results/intern_decision*/layer1/*.jsonl"]},
+    {"key": "intern_L2", "label": "Intern-D L2", "family": "Decision", "strategy": "L2", "globs": ["gpu/results/intern_decision*/layer1/*.jsonl"]},
+    {"key": "intern_L3", "label": "Intern-D L3", "family": "Decision", "strategy": "L3", "globs": ["gpu/results/intern_decision*/layer1/*.jsonl"]},
+    {"key": "lora_L1", "label": "LoRA L1", "family": "Decision", "strategy": "L1", "mode": "union", "own_fold": true, "globs": ["decision_ft/**/results/*.jsonl", "decision_ft/results/decision_ft/layer1/*.jsonl"]},
+    {"key": "lora_L3", "label": "LoRA L3", "family": "Decision", "strategy": "L3", "mode": "union", "own_fold": true, "globs": ["decision_ft/**/results/*.jsonl", "decision_ft/results/decision_ft/layer1/*.jsonl"]},
+    {"key": "asan_lsan", "label": "ASan/LSan", "family": "Dynamic", "ranked": false, "loader": "verify", "globs": ["data/build/verify_results.jsonl"]}
+  ]
+}

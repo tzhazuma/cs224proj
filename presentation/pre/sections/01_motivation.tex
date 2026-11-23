@@ -1,0 +1,85 @@
+\section{Motivation}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{A one-line rule beats the analyzers on Juliet}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \textbf{Original Juliet v1.3, CWE-401 (memory leak)}\\[3pt]
+      {\small
+      \begin{tabular}{@{}lr@{}}
+        \toprule
+        Detector & macro-F1 \\
+        \midrule
+        \alert{grep: ``no \code{free}/\code{delete} $\Rightarrow$ leak''} & \alert{\textbf{0.940}} \\
+        ASan/LSan (dynamic) & 0.914 \\
+        Clang Static Analyzer & 0.888 \\
+        CodeQL & 0.817 \\
+        \bottomrule
+      \end{tabular}}\\[3pt]
+      {\scriptsize grep: all 3,316 units. Others: earlier 140-unit test subset.}
+    \end{column}
+    \begin{column}{0.43\textwidth}
+      \begin{itemize}
+        \item \code{static void} appears in \textbf{100\%} of good units and \textbf{0\%} of bad units
+        \item A label leak, not program analysis
+        \item Known template shortcut: Germano et al.\ (ICAART'25); Risse \& B\"ohme (USENIX Sec'24, ISSTA'25)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vfill
+  \begin{center}
+    \large High Juliet scores may measure \alert{template reading}, not leak detection.
+  \end{center}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}[fragile]{Where the shortcut comes from}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \textbf{bad unit}\\[1pt]
+\begin{lstlisting}[style=unit]
+void sym_0() {
+  char *data = NULL;
+  data = (char *)malloc(100);
+  if (data == NULL) exit(-1);
+  strcpy(data, "A String");
+  printLine(data);
+  ;                  /* no free */
+}
+\end{lstlisting}
+      \vspace{2pt}
+      {\small Function names renamed to \texttt{sym\_N}; code abridged.}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \textbf{good unit (original)}\\[1pt]
+\begin{lstlisting}[style=unit]
+(*\hlc{static void}*) sym_1() {        /* G2B */
+  char *data = (char *)ALLOCA(100);
+  strcpy(data, "A String"); printLine(data);
+}
+(*\hlc{static void}*) sym_2() {        /* B2G */
+  char *data = (char *)malloc(100);
+  ...; printLine(data); free(data);
+}
+void sym_0() { sym_1(); sym_2(); }
+\end{lstlisting}
+      {\small Good = two \code{static} helpers + a wrapper.\\
+      Length, function count and \code{static} all reveal the label.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Task and research questions}
+  \textbf{Task.} Given one Juliet unit (C or C++), decide \emph{leak} / \emph{no leak}.\\
+  {\small 1,658 bad/good groups, 42 families, 48 flow variants (C 868 / C++ 790 groups).}
+  \vspace{2pt}
+  \begin{description}[RQ4~Robustness]
+    \item[RQ1 Validity] How much of a Juliet score comes from format shortcuts?
+    \item[RQ2 Strategy] Direct, few-shot, analysis-guided or Datalog (L1--L4): which wins where?
+    \item[RQ3 Efficiency] Who is on the F1 / latency / cost Pareto front, per deployment?
+    \item[RQ4 Robustness] Does F1 drop when we add frees that never run? More than a placebo?
+  \end{description}
+  \vfill
+  {\small Main axis: prompting strategy L1--L4 on an API LLM and a 4B local model.}
+\end{frame}

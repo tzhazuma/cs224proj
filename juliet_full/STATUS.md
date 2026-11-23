@@ -6,7 +6,7 @@ It records progress and is how information passes between the parent and the lan
 - Plan (Chinese): `PLAN.md`.
 - Each lane's final report is copied to `juliet_full/lane_reports/<date>_<lane>_<stage>.md`.
 
-Last update: 2026-11-23 11:12 PST (dell clock is America/Los_Angeles; Beijing = PST + 16 h).
+Last update: 2026-11-23 11:44 PST (dell clock is America/Los_Angeles; Beijing = PST + 16 h).
 
 ## 1. Decisions log (newest first; source = user message or parent)
 - 2026-11-23 user: DeepSeek main experiment may use the FULL eval set (2,656 units) instead of the 1,328-unit api_subset. Total DeepSeek spend is still capped at CNY 10, with a client hard stop at CNY 9.5. Priority order: main L1 → L3 → L2 → L4 → repeats → stress layer ③ → placebo → original Juliet.
@@ -37,12 +37,12 @@ Last update: 2026-11-23 11:12 PST (dell clock is America/Los_Angeles; Beijing = 
 ## 4. Lanes
 | lane | dir (write boundary) | run id (latest) | status | next |
 |---|---|---|---|---|
-| data | juliet_full/data/ | a5fa0f86 (stage 3 done) | stages 1+3 DONE (lane_reports/2026-11-23_data_stage{1,3}.md): layer3.jsonl sha 033945a8…, placebo.jsonl 1ce6d2fe…; §2.6 probes pass; ASan/LSan verdicts identical outside variant 12 | idle |
-| static | juliet_full/static/, juliet_full/analysis/ | 3c1d3649 (stage 1 done) | stage 1 DONE (lane_reports/2026-11-23_static_stage1.md): final layer1 runs clang_sa full_v2 (= frozen L3 evidence), cppcheck full_v2, grep_v0 full_v1, codeql full_batch50_merged (batched 50/db, sym_N uniquified), infer full_per_file_merged; eval macro-F1 clang .855 [.806,.899], codeql .882, infer .815, grep .701, cppcheck .493 | stage 2: layer3/placebo/original runs + c1 latency |
+| data | juliet_full/data/ | 958e867b (stage 4; earlier a5fa0f86/ce4bccc8/24301f44) | stages 1+3 DONE (lane_reports/2026-11-23_data_stage{1,3}.md); RUNNING stage 4: dynamic reference predictions asan_lsan (use_stacks=0), asan_lsan_default, valgrind, dynamic_enhanced (realloc-fail injection + global still-reachable + variant-12 ×8) → `data/results/`; c1 latency on latency300 when quiet | — |
+| static | juliet_full/static/, juliet_full/analysis/ | cf484d72 (stage 2; earlier 3c1d3649/02f56008) | stage 1 DONE (lane_reports/2026-11-23_static_stage1.md): final layer1 runs clang_sa full_v2 (= frozen L3 evidence), cppcheck full_v2, grep_v0 full_v1, codeql full_batch50_merged (batched 50/db, sym_N uniquified), infer full_per_file_merged; eval macro-F1 clang .855 [.806,.899], codeql .882, infer .815, grep .701, cppcheck .493 | RUNNING stage 2: same frozen config on layer3/placebo/original (3,316 each) + clang evidence markers for layer3/placebo, robustness (flip rates, Δ, placebo-adjusted) + `analysis/robustness.py`, c1 latency on latency300 when load1<2.5 |
 | llm | juliet_full/llm/ | 4c6356a0 (stage 2b; earlier 6d6db797/60c2c8f6) | stage 2a DONE (lane_reports/2026-11-23_llm_stage2a.md): DeepSeek dev macro-F1 L1 1.000 / L2 1.000 / L3 0.997; Jev 0.977 / 0.950 / 0.987 (AUC ≥0.999). RUNNING stage 2b: DeepSeek eval L1,L2 → Jev dev+eval ×3 → DeepSeek L3 (waits EVIDENCE_FROZEN) → repeats → latency300 c1 → L4 dev design (no eval) | parent freezes L4 |
 | gpu | juliet_full/gpu/, 184-toast ~/disk4/cs224/gpu | 9f90dfc5 (resumed 046b1350) | DONE stage 1 (report: lane_reports/2026-11-23_gpu_stage1.md) | after FT: restart services, add a fine-tuned-model endpoint, Qwen and Intern-Decision zero-shot runs |
 | decision_ft | juliet_full/decision_ft/, 184-toast ~/disk4/cs224/decision_ft | abb53eac (stage 1 done) | stage 1 DONE (lane_reports/2026-11-23_decision_ft_stage1.md). Queue RUNNING on both GPUs: L1 fold0/1 training → L1 fold2, L3 fold0/1/2; ETA all done ≈ 13:40 PST (21:40 UTC). Monitor `ssh 184-toast 'bash ~/disk4/cs224/decision_ft/server/status.sh'`; collect `juliet_full/decision_ft/collect.sh` | after ETA: collect, check selection + merge_check, then gpu lane builds :8003 and restarts services |
-| slides | presentation/pre/ | a1c38326 | RUNNING: Beamer metropolis 16:9, figures pipeline (`make figures`), notes.md speaker script | parent refreshes figures once results land |
+| slides | presentation/pre/ | a1c38326 (stage 1 done) | stage 1 DONE (lane_reports/2026-11-23_slides_stage1.md): main.pdf 30 pages (17 numbered + dividers + 6 backup), `make` re-scores result files via figures/methods.json, notes.md 17-min script + 12 Q&A; tlmgr installed beamertheme-metropolis, pgfopts, fira, pgfplots, appendixnumberbeamer (user TeX tree) | stage 2 after results: layer ③ robustness figure, slide-1 table from original-layer runs (all tools, consistent), declutter P/R/F1 bar chart + Pareto labels, demo screenshots, FT/Qwen/Intern-Decision globs |
 | demo | presentation/demo/ | 4467045b | stage 1 DONE (lane_reports/2026-11-23_demo_stage1.md): demo.py rich TUI, grep/Clang/DeepSeek L1+L3/Jev live verified on dev group char_malloc_18, attack via data stress.py transform_unit, replay/record, check.sh, record.sh (asciinema+agg+ffmpeg) | after :8003 up: check.sh, `./demo.py --allow-eval --allow-peak --no-attack`, then `REC_NAME=stage_final ./record.sh --allow-eval --allow-peak`; pick a stage group Clang catches |
 
 ## 5. Results so far (sanity checks / preliminary, NOT final)
@@ -86,7 +86,7 @@ Last update: 2026-11-23 11:12 PST (dell clock is America/Los_Angeles; Beijing = 
 0. Key finding to watch: DeepSeek is at the ceiling on the debiased dev set (macro-F1 1.000), so layer ③ stress, placebo, and latency/cost become the differentiators. A contamination caveat applies (Juliet is public).
 1. ✅ Prompts frozen at 11:08 PST (commit 780ec1e). LLM stage 2b launched (4c6356a0); its budget is ≤ ¥4.0 and ≤ $1.30.
 2. After FT: restart the services; add an FT-model forward endpoint (for latency from dell and for the demo); run Qwen L1–L3 and Intern-Decision zero-shot on full dev+eval.
-3. Static: review the checker mapping, then run CodeQL/Infer (batched if needed).
+3. ✅ Static stage 1 (160da46). Main comparisons on full eval; api_subset secondary. Latency c1 measurement convention: only when load1 < 2.5, record load.
 4. Slides lane plus demo lane (live demo; backup recording).
 5. Layer ③ stress and placebo construction (data lane, stage 3).
 6. Re-measure CPU latencies on an idle dell.

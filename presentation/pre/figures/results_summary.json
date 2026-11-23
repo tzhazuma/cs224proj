@@ -1,0 +1,602 @@
+{
+ "generated": "2026-11-23T11:42:07",
+ "scorer": "juliet_full/analysis/score.py",
+ "set": "eval",
+ "note": "PRELIMINARY; pending = no eval run with enough coverage yet",
+ "methods": [
+  {
+   "key": "grep",
+   "label": "grep",
+   "family": "Static",
+   "strategy": null,
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "static/results/grep_v0/layer1/full_v1.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "9a425c0e",
+   "n_units": 2656,
+   "tp": 1155,
+   "fp": 600,
+   "tn": 728,
+   "fn": 173,
+   "precision": 0.6581196581196581,
+   "recall": 0.8697289156626506,
+   "f1": 0.7492701913720401,
+   "macro_f1": 0.7012389539184112,
+   "f1_ci95": [
+    0.7281560007201727,
+    0.7659969699142307
+   ],
+   "latency_median_s": 1e-06,
+   "latency_p90_s": 1e-06,
+   "concurrency": 1,
+   "timing_mode": "per_unit_inprocess",
+   "by_flow_f1": {
+    "01": 0.74468085106383,
+    "02-22": 0.7217589082638363,
+    "31-45": 0.8,
+    "51-68": 0.8,
+    "71-84": 0.6684931506849314
+   },
+   "latency_c1": true
+  },
+  {
+   "key": "cppcheck",
+   "label": "Cppcheck",
+   "family": "Static",
+   "strategy": null,
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "static/results/cppcheck/layer1/full_v2.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "b3ae0a0e",
+   "n_units": 2656,
+   "tp": 227,
+   "fp": 26,
+   "tn": 1302,
+   "fn": 1101,
+   "precision": 0.8972332015810277,
+   "recall": 0.17093373493975902,
+   "f1": 0.28716002530044277,
+   "macro_f1": 0.49254811771588736,
+   "f1_ci95": [
+    0.18595375659304658,
+    0.38950905389478196
+   ],
+   "latency_median_s": 0.0154,
+   "latency_p90_s": 0.024050000000000002,
+   "concurrency": 1,
+   "timing_mode": "per_unit_c1",
+   "by_flow_f1": {
+    "01": 0.576271186440678,
+    "02-22": 0.49257425742574257,
+    "31-45": 0.09734513274336284,
+    "51-68": 0.0,
+    "71-84": 0.0
+   },
+   "latency_c1": true
+  },
+  {
+   "key": "clang_sa",
+   "label": "Clang SA",
+   "family": "Static",
+   "strategy": null,
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "static/results/clang_sa/layer1/full_v2.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "9fff5bc7",
+   "n_units": 2656,
+   "tp": 1024,
+   "fp": 79,
+   "tn": 1249,
+   "fn": 304,
+   "precision": 0.928377153218495,
+   "recall": 0.7710843373493976,
+   "f1": 0.8424516659810778,
+   "macro_f1": 0.8547558572876579,
+   "f1_ci95": [
+    0.7794844642123809,
+    0.8952529904570339
+   ],
+   "latency_median_s": 0.0356,
+   "latency_p90_s": 0.06634999999999999,
+   "concurrency": 1,
+   "timing_mode": "per_unit_c1",
+   "by_flow_f1": {
+    "01": 0.8947368421052632,
+    "02-22": 0.8653344917463076,
+    "31-45": 0.8085106382978723,
+    "51-68": 0.9166666666666666,
+    "71-84": 0.6031746031746031
+   },
+   "latency_c1": true
+  },
+  {
+   "key": "codeql",
+   "label": "CodeQL",
+   "family": "Static",
+   "strategy": null,
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "static/results/codeql/layer1/full_batch50_merged.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "1e41db0c",
+   "n_units": 2656,
+   "tp": 1279,
+   "fp": 263,
+   "tn": 1065,
+   "fn": 49,
+   "precision": 0.8294422827496758,
+   "recall": 0.9631024096385542,
+   "f1": 0.8912891986062719,
+   "macro_f1": 0.8817625354210721,
+   "f1_ci95": [
+    0.8775843671385887,
+    0.9050778218384249
+   ],
+   "latency_median_s": 0.5487,
+   "latency_p90_s": 0.6155,
+   "concurrency": null,
+   "timing_mode": null,
+   "by_flow_f1": {
+    "01": 0.9879518072289156,
+    "02-22": 0.9311163895486936,
+    "31-45": 0.8533333333333333,
+    "51-68": 0.8771929824561403,
+    "71-84": 0.8102564102564102
+   },
+   "latency_c1": false
+  },
+  {
+   "key": "infer",
+   "label": "Infer",
+   "family": "Static",
+   "strategy": null,
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "static/results/infer/layer1/full_per_file_merged.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "ba59f70d",
+   "n_units": 2656,
+   "tp": 904,
+   "fp": 59,
+   "tn": 1269,
+   "fn": 424,
+   "precision": 0.9387331256490135,
+   "recall": 0.6807228915662651,
+   "f1": 0.7891750327367962,
+   "macro_f1": 0.8146470992879612,
+   "f1_ci95": [
+    0.6865288691314738,
+    0.8648280870517644
+   ],
+   "latency_median_s": 0.2929,
+   "latency_p90_s": 0.6688,
+   "concurrency": null,
+   "timing_mode": null,
+   "by_flow_f1": {
+    "01": 0.7887323943661971,
+    "02-22": 0.781563126252505,
+    "31-45": 0.7391304347826088,
+    "51-68": 0.8695652173913044,
+    "71-84": 0.728476821192053
+   },
+   "latency_c1": true
+  },
+  {
+   "key": "linevul",
+   "label": "LineVul",
+   "family": "Learned",
+   "strategy": null,
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "gpu/results/linevul_gpu/layer1/deveval_v1.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "8bc1535e",
+   "n_units": 2656,
+   "tp": 884,
+   "fp": 851,
+   "tn": 477,
+   "fn": 444,
+   "precision": 0.5095100864553314,
+   "recall": 0.6656626506024096,
+   "f1": 0.5772118837740776,
+   "macro_f1": 0.5007002060044243,
+   "f1_ci95": [
+    0.5588189370126955,
+    0.5943181013730557
+   ],
+   "latency_median_s": 0.00594,
+   "latency_p90_s": 0.008815,
+   "concurrency": 1,
+   "timing_mode": null,
+   "by_flow_f1": {
+    "01": 0.1568627450980392,
+    "02-22": 0.5558312655086849,
+    "31-45": 0.515695067264574,
+    "51-68": 0.6103739445114597,
+    "71-84": 0.6666666666666666
+   },
+   "latency_c1": true
+  },
+  {
+   "key": "deepseek_L1",
+   "label": "L1",
+   "family": "DeepSeek",
+   "strategy": "L1",
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "llm/results/deepseek_flash/layer1/eval_L1_r1.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "912db2f0",
+   "n_units": 2656,
+   "tp": 1328,
+   "fp": 12,
+   "tn": 1316,
+   "fn": 0,
+   "precision": 0.991044776119403,
+   "recall": 1.0,
+   "f1": 0.9955022488755623,
+   "macro_f1": 0.9954818354816541,
+   "f1_ci95": [
+    0.9930678431056067,
+    0.9976911032642369
+   ],
+   "latency_median_s": 0.7648,
+   "latency_p90_s": 5.6809,
+   "concurrency": 16,
+   "timing_mode": null,
+   "by_flow_f1": {
+    "01": 1.0,
+    "02-22": 0.99830220713073,
+    "31-45": 0.9952606635071091,
+    "51-68": 1.0,
+    "71-84": 0.9777777777777777
+   },
+   "latency_c1": false
+  },
+  {
+   "key": "deepseek_L2",
+   "label": "L2",
+   "family": "DeepSeek",
+   "strategy": "L2",
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "llm/results/deepseek_flash/layer1/eval_L2_r1.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "ee6c51f4",
+   "n_units": 2656,
+   "tp": 1328,
+   "fp": 6,
+   "tn": 1322,
+   "fn": 0,
+   "precision": 0.9955022488755623,
+   "recall": 1.0,
+   "f1": 0.9977460555972953,
+   "macro_f1": 0.9977409523269496,
+   "f1_ci95": [
+    0.9960751878853285,
+    0.9992475545522949
+   ],
+   "latency_median_s": 0.6196,
+   "latency_p90_s": 0.97055,
+   "concurrency": 16,
+   "timing_mode": null,
+   "by_flow_f1": {
+    "01": 1.0,
+    "02-22": 0.9957662997459781,
+    "31-45": 1.0,
+    "51-68": 0.9984,
+    "71-84": 1.0
+   },
+   "latency_c1": false
+  },
+  {
+   "key": "deepseek_L3",
+   "label": "L3",
+   "family": "DeepSeek",
+   "strategy": "L3",
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "llm/results/deepseek_flash/layer1/eval_L3_r1.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "4bf6db11",
+   "n_units": 2656,
+   "tp": 1328,
+   "fp": 13,
+   "tn": 1315,
+   "fn": 0,
+   "precision": 0.9903057419835943,
+   "recall": 1.0,
+   "f1": 0.9951292618958412,
+   "macro_f1": 0.99510530442503,
+   "f1_ci95": [
+    0.9923608628477996,
+    0.997758345789736
+   ],
+   "latency_median_s": 0.6176,
+   "latency_p90_s": 0.9713,
+   "concurrency": 16,
+   "timing_mode": null,
+   "by_flow_f1": {
+    "01": 1.0,
+    "02-22": 0.9940828402366864,
+    "31-45": 0.997624703087886,
+    "51-68": 1.0,
+    "71-84": 0.9859943977591036
+   },
+   "latency_c1": false
+  },
+  {
+   "key": "deepseek_L4",
+   "label": "L4",
+   "family": "DeepSeek",
+   "strategy": "L4",
+   "ranked": true,
+   "coverage": 0.0,
+   "files": [],
+   "status": "pending"
+  },
+  {
+   "key": "qwen_L1",
+   "label": "L1",
+   "family": "Qwen3.5-4B",
+   "strategy": "L1",
+   "ranked": true,
+   "coverage": 0.0,
+   "files": [],
+   "status": "pending"
+  },
+  {
+   "key": "qwen_L2",
+   "label": "L2",
+   "family": "Qwen3.5-4B",
+   "strategy": "L2",
+   "ranked": true,
+   "coverage": 0.0,
+   "files": [],
+   "status": "pending"
+  },
+  {
+   "key": "qwen_L3",
+   "label": "L3",
+   "family": "Qwen3.5-4B",
+   "strategy": "L3",
+   "ranked": true,
+   "coverage": 0.0,
+   "files": [],
+   "status": "pending"
+  },
+  {
+   "key": "qwen_L4",
+   "label": "L4",
+   "family": "Qwen3.5-4B",
+   "strategy": "L4",
+   "ranked": true,
+   "coverage": 0.0,
+   "files": [],
+   "status": "pending"
+  },
+  {
+   "key": "jev_L1",
+   "label": "Jev L1",
+   "family": "Decision",
+   "strategy": "L1",
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "llm/results/jev/layer1/eval_L1_r3.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "5e8ba4f5",
+   "n_units": 2656,
+   "tp": 1317,
+   "fp": 65,
+   "tn": 1263,
+   "fn": 11,
+   "precision": 0.9529667149059334,
+   "recall": 0.9917168674698795,
+   "f1": 0.9719557195571956,
+   "macro_f1": 0.9713737091252542,
+   "f1_ci95": [
+    0.957790641727311,
+    0.9827012641383899
+   ],
+   "latency_median_s": 0.886,
+   "latency_p90_s": 0.96785,
+   "concurrency": 8,
+   "timing_mode": null,
+   "by_flow_f1": {
+    "01": 0.923076923076923,
+    "02-22": 0.9584717607973422,
+    "31-45": 0.9610983981693363,
+    "51-68": 1.0,
+    "71-84": 0.9943502824858756
+   },
+   "latency_c1": false
+  },
+  {
+   "key": "jev_L2",
+   "label": "Jev L2",
+   "family": "Decision",
+   "strategy": "L2",
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "llm/results/jev/layer1/eval_L2_r2.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "fef4e216",
+   "n_units": 2656,
+   "tp": 1328,
+   "fp": 75,
+   "tn": 1253,
+   "fn": 0,
+   "precision": 0.9465431218816821,
+   "recall": 1.0,
+   "f1": 0.9725375320395458,
+   "macro_f1": 0.9717395137919542,
+   "f1_ci95": [
+    0.9603356364643426,
+    0.9822490156213811
+   ],
+   "latency_median_s": 0.87445,
+   "latency_p90_s": 0.89835,
+   "concurrency": 8,
+   "timing_mode": null,
+   "by_flow_f1": {
+    "01": 0.923076923076923,
+    "02-22": 0.9607843137254902,
+    "31-45": 0.9610983981693363,
+    "51-68": 1.0,
+    "71-84": 0.9915492957746479
+   },
+   "latency_c1": false
+  },
+  {
+   "key": "jev_L3",
+   "label": "Jev L3",
+   "family": "Decision",
+   "strategy": "L3",
+   "ranked": true,
+   "coverage": 1.0,
+   "files": [
+    "llm/results/jev/layer1/eval_L3_r2.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "7a693b8f",
+   "n_units": 2656,
+   "tp": 1327,
+   "fp": 47,
+   "tn": 1281,
+   "fn": 1,
+   "precision": 0.9657933042212519,
+   "recall": 0.9992469879518072,
+   "f1": 0.9822353811991117,
+   "macro_f1": 0.9819222883007053,
+   "f1_ci95": [
+    0.9767258382642998,
+    0.9866486421395775
+   ],
+   "latency_median_s": 0.8733,
+   "latency_p90_s": 0.89665,
+   "concurrency": 8,
+   "timing_mode": null,
+   "by_flow_f1": {
+    "01": 0.923076923076923,
+    "02-22": 0.9816053511705687,
+    "31-45": 0.9610983981693363,
+    "51-68": 1.0,
+    "71-84": 0.9943502824858756
+   },
+   "latency_c1": false
+  },
+  {
+   "key": "intern_L1",
+   "label": "Intern-D L1",
+   "family": "Decision",
+   "strategy": "L1",
+   "ranked": true,
+   "coverage": 0.0,
+   "files": [],
+   "status": "pending"
+  },
+  {
+   "key": "intern_L2",
+   "label": "Intern-D L2",
+   "family": "Decision",
+   "strategy": "L2",
+   "ranked": true,
+   "coverage": 0.0,
+   "files": [],
+   "status": "pending"
+  },
+  {
+   "key": "intern_L3",
+   "label": "Intern-D L3",
+   "family": "Decision",
+   "strategy": "L3",
+   "ranked": true,
+   "coverage": 0.0,
+   "files": [],
+   "status": "pending"
+  },
+  {
+   "key": "lora_L1",
+   "label": "LoRA L1",
+   "family": "Decision",
+   "strategy": "L1",
+   "ranked": true,
+   "coverage": 0.0,
+   "files": [],
+   "status": "pending"
+  },
+  {
+   "key": "lora_L3",
+   "label": "LoRA L3",
+   "family": "Decision",
+   "strategy": "L3",
+   "ranked": true,
+   "coverage": 0.0,
+   "files": [],
+   "status": "pending"
+  },
+  {
+   "key": "asan_lsan",
+   "label": "ASan/LSan",
+   "family": "Dynamic",
+   "strategy": null,
+   "ranked": false,
+   "coverage": 1.0,
+   "files": [
+    "data/build/verify_results.jsonl"
+   ],
+   "status": "ok",
+   "sha256_8": "ae06697e",
+   "n_units": 2656,
+   "tp": 1202,
+   "fp": 0,
+   "tn": 1328,
+   "fn": 126,
+   "precision": 1.0,
+   "recall": 0.9051204819277109,
+   "f1": 0.9501976284584981,
+   "macro_f1": 0.9524532355089039,
+   "f1_ci95": [
+    0.9187516090890888,
+    0.9730700179533215
+   ],
+   "latency_median_s": null,
+   "latency_p90_s": null,
+   "concurrency": null,
+   "timing_mode": null,
+   "by_flow_f1": {
+    "01": 0.923076923076923,
+    "02-22": 0.9211009174311926,
+    "31-45": 0.9119170984455958,
+    "51-68": 1.0,
+    "71-84": 1.0
+   },
+   "latency_c1": true
+  }
+ ]
+}
