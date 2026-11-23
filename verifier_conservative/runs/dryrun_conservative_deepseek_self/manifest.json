@@ -1,0 +1,196 @@
+{
+  "analysis_status": "exploratory_post_hoc_test_seen",
+  "api": {
+    "api_key_env": "OPENCODE_API_KEY",
+    "api_key_present": true,
+    "api_key_value_stored": false,
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.006,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "input_price_usd_per_1m": 0.3,
+    "max_attempts": 3,
+    "max_tokens": 2048,
+    "max_tokens_field": "max_tokens",
+    "model": "deepseek-v4.1-flash",
+    "output_price_usd_per_1m": 1.2,
+    "reasoning_effort": null,
+    "response_format": "json_object",
+    "session": {
+      "header": "x-opencode-session",
+      "is_secret": false,
+      "note": "Random per-run routing identifier; not an API key.",
+      "sha256": "f8dca3fffcc78743e1b885e88612406571ddaa742cfefd74994eae820c5f8247",
+      "source": "generated",
+      "value": "ses_42cd08ee81a87c2dad115de4cb9828ec"
+    },
+    "temperature": 0.0,
+    "thinking": null,
+    "timeout_seconds": 180.0,
+    "user_agent": "secvul-eval-runner/1.0"
+  },
+  "api_key_present": true,
+  "artifact": "verifier_conservative_run",
+  "authorization_header_stored": false,
+  "claims": {
+    "excluded_first_pass_records": {
+      "invalid_or_error": 1,
+      "negative": 99
+    },
+    "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/evidence_prompt/runs/test_evidence_deepseek/results.jsonl",
+    "selected_positives": 60,
+    "sha256": "0e09037d536085a6ef72fde70441dbbb522e1da327ad5c910f652431c7765cd3"
+  },
+  "config": {
+    "api": {
+      "backoff_base_seconds": 1.5,
+      "backoff_cap_seconds": 30.0,
+      "base_url": "https://opencode.ai/zen/go/v1",
+      "cached_input_price_usd_per_1m": 0.006,
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "input_price_usd_per_1m": 0.3,
+      "max_attempts": 3,
+      "max_tokens": 2048,
+      "max_tokens_field": "max_tokens",
+      "model": "deepseek-v4.1-flash",
+      "output_price_usd_per_1m": 1.2,
+      "reasoning_effort": null,
+      "response_format": "json_object",
+      "temperature": 0.0,
+      "thinking": null,
+      "timeout_seconds": 180.0,
+      "user_agent": "secvul-eval-runner/1.0"
+    },
+    "claims_source": "/mnt/c/Users/tzh03/Downloads/cs224proj/evidence_prompt/runs/test_evidence_deepseek/results.jsonl",
+    "concurrency": 8,
+    "decision_rule": {
+      "fail_closed": false,
+      "guard_lexical_check": true,
+      "insufficient_or_failure": "keep_first_pass_prediction",
+      "requires_grounded_code_line": true,
+      "retract_only": [
+        "guard_present",
+        "counterexample"
+      ]
+    },
+    "limit": 0,
+    "package": "verifier_conservative",
+    "package_version": "1.0.0",
+    "prompt_version": "secvul-verify-conservative-prompt-2026-11-22.2",
+    "runner_version": "1.0.0",
+    "strategy": "verify_positive_claim_three_way",
+    "task": "verification_conservative",
+    "template_sha256": "b508a18f8aaa0e16048d72d2d7e8908f3be6af6d2e4592e0ab61f853a295f8c1"
+  },
+  "config_fingerprint": "771fda087c2596454b128d8e937d1016e64abb163e3815506096b2f3c5f9d5e7",
+  "context_used": false,
+  "created_at": "2026-11-22T10:11:50.692+00:00",
+  "dataset": {
+    "metadata": {
+      "constraints": [
+        "At most one function per (project, commit_id)",
+        "No vulnerable/fixed pair within samples",
+        "Negative samples are not the fixed_func_idx target of any vulnerable source row"
+      ],
+      "cross_dataset_isolation": "No shared source idx or (project, commit_id) group",
+      "dataset_type": "independent_functions",
+      "excluded_malformed_rows": [
+        {
+          "idx": 3510,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9418,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 9578,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10195,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 10196,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 16033,
+          "reason": "changed_statements is not a valid serialized list"
+        },
+        {
+          "idx": 18071,
+          "reason": "changed_statements is not a valid serialized list"
+        }
+      ],
+      "field_encoding": {
+        "context": "Original workbook string, not evaluated",
+        "json_arrays": [
+          "changed_lines",
+          "changed_statements",
+          "cve_list",
+          "cwe_list"
+        ]
+      },
+      "non_vulnerable_count": 32,
+      "sample_count": 160,
+      "sampling": "Shuffle source rows with random.Random(seed); keep at most one item per project+commit. Select pairs first.",
+      "schema_version": 1,
+      "seed": 42,
+      "source_file": "SecVulEval.xlsx",
+      "source_label_counts": {
+        "False": 14442,
+        "True": 10998
+      },
+      "source_rows": 25440,
+      "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+      "source_sheet": "train",
+      "split": {
+        "manifest": "splits/split_v1.json",
+        "protocol": "research/evaluation_protocol.md#4",
+        "role": "test",
+        "seed": 42,
+        "source_dataset": "datasets/independent_200.json",
+        "source_dataset_sha256": "055eccc29f640d47653f5289e6b7a9468fead248c05b137aec8779ba7461dc3d",
+        "split_id": "secvul-split-v1",
+        "task": "detection"
+      },
+      "usable_rows": 25433,
+      "vulnerable_count": 128
+    },
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "type": "independent"
+  },
+  "dry_run_file": "dry_run_requests.jsonl",
+  "dry_run_sha256": "821151ebfe31e39ba638d64e0ff6e741b5fa4cd38792a56a2da7f86796d650b5",
+  "expected_requests": 60,
+  "network": {
+    "ipv4_only_resolution": true,
+    "proxy_env_present": true
+  },
+  "notes": [
+    "No API key or Authorization header is stored in run artifacts.",
+    "The verifier sees the numbered function source and one prior positive claim; it never sees the label, project, changed lines, or first-pass confidence.",
+    "Only schema-valid positive first-pass predictions are sent; negatives and invalid records are untouched.",
+    "Retraction requires assessment=unsupported with a grounded guard_present or counterexample; insufficient and verifier failures keep the first-pass prediction (no fail-closed).",
+    "The 160 test functions were already used to evaluate the first pass and the original verifier, so this experiment is exploratory and not an independent confirmation."
+  ],
+  "package_version": "1.0.0",
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+  "prompt_input_fields": [
+    "func_body",
+    "claim.evidence_lines",
+    "claim.mechanism"
+  ],
+  "python_version": "3.14.8",
+  "run_id": "dryrun_conservative_deepseek_self",
+  "run_label": "frozen-test-160-conservative-verify-deepseek_self-dryrun",
+  "runner_version": "1.0.0",
+  "schema_version": 1,
+  "started_at": "2026-11-22T10:11:50.692+00:00",
+  "status": "dry_run",
+  "updated_at": "2026-11-22T10:11:50.745+00:00"
+}

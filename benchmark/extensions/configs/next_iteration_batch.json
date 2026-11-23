@@ -1,0 +1,1007 @@
+{
+  "schema_version": "benchmark-extension-import-batch-v1",
+  "created_at": "2026-11-22T00:00:00Z",
+  "note": "Read-only import of the 2026-11-22 next-iteration producer results. No model, network or analyzer call.",
+  "runs": [
+    {
+      "design": "codeql_alert_triage",
+      "out": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+      "config": {
+        "condition": "direct",
+        "run_id": "next_codeql_triage_mimo_direct_v2_20261122",
+        "analysis_run": "codeql_triage/runs/test140_mimo_xiaomi_v2",
+        "unit_map": "juliet/subset_units.jsonl",
+        "split": "test",
+        "method": {
+          "method_id": "codeql-triage-direct",
+          "family": "llm",
+          "name": "MiMo-V2.6-Flash direct (CodeQL replication)",
+          "strategy": "direct",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "Xiaomi official",
+            "endpoint": "https://api.xiaomimimo.com/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 4096,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "Xiaomi official list price 2026-11-22"
+          }
+        },
+        "baseline_run": null,
+        "pricing_snapshot": "Xiaomi official list price 2026-11-22",
+        "notes": [
+          "CodeQL alert triage condition direct"
+        ]
+      }
+    },
+    {
+      "design": "codeql_alert_triage",
+      "out": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v1",
+      "config": {
+        "condition": "triage_v1",
+        "run_id": "next_codeql_triage_mimo_v1_20261122",
+        "analysis_run": "codeql_triage/runs/test140_mimo_xiaomi_v1",
+        "unit_map": "juliet/subset_units.jsonl",
+        "split": "test",
+        "method": {
+          "method_id": "codeql-triage-triage_v1",
+          "family": "llm",
+          "name": "MiMo-V2.6-Flash CodeQL triage v1",
+          "strategy": "triage_v1",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "Xiaomi official",
+            "endpoint": "https://api.xiaomimimo.com/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 4096,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "Xiaomi official list price 2026-11-22"
+          }
+        },
+        "baseline_run": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+        "pricing_snapshot": "Xiaomi official list price 2026-11-22",
+        "notes": [
+          "CodeQL alert triage condition triage_v1"
+        ]
+      }
+    },
+    {
+      "design": "codeql_alert_triage",
+      "out": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2",
+      "config": {
+        "condition": "triage_v2",
+        "run_id": "next_codeql_triage_mimo_v2_20261122",
+        "analysis_run": "codeql_triage/runs/test140_mimo_xiaomi_v2",
+        "unit_map": "juliet/subset_units.jsonl",
+        "split": "test",
+        "method": {
+          "method_id": "codeql-triage-triage_v2",
+          "family": "llm",
+          "name": "MiMo-V2.6-Flash CodeQL triage v2",
+          "strategy": "triage_v2",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "Xiaomi official",
+            "endpoint": "https://api.xiaomimimo.com/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 4096,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "Xiaomi official list price 2026-11-22"
+          }
+        },
+        "baseline_run": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+        "pricing_snapshot": "Xiaomi official list price 2026-11-22",
+        "notes": [
+          "CodeQL alert triage condition triage_v2"
+        ]
+      }
+    },
+    {
+      "design": "codeql_alert_triage",
+      "out": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_text_rule",
+      "config": {
+        "condition": "text_rule",
+        "run_id": "next_codeql_triage_mimo_v2_text_rule_20261122",
+        "analysis_run": "codeql_triage/runs/test140_mimo_xiaomi_v2",
+        "unit_map": "juliet/subset_units.jsonl",
+        "split": "test",
+        "method": {
+          "method_id": "codeql-triage-text_rule",
+          "family": "hybrid",
+          "name": "CodeQL triage v2 + text-consistency rule",
+          "strategy": "text_rule",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "Xiaomi official",
+            "endpoint": "https://api.xiaomimimo.com/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 4096,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "Xiaomi official list price 2026-11-22"
+          }
+        },
+        "baseline_run": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+        "pricing_snapshot": "Xiaomi official list price 2026-11-22",
+        "notes": [
+          "CodeQL alert triage condition text_rule"
+        ]
+      }
+    },
+    {
+      "design": "codeql_alert_triage",
+      "out": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_verified",
+      "config": {
+        "condition": "verified",
+        "run_id": "next_codeql_triage_mimo_v2_verified_20261122",
+        "analysis_run": "codeql_triage/runs/test140_mimo_xiaomi_v2",
+        "unit_map": "juliet/subset_units.jsonl",
+        "split": "test",
+        "method": {
+          "method_id": "codeql-triage-verified",
+          "family": "hybrid",
+          "name": "CodeQL triage v2 + grounded verifier",
+          "strategy": "verified",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "Xiaomi official",
+            "endpoint": "https://api.xiaomimimo.com/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 4096,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "Xiaomi official list price 2026-11-22"
+          }
+        },
+        "baseline_run": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+        "pricing_snapshot": "Xiaomi official list price 2026-11-22",
+        "notes": [
+          "CodeQL alert triage condition verified"
+        ]
+      }
+    },
+    {
+      "design": "codeql_alert_triage",
+      "out": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_cascade",
+      "config": {
+        "condition": "cascade",
+        "run_id": "next_codeql_triage_mimo_v2_cascade_20261122",
+        "analysis_run": "codeql_triage/runs/test140_mimo_xiaomi_v2",
+        "unit_map": "juliet/subset_units.jsonl",
+        "split": "test",
+        "method": {
+          "method_id": "codeql-triage-cascade",
+          "family": "hybrid",
+          "name": "Verified alert + direct on no-alert",
+          "strategy": "cascade",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "Xiaomi official",
+            "endpoint": "https://api.xiaomimimo.com/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 4096,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "Xiaomi official list price 2026-11-22"
+          }
+        },
+        "baseline_run": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+        "pricing_snapshot": "Xiaomi official list price 2026-11-22",
+        "notes": [
+          "CodeQL alert triage condition cascade"
+        ]
+      }
+    },
+    {
+      "design": "codeql_alert_triage",
+      "out": "benchmark/extensions/runs/codeql_alert_triage/zero_cost_never_freed",
+      "config": {
+        "condition": "zero_cost_never_freed",
+        "run_id": "next_codeql_triage_zero_cost_never_freed_20261122",
+        "analysis_run": "codeql_triage/runs/test140_mimo_xiaomi_v2",
+        "unit_map": "juliet/subset_units.jsonl",
+        "split": "test",
+        "method": {
+          "method_id": "codeql-triage-never_freed_only",
+          "family": "static",
+          "name": "CodeQL never-freed query only",
+          "strategy": "never_freed_only",
+          "tool": {
+            "name": "codeql-cwe401-zero-cost-rule",
+            "version": "2.27.4",
+            "rules": [
+              "cpp/memory-never-freed",
+              "cpp/memory-may-not-be-freed"
+            ]
+          }
+        },
+        "baseline_run": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+        "pricing_snapshot": "Xiaomi official list price 2026-11-22",
+        "notes": [
+          "CodeQL alert triage condition zero_cost_never_freed"
+        ]
+      }
+    },
+    {
+      "design": "codeql_alert_triage",
+      "out": "benchmark/extensions/runs/codeql_alert_triage/zero_cost_drop_may_cpp",
+      "config": {
+        "condition": "zero_cost_drop_may_cpp",
+        "run_id": "next_codeql_triage_zero_cost_drop_may_cpp_20261122",
+        "analysis_run": "codeql_triage/runs/test140_mimo_xiaomi_v2",
+        "unit_map": "juliet/subset_units.jsonl",
+        "split": "test",
+        "method": {
+          "method_id": "codeql-triage-drop_may_cpp",
+          "family": "static",
+          "name": "CodeQL drop C++ may-not-be-freed",
+          "strategy": "drop_may_cpp",
+          "tool": {
+            "name": "codeql-cwe401-zero-cost-rule",
+            "version": "2.27.4",
+            "rules": [
+              "cpp/memory-never-freed",
+              "cpp/memory-may-not-be-freed"
+            ]
+          }
+        },
+        "baseline_run": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+        "pricing_snapshot": "Xiaomi official list price 2026-11-22",
+        "notes": [
+          "CodeQL alert triage condition zero_cost_drop_may_cpp"
+        ]
+      }
+    },
+    {
+      "design": "conservative_verification",
+      "out": "benchmark/extensions/runs/conservative_verification/deepseek_self",
+      "config": {
+        "arm": "deepseek_self",
+        "claim_model": "deepseek",
+        "verifier_model": "deepseek",
+        "run_id": "next_conservative_deepseek_self_20261122",
+        "first_pass": "benchmark/results/tier_a/deepseek_evidence/tiera_secvuleval_deepseek_evidence_20261112_0e09037d/predictions.jsonl",
+        "decisions": "verifier_conservative/analysis/decisions.jsonl",
+        "verifier_results": "verifier_conservative/runs/test_conservative_deepseek_self/results.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "conservative-three-way-deepseek_self",
+          "family": "hybrid",
+          "name": "Conservative three-way verifier (deepseek claim, deepseek verifier)",
+          "strategy": "conservative_three_way",
+          "model": {
+            "model_id": "deepseek-v4.1-flash",
+            "family": "deepseek",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v4.1-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "response_format": "json_object",
+              "thinking": "disabled"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22",
+        "notes": [
+          "Exploratory post hoc; the test split was already seen by the first pass"
+        ]
+      }
+    },
+    {
+      "design": "conservative_verification",
+      "out": "benchmark/extensions/runs/conservative_verification/deepseek_cross",
+      "config": {
+        "arm": "deepseek_cross",
+        "claim_model": "deepseek",
+        "verifier_model": "mimo",
+        "run_id": "next_conservative_deepseek_cross_20261122",
+        "first_pass": "benchmark/results/tier_a/deepseek_evidence/tiera_secvuleval_deepseek_evidence_20261112_0e09037d/predictions.jsonl",
+        "decisions": "verifier_conservative/analysis/decisions.jsonl",
+        "verifier_results": "verifier_conservative/runs/test_conservative_deepseek_by_mimo/results.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "conservative-three-way-deepseek_cross",
+          "family": "hybrid",
+          "name": "Conservative three-way verifier (deepseek claim, mimo verifier)",
+          "strategy": "conservative_three_way",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22",
+        "notes": [
+          "Exploratory post hoc; the test split was already seen by the first pass"
+        ]
+      }
+    },
+    {
+      "design": "conservative_verification",
+      "out": "benchmark/extensions/runs/conservative_verification/mimo_self",
+      "config": {
+        "arm": "mimo_self",
+        "claim_model": "mimo",
+        "verifier_model": "mimo",
+        "run_id": "next_conservative_mimo_self_20261122",
+        "first_pass": "benchmark/results/tier_a/mimo_evidence/tiera_secvuleval_mimo_evidence_20261112_c68dfa50/predictions.jsonl",
+        "decisions": "verifier_conservative/analysis/decisions.jsonl",
+        "verifier_results": "verifier_conservative/runs/test_conservative_mimo_self/results.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "conservative-three-way-mimo_self",
+          "family": "hybrid",
+          "name": "Conservative three-way verifier (mimo claim, mimo verifier)",
+          "strategy": "conservative_three_way",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22",
+        "notes": [
+          "Exploratory post hoc; the test split was already seen by the first pass"
+        ]
+      }
+    },
+    {
+      "design": "conservative_verification",
+      "out": "benchmark/extensions/runs/conservative_verification/mimo_cross",
+      "config": {
+        "arm": "mimo_cross",
+        "claim_model": "mimo",
+        "verifier_model": "deepseek",
+        "run_id": "next_conservative_mimo_cross_20261122",
+        "first_pass": "benchmark/results/tier_a/mimo_evidence/tiera_secvuleval_mimo_evidence_20261112_c68dfa50/predictions.jsonl",
+        "decisions": "verifier_conservative/analysis/decisions.jsonl",
+        "verifier_results": "verifier_conservative/runs/test_conservative_mimo_by_deepseek/results.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "conservative-three-way-mimo_cross",
+          "family": "hybrid",
+          "name": "Conservative three-way verifier (mimo claim, deepseek verifier)",
+          "strategy": "conservative_three_way",
+          "model": {
+            "model_id": "deepseek-v4.1-flash",
+            "family": "deepseek",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v4.1-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "response_format": "json_object",
+              "thinking": "disabled"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22",
+        "notes": [
+          "Exploratory post hoc; the test split was already seen by the first pass"
+        ]
+      }
+    },
+    {
+      "design": "diff_guided_pair",
+      "out": "benchmark/extensions/runs/diff_guided_pair/deepseek_diff_fwd",
+      "config": {
+        "condition": "diff",
+        "order": "fwd",
+        "run_id": "next_pair_diff_deepseek_diff_fwd_20261122",
+        "raw": "pair_diff/runs/test_deepseek_diff_fwd/results.jsonl",
+        "pair_split": "splits/test_pairs_180.json",
+        "position_map": "pair_diff/runs/test_deepseek_diff_fwd/position_map.json",
+        "method": {
+          "method_id": "pair-diff-diff-deepseek",
+          "family": "llm",
+          "name": "Deepseek diff changes-first pair (fwd)",
+          "strategy": "pair_diff_diff",
+          "model": {
+            "model_id": "deepseek-v4.1-flash",
+            "family": "deepseek",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v4.1-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "response_format": "json_object",
+              "thinking": "disabled"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22"
+      }
+    },
+    {
+      "design": "diff_guided_pair",
+      "out": "benchmark/extensions/runs/diff_guided_pair/deepseek_diff_rev",
+      "config": {
+        "condition": "diff",
+        "order": "rev",
+        "run_id": "next_pair_diff_deepseek_diff_rev_20261122",
+        "raw": "pair_diff/runs/test_deepseek_diff_rev/results.jsonl",
+        "pair_split": "splits/test_pairs_180.json",
+        "position_map": "pair_diff/runs/test_deepseek_diff_rev/position_map.json",
+        "method": {
+          "method_id": "pair-diff-diff-deepseek",
+          "family": "llm",
+          "name": "Deepseek diff changes-first pair (rev)",
+          "strategy": "pair_diff_diff",
+          "model": {
+            "model_id": "deepseek-v4.1-flash",
+            "family": "deepseek",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v4.1-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "response_format": "json_object",
+              "thinking": "disabled"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22"
+      }
+    },
+    {
+      "design": "diff_guided_pair",
+      "out": "benchmark/extensions/runs/diff_guided_pair/deepseek_ctrl_fwd",
+      "config": {
+        "condition": "ctrl",
+        "order": "fwd",
+        "run_id": "next_pair_diff_deepseek_ctrl_fwd_20261122",
+        "raw": "pair_diff/runs/test_deepseek_ctrl_fwd/results.jsonl",
+        "pair_split": "splits/test_pairs_180.json",
+        "position_map": "pair_diff/runs/test_deepseek_ctrl_fwd/position_map.json",
+        "method": {
+          "method_id": "pair-diff-ctrl-deepseek",
+          "family": "llm",
+          "name": "Deepseek ctrl changes-first pair (fwd)",
+          "strategy": "pair_diff_ctrl",
+          "model": {
+            "model_id": "deepseek-v4.1-flash",
+            "family": "deepseek",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v4.1-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "response_format": "json_object",
+              "thinking": "disabled"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22"
+      }
+    },
+    {
+      "design": "diff_guided_pair",
+      "out": "benchmark/extensions/runs/diff_guided_pair/deepseek_ctrl_rev",
+      "config": {
+        "condition": "ctrl",
+        "order": "rev",
+        "run_id": "next_pair_diff_deepseek_ctrl_rev_20261122",
+        "raw": "pair_diff/runs/test_deepseek_ctrl_rev/results.jsonl",
+        "pair_split": "splits/test_pairs_180.json",
+        "position_map": "pair_diff/runs/test_deepseek_ctrl_rev/position_map.json",
+        "method": {
+          "method_id": "pair-diff-ctrl-deepseek",
+          "family": "llm",
+          "name": "Deepseek ctrl changes-first pair (rev)",
+          "strategy": "pair_diff_ctrl",
+          "model": {
+            "model_id": "deepseek-v4.1-flash",
+            "family": "deepseek",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v4.1-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "response_format": "json_object",
+              "thinking": "disabled"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22"
+      }
+    },
+    {
+      "design": "diff_guided_pair",
+      "out": "benchmark/extensions/runs/diff_guided_pair/mimo_diff_fwd",
+      "config": {
+        "condition": "diff",
+        "order": "fwd",
+        "run_id": "next_pair_diff_mimo_diff_fwd_20261122",
+        "raw": "pair_diff/runs/test_mimo_diff_fwd/results.jsonl",
+        "pair_split": "splits/test_pairs_180.json",
+        "position_map": "pair_diff/runs/test_mimo_diff_fwd/position_map.json",
+        "method": {
+          "method_id": "pair-diff-diff-mimo",
+          "family": "llm",
+          "name": "Mimo diff changes-first pair (fwd)",
+          "strategy": "pair_diff_diff",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22"
+      }
+    },
+    {
+      "design": "diff_guided_pair",
+      "out": "benchmark/extensions/runs/diff_guided_pair/mimo_diff_rev",
+      "config": {
+        "condition": "diff",
+        "order": "rev",
+        "run_id": "next_pair_diff_mimo_diff_rev_20261122",
+        "raw": "pair_diff/runs/test_mimo_diff_rev/results.jsonl",
+        "pair_split": "splits/test_pairs_180.json",
+        "position_map": "pair_diff/runs/test_mimo_diff_rev/position_map.json",
+        "method": {
+          "method_id": "pair-diff-diff-mimo",
+          "family": "llm",
+          "name": "Mimo diff changes-first pair (rev)",
+          "strategy": "pair_diff_diff",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22"
+      }
+    },
+    {
+      "design": "diff_guided_pair",
+      "out": "benchmark/extensions/runs/diff_guided_pair/mimo_ctrl_fwd",
+      "config": {
+        "condition": "ctrl",
+        "order": "fwd",
+        "run_id": "next_pair_diff_mimo_ctrl_fwd_20261122",
+        "raw": "pair_diff/runs/test_mimo_ctrl_fwd/results.jsonl",
+        "pair_split": "splits/test_pairs_180.json",
+        "position_map": "pair_diff/runs/test_mimo_ctrl_fwd/position_map.json",
+        "method": {
+          "method_id": "pair-diff-ctrl-mimo",
+          "family": "llm",
+          "name": "Mimo ctrl changes-first pair (fwd)",
+          "strategy": "pair_diff_ctrl",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22"
+      }
+    },
+    {
+      "design": "diff_guided_pair",
+      "out": "benchmark/extensions/runs/diff_guided_pair/mimo_ctrl_rev",
+      "config": {
+        "condition": "ctrl",
+        "order": "rev",
+        "run_id": "next_pair_diff_mimo_ctrl_rev_20261122",
+        "raw": "pair_diff/runs/test_mimo_ctrl_rev/results.jsonl",
+        "pair_split": "splits/test_pairs_180.json",
+        "position_map": "pair_diff/runs/test_mimo_ctrl_rev/position_map.json",
+        "method": {
+          "method_id": "pair-diff-ctrl-mimo",
+          "family": "llm",
+          "name": "Mimo ctrl changes-first pair (rev)",
+          "strategy": "pair_diff_ctrl",
+          "model": {
+            "model_id": "mimo-v2.6-flash",
+            "family": "mimo",
+            "provider": "OpenCode Go",
+            "endpoint": "https://opencode.ai/zen/go/v1",
+            "version": "v2.6-flash",
+            "decoding": {
+              "temperature": 0.0,
+              "max_tokens": 8192,
+              "max_tokens_field": "max_completion_tokens",
+              "reasoning_effort": "none",
+              "response_format": "json_object"
+            },
+            "price_snapshot": "OpenCode Go list price 2026-11-22"
+          }
+        },
+        "pricing_snapshot": "OpenCode Go list price 2026-11-22"
+      }
+    },
+    {
+      "design": "coverage_instrumented_dynamic",
+      "out": "benchmark/extensions/runs/coverage_instrumented_dynamic/test140_coverage_v2",
+      "config": {
+        "run_id": "next_dynamic_coverage_test140_v2_20261122",
+        "raw": "dynamic_coverage/runs/test140_coverage_v1/results_units.jsonl",
+        "unit_map": "juliet/subset_units.jsonl",
+        "split": "test",
+        "method": {
+          "method_id": "gcc-gcov-asan-lsan-test140",
+          "family": "dynamic",
+          "name": "gcc --coverage + gcov ASan/LSan (three modes)",
+          "strategy": "coverage_instrumented",
+          "tool": {
+            "name": "gcc-gcov-asan-lsan",
+            "version": "gcc 15.3.0 / gcov 15.3.0"
+          }
+        },
+        "notes": [
+          "Coverage-instrumented dynamic run v2: default-mode decision imported; clean is inconclusive, never TN"
+        ]
+      }
+    },
+    {
+      "design": "interpretable_baseline",
+      "out": "benchmark/extensions/runs/interpretable_baseline/prior_majority",
+      "config": {
+        "baseline_method": "rule:prior_majority",
+        "run_id": "next_interp_prior_majority_20261122",
+        "raw": "interpretable_baseline/results/main_20261122c/predictions.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "rule:prior_majority",
+          "family": "static",
+          "name": "Interpretable baseline: rule:prior_majority",
+          "strategy": "rule:prior_majority",
+          "tool": {
+            "name": "interpretable-lexical-baseline",
+            "version": "2026-11-22"
+          }
+        },
+        "features": [],
+        "rule": "always vulnerable (dev prevalence 0.8)",
+        "threshold": null,
+        "dev_selected": true,
+        "notes": [
+          "Lexical baseline; no API call; not a static analyzer"
+        ]
+      }
+    },
+    {
+      "design": "interpretable_baseline",
+      "out": "benchmark/extensions/runs/interpretable_baseline/length_short",
+      "config": {
+        "baseline_method": "rule:length_short",
+        "run_id": "next_interp_length_short_20261122",
+        "raw": "interpretable_baseline/results/main_20261122c/predictions.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "rule:length_short",
+          "family": "static",
+          "name": "Interpretable baseline: rule:length_short",
+          "strategy": "rule:length_short",
+          "tool": {
+            "name": "interpretable-lexical-baseline",
+            "version": "2026-11-22"
+          }
+        },
+        "features": [
+          "chars"
+        ],
+        "rule": "chars <= 1504 (dev median)",
+        "threshold": null,
+        "dev_selected": true,
+        "notes": [
+          "Lexical baseline; no API call; not a static analyzer"
+        ]
+      }
+    },
+    {
+      "design": "interpretable_baseline",
+      "out": "benchmark/extensions/runs/interpretable_baseline/calls_high",
+      "config": {
+        "baseline_method": "rule:calls_high",
+        "run_id": "next_interp_calls_high_20261122",
+        "raw": "interpretable_baseline/results/main_20261122c/predictions.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "rule:calls_high",
+          "family": "static",
+          "name": "Interpretable baseline: rule:calls_high",
+          "strategy": "rule:calls_high",
+          "tool": {
+            "name": "interpretable-lexical-baseline",
+            "version": "2026-11-22"
+          }
+        },
+        "features": [
+          "calls"
+        ],
+        "rule": "calls >= 16 (dev median)",
+        "threshold": null,
+        "dev_selected": true,
+        "notes": [
+          "Lexical baseline; no API call; not a static analyzer"
+        ]
+      }
+    },
+    {
+      "design": "interpretable_baseline",
+      "out": "benchmark/extensions/runs/interpretable_baseline/alloc_unbalanced",
+      "config": {
+        "baseline_method": "rule:alloc_unbalanced",
+        "run_id": "next_interp_alloc_unbalanced_20261122",
+        "raw": "interpretable_baseline/results/main_20261122c/predictions.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "rule:alloc_unbalanced",
+          "family": "static",
+          "name": "Interpretable baseline: rule:alloc_unbalanced",
+          "strategy": "rule:alloc_unbalanced",
+          "tool": {
+            "name": "interpretable-lexical-baseline",
+            "version": "2026-11-22"
+          }
+        },
+        "features": [
+          "alloc",
+          "free"
+        ],
+        "rule": "alloc > free",
+        "threshold": null,
+        "dev_selected": true,
+        "notes": [
+          "Lexical baseline; no API call; not a static analyzer"
+        ]
+      }
+    },
+    {
+      "design": "interpretable_baseline",
+      "out": "benchmark/extensions/runs/interpretable_baseline/mem_api_present",
+      "config": {
+        "baseline_method": "rule:mem_api_present",
+        "run_id": "next_interp_mem_api_present_20261122",
+        "raw": "interpretable_baseline/results/main_20261122c/predictions.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "rule:mem_api_present",
+          "family": "static",
+          "name": "Interpretable baseline: rule:mem_api_present",
+          "strategy": "rule:mem_api_present",
+          "tool": {
+            "name": "interpretable-lexical-baseline",
+            "version": "2026-11-22"
+          }
+        },
+        "features": [
+          "mem_api"
+        ],
+        "rule": "mem_api >= 1",
+        "threshold": null,
+        "dev_selected": true,
+        "notes": [
+          "Lexical baseline; no API call; not a static analyzer"
+        ]
+      }
+    },
+    {
+      "design": "interpretable_baseline",
+      "out": "benchmark/extensions/runs/interpretable_baseline/alloc_or_mem",
+      "config": {
+        "baseline_method": "rule:alloc_or_mem",
+        "run_id": "next_interp_alloc_or_mem_20261122",
+        "raw": "interpretable_baseline/results/main_20261122c/predictions.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "rule:alloc_or_mem",
+          "family": "static",
+          "name": "Interpretable baseline: rule:alloc_or_mem",
+          "strategy": "rule:alloc_or_mem",
+          "tool": {
+            "name": "interpretable-lexical-baseline",
+            "version": "2026-11-22"
+          }
+        },
+        "features": [
+          "alloc",
+          "free",
+          "mem_api"
+        ],
+        "rule": "alloc > free or mem_api >= 1",
+        "threshold": null,
+        "dev_selected": true,
+        "notes": [
+          "Lexical baseline; no API call; not a static analyzer"
+        ]
+      }
+    },
+    {
+      "design": "interpretable_baseline",
+      "out": "benchmark/extensions/runs/interpretable_baseline/short_and_alloc_or_mem",
+      "config": {
+        "baseline_method": "rule:short_and_alloc_or_mem",
+        "run_id": "next_interp_short_and_alloc_or_mem_20261122",
+        "raw": "interpretable_baseline/results/main_20261122c/predictions.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "rule:short_and_alloc_or_mem",
+          "family": "static",
+          "name": "Interpretable baseline: rule:short_and_alloc_or_mem",
+          "strategy": "rule:short_and_alloc_or_mem",
+          "tool": {
+            "name": "interpretable-lexical-baseline",
+            "version": "2026-11-22"
+          }
+        },
+        "features": [
+          "chars",
+          "alloc",
+          "free",
+          "mem_api"
+        ],
+        "rule": "length_short and alloc_or_mem",
+        "threshold": null,
+        "dev_selected": true,
+        "notes": [
+          "Lexical baseline; no API call; not a static analyzer"
+        ]
+      }
+    },
+    {
+      "design": "interpretable_baseline",
+      "out": "benchmark/extensions/runs/interpretable_baseline/lr_unweighted",
+      "config": {
+        "baseline_method": "lr_unweighted",
+        "run_id": "next_interp_lr_unweighted_20261122",
+        "raw": "interpretable_baseline/results/main_20261122c/predictions.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "lr_unweighted",
+          "family": "static",
+          "name": "Interpretable baseline: lr_unweighted",
+          "strategy": "lr_unweighted",
+          "tool": {
+            "name": "interpretable-lexical-baseline",
+            "version": "2026-11-22"
+          }
+        },
+        "features": [
+          "log1p(chars)",
+          "calls",
+          "alloc_minus_free",
+          "mem_api",
+          "branch_density"
+        ],
+        "rule": "L2 logistic regression, unweighted, threshold 0.5",
+        "threshold": null,
+        "dev_selected": false,
+        "notes": [
+          "Lexical baseline; no API call; not a static analyzer"
+        ]
+      }
+    },
+    {
+      "design": "interpretable_baseline",
+      "out": "benchmark/extensions/runs/interpretable_baseline/lr_balanced",
+      "config": {
+        "baseline_method": "lr_balanced",
+        "run_id": "next_interp_lr_balanced_20261122",
+        "raw": "interpretable_baseline/results/main_20261122c/predictions.jsonl",
+        "split_path": "splits/test_detection_160.json",
+        "method": {
+          "method_id": "lr_balanced",
+          "family": "static",
+          "name": "Interpretable baseline: lr_balanced",
+          "strategy": "lr_balanced",
+          "tool": {
+            "name": "interpretable-lexical-baseline",
+            "version": "2026-11-22"
+          }
+        },
+        "features": [
+          "log1p(chars)",
+          "calls",
+          "alloc_minus_free",
+          "mem_api",
+          "branch_density"
+        ],
+        "rule": "L2 logistic regression, balanced, threshold 0.5",
+        "threshold": null,
+        "dev_selected": false,
+        "notes": [
+          "Lexical baseline; no API call; not a static analyzer"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,650 @@
+{
+  "schema_version": "benchmark-extension-metrics-v1",
+  "extension_id": "ext.codeql_alert_triage.v1",
+  "design": "codeql_alert_triage",
+  "generated_at": "2026-11-22T13:28:34Z",
+  "run_ids": {
+    "run": "next_codeql_triage_mimo_v2_text_rule_20261122"
+  },
+  "settings": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "confidence": 0.95,
+    "cluster_unit": "case_family",
+    "coverage_threshold": 0.8,
+    "condition": "text_rule"
+  },
+  "counts": {
+    "units": 140,
+    "valid": 140,
+    "codeql_alerts": 91,
+    "by_status": {
+      "ok": 140
+    }
+  },
+  "primary": {
+    "name": "macro_f1",
+    "value": 0.985711369667279,
+    "n": 140,
+    "ci_low": 0.9637204900362795,
+    "ci_high": 1.0,
+    "method": "cluster percentile bootstrap (case_family)",
+    "note": "text_rule: valid-only leak detection; clean and bad are both scored"
+  },
+  "metrics": {
+    "detection": {
+      "scores": {
+        "n": 140,
+        "valid": 140,
+        "invalid": 0,
+        "coverage": 1.0,
+        "invalid_rate": 0.0,
+        "confusion": {
+          "tp": 68,
+          "fp": 0,
+          "tn": 70,
+          "fn": 2
+        },
+        "label_counts": {
+          "vulnerable": 70,
+          "non_vulnerable": 70
+        },
+        "precision": 1.0,
+        "recall": 0.9714285714285714,
+        "specificity": 1.0,
+        "f1": 0.9855072463768116,
+        "negative_f1": 0.9859154929577465,
+        "macro_f1": 0.985711369667279,
+        "balanced_accuracy": 0.9857142857142858,
+        "accuracy": 0.9857142857142858,
+        "strict_accuracy": 0.9857142857142858,
+        "mcc": 0.97182531580755,
+        "mcc_degenerate": false,
+        "predicted_positive_rate": 0.4857142857142857,
+        "undefined_metrics": [],
+        "wilson": {
+          "precision": {
+            "successes": 68,
+            "total": 68,
+            "estimate": 1.0,
+            "low": 0.9465286634799296,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "recall": {
+            "successes": 68,
+            "total": 70,
+            "estimate": 0.9714285714285714,
+            "low": 0.9016774388157609,
+            "high": 0.9921293880545587,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "specificity": {
+            "successes": 70,
+            "total": 70,
+            "estimate": 1.0,
+            "low": 0.9479769375897331,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "accuracy": {
+            "successes": 138,
+            "total": 140,
+            "estimate": 0.9857142857142858,
+            "low": 0.9494118460788701,
+            "high": 0.9960735592765573,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "strict_accuracy": {
+            "successes": 138,
+            "total": 140,
+            "estimate": 0.9857142857142858,
+            "low": 0.9494118460788701,
+            "high": 0.9960735592765573,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 140,
+            "total": 140,
+            "estimate": 1.0,
+            "low": 0.9732937996305869,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        }
+      },
+      "bootstrap": {
+        "macro_f1": {
+          "ci_low": 0.9637204900362795,
+          "ci_high": 1.0,
+          "bootstrap_median": 0.9859126984126985,
+          "bootstrap_mean": 0.985696277920626,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "f1": {
+          "ci_low": 0.9624060150375939,
+          "ci_high": 1.0,
+          "bootstrap_median": 0.9857142857142858,
+          "bootstrap_mean": 0.9853961002126247,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "mcc": {
+          "ci_low": 0.9299811099505543,
+          "ci_high": 1.0,
+          "bootstrap_median": 0.9722167862426851,
+          "bootstrap_mean": 0.9719784530662259,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "balanced_accuracy": {
+          "ci_low": 0.963768115942029,
+          "ci_high": 1.0,
+          "bootstrap_median": 0.9859154929577465,
+          "bootstrap_mean": 0.9857039299697193,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "accuracy": {
+          "ci_low": 0.9637681159420289,
+          "ci_high": 1.0,
+          "bootstrap_median": 0.9859154929577465,
+          "bootstrap_mean": 0.9857039299697193,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "strict_accuracy": {
+          "ci_low": 0.9637681159420289,
+          "ci_high": 1.0,
+          "bootstrap_median": 0.9859154929577465,
+          "bootstrap_mean": 0.9857039299697193,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cluster_count": 29
+    },
+    "mcc": 0.97182531580755,
+    "strict_accuracy": 0.9857142857142858,
+    "strata": {
+      "variant": {
+        "01": {
+          "n": 58,
+          "correct": 58,
+          "tp": 29,
+          "fp": 0
+        },
+        "09": {
+          "n": 2,
+          "correct": 2,
+          "tp": 1,
+          "fp": 0
+        },
+        "18": {
+          "n": 6,
+          "correct": 6,
+          "tp": 3,
+          "fp": 0
+        },
+        "22": {
+          "n": 10,
+          "correct": 10,
+          "tp": 5,
+          "fp": 0
+        },
+        "31": {
+          "n": 6,
+          "correct": 6,
+          "tp": 3,
+          "fp": 0
+        },
+        "33": {
+          "n": 30,
+          "correct": 30,
+          "tp": 15,
+          "fp": 0
+        },
+        "54": {
+          "n": 8,
+          "correct": 8,
+          "tp": 4,
+          "fp": 0
+        },
+        "68": {
+          "n": 10,
+          "correct": 10,
+          "tp": 5,
+          "fp": 0
+        },
+        "72": {
+          "n": 6,
+          "correct": 6,
+          "tp": 3,
+          "fp": 0
+        },
+        "82": {
+          "n": 4,
+          "correct": 2,
+          "tp": 0,
+          "fp": 0
+        }
+      },
+      "codeql_alert": {
+        "alert": {
+          "n": 91,
+          "tp": 68,
+          "fp": 0,
+          "fn": 0,
+          "tn": 23
+        },
+        "no_alert": {
+          "n": 49,
+          "tp": 0,
+          "fp": 0
+        }
+      }
+    },
+    "baseline_comparison": {
+      "n": 140,
+      "left_correct": 134,
+      "right_correct": 138,
+      "b_left_correct_right_wrong": 2,
+      "c_left_wrong_right_correct": 6,
+      "mcnemar": {
+        "a_correct_b_wrong": 2,
+        "a_wrong_b_correct": 6,
+        "discordant": 8,
+        "total": 140,
+        "p_value": 0.2890625,
+        "p_value_method": "exact two-sided binomial",
+        "odds_ratio": 0.3333333333333333,
+        "risk_difference": -0.02857142857142857,
+        "significant_unadjusted_0_05": false,
+        "alpha": 0.05
+      },
+      "baseline": {
+        "path": "/mnt/c/Users/tzh03/Downloads/cs224proj/benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+        "records": 140
+      },
+      "note": "baseline vs this condition on common units; exact McNemar"
+    }
+  },
+  "parent_metrics": {
+    "schema_version": "benchmark-metrics-v1",
+    "run_id": "next_codeql_triage_mimo_v2_text_rule_20261122",
+    "protocol_version": "1.0.0",
+    "tier": "B",
+    "track": "juliet_cwe401",
+    "generated_at": "2026-11-22T13:28:34Z",
+    "settings": {
+      "bootstrap_resamples": 10000,
+      "bootstrap_seed": 42,
+      "confidence": 0.95,
+      "cluster_unit": "record.cluster_id",
+      "coverage_threshold": 0.8,
+      "strict_policy": "non-ok records count as errors in strict_accuracy; valid-only metrics exclude them"
+    },
+    "tasks": {
+      "leak_detection": {
+        "detection": {
+          "scores": {
+            "n": 140,
+            "valid": 140,
+            "invalid": 0,
+            "coverage": 1.0,
+            "invalid_rate": 0.0,
+            "confusion": {
+              "tp": 68,
+              "fp": 0,
+              "tn": 70,
+              "fn": 2
+            },
+            "label_counts": {
+              "vulnerable": 70,
+              "non_vulnerable": 70
+            },
+            "precision": 1.0,
+            "recall": 0.9714285714285714,
+            "specificity": 1.0,
+            "f1": 0.9855072463768116,
+            "negative_f1": 0.9859154929577465,
+            "macro_f1": 0.985711369667279,
+            "balanced_accuracy": 0.9857142857142858,
+            "accuracy": 0.9857142857142858,
+            "strict_accuracy": 0.9857142857142858,
+            "mcc": 0.97182531580755,
+            "mcc_degenerate": false,
+            "predicted_positive_rate": 0.4857142857142857,
+            "undefined_metrics": [],
+            "wilson": {
+              "precision": {
+                "successes": 68,
+                "total": 68,
+                "estimate": 1.0,
+                "low": 0.9465286634799296,
+                "high": 1.0,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "recall": {
+                "successes": 68,
+                "total": 70,
+                "estimate": 0.9714285714285714,
+                "low": 0.9016774388157609,
+                "high": 0.9921293880545587,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "specificity": {
+                "successes": 70,
+                "total": 70,
+                "estimate": 1.0,
+                "low": 0.9479769375897331,
+                "high": 1.0,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "accuracy": {
+                "successes": 138,
+                "total": 140,
+                "estimate": 0.9857142857142858,
+                "low": 0.9494118460788701,
+                "high": 0.9960735592765573,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "strict_accuracy": {
+                "successes": 138,
+                "total": 140,
+                "estimate": 0.9857142857142858,
+                "low": 0.9494118460788701,
+                "high": 0.9960735592765573,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "coverage": {
+                "successes": 140,
+                "total": 140,
+                "estimate": 1.0,
+                "low": 0.9732937996305869,
+                "high": 0.9999999999999999,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              }
+            }
+          },
+          "bootstrap": {
+            "macro_f1": {
+              "ci_low": 0.9637204900362795,
+              "ci_high": 1.0,
+              "bootstrap_median": 0.9859126984126985,
+              "bootstrap_mean": 0.985696277920626,
+              "valid_resamples": 10000,
+              "resamples": 10000,
+              "unstable": false
+            },
+            "f1": {
+              "ci_low": 0.9624060150375939,
+              "ci_high": 1.0,
+              "bootstrap_median": 0.9857142857142858,
+              "bootstrap_mean": 0.9853961002126247,
+              "valid_resamples": 10000,
+              "resamples": 10000,
+              "unstable": false
+            },
+            "mcc": {
+              "ci_low": 0.9299811099505543,
+              "ci_high": 1.0,
+              "bootstrap_median": 0.9722167862426851,
+              "bootstrap_mean": 0.9719784530662259,
+              "valid_resamples": 10000,
+              "resamples": 10000,
+              "unstable": false
+            },
+            "balanced_accuracy": {
+              "ci_low": 0.963768115942029,
+              "ci_high": 1.0,
+              "bootstrap_median": 0.9859154929577465,
+              "bootstrap_mean": 0.9857039299697193,
+              "valid_resamples": 10000,
+              "resamples": 10000,
+              "unstable": false
+            },
+            "accuracy": {
+              "ci_low": 0.9637681159420289,
+              "ci_high": 1.0,
+              "bootstrap_median": 0.9859154929577465,
+              "bootstrap_mean": 0.9857039299697193,
+              "valid_resamples": 10000,
+              "resamples": 10000,
+              "unstable": false
+            },
+            "strict_accuracy": {
+              "ci_low": 0.9637681159420289,
+              "ci_high": 1.0,
+              "bootstrap_median": 0.9859154929577465,
+              "bootstrap_mean": 0.9857039299697193,
+              "valid_resamples": 10000,
+              "resamples": 10000,
+              "unstable": false
+            }
+          },
+          "cluster_count": 29,
+          "by_status": {
+            "ok": 140
+          },
+          "by_side": {
+            "bad": 70,
+            "good": 70
+          }
+        },
+        "coverage_strata": {
+          "ge_0.90": null,
+          "0.50_0.90": null,
+          "lt_0.50": null,
+          "unknown": {
+            "n": 140,
+            "valid": 140,
+            "invalid": 0,
+            "coverage": 1.0,
+            "invalid_rate": 0.0,
+            "confusion": {
+              "tp": 68,
+              "fp": 0,
+              "tn": 70,
+              "fn": 2
+            },
+            "label_counts": {
+              "vulnerable": 70,
+              "non_vulnerable": 70
+            },
+            "precision": 1.0,
+            "recall": 0.9714285714285714,
+            "specificity": 1.0,
+            "f1": 0.9855072463768116,
+            "negative_f1": 0.9859154929577465,
+            "macro_f1": 0.985711369667279,
+            "balanced_accuracy": 0.9857142857142858,
+            "accuracy": 0.9857142857142858,
+            "strict_accuracy": 0.9857142857142858,
+            "mcc": 0.97182531580755,
+            "mcc_degenerate": false,
+            "predicted_positive_rate": 0.4857142857142857,
+            "undefined_metrics": [],
+            "wilson": {
+              "precision": {
+                "successes": 68,
+                "total": 68,
+                "estimate": 1.0,
+                "low": 0.9465286634799296,
+                "high": 1.0,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "recall": {
+                "successes": 68,
+                "total": 70,
+                "estimate": 0.9714285714285714,
+                "low": 0.9016774388157609,
+                "high": 0.9921293880545587,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "specificity": {
+                "successes": 70,
+                "total": 70,
+                "estimate": 1.0,
+                "low": 0.9479769375897331,
+                "high": 1.0,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "accuracy": {
+                "successes": 138,
+                "total": 140,
+                "estimate": 0.9857142857142858,
+                "low": 0.9494118460788701,
+                "high": 0.9960735592765573,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "strict_accuracy": {
+                "successes": 138,
+                "total": 140,
+                "estimate": 0.9857142857142858,
+                "low": 0.9494118460788701,
+                "high": 0.9960735592765573,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "coverage": {
+                "successes": 140,
+                "total": 140,
+                "estimate": 1.0,
+                "low": 0.9732937996305869,
+                "high": 0.9999999999999999,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              }
+            }
+          }
+        },
+        "inconclusive": {
+          "count": 0,
+          "coverage_inconclusive": 0,
+          "coverage_threshold": 0.8,
+          "policy": "clean prediction below threshold is excluded from valid-only and counted wrong in strict accuracy",
+          "strict_treated_as": "error"
+        },
+        "oracle_consistency": {
+          "counts": {},
+          "mismatches": 0
+        }
+      }
+    },
+    "cost": {
+      "currency": "USD",
+      "usd_known_sum": null,
+      "usd_unknown_records": 140,
+      "usd_complete": false,
+      "wall_s_sum": null,
+      "cpu_s_sum": null,
+      "peak_rss_mb_max": null,
+      "prompt_tokens_sum": null,
+      "completion_tokens_sum": null,
+      "cached_prompt_tokens_sum": null,
+      "latency_ms_p50": null,
+      "latency_ms_p95": null,
+      "latency_samples": 0,
+      "cost_basis_counts": {},
+      "cost_per_true_positive_usd": null
+    },
+    "counts": {
+      "records": 140,
+      "planned_units": 140,
+      "by_task": {
+        "leak_detection": 140
+      },
+      "by_status": {
+        "ok": 140
+      },
+      "missing_units": 0
+    },
+    "provenance": {
+      "run_manifest_sha256": "7755a3e50ab5067fdecdce0bd632c4635f2a60ee3e5d015779a37064d0d8ac79",
+      "predictions_sha256": "5e4ae214065cb3ba48be8a8e01608cfaf2dfb8137016685692dfcdd8cd57b002"
+    },
+    "notes": [
+      "Tasks and tiers are not pooled into a single score.",
+      "Detection and pair metrics use valid predictions only; strict accuracy is separate.",
+      "Leak clean predictions below the coverage threshold are inconclusive, not true negatives.",
+      "Cost is a known-sum plus unknown count, never an imputed total."
+    ]
+  },
+  "cost": {
+    "currency": "USD",
+    "usd_known_sum": null,
+    "usd_unknown_records": 140,
+    "usd_complete": false,
+    "wall_s_sum": null,
+    "cpu_s_sum": null,
+    "peak_rss_mb_max": null,
+    "prompt_tokens_sum": null,
+    "completion_tokens_sum": null,
+    "cached_prompt_tokens_sum": null,
+    "latency_ms_p50": null,
+    "latency_ms_p95": null,
+    "latency_samples": 0,
+    "cost_basis_counts": {}
+  },
+  "limitations": [
+    "The verifier sees the first-pass JSON; the verified condition is not an independent blind review.",
+    "The text rule and the verified condition produce identical predictions on this split.",
+    "DeepSeek has no results; MiMo numbers are not imputed to DeepSeek.",
+    "All 23 CodeQL false positives are C++ good units from cpp/memory-may-not-be-freed.",
+    "Two CodeQL false negatives are compile-error units; triage cannot recover them.",
+    "Single sample, temperature 0; no calibration or human adjudication."
+  ],
+  "provenance": {
+    "extension_version": "0.3.0",
+    "hashes": {
+      "run_manifest_sha256": "7755a3e50ab5067fdecdce0bd632c4635f2a60ee3e5d015779a37064d0d8ac79",
+      "predictions_sha256": "5e4ae214065cb3ba48be8a8e01608cfaf2dfb8137016685692dfcdd8cd57b002",
+      "extension_manifest_sha256": "a9ff9506df2dee0aa48c2a0b3bebaad769d46d033a40074749a3a62d12a3a29d",
+      "design_registry_sha256": "961fafa260e92b2e79d611aefd336c68270bb7d900d27e7abe09760e78a68115",
+      "records": 140
+    },
+    "source": "canonical extension run; metrics recomputed, not copied"
+  }
+}

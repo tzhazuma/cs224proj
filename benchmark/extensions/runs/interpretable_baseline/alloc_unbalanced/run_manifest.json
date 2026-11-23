@@ -1,0 +1,62 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_interp_alloc_unbalanced_20261122",
+  "created_at": "2026-11-22T13:10:51Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1/test",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": 40,
+    "label_counts": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    }
+  },
+  "method": {
+    "method_id": "rule:alloc_unbalanced",
+    "family": "static",
+    "name": "Interpretable baseline: rule:alloc_unbalanced",
+    "strategy": "rule:alloc_unbalanced",
+    "tool": {
+      "name": "interpretable-lexical-baseline",
+      "version": "2026-11-22"
+    },
+    "config_sha256": "6307191fb2bf783faa653785d902c20a06b57a85ccb35c44d60059022498103c"
+  },
+  "execution": {
+    "started_at": "2026-11-22T13:10:51Z",
+    "finished_at": "2026-11-22T13:10:51Z",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "eec4ec6b40cb2c171b17b514f4fe30196abaa1494eda15097e0efb65d5773e4c",
+    "extension_manifest_sha256": "d16a8993a00b273a0ac9ed8b1373988a609e98f479e49ce42c37fd6e49b81227"
+  },
+  "legacy_import": null,
+  "notes": [
+    "interpretable baseline: rule:alloc_unbalanced",
+    "no API call; predictions copied"
+  ]
+}

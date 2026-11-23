@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:54.722+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 1.3684259779984131,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"f29ebeee-f8d2-4b15-8ad9-1db9e6c50eb8_2ss0cyg528dpfh0pvk_dccd9bb33b1443c8bf8ba4904db7d73f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": false, \\\"final_alert_verdict\\\": \\\"false_positive\\\", \\\"release_gap\\\": \\\"none\\\", \\\"reason\\\": \\\"Heap allocation in sym_5 flows sym_4->sym_8->sym_10->sym_12, which deletes it on the only path; no exit without release.\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344474,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":77,\"prompt_tokens\":1093,\"total_tokens\":1170,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:53.354+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "996de28009162f34140fbccaaa514af1c6e27c5934afeed64ae7f2e714a76efe"
+  },
+  "cache_key": "996de28009162f34140fbccaaa514af1c6e27c5934afeed64ae7f2e714a76efe",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": false, \"final_alert_verdict\": \"false_positive\", \"release_gap\": \"none\", \"reason\": \"Heap allocation in sym_5 flows sym_4->sym_8->sym_10->sym_12, which deletes it on the only path; no exit without release.\", \"confidence\": 0.95}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 77,
+    "cost_usd": 0.00017458000000000003,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 1093
+  },
+  "created_at": "2026-11-22T10:47:54.722+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.95,
+    "final_alert_verdict": "false_positive",
+    "final_leak_present": false,
+    "reason": "Heap allocation in sym_5 flows sym_4->sym_8->sym_10->sym_12, which deletes it on the only path; no exit without release.",
+    "release_gap": "none"
+  },
+  "prompt_sha256": "b76fc0820bf4b2249d85152895e771dfcc692f3db1462c47f10c8988e478d03a",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "16f0bce7be6e42e01246f649c1a1c23b6c4f8d40055542b9ba2e8f2b9b24f9f6",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 1,
+      "cpp/memory-never-freed": 0
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "good",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__new_int64_t_54__good",
+    "variant": "54",
+    "y_true": 0
+  },
+  "unit_id": "CWE401_Memory_Leak__new_int64_t_54__good",
+  "usage": {
+    "completion_tokens": 77,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1093,
+    "prompt_tokens_details": null,
+    "total_tokens": 1170
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 1.3684798600006616
+}

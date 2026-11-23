@@ -1,0 +1,641 @@
+{
+  "unit_id": "CWE401_Memory_Leak__new_array_twointsStruct_68__good",
+  "unit_key": "d0076",
+  "group_id": "CWE401_Memory_Leak__new_array_twointsStruct_68",
+  "family": "new_array_twointsStruct",
+  "variant": "68",
+  "language": "cpp",
+  "label": "good",
+  "sources": [
+    "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp",
+    "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp"
+  ],
+  "defines": [
+    "INCLUDEMAIN",
+    "OMITBAD"
+  ],
+  "modes": {
+    "default": {
+      "leak_raw": false,
+      "leak_attributed": false,
+      "leak_blocks": [],
+      "attributed_blocks": [],
+      "attributed_bytes": 0,
+      "raw_bytes": 0,
+      "leak_kinds": [],
+      "leak_summary": null,
+      "leak_summary_bytes": null,
+      "leak_summary_records": null,
+      "asan_errors": [],
+      "deadly_signal": false,
+      "injection": {
+        "realloc_calls": 0,
+        "realloc_null_calls": 0,
+        "realloc_nonnull_calls": 0,
+        "injected": false,
+        "injected_at_call": null
+      },
+      "mode": "default",
+      "build_variant": "plain",
+      "applicable": true,
+      "returncode": 0,
+      "timed_out": false,
+      "wall_ms": 77,
+      "failure_class": "clean",
+      "decision": "clean",
+      "stdout_sha256": "1db71637c1e22e71e14c9f7c856bb20ab021b31da607b7c727f83bd6c0c0b7e0",
+      "stdout_lines": [
+        "0 -- 0",
+        "0 -- 0"
+      ],
+      "stderr_path": "cases/d0076_good/run_default/stderr.txt",
+      "stdout_path": "cases/d0076_good/run_default/stdout.txt",
+      "env": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+        "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0",
+        "DYNENH_REALLOC_FAIL_NONNULL": ""
+      },
+      "gcda_files": [
+        "CWE401_Memory_Leak__new_array_twointsStruct_68a.gcda",
+        "CWE401_Memory_Leak__new_array_twointsStruct_68b.gcda",
+        "__dynenh_probe_main.gcda"
+      ],
+      "gcov_checks": [
+        {
+          "source": "CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp",
+          "returncode": 0,
+          "lines_total": 23,
+          "lines_hit": 23,
+          "lines_total_parsed": 23,
+          "lines_hit_parsed": 23
+        },
+        {
+          "source": "CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp",
+          "returncode": 0,
+          "lines_total": 7,
+          "lines_hit": 7,
+          "lines_total_parsed": 7,
+          "lines_hit_parsed": 7
+        }
+      ],
+      "coverage": {
+        "lines_total": 30,
+        "lines_hit": 30,
+        "line_pct": 1.0,
+        "branches_total": 6,
+        "branches_hit": 3,
+        "branch_pct": 0.5,
+        "files": [
+          {
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp",
+            "lines_total": 23,
+            "lines_hit": 23,
+            "line_pct": 1.0,
+            "branches_total": 4,
+            "branches_hit": 2,
+            "branch_pct": 0.5,
+            "uncovered_lines": [],
+            "uncovered_branches": 2
+          },
+          {
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp",
+            "lines_total": 7,
+            "lines_hit": 7,
+            "line_pct": 1.0,
+            "branches_total": 2,
+            "branches_hit": 1,
+            "branch_pct": 0.5,
+            "uncovered_lines": [],
+            "uncovered_branches": 1
+          }
+        ],
+        "uncovered_lines": [],
+        "uncovered_branches": [
+          {
+            "line": 69,
+            "source_block_id": 3,
+            "destination_block_id": 7,
+            "throw": true,
+            "fallthrough": false,
+            "count": 0,
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp"
+          },
+          {
+            "line": 71,
+            "source_block_id": 4,
+            "destination_block_id": 7,
+            "throw": true,
+            "fallthrough": false,
+            "count": 0,
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp"
+          },
+          {
+            "line": 57,
+            "source_block_id": 2,
+            "destination_block_id": 4,
+            "throw": false,
+            "fallthrough": false,
+            "count": 0,
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp"
+          }
+        ],
+        "uncovered_branch_count": 3,
+        "functions": {
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_68L7goodG2BEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_68L7goodB2GEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_684goodEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_6811goodG2BSinkEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_6811goodB2GSinkEv": 1
+        },
+        "dead_code_uncovered": [],
+        "effective_lines_total": 30,
+        "effective_line_pct": 1.0
+      },
+      "coverage_tier": "line_complete",
+      "coverage_tier_effective": "line_complete",
+      "coverage_error": [],
+      "entry_executed": true,
+      "site_coverage": {
+        "allocation_sites_total": 1,
+        "allocation_sites_hit": 1,
+        "release_sites_total": 1,
+        "release_sites_hit": 1,
+        "uncovered_sites": []
+      }
+    },
+    "realloc_fail": {
+      "leak_raw": false,
+      "leak_attributed": false,
+      "leak_blocks": [],
+      "attributed_blocks": [],
+      "attributed_bytes": 0,
+      "raw_bytes": 0,
+      "leak_kinds": [],
+      "leak_summary": null,
+      "leak_summary_bytes": null,
+      "leak_summary_records": null,
+      "asan_errors": [],
+      "deadly_signal": false,
+      "injection": {
+        "realloc_calls": 0,
+        "realloc_null_calls": 0,
+        "realloc_nonnull_calls": 0,
+        "injected": false,
+        "injected_at_call": null
+      },
+      "mode": "realloc_fail",
+      "build_variant": "wrap",
+      "applicable": false,
+      "returncode": 0,
+      "timed_out": false,
+      "wall_ms": 77,
+      "failure_class": "clean",
+      "decision": "clean",
+      "stdout_sha256": "1db71637c1e22e71e14c9f7c856bb20ab021b31da607b7c727f83bd6c0c0b7e0",
+      "stdout_lines": [
+        "0 -- 0",
+        "0 -- 0"
+      ],
+      "stderr_path": "cases/d0076_good/run_realloc_fail/stderr.txt",
+      "stdout_path": "cases/d0076_good/run_realloc_fail/stdout.txt",
+      "env": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+        "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0",
+        "DYNENH_REALLOC_FAIL_NONNULL": "1"
+      },
+      "gcda_files": [
+        "CWE401_Memory_Leak__new_array_twointsStruct_68a.gcda",
+        "CWE401_Memory_Leak__new_array_twointsStruct_68b.gcda",
+        "__dynenh_probe_main.gcda"
+      ],
+      "gcov_checks": [
+        {
+          "source": "CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp",
+          "returncode": 0,
+          "lines_total": 23,
+          "lines_hit": 23,
+          "lines_total_parsed": 23,
+          "lines_hit_parsed": 23
+        },
+        {
+          "source": "CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp",
+          "returncode": 0,
+          "lines_total": 7,
+          "lines_hit": 7,
+          "lines_total_parsed": 7,
+          "lines_hit_parsed": 7
+        }
+      ],
+      "coverage": {
+        "lines_total": 30,
+        "lines_hit": 30,
+        "line_pct": 1.0,
+        "branches_total": 6,
+        "branches_hit": 3,
+        "branch_pct": 0.5,
+        "files": [
+          {
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp",
+            "lines_total": 23,
+            "lines_hit": 23,
+            "line_pct": 1.0,
+            "branches_total": 4,
+            "branches_hit": 2,
+            "branch_pct": 0.5,
+            "uncovered_lines": [],
+            "uncovered_branches": 2
+          },
+          {
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp",
+            "lines_total": 7,
+            "lines_hit": 7,
+            "line_pct": 1.0,
+            "branches_total": 2,
+            "branches_hit": 1,
+            "branch_pct": 0.5,
+            "uncovered_lines": [],
+            "uncovered_branches": 1
+          }
+        ],
+        "uncovered_lines": [],
+        "uncovered_branches": [
+          {
+            "line": 69,
+            "source_block_id": 3,
+            "destination_block_id": 7,
+            "throw": true,
+            "fallthrough": false,
+            "count": 0,
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp"
+          },
+          {
+            "line": 71,
+            "source_block_id": 4,
+            "destination_block_id": 7,
+            "throw": true,
+            "fallthrough": false,
+            "count": 0,
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp"
+          },
+          {
+            "line": 57,
+            "source_block_id": 2,
+            "destination_block_id": 4,
+            "throw": false,
+            "fallthrough": false,
+            "count": 0,
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp"
+          }
+        ],
+        "uncovered_branch_count": 3,
+        "functions": {
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_68L7goodG2BEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_68L7goodB2GEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_684goodEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_6811goodG2BSinkEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_6811goodB2GSinkEv": 1
+        },
+        "dead_code_uncovered": [],
+        "effective_lines_total": 30,
+        "effective_line_pct": 1.0
+      },
+      "coverage_tier": "line_complete",
+      "coverage_tier_effective": "line_complete",
+      "coverage_error": [],
+      "entry_executed": true,
+      "site_coverage": {
+        "allocation_sites_total": 1,
+        "allocation_sites_hit": 1,
+        "release_sites_total": 1,
+        "release_sites_hit": 1,
+        "uncovered_sites": []
+      }
+    },
+    "nogobal": {
+      "leak_raw": true,
+      "leak_attributed": false,
+      "leak_blocks": [
+        {
+          "kind": "Direct",
+          "bytes": 73728,
+          "records": 1,
+          "attributed": false,
+          "deciding_frame": null,
+          "allocation_site": {
+            "function": "malloc",
+            "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+            "line": 67
+          }
+        },
+        {
+          "kind": "Direct",
+          "bytes": 4096,
+          "records": 1,
+          "attributed": false,
+          "deciding_frame": {
+            "function": "printStructLine",
+            "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c",
+            "line": 89
+          },
+          "allocation_site": {
+            "function": "malloc",
+            "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+            "line": 67
+          }
+        }
+      ],
+      "attributed_blocks": [],
+      "attributed_bytes": 0,
+      "raw_bytes": 77824,
+      "leak_kinds": [],
+      "leak_summary": "SUMMARY: AddressSanitizer: 77824 byte(s) leaked in 2 allocation(s)",
+      "leak_summary_bytes": 77824,
+      "leak_summary_records": 2,
+      "asan_errors": [],
+      "deadly_signal": false,
+      "injection": {
+        "realloc_calls": 0,
+        "realloc_null_calls": 0,
+        "realloc_nonnull_calls": 0,
+        "injected": false,
+        "injected_at_call": null
+      },
+      "mode": "nogobal",
+      "build_variant": "plain",
+      "applicable": true,
+      "returncode": 23,
+      "timed_out": false,
+      "wall_ms": 226,
+      "failure_class": "exit_23",
+      "decision": "clean",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_lines": [],
+      "stderr_path": "cases/d0076_good/run_nogobal/stderr.txt",
+      "stdout_path": "cases/d0076_good/run_nogobal/stdout.txt",
+      "env": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+        "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0:use_globals=0",
+        "DYNENH_REALLOC_FAIL_NONNULL": ""
+      },
+      "gcda_files": [
+        "CWE401_Memory_Leak__new_array_twointsStruct_68a.gcda",
+        "CWE401_Memory_Leak__new_array_twointsStruct_68b.gcda",
+        "__dynenh_probe_main.gcda"
+      ],
+      "gcov_checks": [
+        {
+          "source": "CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp",
+          "returncode": 0,
+          "lines_total": 23,
+          "lines_hit": 23,
+          "lines_total_parsed": 23,
+          "lines_hit_parsed": 23
+        },
+        {
+          "source": "CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp",
+          "returncode": 0,
+          "lines_total": 7,
+          "lines_hit": 7,
+          "lines_total_parsed": 7,
+          "lines_hit_parsed": 7
+        }
+      ],
+      "coverage": {
+        "lines_total": 30,
+        "lines_hit": 30,
+        "line_pct": 1.0,
+        "branches_total": 6,
+        "branches_hit": 3,
+        "branch_pct": 0.5,
+        "files": [
+          {
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp",
+            "lines_total": 23,
+            "lines_hit": 23,
+            "line_pct": 1.0,
+            "branches_total": 4,
+            "branches_hit": 2,
+            "branch_pct": 0.5,
+            "uncovered_lines": [],
+            "uncovered_branches": 2
+          },
+          {
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp",
+            "lines_total": 7,
+            "lines_hit": 7,
+            "line_pct": 1.0,
+            "branches_total": 2,
+            "branches_hit": 1,
+            "branch_pct": 0.5,
+            "uncovered_lines": [],
+            "uncovered_branches": 1
+          }
+        ],
+        "uncovered_lines": [],
+        "uncovered_branches": [
+          {
+            "line": 69,
+            "source_block_id": 3,
+            "destination_block_id": 7,
+            "throw": true,
+            "fallthrough": false,
+            "count": 0,
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp"
+          },
+          {
+            "line": 71,
+            "source_block_id": 4,
+            "destination_block_id": 7,
+            "throw": true,
+            "fallthrough": false,
+            "count": 0,
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp"
+          },
+          {
+            "line": 57,
+            "source_block_id": 2,
+            "destination_block_id": 4,
+            "throw": false,
+            "fallthrough": false,
+            "count": 0,
+            "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp"
+          }
+        ],
+        "uncovered_branch_count": 3,
+        "functions": {
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_68L7goodG2BEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_68L7goodB2GEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_684goodEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_6811goodG2BSinkEv": 1,
+          "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_6811goodB2GSinkEv": 1
+        },
+        "dead_code_uncovered": [],
+        "effective_lines_total": 30,
+        "effective_line_pct": 1.0
+      },
+      "coverage_tier": "line_complete",
+      "coverage_tier_effective": "line_complete",
+      "coverage_error": [],
+      "entry_executed": true,
+      "site_coverage": {
+        "allocation_sites_total": 1,
+        "allocation_sites_hit": 1,
+        "release_sites_total": 1,
+        "release_sites_hit": 1,
+        "uncovered_sites": []
+      }
+    }
+  },
+  "decision": "clean",
+  "y_pred": 0,
+  "evidence_modes": [],
+  "primary_evidence": null,
+  "failure_class": "clean",
+  "runtime_ms": 4251,
+  "errors": [],
+  "build": {
+    "ok": true,
+    "probe_path": "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/__dynenh_probe_main.cpp",
+    "object_dir": "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/obj",
+    "objects": [
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/obj/CWE401_Memory_Leak__new_array_twointsStruct_68a.o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/obj/CWE401_Memory_Leak__new_array_twointsStruct_68b.o",
+      "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/obj/__dynenh_probe_main.o"
+    ],
+    "plain": {
+      "ok": true,
+      "command": [
+        "g++",
+        "--coverage",
+        "-fsanitize=address",
+        "-o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/unit.plain.exe",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/obj/CWE401_Memory_Leak__new_array_twointsStruct_68a.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/obj/CWE401_Memory_Leak__new_array_twointsStruct_68b.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/obj/__dynenh_probe_main.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/build/support/io.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/build/support/std_thread.o",
+        "-lpthread",
+        "-lm"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "ms": 843,
+      "stderr_tail": ""
+    },
+    "wrap": {
+      "ok": true,
+      "command": [
+        "g++",
+        "--coverage",
+        "-fsanitize=address",
+        "-o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/unit.wrap.exe",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/obj/CWE401_Memory_Leak__new_array_twointsStruct_68a.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/obj/CWE401_Memory_Leak__new_array_twointsStruct_68b.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/obj/__dynenh_probe_main.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/build/support/io.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/build/support/std_thread.o",
+        "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/build/support/inject_realloc.o",
+        "-Wl,--wrap=realloc",
+        "-lpthread",
+        "-lm"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "ms": 830,
+      "stderr_tail": ""
+    },
+    "plain_exe": "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/unit.plain.exe",
+    "wrap_exe": "/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0076_good/build/unit.wrap.exe",
+    "errors": []
+  },
+  "coverage_union": {
+    "lines_total": 30,
+    "lines_hit": 30,
+    "line_pct": 1.0,
+    "branches_total": 6,
+    "branches_hit": 3,
+    "branch_pct": 0.5,
+    "files": [
+      {
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp",
+        "lines_total": 23,
+        "lines_hit": 23,
+        "line_pct": 1.0,
+        "branches_total": 4,
+        "branches_hit": 2,
+        "branch_pct": 0.5,
+        "uncovered_lines": [],
+        "uncovered_branches": 2
+      },
+      {
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp",
+        "lines_total": 7,
+        "lines_hit": 7,
+        "line_pct": 1.0,
+        "branches_total": 2,
+        "branches_hit": 1,
+        "branch_pct": 0.5,
+        "uncovered_lines": [],
+        "uncovered_branches": 1
+      }
+    ],
+    "uncovered_lines": [],
+    "uncovered_branches": [
+      {
+        "line": 69,
+        "source_block_id": 3,
+        "destination_block_id": 7,
+        "throw": true,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp"
+      },
+      {
+        "line": 71,
+        "source_block_id": 4,
+        "destination_block_id": 7,
+        "throw": true,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68a.cpp"
+      },
+      {
+        "line": 57,
+        "source_block_id": 2,
+        "destination_block_id": 4,
+        "throw": false,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_array_twointsStruct_68b.cpp"
+      }
+    ],
+    "uncovered_branch_count": 3,
+    "functions": {
+      "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_68L7goodG2BEv": 1,
+      "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_68L7goodB2GEv": 1,
+      "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_684goodEv": 1,
+      "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_6811goodG2BSinkEv": 1,
+      "_ZN46CWE401_Memory_Leak__new_array_twointsStruct_6811goodB2GSinkEv": 1
+    },
+    "dead_code_uncovered": [],
+    "effective_lines_total": 30,
+    "effective_line_pct": 1.0
+  },
+  "coverage_tier": "line_complete",
+  "coverage_tier_effective": "line_complete",
+  "coverage_union_error": [],
+  "entry_executed": true,
+  "site_coverage_union": {
+    "allocation_sites_total": 1,
+    "allocation_sites_hit": 1,
+    "release_sites_total": 1,
+    "release_sites_hit": 1,
+    "uncovered_sites": []
+  },
+  "compile_error": false,
+  "coverage_class": "covered_clean",
+  "covered_clean": true,
+  "uncovered": false
+}

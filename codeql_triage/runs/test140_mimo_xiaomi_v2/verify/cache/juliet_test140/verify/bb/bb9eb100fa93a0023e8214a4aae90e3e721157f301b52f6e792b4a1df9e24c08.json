@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:48:10.692+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 3.220732269997825,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"0ee39e98-dd48-4303-bff9-acb76b0cb7a9_2srfayg528egmuc64g_ef27f8ac85984d149dd8659d7f9c66b3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": true, \\\"final_alert_verdict\\\": \\\"true_positive\\\", \\\"release_gap\\\": \\\"calloc(100, sizeof(wchar_t)) in sym_1; after printWLine, function returns and main exits without any free/delete of the block\\\", \\\"reason\\\": \\\"The calloc'd block is never freed on any path; sym_1 returns and main exits with it still allocated. Inner shadowed copy doesn't release it either.\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344490,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":104,\"prompt_tokens\":693,\"total_tokens\":797,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:48:07.472+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "bb9eb100fa93a0023e8214a4aae90e3e721157f301b52f6e792b4a1df9e24c08"
+  },
+  "cache_key": "bb9eb100fa93a0023e8214a4aae90e3e721157f301b52f6e792b4a1df9e24c08",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": true, \"final_alert_verdict\": \"true_positive\", \"release_gap\": \"calloc(100, sizeof(wchar_t)) in sym_1; after printWLine, function returns and main exits without any free/delete of the block\", \"reason\": \"The calloc'd block is never freed on any path; sym_1 returns and main exits with it still allocated. Inner shadowed copy doesn't release it either.\", \"confidence\": 0.95}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 104,
+    "cost_usd": 0.00012614,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 693
+  },
+  "created_at": "2026-11-22T10:48:10.692+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.95,
+    "final_alert_verdict": "true_positive",
+    "final_leak_present": true,
+    "reason": "The calloc'd block is never freed on any path; sym_1 returns and main exits with it still allocated. Inner shadowed copy doesn't release it either.",
+    "release_gap": "calloc(100, sizeof(wchar_t)) in sym_1; after printWLine, function returns and main exits without any free/delete of the block"
+  },
+  "prompt_sha256": "7a234a0ad25836841c95271a25543ac95ed0d2f95e61221260d51ebc28c0fdc2",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "324e689f8f49635ca6af3808b870234898dd77bacde95e21a93f9d2c8535041d",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 0,
+      "cpp/memory-never-freed": 1
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "bad",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_33__bad",
+    "variant": "33",
+    "y_true": 1
+  },
+  "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_33__bad",
+  "usage": {
+    "completion_tokens": 104,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 693,
+    "prompt_tokens_details": null,
+    "total_tokens": 797
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 3.220777418999205
+}

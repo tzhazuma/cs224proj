@@ -58,6 +58,11 @@
 | [`research/hybrid_ai_memory.md`](../research/hybrid_ai_memory.md) | AI + 传统工具的证据条件化 | `hybrid/`、`hybrid_dynamic_enhanced/` 的设计背景 |
 | [`research/improvement_opportunities.md`](../research/improvement_opportunities.md) | 102 条 invalid、无改动修复、置信度校准等改进机会 | schema/修复章节的动机 |
 | [`research/innovation_findings.md`](../research/innovation_findings.md) | 创新点的证据分级：能写/不能写 | 报告结论与答辩边界 |
+| [`research/next_iteration_rationale.md`](../research/next_iteration_rationale.md) | 2026-11-22 五个最弱环节的定量复核、N1–N4 成功线、失败解释与 2024–2026 文献映射 | 下一轮实验设计与“为什么先做这些” |
+| [`interpretable_baseline/LITERATURE.md`](../interpretable_baseline/LITERATURE.md) | 平凡基线、长度/复杂度捷径、类不平衡与 MCC/macro-F1 | 解释 Tier A 0.383 是否低于“不看代码”的基线 |
+| [`codeql_triage/LITERATURE.md`](../codeql_triage/LITERATURE.md) | CodeQL 误报模式、LLM 告警分流、SAST+LLM 级联 | 23 个 C++ FP 的机制与分流设计 |
+| [`verifier_conservative/README.md`](../verifier_conservative/README.md) §定位与文献 | selective prediction、弃权、自我纠错、cascade 成本 | 解释为什么“三路验证器”是负结果 |
+| [`dynamic_coverage/README.md`](../dynamic_coverage/README.md) §4 | 覆盖率充分性、gcov/LLVM coverage、LSan 根集 | 解释 100% 行覆盖与 12 个漏报为何能同时成立 |
 
 ---
 
@@ -76,6 +81,11 @@
 | `juliet_repair/` 编译/LSan/行为 | compile/test/PoC 证据阶梯、patch overfitting | 58 个可观测单元；无真实项目/PoC |
 | `repair_eval/` 盲评 | LLM-as-judge 可靠性、κ paradox | LLM 辅助、非人类；无编译/PoC |
 | `analysis/schema_recovery/` | JSON mode vs Structured Outputs、format repair | L0 结构代理；无编译/测试/PoC |
+| `interpretable_baseline/` | 平凡基线、长度/复杂度捷径、macro-F1 vs MCC | dev40 仅 8 个负例；test 80% 正例；test-tuned 上界不是方法 |
+| `pair_diff/` | diff-guided review、position bias、length shortcut | diff−ctrl 不显著；changes-first 门控；长度匹配是代理 tokenizer |
+| `codeql_triage/` | CodeQL FP 模式、LLM triage、SAST+LLM cascade | 只有 MiMo；vs direct 不显著；91 告警复核非盲审 |
+| `verifier_conservative/` | selective prediction、abstention、self-correction、cascade | test-seen/post-hoc；4/236 撤销；无编译/执行验证 |
+| `dynamic_coverage/` | coverage adequacy、gcov/LLVM coverage、LSan 根集 | 100% 行覆盖≠无泄漏；branch gate 弃权全部 good；单输入 |
 
 ---
 

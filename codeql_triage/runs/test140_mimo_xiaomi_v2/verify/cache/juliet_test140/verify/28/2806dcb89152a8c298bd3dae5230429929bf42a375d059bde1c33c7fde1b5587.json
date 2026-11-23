@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:31.442+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.97415170900058,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"c41cfca7-524f-42c7-a6d4-00657d3f84fd_2srvasg528c5rr93b4_56bfd589b15d48fba79b258afdae53d3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": true, \\\"final_alert_verdict\\\": \\\"true_positive\\\", \\\"release_gap\\\": \\\"realloc(NULL, 100*sizeof(int64_t)) block in sym_1; after printLongLongLine, sym_1 returns to main and exits without free/delete\\\", \\\"reason\\\": \\\"The realloc'd block is stored in data and never freed on the normal path: sym_1 returns to main, which exits without releasing it.\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344452,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":103,\"prompt_tokens\":724,\"total_tokens\":827,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:24.468+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "2806dcb89152a8c298bd3dae5230429929bf42a375d059bde1c33c7fde1b5587"
+  },
+  "cache_key": "2806dcb89152a8c298bd3dae5230429929bf42a375d059bde1c33c7fde1b5587",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": true, \"final_alert_verdict\": \"true_positive\", \"release_gap\": \"realloc(NULL, 100*sizeof(int64_t)) block in sym_1; after printLongLongLine, sym_1 returns to main and exits without free/delete\", \"reason\": \"The realloc'd block is stored in data and never freed on the normal path: sym_1 returns to main, which exits without releasing it.\", \"confidence\": 0.95}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 103,
+    "cost_usd": 0.00013020000000000002,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 724
+  },
+  "created_at": "2026-11-22T10:47:31.442+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.95,
+    "final_alert_verdict": "true_positive",
+    "final_leak_present": true,
+    "reason": "The realloc'd block is stored in data and never freed on the normal path: sym_1 returns to main, which exits without releasing it.",
+    "release_gap": "realloc(NULL, 100*sizeof(int64_t)) block in sym_1; after printLongLongLine, sym_1 returns to main and exits without free/delete"
+  },
+  "prompt_sha256": "d8bc8b104a00bffb78c9bb02a13a09c410d03d385734dabd5a0b467cc9225284",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "84965ca11e65eb31b02727ef9564e74dbac5a10d19060f24cf917532df978992",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 1,
+      "cpp/memory-never-freed": 0
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "bad",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__int64_t_realloc_33__bad",
+    "variant": "33",
+    "y_true": 1
+  },
+  "unit_id": "CWE401_Memory_Leak__int64_t_realloc_33__bad",
+  "usage": {
+    "completion_tokens": 103,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 724,
+    "prompt_tokens_details": null,
+    "total_tokens": 827
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 6.974195729999337
+}

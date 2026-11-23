@@ -1,0 +1,839 @@
+{
+  "schema_version": "next-iteration-audit-2026-11-22.1",
+  "generated_at_utc": "2026-11-23T04:11:06.850902+00:00",
+  "root": "/mnt/c/Users/tzh03/Downloads/cs224proj",
+  "overall": "PASS_WITH_WARNINGS",
+  "api_calls": 0,
+  "network": "none",
+  "publication_note": {
+    "status": "CURRENT",
+    "detail": "Publication paths resolve."
+  },
+  "writes": [
+    "audit/next_iteration_audit.json",
+    "audit/next_iteration_audit.md"
+  ],
+  "scope": {
+    "groups": [
+      "codeql_triage (test 140, 23 FP, TP-deletion audit)",
+      "pair_diff (8 full runs, 1,440 records; 8 pilot runs, 64 records)",
+      "verifier_conservative (4 arms, 236 requests)",
+      "dynamic_coverage (140 units x 3 modes)",
+      "interpretable_baseline (dev40 -> test160 isolation)",
+      "research/next_iteration_rationale.md (read-only context)"
+    ],
+    "out_of_scope": [
+      "benchmark/extensions aggregate/README refresh (30 canonical outputs are checked, not regenerated)",
+      "report/PDF/README edits",
+      "git/gh operations"
+    ],
+    "method": "Read stored artifacts only; recompute prompts, joins, hashes, costs and metrics from raw records where possible."
+  },
+  "counts": {
+    "total": 41,
+    "pass": 40,
+    "warn": 1,
+    "fail": 0,
+    "info": 0
+  },
+  "must_fix": [],
+  "warnings": [
+    {
+      "id": "E5",
+      "area": "interpretable_baseline",
+      "title": "Pre-registration timestamp is not verifiable",
+      "detail": "README claims the method was pre-registered before the test run, but its mtime is 40.8s after metrics.json; pre-registration cannot be verified from the artifacts. The selected rule and thresholds are nevertheless dev-only."
+    }
+  ],
+  "checks": [
+    {
+      "id": "A1",
+      "area": "codeql_triage",
+      "title": "Frozen test140 dataset and CodeQL status",
+      "status": "PASS",
+      "detail": "140 frozen units (70 bad / 70 good; C 58 / C++ 82); 136 analyzable, 4 _82 compile errors; hashes match.",
+      "evidence": {
+        "units": 140,
+        "labels": {
+          "bad": 70,
+          "good": 70
+        },
+        "languages": {
+          "c": 58,
+          "cpp": 82
+        },
+        "compile_errors": [
+          "CWE401_Memory_Leak__new_twoIntsStruct_82__bad",
+          "CWE401_Memory_Leak__new_twoIntsStruct_82__good",
+          "CWE401_Memory_Leak__new_wchar_t_82__bad",
+          "CWE401_Memory_Leak__new_wchar_t_82__good"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A2",
+      "area": "codeql_triage",
+      "title": "CodeQL confusion and metrics",
+      "status": "PASS",
+      "detail": "CodeQL test140 confusion 68 TP / 23 FP / 47 TN / 2 FN; macro-F1 0.8173, MCC 0.6739; export matches.",
+      "evidence": {
+        "confusion": {
+          "tp": 68,
+          "fp": 23,
+          "tn": 47,
+          "fn": 2
+        },
+        "macro_f1": 0.8173182316404822,
+        "mcc": 0.6738973950355189,
+        "coverage": 0.9714285714285714
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A3",
+      "area": "codeql_triage",
+      "title": "23 FPs are one query and four C++ variants",
+      "status": "PASS",
+      "detail": "All 23 CodeQL FPs are C++ good units on cpp/memory-may-not-be-freed (33:15, 22:3, 72:3, 54:2); never-freed has 0 FP.",
+      "evidence": {
+        "variants": {
+          "33": 15,
+          "22": 3,
+          "72": 3,
+          "54": 2
+        },
+        "language": "cpp",
+        "query": "cpp/memory-may-not-be-freed"
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A4",
+      "area": "codeql_triage",
+      "title": "TP deletion: v1 7, v2/verified 0",
+      "status": "PASS",
+      "detail": "v1 deleted 7 CodeQL TPs, all malloc_realloc may-query units; v2 and the verifier deleted 0/68.",
+      "evidence": {
+        "v1_deleted": [
+          "CWE401_Memory_Leak__malloc_realloc_int64_t_01__bad",
+          "CWE401_Memory_Leak__malloc_realloc_int64_t_09__bad",
+          "CWE401_Memory_Leak__malloc_realloc_int64_t_18__bad",
+          "CWE401_Memory_Leak__malloc_realloc_int_01__bad",
+          "CWE401_Memory_Leak__malloc_realloc_int_18__bad",
+          "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad",
+          "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18__bad"
+        ],
+        "v2_deleted": 0,
+        "verified_deleted": 0
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A5",
+      "area": "codeql_triage",
+      "title": "v2 and verifier metrics reproduce",
+      "status": "PASS",
+      "detail": "v2 one-shot 68/3/67/2 (0.9643); verifier flips exactly 3 _22 goods to 68/0/70/2 (0.9857, MCC 0.9718); no TP broken.",
+      "evidence": {
+        "one_shot": {
+          "tp": 68,
+          "fp": 3,
+          "tn": 67,
+          "fn": 2
+        },
+        "verified": {
+          "tp": 68,
+          "fp": 0,
+          "tn": 70,
+          "fn": 2
+        },
+        "flips": [
+          "CWE401_Memory_Leak__new_array_char_22__good",
+          "CWE401_Memory_Leak__new_array_int_22__good",
+          "CWE401_Memory_Leak__new_int_22__good"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A6",
+      "area": "codeql_triage",
+      "title": "Request counts, statuses and re-parsed units",
+      "status": "PASS",
+      "detail": "140 direct + 140 triage + 91 verify requests; 2 triage outputs re-parsed under the clarified schema; final coverage 140/140.",
+      "evidence": {
+        "direct": 140,
+        "triage": 140,
+        "verify": 91,
+        "reparsed": [
+          "CWE401_Memory_Leak__new_twoIntsStruct_82__bad",
+          "CWE401_Memory_Leak__new_wchar_t_82__bad"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A7",
+      "area": "codeql_triage",
+      "title": "Prompt leakage and credential hygiene",
+      "status": "PASS",
+      "detail": "280 stored first-pass prompt bodies contain no unit_id/group_id/CWE/label/path token; 91 verify prompts are distinct and the builder applies the same audit_prompt (verify bodies were not retained).",
+      "evidence": {
+        "scanned": 280,
+        "verify_prompts": 91
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A8",
+      "area": "codeql_triage",
+      "title": "Configured-price cost recomputes",
+      "status": "PASS",
+      "detail": "Configured-price cost: direct $0.003021 + triage $0.030545 + verify $0.012229 = $0.045795.",
+      "evidence": {
+        "direct_usd": 0.003021457600000002,
+        "triage_usd": 0.030544500000000002,
+        "verify_usd": 0.01222872,
+        "total_usd": 0.0457946776
+      },
+      "must_fix": false
+    },
+    {
+      "id": "A9",
+      "area": "codeql_triage",
+      "title": "benchmark_export matches per-unit records",
+      "status": "PASS",
+      "detail": "Export reproduces all 9 conditions from per-unit records; REPORT.md carries the same key numbers.",
+      "evidence": {
+        "conditions": [
+          "codeql",
+          "direct",
+          "triage_v1_oneshot",
+          "triage_v2_oneshot",
+          "triage_v2_verified",
+          "triage_v2_text_rule",
+          "cascade_verified_alert_direct_noalert",
+          "zero_cost_drop_cpp_may_not_be_freed",
+          "zero_cost_never_freed_only"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B1",
+      "area": "pair_diff",
+      "title": "Frozen 180-pair dataset",
+      "status": "PASS",
+      "detail": "Frozen 180-pair test split; SHA-256 matches every manifest; 180 unique pair ids with both versions.",
+      "evidence": {
+        "units": 180,
+        "sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d"
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B2",
+      "area": "pair_diff",
+      "title": "8 full runs x 180 = 1,440 records",
+      "status": "PASS",
+      "detail": "8 full runs x 180 = 1,440 records, all ok, no partial/limit; 8 pilot runs (64 records) kept separate.",
+      "evidence": {
+        "full_runs": {
+          "test_deepseek_ctrl_fwd": 180,
+          "test_deepseek_ctrl_rev": 180,
+          "test_deepseek_diff_fwd": 180,
+          "test_deepseek_diff_rev": 180,
+          "test_mimo_ctrl_fwd": 180,
+          "test_mimo_ctrl_rev": 180,
+          "test_mimo_diff_fwd": 180,
+          "test_mimo_diff_rev": 180
+        },
+        "total": 1440,
+        "pilot_runs": 8,
+        "pilot_records": 64
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B3",
+      "area": "pair_diff",
+      "title": "0 invalid; 2 schema-inexact disclosed",
+      "status": "PASS",
+      "detail": "0 invalid by decision validity (1,440/1,440 valid, 0 parse errors, 0 status errors); 2 outputs have an extra note key and are disclosed as 99.44% schema-exact.",
+      "evidence": {
+        "invalid": 0,
+        "schema_exact": 1438,
+        "schema_inexact": 2,
+        "extra_keys": [
+          "('confidence_note',)",
+          "('rationale_note',)"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B4",
+      "area": "pair_diff",
+      "title": "Position maps are balanced and complemented",
+      "status": "PASS",
+      "detail": "Every run has 180 assignments with 90/90 slot balance; reverse maps are exact complements; map and base hashes match.",
+      "evidence": {
+        "runs": 8,
+        "assignments_per_run": 180
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B5",
+      "area": "pair_diff",
+      "title": "Per-run DA reproduces",
+      "status": "PASS",
+      "detail": "Per-run DA reproduces for all 8 runs (DeepSeek 68.33/70.56/68.89/69.44; MiMo 68.33/66.67/66.11/69.44).",
+      "evidence": {
+        "correct": {
+          "test_deepseek_ctrl_fwd": 124,
+          "test_deepseek_ctrl_rev": 125,
+          "test_deepseek_diff_fwd": 123,
+          "test_deepseek_diff_rev": 127,
+          "test_mimo_ctrl_fwd": 119,
+          "test_mimo_ctrl_rev": 125,
+          "test_mimo_diff_fwd": 123,
+          "test_mimo_diff_rev": 120
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B6",
+      "area": "pair_diff",
+      "title": "Exchange-consistent DA reproduces",
+      "status": "PASS",
+      "detail": "Exchange-consistent DA reproduces: DeepSeek diff 62.22% / ctrl 60.00%; MiMo diff 60.56% / ctrl 62.22%.",
+      "evidence": {
+        "counts": {
+          "deepseek/diff": 112,
+          "deepseek/ctrl": 108,
+          "mimo/diff": 109,
+          "mimo/ctrl": 112
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B7",
+      "area": "pair_diff",
+      "title": "Prompt/slot leakage audit",
+      "status": "PASS",
+      "detail": "All 8 leak audits are wrapper-clean and slot-clean; 180/180 diff directions A->B. The only body hits are source content: a CVE-2017-17969 comment (disclosed) and the identifier __func_name_from_ord, not the dataset func_name field.",
+      "evidence": {
+        "body_hits": {
+          "test_deepseek_ctrl_fwd": {
+            "cve_body": 1,
+            "field_body": 1
+          },
+          "test_deepseek_ctrl_rev": {
+            "cve_body": 1,
+            "field_body": 1
+          },
+          "test_deepseek_diff_fwd": {
+            "cve_body": 1,
+            "field_body": 1
+          },
+          "test_deepseek_diff_rev": {
+            "cve_body": 1,
+            "field_body": 1
+          },
+          "test_mimo_ctrl_fwd": {
+            "cve_body": 1,
+            "field_body": 1
+          },
+          "test_mimo_ctrl_rev": {
+            "cve_body": 1,
+            "field_body": 1
+          },
+          "test_mimo_diff_fwd": {
+            "cve_body": 1,
+            "field_body": 1
+          },
+          "test_mimo_diff_rev": {
+            "cve_body": 1,
+            "field_body": 1
+          }
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B8",
+      "area": "pair_diff",
+      "title": "Cost and token totals recompute",
+      "status": "PASS",
+      "detail": "New runs cost $1.156871 (4,366,678 prompt / 453,037 completion tokens); open baseline reuses 720 pair_debias records ($0.304602 + $0.145586).",
+      "evidence": {
+        "new_usd": 1.1568705072,
+        "prompt_tokens": 4366678,
+        "completion_tokens": 453037,
+        "open_usd": {
+          "deepseek": 0.30460192799999997,
+          "mimo": 0.1455858544
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "B9",
+      "area": "pair_diff",
+      "title": "benchmark_export matches all conditions",
+      "status": "PASS",
+      "detail": "benchmark_export reproduces all 12 conditions (DA, committed DA, abstention, cost); the unified report table matches.",
+      "evidence": {
+        "conditions": 12
+      },
+      "must_fix": false
+    },
+    {
+      "id": "C1",
+      "area": "verifier_conservative",
+      "title": "Four arms, 236 first-pass positives",
+      "status": "PASS",
+      "detail": "Four arms on first-pass positives: 60/60/58/58 = 236 requests; labels are 49 V / 11 NV per 60 arm and 47 V / 11 NV per 58 arm.",
+      "evidence": {
+        "arms": {
+          "test_conservative_deepseek_by_mimo": 60,
+          "test_conservative_deepseek_self": 60,
+          "test_conservative_mimo_by_deepseek": 58,
+          "test_conservative_mimo_self": 58
+        },
+        "labels": {
+          "test_conservative_deepseek_by_mimo": {
+            "true": 49,
+            "false": 11
+          },
+          "test_conservative_deepseek_self": {
+            "true": 49,
+            "false": 11
+          },
+          "test_conservative_mimo_by_deepseek": {
+            "false": 11,
+            "true": 47
+          },
+          "test_conservative_mimo_self": {
+            "false": 11,
+            "true": 47
+          }
+        },
+        "total": 236
+      },
+      "must_fix": false
+    },
+    {
+      "id": "C2",
+      "area": "verifier_conservative",
+      "title": "Statuses and fail-open handling",
+      "status": "PASS",
+      "detail": "233 ok / 2 invalid / 1 API error; all three failures keep the first-pass prediction (fail-open), not retract.",
+      "evidence": {
+        "status": {
+          "ok": 233,
+          "error": 1,
+          "invalid": 2
+        },
+        "valid": 233,
+        "failures": [
+          {
+            "arm": "test_conservative_mimo_by_deepseek",
+            "sample": "idx:11143",
+            "status": "error"
+          },
+          {
+            "arm": "test_conservative_mimo_self",
+            "sample": "idx:7458",
+            "status": "invalid"
+          },
+          {
+            "arm": "test_conservative_mimo_self",
+            "sample": "idx:17502",
+            "status": "invalid"
+          }
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "C3",
+      "area": "verifier_conservative",
+      "title": "Retraction count and composition",
+      "status": "PASS",
+      "detail": "4/236 retractions (TP 3 / FP 1), precision 25.0%; all are grounded unsupported decisions; insufficient never retracts.",
+      "evidence": {
+        "per_arm": {
+          "deepseek_self": 1,
+          "deepseek_cross": 0,
+          "mimo_self": 0,
+          "mimo_cross": 3
+        },
+        "tp": 3,
+        "fp": 1,
+        "precision": 0.25
+      },
+      "must_fix": false
+    },
+    {
+      "id": "C4",
+      "area": "verifier_conservative",
+      "title": "Verifier cost recomputes",
+      "status": "PASS",
+      "detail": "Verifier cost recomputes to $0.151758 across 235 priced requests; the single API error has no usage and is not imputed.",
+      "evidence": {
+        "total_usd": 0.151758112,
+        "missing_cost_records": 1,
+        "per_arm": {
+          "test_conservative_deepseek_by_mimo": 0.028040039999999992,
+          "test_conservative_deepseek_self": 0.049598052000000004,
+          "test_conservative_mimo_by_deepseek": 0.0470541,
+          "test_conservative_mimo_self": 0.027065920000000004
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "C5",
+      "area": "verifier_conservative",
+      "title": "Dry-run body hashes and isolation audit",
+      "status": "PASS",
+      "detail": "All 236 real request bodies hash-match their dry runs; isolation violations 0; keys and Authorization never stored.",
+      "evidence": {
+        "bodies": 236
+      },
+      "must_fix": false
+    },
+    {
+      "id": "C6",
+      "area": "verifier_conservative",
+      "title": "Prompt exposes only source and claim",
+      "status": "PASS",
+      "detail": "236 verifier prompts expose only func_body + claim evidence lines/mechanism; no sample id, commit or path; template forbidden-token list is empty.",
+      "evidence": {
+        "scanned": 236
+      },
+      "must_fix": false
+    },
+    {
+      "id": "C7",
+      "area": "verifier_conservative",
+      "title": "Report and metrics agree",
+      "status": "PASS",
+      "detail": "Report matches metrics: 4/236, precision 25.0%, macro-F1 deltas 0 to -0.0052, MCC +0.0139 only on mimo_cross; post-hoc/test-seen status explicit.",
+      "evidence": {
+        "original_retractions": 155
+      },
+      "must_fix": false
+    },
+    {
+      "id": "D1",
+      "area": "dynamic_coverage",
+      "title": "140 units x 3 modes, no coverage errors",
+      "status": "PASS",
+      "detail": "140 units x 3 modes = 420 runs; 70/70 labels; 0 compile/coverage errors; entry executed 140/140.",
+      "evidence": {
+        "units": 140,
+        "raw": 420,
+        "modes": 3
+      },
+      "must_fix": false
+    },
+    {
+      "id": "D2",
+      "area": "dynamic_coverage",
+      "title": "Default vs union confusion and classes",
+      "status": "PASS",
+      "detail": "Default path 58 TP / 0 FP / 70 TN / 12 FN; three-mode union 70 TP / 0 FP / 70 TN / 0 FN; 12 default cleans are bad.",
+      "evidence": {
+        "default": {
+          "tp": 58,
+          "fp": 0,
+          "tn": 70,
+          "fn": 12
+        },
+        "union": {
+          "tp": 70,
+          "fp": 0,
+          "tn": 70,
+          "fn": 0
+        }
+      },
+      "must_fix": false
+    },
+    {
+      "id": "D3",
+      "area": "dynamic_coverage",
+      "title": "Line/branch coverage and latent FNs",
+      "status": "PASS",
+      "detail": "Effective line coverage 100%, branch 52.7%, 21 branch-complete units all bad; the 12 default FNs split 7 realloc_fail + 5 nogobal and are all line-complete.",
+      "evidence": {
+        "line": 1.0,
+        "branch": 0.5273109243697479,
+        "branch_complete": 21,
+        "latent": 12
+      },
+      "must_fix": false
+    },
+    {
+      "id": "D4",
+      "area": "dynamic_coverage",
+      "title": "verify.json and archived agreement",
+      "status": "PASS",
+      "detail": "verify.json PASS, 0 problems, selftest PASS; default and union decisions agree with dynamic_enhanced 140/140.",
+      "evidence": {
+        "default_agree": 140,
+        "union_agree": 140
+      },
+      "must_fix": false
+    },
+    {
+      "id": "D5",
+      "area": "dynamic_coverage",
+      "title": "No model/API usage",
+      "status": "PASS",
+      "detail": "Coverage tool imports no network/model client; raw records contain no model or API-key field.",
+      "evidence": {
+        "imports": [
+          "__future__",
+          "argparse",
+          "build",
+          "concurrent",
+          "csv",
+          "dataclasses",
+          "datetime",
+          "dyncov",
+          "dyne",
+          "execute",
+          "gcov",
+          "gzip",
+          "hashlib",
+          "json",
+          "link",
+          "math",
+          "metrics",
+          "os",
+          "pathlib",
+          "platform",
+          "re",
+          "shutil",
+          "signal",
+          "statistics",
+          "subprocess",
+          "sys",
+          "time",
+          "traceback",
+          "units"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "E1",
+      "area": "interpretable_baseline",
+      "title": "dev40/test160 isolation is exact",
+      "status": "PASS",
+      "detail": "dev40/test160 isolation: idx, project, function-body MD5 and project+commit overlap all 0; both split hashes match.",
+      "evidence": {
+        "dev": 40,
+        "test": 160,
+        "idx_overlap": 0,
+        "project_overlap": 0,
+        "body_md5_overlap": 0
+      },
+      "must_fix": false
+    },
+    {
+      "id": "E2",
+      "area": "interpretable_baseline",
+      "title": "Feature and prediction record counts",
+      "status": "PASS",
+      "detail": "200 feature rows (40 dev / 160 test) and 1,800 predictions (9 methods x 200); all predictions binary.",
+      "evidence": {
+        "features": 200,
+        "predictions": 1800,
+        "methods": [
+          "lr_balanced",
+          "lr_unweighted",
+          "rule:alloc_or_mem",
+          "rule:alloc_unbalanced",
+          "rule:calls_high",
+          "rule:length_short",
+          "rule:mem_api_present",
+          "rule:prior_majority",
+          "rule:short_and_alloc_or_mem"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "E3",
+      "area": "interpretable_baseline",
+      "title": "Thresholds and rule selection are dev-only",
+      "status": "PASS",
+      "detail": "Thresholds are dev-only (chars 1504, calls 16, positive rate 0.8); length_short is the best of 7 rules on dev (0.4505 vs 0.4444).",
+      "evidence": {
+        "chars": 1504.0,
+        "calls": 16.0,
+        "positive_rate": 0.8,
+        "best_rule": "length_short"
+      },
+      "must_fix": false
+    },
+    {
+      "id": "E4",
+      "area": "interpretable_baseline",
+      "title": "test160 metrics reproduce",
+      "status": "PASS",
+      "detail": "test160: length_short 75/15/17/53, macro-F1 0.5107, MCC 0.0945; majority 0.4444; alloc_or_mem MCC 0.1833; 8 LLM runs 0.3456-0.4223.",
+      "evidence": {
+        "length_short": {
+          "tp": 75,
+          "fp": 15,
+          "tn": 17,
+          "fn": 53,
+          "macro_f1": 0.5107033639143731,
+          "mcc": 0.09449111825230681
+        },
+        "majority_macro_f1": 0.4444444444444444,
+        "alloc_or_mem_mcc": 0.18333969940564226
+      },
+      "must_fix": false
+    },
+    {
+      "id": "E5",
+      "area": "interpretable_baseline",
+      "title": "Pre-registration timestamp is not verifiable",
+      "status": "WARN",
+      "detail": "README claims the method was pre-registered before the test run, but its mtime is 40.8s after metrics.json; pre-registration cannot be verified from the artifacts. The selected rule and thresholds are nevertheless dev-only.",
+      "evidence": {
+        "readme_mtime": "2026-11-22T10:43:14.482670+00:00",
+        "metrics_mtime": "2026-11-22T10:42:33.675650+00:00",
+        "delta_seconds": 40.80702018737793
+      },
+      "must_fix": false
+    },
+    {
+      "id": "E6",
+      "area": "interpretable_baseline",
+      "title": "No model/API usage",
+      "status": "PASS",
+      "detail": "run_baseline.py imports no network/model client and contains no api_key/model-client reference.",
+      "evidence": {
+        "imports": [
+          "__future__",
+          "argparse",
+          "collections",
+          "datetime",
+          "hashlib",
+          "json",
+          "math",
+          "pathlib",
+          "random",
+          "re",
+          "statistics",
+          "sys"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "F1",
+      "area": "cross",
+      "title": "Old results and frozen hashes are preserved",
+      "status": "PASS",
+      "detail": "Old audit files and six frozen hashes are unchanged; old result counts still 1,080 pair_debias / 236 evidence / 140 dynamic / 280 hybrid / 200 static; the sampled old artifacts predate 2026-11-22.",
+      "evidence": {
+        "pair_debias": 1080,
+        "evidence": 236,
+        "dynamic": 140,
+        "hybrid": 280,
+        "static": 200
+      },
+      "must_fix": false
+    },
+    {
+      "id": "F2",
+      "area": "cross",
+      "title": "Unified report matches the audited numbers",
+      "status": "PASS",
+      "detail": "Unified report and TeX carry the audited CodeQL, pair, conservative, coverage and interpretable numbers; the PDF exists.",
+      "evidence": {
+        "report": "report/next_results_summary.md",
+        "tex": "report/report_next_zh.tex",
+        "pdf_bytes": 699157
+      },
+      "must_fix": false
+    },
+    {
+      "id": "F3",
+      "area": "cross",
+      "title": "Benchmark aggregate/README refreshed",
+      "status": "PASS",
+      "detail": "All 30 batch outputs exist; benchmark/results/next_iteration_summary.json (2026-11-22T14:01:12Z) validates 30/30 runs with 0 failed design checks and benchmark/results/NEXT_ITERATION.md carries the headline numbers.",
+      "evidence": {
+        "batch_runs": 30,
+        "imported": 30,
+        "summary_generated_at": "2026-11-22T14:01:12Z",
+        "design_checks_total": 71
+      },
+      "must_fix": false
+    },
+    {
+      "id": "F4",
+      "area": "cross",
+      "title": "Publication paths and audit filename",
+      "status": "PASS",
+      "detail": "Publication paths resolve, the audit uses the assigned filenames, and the report/TeX product map points to pair_diff/results/report.md.",
+      "evidence": {
+        "paths": [
+          "audit/next_iteration_audit.md",
+          "audit/next_iteration_audit.json",
+          "benchmark/results/NEXT_ITERATION.md",
+          "benchmark/results/next_iteration_summary.json",
+          "pair_diff/results/report.md"
+        ]
+      },
+      "must_fix": false
+    },
+    {
+      "id": "F5",
+      "area": "cross",
+      "title": "Audit is read-only and offline",
+      "status": "PASS",
+      "detail": "Audit script uses only the standard library, makes no network/model call and runs no git/gh command; it writes only the two audit files.",
+      "evidence": {
+        "imports": [
+          "__future__",
+          "argparse",
+          "ast",
+          "collections",
+          "datetime",
+          "hashlib",
+          "json",
+          "math",
+          "os",
+          "pathlib",
+          "re",
+          "statistics",
+          "sys"
+        ],
+        "writes": [
+          "audit/next_iteration_audit.json",
+          "audit/next_iteration_audit.md"
+        ]
+      },
+      "must_fix": false
+    }
+  ],
+  "preserved_old_audit": {
+    "final_audit.json": "2026-11-11T21:58:05.183187+00:00",
+    "final_audit.md": "2026-11-11T21:58:24.203676+00:00",
+    "latest_audit.json": "2026-11-13T19:26:32.282191+00:00",
+    "latest_audit.md": "2026-11-13T19:26:32.285714+00:00"
+  }
+}

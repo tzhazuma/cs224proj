@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:56.313+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 3.921611824000138,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"a48402eb-1180-4eb4-814e-cb0aa4ccc71d_2srl3wg528dnkt5wcg_2985d8464be24dda946018d6c69c0383\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": true, \\\"final_alert_verdict\\\": \\\"true_positive\\\", \\\"release_gap\\\": \\\"new int64_t in sym_2 passed through sym_1->sym_3->sym_4->sym_5; sym_5 does nothing, main returns without delete\\\", \\\"reason\\\": \\\"The only heap allocation is never freed on any path; sym_5 receives the pointer but performs no release before program exit.\\\", \\\"confidence\\\": 0.98}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344475,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":100,\"prompt_tokens\":877,\"total_tokens\":977,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:52.392+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "b8a758e6b85bdcbce8eb6552090540a273bf56ba5a0f54e28f4c74b59facd4f0"
+  },
+  "cache_key": "b8a758e6b85bdcbce8eb6552090540a273bf56ba5a0f54e28f4c74b59facd4f0",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": true, \"final_alert_verdict\": \"true_positive\", \"release_gap\": \"new int64_t in sym_2 passed through sym_1->sym_3->sym_4->sym_5; sym_5 does nothing, main returns without delete\", \"reason\": \"The only heap allocation is never freed on any path; sym_5 receives the pointer but performs no release before program exit.\", \"confidence\": 0.98}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 100,
+    "cost_usd": 0.00015078000000000002,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 877
+  },
+  "created_at": "2026-11-22T10:47:56.313+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.98,
+    "final_alert_verdict": "true_positive",
+    "final_leak_present": true,
+    "reason": "The only heap allocation is never freed on any path; sym_5 receives the pointer but performs no release before program exit.",
+    "release_gap": "new int64_t in sym_2 passed through sym_1->sym_3->sym_4->sym_5; sym_5 does nothing, main returns without delete"
+  },
+  "prompt_sha256": "54a13f680a0b58a0e338c3323390c1bb33e4fe470c1fa3fde521ccdd144ab2c2",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "f9ec97395f47a1fa156039633571aeda6e5bab0e35708c83552e6663d4390ab3",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 0,
+      "cpp/memory-never-freed": 1
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "bad",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__new_int64_t_54__bad",
+    "variant": "54",
+    "y_true": 1
+  },
+  "unit_id": "CWE401_Memory_Leak__new_int64_t_54__bad",
+  "usage": {
+    "completion_tokens": 100,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 877,
+    "prompt_tokens_details": null,
+    "total_tokens": 977
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 3.9216526999989583
+}

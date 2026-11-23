@@ -1,0 +1,62 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_interp_prior_majority_20261122",
+  "created_at": "2026-11-22T13:10:38Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1/test",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": 40,
+    "label_counts": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    }
+  },
+  "method": {
+    "method_id": "rule:prior_majority",
+    "family": "static",
+    "name": "Interpretable baseline: rule:prior_majority",
+    "strategy": "rule:prior_majority",
+    "tool": {
+      "name": "interpretable-lexical-baseline",
+      "version": "2026-11-22"
+    },
+    "config_sha256": "b2c14d9de7aea2ad6df5c13833da330fc66b9a30bc71776067271489ea407bc0"
+  },
+  "execution": {
+    "started_at": "2026-11-22T13:10:38Z",
+    "finished_at": "2026-11-22T13:10:38Z",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "40724c0f0659515e461d20a5d72f4a55ad6969d707a5ea2b0dd44fe9ea223976",
+    "extension_manifest_sha256": "a517830494c7796fdfc507cd1e467590837a7ff7e03c5e069f203b49bd9fbea8"
+  },
+  "legacy_import": null,
+  "notes": [
+    "interpretable baseline: rule:prior_majority",
+    "no API call; predictions copied"
+  ]
+}

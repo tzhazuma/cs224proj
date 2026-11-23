@@ -2380,6 +2380,684 @@ def hybrid_enhanced_dynamic_metrics(
         },
     }
 
+# ---------------------------------------------------------------------------
+# Next-iteration metrics (2026-11-22)
+# ---------------------------------------------------------------------------
+
+
+def _labels_predictions(records: Sequence[Mapping[str, Any]]) -> tuple[list[bool], list[bool | None], list[str]]:
+    labels: list[bool] = []
+    predictions: list[bool | None] = []
+    clusters: list[str] = []
+    for record in records:
+        label = as_bool((record.get("label") or {}).get("y_true"))
+        if label is None:
+            raise ExtensionError(f"{record.get('unit_id')}: label.y_true is not binary")
+        labels.append(label)
+        pred = as_bool((record.get("prediction") or {}).get("y_pred")) if record.get("status") == "ok" else None
+        predictions.append(pred)
+        clusters.append(str(record.get("cluster_id")))
+    return labels, predictions, clusters
+
+
+def _paired_mcnemar(
+    labels: Sequence[bool],
+    left: Sequence[bool | None],
+    right: Sequence[bool | None],
+) -> dict[str, Any] | None:
+    common = [
+        index
+        for index, (a, b) in enumerate(zip(left, right))
+        if a is not None and b is not None
+    ]
+    if not common:
+        return None
+    left_correct = sum(1 for index in common if left[index] == labels[index])
+    right_correct = sum(1 for index in common if right[index] == labels[index])
+    b = sum(1 for index in common if left[index] == labels[index] and right[index] != labels[index])
+    c = sum(1 for index in common if left[index] != labels[index] and right[index] == labels[index])
+    return {
+        "n": len(common),
+        "left_correct": left_correct,
+        "right_correct": right_correct,
+        "b_left_correct_right_wrong": b,
+        "c_left_wrong_right_correct": c,
+        "mcnemar": mcnemar_exact(a_correct_b_wrong=b, a_wrong_b_correct=c, total=len(common)),
+    }
+
+
+def _baseline_map(run_dir: Path, baseline_value: str) -> tuple[dict[str, bool | None], dict[str, Any] | None]:
+    baseline_path = resolve_path(
+        str(baseline_value),
+        [run_dir, run_dir.parent, Path(__file__).resolve().parents[3]],
+    )
+    if not (baseline_path / "run_manifest.json").exists():
+        return {}, {"error": "baseline run not found", "path": str(baseline_path)}
+    _, _, baseline_records, _ = load_extension_run(baseline_path)
+    mapping = {
+        str(record.get("unit_id")): (
+            as_bool((record.get("prediction") or {}).get("y_pred"))
+            if record.get("status") == "ok"
+            else None
+        )
+        for record in baseline_records
+    }
+    return mapping, {"path": str(baseline_path), "records": len(baseline_records)}
+
+
+def alert_triage_metrics(
+    run_dir: Path,
+    *,
+    resamples: int,
+    seed: int,
+    confidence: float,
+    coverage_threshold: float,
+    baseline_run: str | None = None,
+) -> dict[str, Any]:
+    report = validate_extension_run(run_dir, use_jsonschema=False)
+    if report.get("errors"):
+        raise ExtensionError("alert triage run failed validation: " + "; ".join(report["errors"][:5]))
+    manifest, ext_manifest, records, _ = load_extension_run(run_dir)
+    labels, predictions, clusters = _labels_predictions(records)
+    scores = detection_scores(labels, predictions, confidence=confidence)
+    bootstrap = bootstrap_detection(labels, predictions, clusters, resamples=resamples, seed=seed, confidence=confidence)
+    status_counts = Counter(str(record.get("status")) for record in records)
+    condition = str((records[0].get("extensions") or {}).get("condition"))
+    alerts = sum(1 for record in records if (record.get("extensions") or {}).get("codeql_alert") is True)
+    strata: dict[str, dict[str, Any]] = {}
+    variant_groups: dict[str, list[int]] = defaultdict(list)
+    for index, record in enumerate(records):
+        group = str(record.get("group_id") or "")
+        value = group.rsplit("_", 1)[-1] if "_" in group else "unknown"
+        variant_groups[value].append(index)
+    strata["variant"] = {
+        name: {
+            "n": len(indices),
+            "correct": sum(1 for index in indices if predictions[index] == labels[index]),
+            "tp": sum(1 for index in indices if labels[index] and predictions[index] is True),
+            "fp": sum(1 for index in indices if not labels[index] and predictions[index] is True),
+        }
+        for name, indices in sorted(variant_groups.items())
+    }
+    alert_indices = [index for index, record in enumerate(records) if (record.get("extensions") or {}).get("codeql_alert") is True]
+    no_alert_indices = [index for index, record in enumerate(records) if (record.get("extensions") or {}).get("codeql_alert") is False]
+    strata["codeql_alert"] = {
+        "alert": {
+            "n": len(alert_indices),
+            "tp": sum(1 for index in alert_indices if labels[index] and predictions[index] is True),
+            "fp": sum(1 for index in alert_indices if not labels[index] and predictions[index] is True),
+            "fn": sum(1 for index in alert_indices if labels[index] and predictions[index] is not True),
+            "tn": sum(1 for index in alert_indices if not labels[index] and predictions[index] is not True),
+        },
+        "no_alert": {
+            "n": len(no_alert_indices),
+            "tp": sum(1 for index in no_alert_indices if labels[index] and predictions[index] is True),
+            "fp": sum(1 for index in no_alert_indices if not labels[index] and predictions[index] is True),
+        },
+    }
+    baseline_value = baseline_run or (ext_manifest or {}).get("baseline_run")
+    comparison = None
+    if baseline_value:
+        mapping, meta = _baseline_map(run_dir, str(baseline_value))
+        baseline_preds = [mapping.get(str(record.get("unit_id"))) for record in records]
+        comparison = _paired_mcnemar(labels, baseline_preds, predictions)
+        if comparison is not None:
+            comparison["baseline"] = meta
+            comparison["note"] = "baseline vs this condition on common units; exact McNemar"
+    parent = compute_run_metrics(run_dir, resamples=resamples, seed=seed, confidence=confidence, coverage_threshold=coverage_threshold)
+    cost = cost_summary(records)
+    return {
+        "schema_version": EXTENSION_METRICS_SCHEMA,
+        "extension_id": "ext.codeql_alert_triage.v1",
+        "design": "codeql_alert_triage",
+        "generated_at": utc_now(),
+        "run_ids": {"run": str(manifest.get("run_id"))},
+        "settings": {
+            "bootstrap_resamples": resamples,
+            "bootstrap_seed": seed,
+            "confidence": confidence,
+            "cluster_unit": "case_family",
+            "coverage_threshold": coverage_threshold,
+            "condition": condition,
+        },
+        "counts": {
+            "units": len(records),
+            "valid": scores["valid"],
+            "codeql_alerts": alerts,
+            "by_status": dict(status_counts),
+        },
+        "primary": {
+            "name": "macro_f1",
+            "value": scores["macro_f1"],
+            "n": scores["valid"],
+            "ci_low": _boot_ci(bootstrap, "macro_f1").get("ci_low"),
+            "ci_high": _boot_ci(bootstrap, "macro_f1").get("ci_high"),
+            "method": "cluster percentile bootstrap (case_family)",
+            "note": f"{condition}: valid-only leak detection; clean and bad are both scored",
+        },
+        "metrics": {
+            "detection": {
+                "scores": scores,
+                "bootstrap": bootstrap.get("metrics", {}),
+                "cluster_count": bootstrap.get("cluster_count"),
+            },
+            "mcc": scores["mcc"],
+            "strict_accuracy": scores["strict_accuracy"],
+            "strata": strata,
+            "baseline_comparison": comparison,
+        },
+        "parent_metrics": parent,
+        "cost": cost,
+        "limitations": [
+            "The verifier sees the first-pass JSON; the verified condition is not an independent blind review.",
+            "The text rule and the verified condition produce identical predictions on this split.",
+            "DeepSeek has no results; MiMo numbers are not imputed to DeepSeek.",
+            "All 23 CodeQL false positives are C++ good units from cpp/memory-may-not-be-freed.",
+            "Two CodeQL false negatives are compile-error units; triage cannot recover them.",
+            "Single sample, temperature 0; no calibration or human adjudication.",
+        ],
+        "provenance": {
+            "extension_version": EXTENSION_VERSION,
+            "hashes": _run_hashes(run_dir),
+            "source": "canonical extension run; metrics recomputed, not copied",
+        },
+    }
+
+
+def conservative_verification_metrics(
+    run_dir: Path,
+    *,
+    resamples: int,
+    seed: int,
+    confidence: float,
+    coverage_threshold: float,
+    baseline_run: str | None = None,
+) -> dict[str, Any]:
+    report = validate_extension_run(run_dir, use_jsonschema=False)
+    if report.get("errors"):
+        raise ExtensionError("conservative verification run failed validation: " + "; ".join(report["errors"][:5]))
+    manifest, ext_manifest, records, _ = load_extension_run(run_dir)
+    labels, post, clusters = _labels_predictions(records)
+    pre = [as_bool((record.get("extensions") or {}).get("first_pass_y_pred")) for record in records]
+    post_scores = detection_scores(labels, post, confidence=confidence)
+    pre_scores = detection_scores(labels, pre, confidence=confidence)
+    bootstrap = bootstrap_detection(labels, post, clusters, resamples=resamples, seed=seed, confidence=confidence)
+    pre_bootstrap = bootstrap_detection(labels, pre, clusters, resamples=resamples, seed=seed, confidence=confidence)
+    mcnemar = _paired_mcnemar(labels, pre, post)
+    retract_records = [record for record in records if (record.get("extensions") or {}).get("retract") is True]
+    retracted_tp = sum(1 for record in retract_records if as_bool((record.get("label") or {}).get("y_true")) is True)
+    retracted_fp = sum(1 for record in retract_records if as_bool((record.get("label") or {}).get("y_true")) is False)
+    verifier_status = Counter(str((record.get("extensions") or {}).get("verifier_status")) for record in records)
+    assessments = Counter(str((record.get("extensions") or {}).get("assessment")) for record in records)
+    parent = compute_run_metrics(run_dir, resamples=resamples, seed=seed, confidence=confidence, coverage_threshold=coverage_threshold)
+    cost = cost_summary(records)
+    return {
+        "schema_version": EXTENSION_METRICS_SCHEMA,
+        "extension_id": "ext.conservative_verification.v1",
+        "design": "conservative_verification",
+        "generated_at": utc_now(),
+        "run_ids": {"run": str(manifest.get("run_id"))},
+        "settings": {
+            "bootstrap_resamples": resamples,
+            "bootstrap_seed": seed,
+            "confidence": confidence,
+            "cluster_unit": "project",
+            "coverage_threshold": coverage_threshold,
+            "arm": (ext_manifest or {}).get("options", {}).get("arm"),
+        },
+        "counts": {
+            "units": len(records),
+            "valid": post_scores["valid"],
+            "by_status": dict(Counter(str(record.get("status")) for record in records)),
+            "verifier_status": dict(verifier_status),
+            "assessment": dict(assessments),
+            "retractions": len(retract_records),
+            "retracted_tp": retracted_tp,
+            "retracted_fp": retracted_fp,
+        },
+        "primary": {
+            "name": "macro_f1",
+            "value": post_scores["macro_f1"],
+            "n": post_scores["valid"],
+            "ci_low": _boot_ci(bootstrap, "macro_f1").get("ci_low"),
+            "ci_high": _boot_ci(bootstrap, "macro_f1").get("ci_high"),
+            "method": "cluster percentile bootstrap (project)",
+            "note": "post-verifier valid-only detection; negatives unchanged",
+        },
+        "metrics": {
+            "pre": {
+                "scores": pre_scores,
+                "bootstrap": pre_bootstrap.get("metrics", {}),
+            },
+            "post": {
+                "scores": post_scores,
+                "bootstrap": bootstrap.get("metrics", {}),
+            },
+            "delta_macro_f1": (
+                post_scores["macro_f1"] - pre_scores["macro_f1"]
+                if post_scores.get("macro_f1") is not None and pre_scores.get("macro_f1") is not None
+                else None
+            ),
+            "mcnemar_pre_vs_post": mcnemar,
+            "retraction": {
+                "count": len(retract_records),
+                "tp": retracted_tp,
+                "fp": retracted_fp,
+                "precision": rate(retracted_fp, len(retract_records)) if retract_records else None,
+                "tp_loss_rate": rate(retracted_tp, pre_scores.get("confusion", {}).get("tp", 0)) if pre_scores.get("confusion", {}).get("tp") else None,
+                "fp_correction_rate": rate(retracted_fp, pre_scores.get("confusion", {}).get("fp", 0)) if pre_scores.get("confusion", {}).get("fp") else None,
+                "note": "retraction precision is the FP share of retractions; random/low-confidence baselines are in the producer report",
+            },
+            "mcc": post_scores["mcc"],
+            "strict_accuracy": post_scores["strict_accuracy"],
+        },
+        "parent_metrics": parent,
+        "cost": cost,
+        "limitations": [
+            "Exploratory and post hoc: the 160 test functions were already used by the first pass and the original verifier.",
+            "Only schema-valid first-pass positives were sent to the verifier; first-pass invalid records stay invalid.",
+            "The verifier output is model text; grounding checks line numbers, not semantic domination.",
+            "Four retractions are too few to estimate retraction precision precisely; the 25% point estimate has a wide interval.",
+            "Single run, temperature 0; no seed variance.",
+        ],
+        "provenance": {
+            "extension_version": EXTENSION_VERSION,
+            "hashes": _run_hashes(run_dir),
+            "source": "canonical extension run; metrics recomputed, not copied",
+        },
+    }
+
+
+def diff_pair_metrics(
+    run_dir: Path,
+    *,
+    resamples: int,
+    seed: int,
+    confidence: float,
+    coverage_threshold: float,
+    baseline_run: str | None = None,
+) -> dict[str, Any]:
+    report = validate_extension_run(run_dir, use_jsonschema=False)
+    if report.get("errors"):
+        raise ExtensionError("diff pair run failed validation: " + "; ".join(report["errors"][:5]))
+    manifest, ext_manifest, records, _ = load_extension_run(run_dir)
+    groups: dict[str, dict[str, Mapping[str, Any]]] = defaultdict(dict)
+    for record in records:
+        groups[str(record.get("group_id"))][str(record.get("side"))] = record
+    correct = 0
+    valid = 0
+    decisive = 0
+    decisive_correct = 0
+    both = 0
+    neither = 0
+    position: dict[str, dict[str, int]] = {"A": {"n": 0, "correct": 0}, "B": {"n": 0, "correct": 0}}
+    length_audit: dict[str, dict[str, int]] = {
+        "heuristic_correct": {"n": 0, "correct": 0},
+        "heuristic_wrong": {"n": 0, "correct": 0},
+    }
+    choose_shorter = 0
+    for pair_id, sides in groups.items():
+        if set(sides) != {"vulnerable", "fixed"}:
+            continue
+        vulnerable = sides["vulnerable"]
+        fixed = sides["fixed"]
+        if vulnerable.get("status") != "ok" or fixed.get("status") != "ok":
+            continue
+        valid += 1
+        block = vulnerable.get("extensions") or {}
+        choice = block.get("open_choice")
+        pm = block.get("position_map") or {}
+        vulnerable_slot = next((slot for slot, side in pm.items() if side == "vulnerable"), None)
+        fixed_slot = next((slot for slot, side in pm.items() if side == "fixed"), None)
+        pred_v = as_bool((vulnerable.get("prediction") or {}).get("y_pred"))
+        pred_f = as_bool((fixed.get("prediction") or {}).get("y_pred"))
+        is_correct = pred_v is True and pred_f is False
+        if is_correct:
+            correct += 1
+        if vulnerable_slot:
+            position[vulnerable_slot]["n"] += 1
+            if is_correct:
+                position[vulnerable_slot]["correct"] += 1
+        if choice in ("A", "B"):
+            decisive += 1
+            if is_correct:
+                decisive_correct += 1
+            lengths = block.get("length_chars") or {}
+            shorter = None
+            if lengths.get("vulnerable") is not None and lengths.get("fixed") is not None:
+                if lengths["vulnerable"] < lengths["fixed"]:
+                    shorter = "vulnerable"
+                elif lengths["fixed"] < lengths["vulnerable"]:
+                    shorter = "fixed"
+                else:
+                    shorter = "tie"
+            if shorter:
+                picked = choice
+                picked_side = pm.get(picked)
+                if picked_side == shorter:
+                    choose_shorter += 1
+                heuristic_side = shorter
+                bucket = "heuristic_correct" if heuristic_side == "vulnerable" else "heuristic_wrong"
+                length_audit[bucket]["n"] += 1
+                if is_correct:
+                    length_audit[bucket]["correct"] += 1
+        elif choice == "both":
+            both += 1
+        elif choice == "neither":
+            neither += 1
+    labels, predictions, clusters = _labels_predictions(records)
+    side_scores = detection_scores(labels, predictions, confidence=confidence)
+    side_bootstrap = bootstrap_detection(labels, predictions, clusters, resamples=resamples, seed=seed, confidence=confidence)
+    parent = compute_run_metrics(run_dir, resamples=resamples, seed=seed, confidence=confidence, coverage_threshold=coverage_threshold)
+    cost = cost_summary(records)
+    h_correct = length_audit["heuristic_correct"]
+    h_wrong = length_audit["heuristic_wrong"]
+    h_correct_da = rate(h_correct["correct"], h_correct["n"]) if h_correct["n"] else None
+    h_wrong_da = rate(h_wrong["correct"], h_wrong["n"]) if h_wrong["n"] else None
+    return {
+        "schema_version": EXTENSION_METRICS_SCHEMA,
+        "extension_id": "ext.diff_guided_pair.v1",
+        "design": "diff_guided_pair",
+        "generated_at": utc_now(),
+        "run_ids": {"run": str(manifest.get("run_id"))},
+        "settings": {
+            "bootstrap_resamples": resamples,
+            "bootstrap_seed": seed,
+            "confidence": confidence,
+            "cluster_unit": "pair_id",
+            "coverage_threshold": coverage_threshold,
+            "condition": (records[0].get("extensions") or {}).get("condition") if records else None,
+            "presentation_order": (records[0].get("extensions") or {}).get("presentation_order") if records else None,
+        },
+        "counts": {
+            "pairs": len(groups),
+            "valid_pairs": valid,
+            "side_records": len(records),
+            "both": both,
+            "neither": neither,
+            "decisive": decisive,
+            "by_status": dict(Counter(str(record.get("status")) for record in records)),
+        },
+        "primary": {
+            "name": "pair_da",
+            "value": rate(correct, valid),
+            "n": valid,
+            "ci_low": (_wilson(correct, valid) or {}).get("low"),
+            "ci_high": (_wilson(correct, valid) or {}).get("high"),
+            "method": "Wilson interval over pairs",
+            "note": "vulnerable side predicted true and fixed side predicted false",
+        },
+        "metrics": {
+            "pair_da": rate(correct, valid),
+            "committed_da": rate(decisive_correct, decisive),
+            "decisive_rate": rate(decisive, valid),
+            "abstention_rate": rate(both + neither, valid),
+            "both_rate": rate(both, valid),
+            "neither_rate": rate(neither, valid),
+            "position": {
+                slot: {
+                    "n": values["n"],
+                    "correct": values["correct"],
+                    "da": rate(values["correct"], values["n"]) if values["n"] else None,
+                }
+                for slot, values in position.items()
+            },
+            "position_delta_a_minus_b": (
+                rate(position["A"]["correct"], position["A"]["n"]) - rate(position["B"]["correct"], position["B"]["n"])
+                if position["A"]["n"] and position["B"]["n"]
+                else None
+            ),
+            "length_audit": {
+                "choose_shorter_rate": rate(choose_shorter, decisive) if decisive else None,
+                "heuristic_correct_n": h_correct["n"],
+                "heuristic_correct_da": h_correct_da,
+                "heuristic_wrong_n": h_wrong["n"],
+                "heuristic_wrong_da": h_wrong_da,
+                "gap": (h_correct_da - h_wrong_da) if h_correct_da is not None and h_wrong_da is not None else None,
+            },
+            "side_detection": {
+                "scores": side_scores,
+                "bootstrap": side_bootstrap.get("metrics", {}),
+                "cluster_count": side_bootstrap.get("cluster_count"),
+                "note": "side-level arithmetic is descriptive; pair DA is the primary endpoint",
+            },
+        },
+        "parent_metrics": parent,
+        "cost": cost,
+        "limitations": [
+            "The control block matches token length but is empty; it changes caution as well as content.",
+            "The diff direction is fixed A-to-B and follows the slot swap; it can introduce a target-side prior.",
+            "The open-choice arm is a cross-design reference from open_choice_pair, never pooled.",
+            "Length strata and matched subsets are post-hoc diagnostics, not pre-registered baselines.",
+            "Single greedy decode, temperature 0; no seed variance.",
+        ],
+        "provenance": {
+            "extension_version": EXTENSION_VERSION,
+            "hashes": _run_hashes(run_dir),
+            "source": "canonical extension run; metrics recomputed, not copied",
+        },
+    }
+
+
+def coverage_dynamic_metrics(
+    run_dir: Path,
+    *,
+    resamples: int,
+    seed: int,
+    confidence: float,
+    coverage_threshold: float,
+    baseline_run: str | None = None,
+) -> dict[str, Any]:
+    report = validate_extension_run(run_dir, use_jsonschema=False)
+    if report.get("errors"):
+        raise ExtensionError("coverage dynamic run failed validation: " + "; ".join(report["errors"][:5]))
+    manifest, ext_manifest, records, _ = load_extension_run(run_dir)
+    labels, predictions, clusters = _labels_predictions(records)
+    operational = [
+        as_bool((record.get("extensions") or {}).get("operational_y_pred"))
+        for record in records
+    ]
+    tiers = Counter(str((record.get("extensions") or {}).get("coverage_tier")) for record in records)
+    tiers_by_label: dict[str, dict[str, int]] = {}
+    for record in records:
+        label = "bad" if as_bool((record.get("label") or {}).get("y_true")) else "good"
+        tier = str((record.get("extensions") or {}).get("coverage_tier"))
+        tiers_by_label.setdefault(label, {})
+        tiers_by_label[label][tier] = tiers_by_label[label].get(tier, 0) + 1
+    line_values = [
+        float((record.get("coverage") or {}).get("line_coverage"))
+        for record in records
+        if (record.get("coverage") or {}).get("line_coverage") is not None
+    ]
+    branch_values = [
+        float((record.get("coverage") or {}).get("branch_coverage"))
+        for record in records
+        if (record.get("coverage") or {}).get("branch_coverage") is not None
+    ]
+    operational_scores = detection_scores(labels, operational, confidence=confidence)
+    operational_bootstrap = bootstrap_detection(labels, operational, clusters, resamples=resamples, seed=seed, confidence=confidence)
+    observed_leaks = sum(1 for record in records if record.get("status") == "ok")
+    positive_total = sum(1 for label in labels if label)
+    conservative_view = {
+        "n": len(records),
+        "observed_leaks": observed_leaks,
+        "positives": positive_total,
+        "recall": rate(observed_leaks, positive_total),
+        "precision": rate(observed_leaks, observed_leaks),
+        "specificity": None,
+        "macro_f1": None,
+        "coverage": rate(observed_leaks, len(records)),
+        "note": "clean abstains; recall uses all 70 positives (58/70), specificity/macro-F1 are undefined",
+    }
+    latent_bad = [
+        record for record in records
+        if as_bool((record.get("label") or {}).get("y_true")) is True
+        and as_bool((record.get("extensions") or {}).get("operational_y_pred")) is False
+    ]
+    latent_branch_complete = sum(
+        1 for record in latent_bad
+        if (record.get("extensions") or {}).get("coverage_tier") == "branch_complete"
+    )
+    realloc = sum(
+        1 for record in latent_bad
+        if (record.get("extensions") or {}).get("primary_evidence") == "realloc_fail"
+    )
+    parent = compute_run_metrics(run_dir, resamples=resamples, seed=seed, confidence=confidence, coverage_threshold=coverage_threshold)
+    cost = cost_summary(records)
+    return {
+        "schema_version": EXTENSION_METRICS_SCHEMA,
+        "extension_id": "ext.coverage_instrumented_dynamic.v1",
+        "design": "coverage_instrumented_dynamic",
+        "generated_at": utc_now(),
+        "run_ids": {"run": str(manifest.get("run_id"))},
+        "settings": {
+            "bootstrap_resamples": resamples,
+            "bootstrap_seed": seed,
+            "confidence": confidence,
+            "cluster_unit": "case_family",
+            "coverage_threshold": coverage_threshold,
+        },
+        "counts": {
+            "units": len(records),
+            "valid": observed_leaks,
+            "by_status": dict(Counter(str(record.get("status")) for record in records)),
+            "tiers": dict(tiers),
+            "tiers_by_label": tiers_by_label,
+            "branch_complete_bad": tiers_by_label.get("bad", {}).get("branch_complete", 0),
+            "branch_complete_good": tiers_by_label.get("good", {}).get("branch_complete", 0),
+            "mean_line_coverage": _mean(line_values),
+            "mean_branch_coverage": _mean(branch_values),
+            "latent_bad": len(latent_bad),
+            "latent_branch_complete": latent_branch_complete,
+            "latent_realloc_evidence": realloc,
+        },
+        "primary": {
+            "name": "branch_complete_rate",
+            "value": rate(tiers.get("branch_complete", 0), len(records)),
+            "n": len(records),
+            "ci_low": (_wilson(tiers.get("branch_complete", 0), len(records)) or {}).get("low"),
+            "ci_high": (_wilson(tiers.get("branch_complete", 0), len(records)) or {}).get("high"),
+            "method": "Wilson interval over units",
+            "note": "21/140 units are branch-complete; all 21 are bad",
+        },
+        "metrics": {
+            "coverage": {
+                "mean_line_coverage": _mean(line_values),
+                "mean_branch_coverage": _mean(branch_values),
+                "branch_complete_rate": rate(tiers.get("branch_complete", 0), len(records)),
+                "line_complete_or_better_rate": rate(
+                    tiers.get("branch_complete", 0) + tiers.get("line_complete", 0), len(records)
+                ),
+                "clean_branch_complete": tiers_by_label.get("good", {}).get("branch_complete", 0),
+                "clean_line_complete": tiers_by_label.get("good", {}).get("line_complete", 0),
+                "clean_partial": tiers_by_label.get("good", {}).get("partial", 0),
+                "note": "line coverage does not prove clean; no clean unit is branch-complete",
+            },
+            "operational": {
+                "scores": operational_scores,
+                "bootstrap": operational_bootstrap.get("metrics", {}),
+                "note": "clean treated as negative; this is an operational view, not a proof",
+            },
+            "conservative": conservative_view,
+            "latent": {
+                "bad_clean_operational": len(latent_bad),
+                "branch_complete_among_latent": latent_branch_complete,
+                "realloc_evidence_among_latent": realloc,
+                "note": "12 bad units are clean under the default mode; 7 are explained by the realloc-failure branch, 5 only by root policy",
+            },
+        },
+        "parent_metrics": parent,
+        "cost": cost,
+        "limitations": [
+            "Line coverage is near 100% but branch coverage is about 50%; covering a line does not exercise the leak path.",
+            "No clean unit reaches branch-complete coverage, so clean is inconclusive, never TN.",
+            "The 12 latent bad units are not recovered by line coverage; 7 need the realloc-failure injection.",
+            "Single run; gcov instrumentation can perturb timing but not leak verdicts.",
+        ],
+        "provenance": {
+            "extension_version": EXTENSION_VERSION,
+            "hashes": _run_hashes(run_dir),
+            "source": "canonical extension run; metrics recomputed, not copied",
+        },
+    }
+
+
+def interpretable_baseline_metrics(
+    run_dir: Path,
+    *,
+    resamples: int,
+    seed: int,
+    confidence: float,
+    coverage_threshold: float,
+    baseline_run: str | None = None,
+) -> dict[str, Any]:
+    report = validate_extension_run(run_dir, use_jsonschema=False)
+    if report.get("errors"):
+        raise ExtensionError("interpretable baseline run failed validation: " + "; ".join(report["errors"][:5]))
+    manifest, ext_manifest, records, _ = load_extension_run(run_dir)
+    labels, predictions, clusters = _labels_predictions(records)
+    scores = detection_scores(labels, predictions, confidence=confidence)
+    bootstrap = bootstrap_detection(labels, predictions, clusters, resamples=resamples, seed=seed, confidence=confidence)
+    method_name = str((records[0].get("extensions") or {}).get("method"))
+    parent = compute_run_metrics(run_dir, resamples=resamples, seed=seed, confidence=confidence, coverage_threshold=coverage_threshold)
+    cost = cost_summary(records)
+    return {
+        "schema_version": EXTENSION_METRICS_SCHEMA,
+        "extension_id": "ext.interpretable_baseline.v1",
+        "design": "interpretable_baseline",
+        "generated_at": utc_now(),
+        "run_ids": {"run": str(manifest.get("run_id"))},
+        "settings": {
+            "bootstrap_resamples": resamples,
+            "bootstrap_seed": seed,
+            "confidence": confidence,
+            "cluster_unit": "project",
+            "coverage_threshold": coverage_threshold,
+            "method": method_name,
+        },
+        "counts": {
+            "units": len(records),
+            "valid": scores["valid"],
+            "by_status": dict(Counter(str(record.get("status")) for record in records)),
+            "predicted_positive": sum(1 for pred in predictions if pred is True),
+        },
+        "primary": {
+            "name": "macro_f1",
+            "value": scores["macro_f1"],
+            "n": scores["valid"],
+            "ci_low": _boot_ci(bootstrap, "macro_f1").get("ci_low"),
+            "ci_high": _boot_ci(bootstrap, "macro_f1").get("ci_high"),
+            "method": "cluster percentile bootstrap (project)",
+            "note": f"{method_name}: valid-only detection on test-160",
+        },
+        "metrics": {
+            "detection": {
+                "scores": scores,
+                "bootstrap": bootstrap.get("metrics", {}),
+                "cluster_count": bootstrap.get("cluster_count"),
+            },
+            "mcc": scores["mcc"],
+            "balanced_accuracy": scores["balanced_accuracy"],
+            "predicted_positive_rate": rate(sum(1 for pred in predictions if pred is True), len(records)),
+            "strict_accuracy": scores["strict_accuracy"],
+        },
+        "parent_metrics": parent,
+        "cost": cost,
+        "limitations": [
+            "Lexical features only; not a static analyzer and not a semantic model.",
+            "The length rule wins macro-F1 mainly because it predicts positive more often on an 80%-positive split.",
+            "MCC ranking flips the macro-F1 ranking; report both.",
+            "Dev-40 is too small and too imbalanced to select thresholds reliably.",
+            "Test-tuned upper bounds use test labels and are not deployable results.",
+        ],
+        "provenance": {
+            "extension_version": EXTENSION_VERSION,
+            "hashes": _run_hashes(run_dir),
+            "source": "canonical extension run; metrics recomputed, not copied",
+        },
+    }
+
+
 def _resolve_run_dirs(run_dir: Path) -> tuple[str, list[Path]]:
     if (run_dir / "run_manifest.json").exists():
         manifest, ext_manifest, records, _ = load_extension_run(run_dir)
@@ -2464,6 +3142,56 @@ def main(argv: list[str] | None = None) -> int:
                 seed=args.seed,
                 confidence=DEFAULT_CONFIDENCE,
                 coverage_threshold=args.coverage_threshold,
+            )
+            default_out = dirs[0]
+        elif design == "codeql_alert_triage":
+            metrics = alert_triage_metrics(
+                dirs[0],
+                resamples=args.bootstrap,
+                seed=args.seed,
+                confidence=DEFAULT_CONFIDENCE,
+                coverage_threshold=args.coverage_threshold,
+                baseline_run=args.baseline_run,
+            )
+            default_out = dirs[0]
+        elif design == "conservative_verification":
+            metrics = conservative_verification_metrics(
+                dirs[0],
+                resamples=args.bootstrap,
+                seed=args.seed,
+                confidence=DEFAULT_CONFIDENCE,
+                coverage_threshold=args.coverage_threshold,
+                baseline_run=args.baseline_run,
+            )
+            default_out = dirs[0]
+        elif design == "diff_guided_pair":
+            metrics = diff_pair_metrics(
+                dirs[0],
+                resamples=args.bootstrap,
+                seed=args.seed,
+                confidence=DEFAULT_CONFIDENCE,
+                coverage_threshold=args.coverage_threshold,
+                baseline_run=args.baseline_run,
+            )
+            default_out = dirs[0]
+        elif design == "coverage_instrumented_dynamic":
+            metrics = coverage_dynamic_metrics(
+                dirs[0],
+                resamples=args.bootstrap,
+                seed=args.seed,
+                confidence=DEFAULT_CONFIDENCE,
+                coverage_threshold=args.coverage_threshold,
+                baseline_run=args.baseline_run,
+            )
+            default_out = dirs[0]
+        elif design == "interpretable_baseline":
+            metrics = interpretable_baseline_metrics(
+                dirs[0],
+                resamples=args.bootstrap,
+                seed=args.seed,
+                confidence=DEFAULT_CONFIDENCE,
+                coverage_threshold=args.coverage_threshold,
+                baseline_run=args.baseline_run,
             )
             default_out = dirs[0]
         else:

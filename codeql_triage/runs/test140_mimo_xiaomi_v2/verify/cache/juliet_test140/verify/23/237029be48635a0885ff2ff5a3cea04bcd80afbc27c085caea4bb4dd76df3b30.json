@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:55.563+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 6.294400112001313,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"b7fc088b-abc0-4ada-9bb0-d72f7d76a39f_2sra83g528dhk6e6tc_77da96068be0438286755e78e077f2bc\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": true, \\\"final_alert_verdict\\\": \\\"true_positive\\\", \\\"release_gap\\\": \\\"new char at line 14 in sym_1; sym_1 returns to main, which exits without deleting data or its inner-scope copies\\\", \\\"reason\\\": \\\"sym_1 allocates with new char and never deletes it; the inner scope only copies the pointer. After sym_1 returns, main exits, so the block is never freed on any feasible path.\\\", \\\"confidence\\\": 0.97}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344475,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":109,\"prompt_tokens\":668,\"total_tokens\":777,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:49.269+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "237029be48635a0885ff2ff5a3cea04bcd80afbc27c085caea4bb4dd76df3b30"
+  },
+  "cache_key": "237029be48635a0885ff2ff5a3cea04bcd80afbc27c085caea4bb4dd76df3b30",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": true, \"final_alert_verdict\": \"true_positive\", \"release_gap\": \"new char at line 14 in sym_1; sym_1 returns to main, which exits without deleting data or its inner-scope copies\", \"reason\": \"sym_1 allocates with new char and never deletes it; the inner scope only copies the pointer. After sym_1 returns, main exits, so the block is never freed on any feasible path.\", \"confidence\": 0.97}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 109,
+    "cost_usd": 0.00012404,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 668
+  },
+  "created_at": "2026-11-22T10:47:55.563+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.97,
+    "final_alert_verdict": "true_positive",
+    "final_leak_present": true,
+    "reason": "sym_1 allocates with new char and never deletes it; the inner scope only copies the pointer. After sym_1 returns, main exits, so the block is never freed on any feasible path.",
+    "release_gap": "new char at line 14 in sym_1; sym_1 returns to main, which exits without deleting data or its inner-scope copies"
+  },
+  "prompt_sha256": "47940c9851310468b730ffeef779b730f5f256fb514dd3031fedcc45d58db87a",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "7f13d6d7e7f6c4072db3253904788741362b5fb8b20a5de9bc8ff423423b9ae1",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 0,
+      "cpp/memory-never-freed": 1
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "bad",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__new_char_31__bad",
+    "variant": "31",
+    "y_true": 1
+  },
+  "unit_id": "CWE401_Memory_Leak__new_char_31__bad",
+  "usage": {
+    "completion_tokens": 109,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 668,
+    "prompt_tokens_details": null,
+    "total_tokens": 777
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 6.294441433001339
+}

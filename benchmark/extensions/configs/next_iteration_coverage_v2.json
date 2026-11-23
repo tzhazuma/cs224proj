@@ -1,0 +1,29 @@
+{
+  "schema_version": "benchmark-extension-import-batch-v1",
+  "note": "Coverage v2 import",
+  "runs": [
+    {
+      "design": "coverage_instrumented_dynamic",
+      "out": "benchmark/extensions/runs/coverage_instrumented_dynamic/test140_coverage_v2",
+      "config": {
+        "run_id": "next_dynamic_coverage_test140_v2_20261122",
+        "raw": "dynamic_coverage/runs/test140_coverage_v1/results_units.jsonl",
+        "unit_map": "juliet/subset_units.jsonl",
+        "split": "test",
+        "method": {
+          "method_id": "gcc-gcov-asan-lsan-test140",
+          "family": "dynamic",
+          "name": "gcc --coverage + gcov ASan/LSan (three modes)",
+          "strategy": "coverage_instrumented",
+          "tool": {
+            "name": "gcc-gcov-asan-lsan",
+            "version": "gcc 15.3.0 / gcov 15.3.0"
+          }
+        },
+        "notes": [
+          "Coverage-instrumented dynamic run v2: default-mode decision imported; clean is inconclusive, never TN"
+        ]
+      }
+    }
+  ]
+}

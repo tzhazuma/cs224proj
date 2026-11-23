@@ -1,0 +1,66 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_codeql_triage_zero_cost_drop_may_cpp_20261122",
+  "created_at": "2026-11-22T12:48:07Z",
+  "protocol_version": "1.0.0",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "tasks": [
+    "leak_detection"
+  ],
+  "dataset": {
+    "dataset_id": "juliet-cwe401-v1.3-subset-v1",
+    "split_id": "juliet-cwe401-v1.3-subset-v1/test",
+    "path": "juliet/subset_units.jsonl",
+    "sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "unit_manifest": null,
+    "unit_count": 140,
+    "group_count": 70,
+    "label_counts": {
+      "bad": 70,
+      "good": 70
+    }
+  },
+  "method": {
+    "method_id": "codeql-triage-drop_may_cpp",
+    "family": "static",
+    "name": "CodeQL drop C++ may-not-be-freed",
+    "strategy": "drop_may_cpp",
+    "tool": {
+      "name": "codeql-cwe401-zero-cost-rule",
+      "version": "2.27.4",
+      "rules": [
+        "cpp/memory-never-freed",
+        "cpp/memory-may-not-be-freed"
+      ]
+    },
+    "config_sha256": "d4f853114f4a0f0879ab662d42d22163962b92e951dee537c48884cb92535b89"
+  },
+  "execution": {
+    "started_at": "2026-11-22T12:48:07Z",
+    "finished_at": "2026-11-22T12:48:07Z",
+    "status": "completed",
+    "planned_units": 140,
+    "recorded_units": 140,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "c5a321848c9debb8a386d4097347c282445f76421272e4850e38435b563fa14c",
+    "extension_manifest_sha256": "5ac9c6d993c29852e508359523fbc231944535107b7c03af6a34419528c7c3ca"
+  },
+  "legacy_import": null,
+  "notes": [
+    "CodeQL alert triage condition: zero_cost_drop_may_cpp",
+    "decision recomputed from stored producer output; not re-run"
+  ]
+}

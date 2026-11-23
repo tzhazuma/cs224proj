@@ -1,0 +1,86 @@
+{
+  "api": {
+    "backoff_base_seconds": 1.5,
+    "backoff_cap_seconds": 30.0,
+    "base_url": "https://opencode.ai/zen/go/v1",
+    "cached_input_price_usd_per_1m": 0.006,
+    "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+    "input_price_usd_per_1m": 0.3,
+    "max_attempts": 3,
+    "max_tokens": 4096,
+    "max_tokens_field": "max_tokens",
+    "model": "deepseek-v4.1-flash",
+    "output_price_usd_per_1m": 1.2,
+    "reasoning_effort": null,
+    "response_format": "json_object",
+    "temperature": 0.0,
+    "thinking": null,
+    "timeout_seconds": 240.0,
+    "user_agent": "codeql-triage/1.0"
+  },
+  "api_key_env": "CODEQL_TRIAGE_API_KEY",
+  "api_key_present": true,
+  "api_key_value_stored": false,
+  "completed_at": "2026-11-22T10:59:41.318+00:00",
+  "conditions": {
+    "direct": {
+      "cache_hits": 0,
+      "cached_prompt_tokens": 0,
+      "completion_tokens": 0,
+      "condition": "direct",
+      "cost_records": 0,
+      "cost_usd": null,
+      "coverage": 0.0,
+      "invalid": 1,
+      "latency_seconds": {
+        "max": 0.4635924989997875,
+        "mean": 0.4635924989997875,
+        "n": 1,
+        "p50": 0.4635924989997875,
+        "p95": 0.4635924989997875
+      },
+      "model": "deepseek-v4.1-flash",
+      "n": 1,
+      "prompt_tokens": 0,
+      "status_counts": {
+        "error": 1
+      },
+      "valid": 0,
+      "validation_errors": {
+        "CWE401_Memory_Leak__char_calloc_01__bad": "ValueError: empty_content"
+      }
+    }
+  },
+  "created_at": "2026-11-22T10:59:40.420+00:00",
+  "dataset": {
+    "codeql_path": "static_extended/runs/codeql_20261114_cwe401_full/predictions.jsonl",
+    "codeql_sha256": "ed54cfeaca86e2edc7b76928d741dae2a3b2605c829013e40aa112d65775c4cc",
+    "n_units": 140,
+    "path": "juliet_llm/build/test.jsonl",
+    "test_sha256": "8322692d4f155d81a8464acec987528d5739250a684dbdfb9a05e3f7bc86f073"
+  },
+  "limits": {
+    "limit": 1,
+    "note": "A nonzero limit is a partial run and must not be reported as full evidence."
+  },
+  "network": {
+    "ipv4_dns": "installed",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+    "proxy_env_removed": [
+      "HTTP_PROXY",
+      "HTTPS_PROXY",
+      "http_proxy",
+      "https_proxy"
+    ]
+  },
+  "provider": "opencode-go",
+  "schema_version": "codeql-triage-v1",
+  "session": {
+    "header": "x-opencode-session",
+    "is_secret": false,
+    "note": "Random routing identifier, not a credential.",
+    "sha256": "938101c555df7e6c2954aba3a79a599d808c34bda358980b3c715f1cbc68fe92",
+    "value": "ses_e88b94f62dd7873c0886c3bf9f1d3c29"
+  },
+  "wall_seconds": 0.8311625700007426
+}

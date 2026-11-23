@@ -32,7 +32,7 @@
 3. 设置 `SECVUL_BASE_URL`；
 4. 不打印 key，不写文件，不把 key 放进 `sys.argv`。
 
-`juliet_llm/launch.py` 与 `evidence_prompt/run_with_kimi_config.py` 复用同一路径。`hybrid/run_hybrid.py`、`juliet_repair/scripts/run_repair.py`、`pair_joint/runner.py`、`pair_debias/runner.py`、`evidence_verify/run_with_kimi_config.py`、`hybrid_dynamic_enhanced/hde/api.py` 各自用 Python `tomllib` 读取同一 TOML（代码路径不同，但都只把 key 放入进程内存/环境变量，不落盘；产物记录 `api_key_value_stored: false`）。它们不读取 `auth.json`、`opencode.json`、keychain 或其他本地凭证。
+`juliet_llm/launch.py` 与 `evidence_prompt/run_with_kimi_config.py` 复用同一路径。`hybrid/run_hybrid.py`、`juliet_repair/scripts/run_repair.py`、`pair_joint/runner.py`、`pair_debias/runner.py`、`evidence_verify/run_with_kimi_config.py`、`hybrid_dynamic_enhanced/hde/api.py`、`pair_diff/runner.py`、`codeql_triage/run_with_kimi_config.py`、`verifier_conservative/run_with_kimi_config.py` 各自用 Python `tomllib` 读取同一 TOML（代码路径不同，但都只把 key 放入进程内存/环境变量，不落盘；产物记录 `api_key_value_stored: false`）。它们不读取 `auth.json`、`opencode.json`、keychain 或其他本地凭证。
 
 ### 2.2 运行产物
 
@@ -47,7 +47,8 @@
 | `run.log` | 否 | 只有 URL/状态码/时间；不含 key |
 | `config.json` | 否 | 模型、端点、价格、参数；不含 key |
 | `pair_debias/runs/*`、`evidence_verify/runs/*`、`hybrid_dynamic_enhanced/runs/*` | 否 | 2026-11-13/14 的新 run；manifest 记录 `api_key_value_stored: false`，`requests.jsonl` 不含 `Authorization` 头 |
-| `dynamic_enhanced/runs/*`、`static_extended/runs/*` | 否 | 本地工具产物；不读取、不保存任何 API key |
+| `pair_diff/runs/*`、`codeql_triage/runs/*`、`verifier_conservative/runs/*` | 否 | 2026-11-22 的新 run；manifest 记录 `api_key_value_stored: false`，`requests.jsonl` 不含 `Authorization` 头；`codeql_triage/runs/blocked_*` 只有 HTTP 402/401 的失败证据 |
+| `dynamic_enhanced/runs/*`、`dynamic_coverage/runs/*`、`static_extended/runs/*`、`interpretable_baseline/results/*` | 否 | 本地工具/无 API 产物；不读取、不保存任何 API key |
 
 ### 2.3 环境变量
 
@@ -79,6 +80,7 @@ echo 'sk-...' > creds/opencode.json                    # 会进入文件/备份
 | `traditional/dynamic/runs/*/cases/`、`*/support/` | 326 MB 逐 case 二进制/日志；`results.jsonl` 已保留 |
 | `**/runs/*/cache/` | 请求缓存，和 `requests.jsonl`/`results.jsonl` 重复 |
 | `dynamic_enhanced/runs/*/build/` | ASan/注入构建产物；逐单元 JSON/stderr 证据保留 |
+| `dynamic_coverage/runs/*/build/`、`runs/*/cases/**/*.gcda`、`*.gcno`、`*.gcov.json.gz`、`*.o`、`*.exe` | gcov/编译中间产物；逐单元 `coverage.json`、`run.json`、`metrics.json` 保留 |
 | `juliet_repair/build/baselines/`、`sanitized/`、`support/`、`selftest/` | 编译产物；`baselines_summary.json` 与 `results.jsonl` 保留 |
 | `.env`、`creds/`、`credentials/`、`secrets/`、`*.pem`、`*.key`、`*.p12`、`*.pfx`、`auth.json`、`opencode.json`、`*_api_key.json`、`*.token` | 凭证/认证材料 |
 | `repair_eval/packages/*/private/` | 盲评 key（salt + 映射） |
@@ -90,9 +92,10 @@ echo 'sk-...' > creds/opencode.json                    # 会进入文件/备份
 - `traditional/static` / `traditional/dynamic` 的 `results.jsonl`、`predictions.jsonl`、`metrics.json/md`、`manifest.json`、`cases.jsonl`；
 - `runner/runs/*/results.jsonl`、`requests.jsonl`、`metrics.json`、`manifest.json`；
 - `benchmark/results/**/*.json`、`*.md`、`*.jsonl`；
-- `report/report_extended_zh.pdf`、`report_extended_zh.tex`（27 页），`report/report_zh.pdf`、`report_zh.tex`（17 页），`report/report_latest_zh.pdf`（35 页，2026-11-14 最新）、`report_latest_zh.tex` 与 `report/references_latest.bib`，`results_summary.md`；
+- `report/report_extended_zh.pdf`、`report_extended_zh.tex`（27 页），`report/report_zh.pdf`、`report_zh.tex`（17 页），`report/report_latest_zh.pdf`（35 页，2026-11-14）、`report_latest_zh.tex` 与 `report/references_latest.bib`，`report/report_next_zh.pdf`（12 页，2026-11-22）、`report_next_zh.tex`、`report/next_results_summary.md`、`report/references_next.bib`，`results_summary.md`；
 - `pair_debias/results/*`、`evidence_verify/analysis/*`、`dynamic_enhanced/runs/*/metrics.json`、`hybrid_dynamic_enhanced/results/*`、`static_extended/runs/*/metrics.json`、`analysis/schema_recovery/*`、`benchmark/extensions/runs/*`；
-- `report/latest_results_summary.md`、`benchmark/results/EXTENSIONS.md`、`benchmark/results/extension_summary.json`；
+- `interpretable_baseline/results/*`、`pair_diff/results/*`、`codeql_triage/runs/*/analysis/*`、`codeql_triage/benchmark_export.json`、`verifier_conservative/analysis/*`、`dynamic_coverage/runs/*/metrics.json`；
+- `report/latest_results_summary.md`、`benchmark/results/EXTENSIONS.md`、`benchmark/results/extension_summary.json`、`benchmark/results/NEXT_ITERATION.md`、`benchmark/results/next_iteration_summary.json`、`audit/next_iteration_audit.md`、`audit/next_iteration_audit.json`；
 - `juliet_llm/build/`（prompt 输入与审计，不是编译产物）。
 
 ---
@@ -136,7 +139,7 @@ git ls-files -z | xargs -0 -I{} sh -c \
   's=$(stat -c%s "{}"); [ "$s" -gt 52428800 ] && printf "%s\t%s\n" "$s" "{}"'
 ```
 
-本机扫描（按 `.gitignore` 估算，2026-11-14）：**约 333.3 MiB / 10,836 个文件**；最大单文件为 `traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`（40.55 MB），**没有 >100 MB 文件**。这是估算，发布前仍以 `git ls-files` 为准。注意：本地 `juliet/cache/juliet-c-cplusplus-v1.3.zip` 为 146 MB，属于**未跟踪的下载缓存**；它出现在 `find` 结果里是正常的，只要不出现在 `git ls-files` 即可。
+本机扫描（按 `.gitignore` 估算，2026-11-22）：在 2026-11-14 的 **约 333.3 MiB / 10,836 个文件** 基础上新增约 **170 MB**（`pair_diff` 65 MB、`dynamic_coverage` 52 MB、`benchmark/extensions/runs` 33 MB、`codeql_triage` 10 MB、`verifier_conservative` 8 MB、`interpretable_baseline` 0.85 MB）；最大单文件为 `traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`（40.55 MB），**没有 >100 MB 文件**。这是估算，发布前仍以 `git ls-files` 为准。注意：本地 `juliet/cache/juliet-c-cplusplus-v1.3.zip` 为 146 MB，属于**未跟踪的下载缓存**；它出现在 `find` 结果里是正常的，只要不出现在 `git ls-files` 即可。
 
 ### 4.3 Secret scan
 
@@ -163,7 +166,8 @@ trufflehog filesystem . --only-verified
 grep -RIn --include='manifest.json' --include='config.json' \
   -E 'authorization|bearer|api_key_value_stored|authorization_header_stored' \
   runner/runs juliet_llm/runs hybrid/runs pair_joint/runs juliet_repair/runs evidence_prompt/runs \
-  pair_debias/runs evidence_verify/runs hybrid_dynamic_enhanced/runs | head -50
+  pair_debias/runs evidence_verify/runs hybrid_dynamic_enhanced/runs \
+  pair_diff/runs codeql_triage/runs verifier_conservative/runs | head -50
 ```
 
 预期：只有 `api_key_value_stored: false`、`authorization_header_stored: false`、`api_key_present: true/false`，没有值。
@@ -187,9 +191,12 @@ pdffonts report/report_zh.pdf | head
 
 pdfinfo report/report_latest_zh.pdf | head -8
 pdffonts report/report_latest_zh.pdf | head
+
+pdfinfo report/report_next_zh.pdf | head -8
+pdffonts report/report_next_zh.pdf | head
 ```
 
-预期：扩展版 27 页、基础版 17 页、最新版 35 页；字体嵌入；无缺字。报告正文不应包含 key、账号、内部 URL 凭证。
+预期：扩展版 27 页、基础版 17 页、2026-11-14 版 35 页、2026-11-22 版页数以 `pdfinfo` 为准；字体嵌入；无缺字。报告正文不应包含 key、账号、内部 URL 凭证。
 
 ### 4.7 推送前最后一步
 
@@ -242,17 +249,17 @@ git diff --cached -- . ':!*.jsonl' ':!*.json' | head -200
 
 ---
 
-## 8. 已执行的验证（2026-11-14 更新）
+## 8. 已执行的验证（2026-11-22 更新）
 
 | 检查 | 结果 |
 | --- | --- |
-| 文本文件 secret 模式扫描（`sk-...` / `Bearer ...`） | 0 个匹配文件 |
+| 文本文件 secret 模式扫描（`sk-...` / `Bearer ...`） | 2026-11-14 为 0 个匹配文件；2026-11-22 新增目录（`pair_diff`、`codeql_triage`、`verifier_conservative`）在发布前必须重跑 §4.3，本轮文档同步未执行扫描 |
 | 凭据形状文件名扫描 | 仅 `repair_eval/packages/repair_blind_v1/private/blind_key.json`（盲评 key，已加入 `.gitignore`） |
 | `juliet_llm.selfcheck` | `no credential-shaped artefacts` PASS |
-| manifest 字段抽查 | `api_key_value_stored=false`、`authorization_header_stored=false` |
-| 按 `.gitignore` 估算的受控体积 | 约 333.3 MiB / 10,836 文件（2026-11-14 估算）；最大 40.55 MB |
+| manifest 字段抽查 | `api_key_value_stored=false`、`authorization_header_stored=false`；`pair_diff`/`codeql_triage`/`verifier_conservative` 的 manifest 同 |
+| 按 `.gitignore` 估算的受控体积 | 约 333.3 MiB / 10,836 文件（2026-11-14）+ 约 170 MB（2026-11-22 新增）；最大 40.55 MB |
 | >100 MB 文件 | 0 |
 | `juliet/scripts/verify.py` | PASS（2,853 文件） |
-| 动态/静态/盲评自检 | 见 `docs/REPRODUCIBILITY.md` §4.1；`dynamic_enhanced` 6/6、`pair_debias` 2099 assertions、`schema_recovery` OK，`evidence_verify` 的 `valid_indices` 仍待修复 |
+| 动态/静态/盲评自检 | 见 `docs/REPRODUCIBILITY.md` §4.1；`dynamic_enhanced` 6/6、`pair_debias` 2099 assertions、`pair_diff` 6385 assertions、`codeql_triage` 140 units、`verifier_conservative` 真值表、`dynamic_coverage` gcov control、`schema_recovery` OK；`evidence_verify` 的 `valid_indices` 仍待修复 |
 
 这些检查是**发布前的最低门槛**，不构成对历史提交的保证。若仓库已有多条历史，仍需对完整历史做一次扫描。

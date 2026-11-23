@@ -60,8 +60,8 @@ from bench_common import (  # noqa: E402
     wilson_interval,
 )
 
-EXTENSION_VERSION = "0.2.0"
-DESIGN_REGISTRY_VERSION = "2026-11-14.2"
+EXTENSION_VERSION = "0.3.0"
+DESIGN_REGISTRY_VERSION = "2026-11-22.1"
 EXTENSION_MANIFEST_SCHEMA = "benchmark-extension-manifest-v1"
 EXTENSION_METRICS_SCHEMA = "benchmark-extension-metrics-v1"
 
@@ -80,6 +80,11 @@ DESIGN_IDS = (
     "new_static_tool",
     "enhanced_dynamic",
     "hybrid_enhanced_dynamic",
+    "codeql_alert_triage",
+    "conservative_verification",
+    "diff_guided_pair",
+    "coverage_instrumented_dynamic",
+    "interpretable_baseline",
 )
 
 SECRET_KEY_RE = re.compile(

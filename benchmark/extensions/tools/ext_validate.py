@@ -1075,6 +1075,384 @@ def _check_hybrid_enhanced_dynamic(
         if seen - expected:
             _error(report, f"predictions contain {len(seen - expected)} unit(s) outside test split")
 
+def _check_alert_triage(
+    report: dict[str, Any],
+    records: Sequence[Mapping[str, Any]],
+    extension_manifest: Mapping[str, Any],
+    unit_map_path: str | None,
+) -> None:
+    if extension_manifest.get("run_role") != "single":
+        _error(report, "codeql_alert_triage requires run_role=single")
+    unit_index = None
+    if unit_map_path:
+        from ext_common import juliet_unit_index
+
+        path = resolve_path(unit_map_path, [extension_manifest.get("_run_dir") or ".", project_root()])
+        if path.exists():
+            unit_index = juliet_unit_index(path)
+        else:
+            _warning(report, f"unit map not found at {path}; skipped unit-set check")
+    expected_confusion = {
+        "direct": (69, 5, 65, 1),
+        "triage_v1": (61, 5, 65, 9),
+        "triage_v2": (68, 3, 67, 2),
+        "text_rule": (68, 0, 70, 2),
+        "verified": (68, 0, 70, 2),
+        "cascade": (70, 2, 68, 0),
+        "zero_cost_never_freed": (46, 0, 70, 24),
+        "zero_cost_drop_may_cpp": (60, 0, 70, 10),
+    }
+    seen: set[str] = set()
+    tp = fp = tn = fn = 0
+    alerts = 0
+    condition = None
+    for record in records:
+        unit_id = str(record.get("unit_id"))
+        block = record.get("extensions") or {}
+        if block.get("task_design") != "codeql_alert_triage":
+            _error(report, f"{unit_id}: extensions.task_design must be codeql_alert_triage")
+            continue
+        condition = block.get("condition") if condition is None else condition
+        if block.get("condition") != condition:
+            _error(report, f"{unit_id}: condition must be constant within a run")
+        for key in (
+            "condition",
+            "codeql_alert",
+            "codeql_status",
+            "decision_source",
+            "triage_valid",
+            "reparsed_without_api_call",
+        ):
+            if key not in block:
+                _error(report, f"{unit_id}: extensions.{key} is required")
+        if record.get("task") != "leak_detection":
+            _error(report, f"{unit_id}: alert triage requires task=leak_detection")
+        if record.get("status") != "ok":
+            _error(report, f"{unit_id}: alert triage records must be status=ok")
+        label = as_bool((record.get("label") or {}).get("y_true"))
+        pred = as_bool((record.get("prediction") or {}).get("y_pred"))
+        if label is None or pred is None:
+            _error(report, f"{unit_id}: label and y_pred must be binary")
+            continue
+        if label and pred:
+            tp += 1
+        elif label and not pred:
+            fn += 1
+        elif not label and pred:
+            fp += 1
+        else:
+            tn += 1
+        if block.get("codeql_alert") is True:
+            alerts += 1
+        try:
+            group, side = parse_juliet_unit_id(unit_id)
+        except ExtensionError as exc:
+            _error(report, f"{unit_id}: {exc}")
+            continue
+        if record.get("group_id") != group or record.get("side") != side:
+            _error(report, f"{unit_id}: group_id/side do not match unit_id")
+        if unit_index is not None:
+            meta = unit_index.get(unit_id)
+            if meta is None:
+                _error(report, f"{unit_id}: unit_id not in unit map")
+            else:
+                if record.get("cluster_id") != meta["family"]:
+                    _error(report, f"{unit_id}: cluster_id does not match unit map family")
+                if label != (meta["label"] == "bad"):
+                    _error(report, f"{unit_id}: label.y_true does not match unit map")
+        seen.add(unit_id)
+    if len(records) != 140:
+        _error(report, f"alert triage run must have 140 records, got {len(records)}")
+    if alerts != 91:
+        _error(report, f"alert triage run must expose 91 CodeQL alerts, got {alerts}")
+    if condition in expected_confusion and (tp, fp, tn, fn) != expected_confusion[condition]:
+        _error(
+            report,
+            f"{condition}: confusion {(tp, fp, tn, fn)} does not match producer {(expected_confusion[condition])}",
+        )
+    if unit_index is not None:
+        expected = {
+            meta["unit_id"]
+            for meta in unit_index.values()
+            if meta.get("split") == "test"
+        }
+        if expected - seen:
+            _error(report, f"unit map has {len(expected - seen)} unit(s) without predictions")
+        if seen - expected:
+            _error(report, f"predictions contain {len(seen - expected)} unit(s) outside test split")
+
+
+def _check_conservative_verification(
+    report: dict[str, Any],
+    records: Sequence[Mapping[str, Any]],
+    extension_manifest: Mapping[str, Any],
+) -> None:
+    if extension_manifest.get("run_role") != "single":
+        _error(report, "conservative_verification requires run_role=single")
+    expected_retract = {
+        "deepseek_self": 1,
+        "deepseek_cross": 0,
+        "mimo_self": 0,
+        "mimo_cross": 3,
+    }
+    seen: set[str] = set()
+    retracts = 0
+    arm = None
+    for record in records:
+        unit_id = str(record.get("unit_id"))
+        block = record.get("extensions") or {}
+        if block.get("task_design") != "conservative_verification":
+            _error(report, f"{unit_id}: extensions.task_design must be conservative_verification")
+            continue
+        arm = block.get("arm") if arm is None else arm
+        if block.get("arm") != arm:
+            _error(report, f"{unit_id}: arm must be constant within a run")
+        for key in (
+            "arm",
+            "claim_model",
+            "verifier_model",
+            "first_pass_status",
+            "first_pass_y_pred",
+            "verifier_status",
+            "decision",
+            "retract",
+            "analysis_status",
+        ):
+            if key not in block:
+                _error(report, f"{unit_id}: extensions.{key} is required")
+        if record.get("task") != "detection":
+            _error(report, f"{unit_id}: conservative verification requires task=detection")
+        label = as_bool((record.get("label") or {}).get("y_true"))
+        pred = as_bool((record.get("prediction") or {}).get("y_pred"))
+        first_pred = block.get("first_pass_y_pred")
+        retract = bool(block.get("retract"))
+        if retract:
+            retracts += 1
+        if record.get("status") == "ok":
+            if pred is None:
+                _error(report, f"{unit_id}: status=ok requires y_pred")
+            if retract and pred is not False:
+                _error(report, f"{unit_id}: retract requires y_pred=false")
+            if not retract and pred != first_pred:
+                _error(report, f"{unit_id}: keep requires the first-pass prediction")
+        else:
+            if pred is not None:
+                _error(report, f"{unit_id}: non-ok status must have y_pred=null")
+            if retract:
+                _error(report, f"{unit_id}: non-ok record cannot be a retraction")
+        if block.get("analysis_status") != "exploratory_post_hoc_test_seen":
+            _error(report, f"{unit_id}: analysis_status must record the post-hoc status")
+        seen.add(unit_id)
+    if len(records) != 160:
+        _error(report, f"conservative verification run must have 160 records, got {len(records)}")
+    if arm in expected_retract and retracts != expected_retract[arm]:
+        _error(report, f"{arm}: {retracts} retractions, producer reports {expected_retract[arm]}")
+
+
+def _check_diff_pair(
+    report: dict[str, Any],
+    records: Sequence[Mapping[str, Any]],
+    extension_manifest: Mapping[str, Any],
+) -> None:
+    if extension_manifest.get("run_role") != "single":
+        _error(report, "diff_guided_pair requires run_role=single")
+    groups: dict[str, dict[str, Mapping[str, Any]]] = defaultdict(dict)
+    for record in records:
+        unit_id = str(record.get("unit_id"))
+        block = record.get("extensions") or {}
+        if block.get("pair_design") != "diff_guided_pair":
+            _error(report, f"{unit_id}: extensions.pair_design must be diff_guided_pair")
+            continue
+        for key in (
+            "condition",
+            "presentation_order",
+            "open_choice",
+            "selected_slots",
+            "position_map",
+            "change_mode",
+            "changes_first",
+            "semantic_changes",
+            "security_relevant_changes",
+        ):
+            if key not in block:
+                _error(report, f"{unit_id}: extensions.{key} is required")
+        if block.get("condition") not in ("diff", "ctrl"):
+            _error(report, f"{unit_id}: invalid condition")
+        if block.get("presentation_order") not in ("fwd", "rev"):
+            _error(report, f"{unit_id}: invalid presentation_order")
+        pm = block.get("position_map") or {}
+        if set(pm) != {"A", "B"} or set(pm.values()) != {"vulnerable", "fixed"}:
+            _error(report, f"{unit_id}: position_map must assign one vulnerable and one fixed slot")
+            continue
+        side = record.get("side")
+        if side not in ("vulnerable", "fixed"):
+            _error(report, f"{unit_id}: side must be vulnerable or fixed")
+            continue
+        selected = block.get("selected_slots") or []
+        if any(slot not in ("A", "B") for slot in selected):
+            _error(report, f"{unit_id}: selected_slots must contain A/B")
+        expected_pred = side in {pm[slot] for slot in selected if slot in pm}
+        pred = as_bool((record.get("prediction") or {}).get("y_pred"))
+        if record.get("status") == "ok" and pred != expected_pred:
+            _error(report, f"{unit_id}: y_pred does not match selected slots and position map")
+        if record.get("status") != "ok" and pred is not None:
+            _error(report, f"{unit_id}: non-ok status must have y_pred=null")
+        group_id = str(record.get("group_id"))
+        if side in groups[group_id]:
+            _error(report, f"{unit_id}: duplicate side")
+        groups[group_id][side] = record
+    if len(groups) != 180:
+        _error(report, f"diff pair run must have 180 pairs, got {len(groups)}")
+    for group_id, sides in groups.items():
+        if set(sides) != {"vulnerable", "fixed"}:
+            _error(report, f"pair {group_id!r} must have both sides")
+            continue
+        if sides["vulnerable"].get("extensions", {}).get("position_map") != sides["fixed"].get("extensions", {}).get("position_map"):
+            _error(report, f"pair {group_id!r}: sides disagree on position_map")
+    if len(records) != 360:
+        _error(report, f"diff pair run must have 360 side records, got {len(records)}")
+
+
+def _check_coverage_dynamic(
+    report: dict[str, Any],
+    records: Sequence[Mapping[str, Any]],
+    extension_manifest: Mapping[str, Any],
+    unit_map_path: str | None,
+) -> None:
+    if extension_manifest.get("run_role") != "single":
+        _error(report, "coverage_instrumented_dynamic requires run_role=single")
+    unit_index = None
+    if unit_map_path:
+        from ext_common import juliet_unit_index
+
+        path = resolve_path(unit_map_path, [extension_manifest.get("_run_dir") or ".", project_root()])
+        if path.exists():
+            unit_index = juliet_unit_index(path)
+        else:
+            _warning(report, f"unit map not found at {path}; skipped unit-set check")
+    seen: set[str] = set()
+    branch_complete_bad = 0
+    branch_complete_good = 0
+    for record in records:
+        unit_id = str(record.get("unit_id"))
+        block = record.get("extensions") or {}
+        if block.get("task_design") != "coverage_instrumented_dynamic":
+            _error(report, f"{unit_id}: extensions.task_design must be coverage_instrumented_dynamic")
+            continue
+        for key in (
+            "coverage_tier",
+            "coverage_tier_effective",
+            "coverage_class",
+            "line_pct",
+            "effective_line_pct",
+            "branch_pct",
+            "entry_executed",
+            "evidence_modes",
+            "operational_y_pred",
+            "clean_proven",
+        ):
+            if key not in block:
+                _error(report, f"{unit_id}: extensions.{key} is required")
+        if record.get("task") != "leak_detection":
+            _error(report, f"{unit_id}: coverage dynamic requires task=leak_detection")
+        method = record.get("method") or {}
+        if method.get("family") != "dynamic":
+            _error(report, f"{unit_id}: coverage dynamic requires method.family=dynamic")
+        coverage = record.get("coverage")
+        if not isinstance(coverage, Mapping):
+            _error(report, f"{unit_id}: coverage block is required")
+        label = as_bool((record.get("label") or {}).get("y_true"))
+        pred = as_bool((record.get("prediction") or {}).get("y_pred"))
+        tier = block.get("coverage_tier")
+        operational = block.get("operational_y_pred")
+        if label is True and tier == "branch_complete":
+            branch_complete_bad += 1
+        if label is True and operational is True:
+            if record.get("status") != "ok" or pred is not True:
+                _error(report, f"{unit_id}: default leak must be status=ok and y_pred=true")
+        else:
+            if record.get("status") != "inconclusive" or pred is not None:
+                _error(report, f"{unit_id}: default clean must be status=inconclusive and y_pred=null")
+            if operational is not False:
+                _error(report, f"{unit_id}: default clean must have operational_y_pred=false")
+            if block.get("clean_proven") is not False:
+                _error(report, f"{unit_id}: clean_proven must be false")
+            if label is False and tier == "branch_complete":
+                branch_complete_good += 1
+        if unit_index is not None:
+            meta = unit_index.get(unit_id)
+            if meta is None:
+                _error(report, f"{unit_id}: unit_id not in unit map")
+            else:
+                if record.get("cluster_id") != meta["family"]:
+                    _error(report, f"{unit_id}: cluster_id does not match unit map family")
+                if label != (meta["label"] == "bad"):
+                    _error(report, f"{unit_id}: label.y_true does not match unit map")
+        seen.add(unit_id)
+    if len(records) != 140:
+        _error(report, f"coverage dynamic run must have 140 records, got {len(records)}")
+    ok_count = sum(1 for record in records if record.get("status") == "ok")
+    inconclusive_count = sum(1 for record in records if record.get("status") == "inconclusive")
+    if ok_count != 58 or inconclusive_count != 82:
+        _error(
+            report,
+            f"default mode must be 58 leak / 82 inconclusive, got {ok_count} / {inconclusive_count}",
+        )
+    if branch_complete_good:
+        _error(report, f"{branch_complete_good} clean unit(s) claim branch-complete coverage")
+    if branch_complete_bad != 21:
+        _error(report, f"expected 21 branch-complete bad units, got {branch_complete_bad}")
+    if unit_index is not None:
+        expected = {
+            meta["unit_id"]
+            for meta in unit_index.values()
+            if meta.get("split") == "test"
+        }
+        if expected - seen:
+            _error(report, f"unit map has {len(expected - seen)} unit(s) without predictions")
+        if seen - expected:
+            _error(report, f"predictions contain {len(seen - expected)} unit(s) outside test split")
+
+
+def _check_interpretable_baseline(
+    report: dict[str, Any],
+    records: Sequence[Mapping[str, Any]],
+    extension_manifest: Mapping[str, Any],
+) -> None:
+    if extension_manifest.get("run_role") != "single":
+        _error(report, "interpretable_baseline requires run_role=single")
+    seen: set[str] = set()
+    for record in records:
+        unit_id = str(record.get("unit_id"))
+        block = record.get("extensions") or {}
+        if block.get("task_design") != "interpretable_baseline":
+            _error(report, f"{unit_id}: extensions.task_design must be interpretable_baseline")
+            continue
+        for key in ("baseline_family", "method", "features", "dev_selected", "test_tuned", "cost_usd"):
+            if key not in block:
+                _error(report, f"{unit_id}: extensions.{key} is required")
+        if block.get("baseline_family") not in ("rule", "logistic_regression"):
+            _error(report, f"{unit_id}: invalid baseline_family")
+        if block.get("test_tuned") is not False:
+            _error(report, f"{unit_id}: test_tuned must be false")
+        if block.get("cost_usd") != 0:
+            _error(report, f"{unit_id}: baseline cost_usd must be 0 (no API calls)")
+        if record.get("task") != "detection":
+            _error(report, f"{unit_id}: interpretable baseline requires task=detection")
+        method = record.get("method") or {}
+        if method.get("family") != "static":
+            _error(report, f"{unit_id}: interpretable baseline requires method.family=static")
+        if record.get("status") != "ok":
+            _error(report, f"{unit_id}: interpretable baseline records must be status=ok")
+        if as_bool((record.get("prediction") or {}).get("y_pred")) is None:
+            _error(report, f"{unit_id}: y_pred must be binary")
+        if as_bool((record.get("label") or {}).get("y_true")) is None:
+            _error(report, f"{unit_id}: label.y_true must be binary")
+        seen.add(unit_id)
+    if len(records) != 160:
+        _error(report, f"interpretable baseline run must have 160 records, got {len(records)}")
+
+
 def validate_extension_run(
     run_dir: str | Path,
     *,
@@ -1153,6 +1531,16 @@ def validate_extension_run(
             _check_enhanced_dynamic(report, records, manifest, extension_manifest, unit_map)
         elif design == "hybrid_enhanced_dynamic":
             _check_hybrid_enhanced_dynamic(report, records, extension_manifest, unit_map)
+        elif design == "codeql_alert_triage":
+            _check_alert_triage(report, records, extension_manifest, unit_map)
+        elif design == "conservative_verification":
+            _check_conservative_verification(report, records, extension_manifest)
+        elif design == "diff_guided_pair":
+            _check_diff_pair(report, records, extension_manifest)
+        elif design == "coverage_instrumented_dynamic":
+            _check_coverage_dynamic(report, records, extension_manifest, unit_map)
+        elif design == "interpretable_baseline":
+            _check_interpretable_baseline(report, records, extension_manifest)
     _check_position_pairing(report, directory, Path(sibling_run_dir).resolve() if sibling_run_dir else None)
     execution = manifest.get("execution") or {}
     groups = {str(r.get("group_id")) for r in records if r.get("group_id")}

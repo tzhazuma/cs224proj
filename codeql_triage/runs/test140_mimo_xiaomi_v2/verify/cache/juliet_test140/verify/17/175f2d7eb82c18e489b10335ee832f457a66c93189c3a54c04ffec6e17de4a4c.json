@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:23.722+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 4.673563975000434,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"873edf97-886c-46c5-8655-3590df50a4f4_2t7o24g528bvbxyygw_51ee097305ca476e8be8d6f0e16c2ff4\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": true, \\\"final_alert_verdict\\\": \\\"true_positive\\\", \\\"release_gap\\\": \\\"realloc(NULL,100) in sym_1; passed sym_0->sym_2->sym_3->sym_4, none free it; sym_4 empty, so buffer leaks on normal return path to main exit\\\", \\\"reason\\\": \\\"Allocation is passed down four callees with no free/delete anywhere; sym_4 body is empty, so the buffer is never released before program exit.\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344443,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":116,\"prompt_tokens\":851,\"total_tokens\":967,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:19.048+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "175f2d7eb82c18e489b10335ee832f457a66c93189c3a54c04ffec6e17de4a4c"
+  },
+  "cache_key": "175f2d7eb82c18e489b10335ee832f457a66c93189c3a54c04ffec6e17de4a4c",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": true, \"final_alert_verdict\": \"true_positive\", \"release_gap\": \"realloc(NULL,100) in sym_1; passed sym_0->sym_2->sym_3->sym_4, none free it; sym_4 empty, so buffer leaks on normal return path to main exit\", \"reason\": \"Allocation is passed down four callees with no free/delete anywhere; sym_4 body is empty, so the buffer is never released before program exit.\", \"confidence\": 0.95}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 116,
+    "cost_usd": 0.00015162000000000002,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 851
+  },
+  "created_at": "2026-11-22T10:47:23.722+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.95,
+    "final_alert_verdict": "true_positive",
+    "final_leak_present": true,
+    "reason": "Allocation is passed down four callees with no free/delete anywhere; sym_4 body is empty, so the buffer is never released before program exit.",
+    "release_gap": "realloc(NULL,100) in sym_1; passed sym_0->sym_2->sym_3->sym_4, none free it; sym_4 empty, so buffer leaks on normal return path to main exit"
+  },
+  "prompt_sha256": "099ecc95bc4ecacc198b7c75d7857cc0b88e93ab020b7577ae438a70dfafcc5f",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "0088d9e55a3ef6be0c274de83bc93c753a5bb512bdc18a47d04372c29db16924",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 1,
+      "cpp/memory-never-freed": 0
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "bad",
+    "language": "c",
+    "unit_id": "CWE401_Memory_Leak__char_realloc_54__bad",
+    "variant": "54",
+    "y_true": 1
+  },
+  "unit_id": "CWE401_Memory_Leak__char_realloc_54__bad",
+  "usage": {
+    "completion_tokens": 116,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 851,
+    "prompt_tokens_details": null,
+    "total_tokens": 967
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 4.673606496002321
+}

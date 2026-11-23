@@ -1,0 +1,25 @@
+
+=================================================================
+==86597==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 4096 byte(s) in 1 object(s) allocated from:
+    #0 0x759fd072b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x759fd028b36b in __GI__IO_file_doallocate /usr/src/glibc-2.44-1ubuntu2.1/libio/filedoalloc.c:91
+    #2 0x759fd029cca5 in __GI__IO_doallocbuf /usr/src/glibc-2.44-1ubuntu2.1/libio/genops.c:373
+    #3 0x759fd029a368 in _IO_new_file_overflow /usr/src/glibc-2.44-1ubuntu2.1/libio/fileops.c:797
+    #4 0x759fd029af62 in _IO_new_file_xsputn /usr/src/glibc-2.44-1ubuntu2.1/libio/fileops.c:1323
+    #5 0x759fd029af62 in _IO_new_file_xsputn /usr/src/glibc-2.44-1ubuntu2.1/libio/fileops.c:1276
+    #6 0x759fd026508d in __printf_buffer_flush_to_file /usr/src/glibc-2.44-1ubuntu2.1/stdio-common/printf_buffer_to_file.c:59
+    #7 0x759fd026508d in __printf_buffer_to_file_done /usr/src/glibc-2.44-1ubuntu2.1/stdio-common/printf_buffer_to_file.c:120
+    #8 0x759fd0270b33 in __vfprintf_internal /usr/src/glibc-2.44-1ubuntu2.1/stdio-common/vfprintf-internal.c:1549
+    #9 0x759fd06f18ac in vprintf ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1731
+    #10 0x759fd06f3aa4 in printf ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1791
+    #11 0x646fffd4b11e in printStructLine /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c:89
+    #12 0x646fffd4aa1c in goodG2B /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_calloc_01.c:53
+    #13 0x646fffd4ab8e in CWE401_Memory_Leak__twoIntsStruct_calloc_01_good /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_calloc_01.c:76
+    #14 0x646fffd4ac4c in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0110_good/build/__dynenh_probe_main.c:2
+    #15 0x759fd022a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #16 0x759fd022a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #17 0x646fffd4a7f4 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0110_good/build/unit.plain.exe+0x37f4) (BuildId: 86118dfb495b124f1bc188a5674b2ffcf8f8c09d)
+
+SUMMARY: AddressSanitizer: 4096 byte(s) leaked in 1 allocation(s).

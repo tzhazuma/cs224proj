@@ -1,0 +1,163 @@
+{
+  "abstention": 34,
+  "abstention_rate": 0.188889,
+  "compliance": {
+    "changed_line_recall": 0.839133,
+    "changes_all_valid": 180,
+    "changes_all_valid_rate": 1.0,
+    "changes_first": 180,
+    "changes_first_rate": 1.0,
+    "changes_present": 180,
+    "changes_present_rate": 1.0,
+    "cited_line_precision": 0.755056,
+    "error_codes": {},
+    "evidence_compliant": 179,
+    "evidence_present": 0,
+    "grounded_item_rate": 0.989399,
+    "grounded_items": 280,
+    "json_parse_ok": 180,
+    "schema_exact": 180,
+    "schema_exact_rate": 1.0,
+    "semantic_changes_total": 283
+  },
+  "condition": "ctrl_fwd",
+  "decisions": {
+    "A": 68,
+    "B": 78,
+    "both": 3,
+    "neither": 31
+  },
+  "latency_seconds": {
+    "max": 9.027876,
+    "mean": 4.390301,
+    "n": 180,
+    "p50": 4.102151,
+    "p95": 6.601797
+  },
+  "length": {
+    "control_delta_tokens_est_max_abs": 0.0,
+    "control_delta_tokens_est_mean": 0.0,
+    "control_delta_tokens_est_median": 0.0,
+    "diff_tokens_est_median": 149.5
+  },
+  "limit": 0,
+  "mode": "ctrl",
+  "notes": [
+    "Cost uses the configured list prices, not the provider invoice.",
+    "A partial run used --limit and must not be reported as full-dataset evidence.",
+    "prompt_tokens are provider-reported totals; diff_tokens_est is a tiktoken proxy used for matching only."
+  ],
+  "parsed_outputs": 180,
+  "partial": false,
+  "requests": 180,
+  "reversal": false,
+  "run_id": "test_deepseek_ctrl_fwd",
+  "schema_version": 1,
+  "settings": {
+    "api": {
+      "backoff_base_seconds": 1.5,
+      "backoff_cap_seconds": 30.0,
+      "base_url": "https://opencode.ai/zen/go/v1",
+      "cached_input_price_usd_per_1m": 0.006,
+      "endpoint": "https://opencode.ai/zen/go/v1/chat/completions",
+      "input_price_usd_per_1m": 0.3,
+      "max_attempts": 3,
+      "max_tokens": 8192,
+      "max_tokens_field": "max_tokens",
+      "model": "deepseek-v4.1-flash",
+      "output_price_usd_per_1m": 1.2,
+      "reasoning_effort": null,
+      "response_format": "json_object",
+      "temperature": 0.0,
+      "thinking": null,
+      "timeout_seconds": 240.0,
+      "user_agent": "secvul-pair-diff/1.0"
+    },
+    "api_key_env": "OPENCODE_API_KEY",
+    "api_key_present": true,
+    "api_key_value_stored": false,
+    "base_map_path": "pair_joint/runs/test_deepseek_180/position_map.json",
+    "base_map_sha256": "82c40fd03b1d0ae6d34eb51ad780da3cd543bb5d38f45d7e44d86c7044e6e7c8",
+    "change_mode": "ctrl",
+    "concurrency": 3,
+    "condition": "ctrl_fwd",
+    "config_fingerprint": "f5365f5f33a5cbfead44ebea5625b83973ecccd18341fb805eb8ccdf84b793ef",
+    "dataset_metadata": {
+      "schema_version": 1,
+      "source_file": "SecVulEval.xlsx",
+      "source_sha256": "3402fb572c1702491e121dbaa49f100ed0060ece06e18e2f6967766278a78a11",
+      "split": {
+        "manifest": "splits/split_v1.json",
+        "protocol": "research/evaluation_protocol.md#4",
+        "role": "test",
+        "seed": 42,
+        "source_dataset": "datasets/vulnerable_fixed_200_pairs.json",
+        "source_dataset_sha256": "7028b98d6f2c13b960bd08dd2e737e2ba61732b89dba03e3f173fe44c27214d5",
+        "split_id": "secvul-split-v1",
+        "task": "pairs"
+      }
+    },
+    "dataset_path": "splits/test_pairs_180.json",
+    "dataset_sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "dataset_units_total": 180,
+    "limit": 0,
+    "max_evidence_items": 20,
+    "max_semantic_changes": 12,
+    "network": {
+      "ipv4_dns_preference": "installed",
+      "localhost_proxy_env_removed": [
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "http_proxy",
+        "https_proxy"
+      ],
+      "note": "Proxy variables pointing at 127.0.0.1/localhost are unusable inside WSL and were removed for the process only; the resolver was also wrapped to prefer A records because the IPv6 path is blackholed. No proxy value is stored."
+    },
+    "open_choice": true,
+    "out_dir": "pair_diff/runs/test_deepseek_ctrl_fwd",
+    "partial": false,
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+    "position_map_sha256": "6085c656997501d57f0de040d341325b483a33b5c58188a4a886ea4008c9d5ba",
+    "prompt_version": "pair-diff-2026-11-22.1",
+    "python_version": "3.14.8",
+    "reversal": false,
+    "run_label": "pair-diff-full-deepseek-ctrl_fwd",
+    "runner": "pair_diff.runner",
+    "runner_version": "1.0.0",
+    "schema_version": 1,
+    "selected_units": 180,
+    "session": {
+      "header": "x-opencode-session",
+      "is_secret": false,
+      "note": "Random per-run identifier for request routing; it is not an API key.",
+      "sha256": "e03dbb724332c9a3bc6f57fd03076c03be56e4746d65bb51c07ad101b97f544b",
+      "source": "reused",
+      "value": "ses_b9baeedbb878bc1469424b7b535d8cb2"
+    },
+    "started_at": "2026-11-22T10:43:16.308+00:00",
+    "strategy": "pair_diff_changes_first",
+    "task": "pair_decision_ctrl_fwd",
+    "vulnerable_slot_counts": {
+      "A": 90,
+      "B": 90
+    }
+  },
+  "status": {
+    "ok": 180
+  },
+  "usage": {
+    "cached_prompt_tokens": 86016,
+    "completion_tokens": 52364,
+    "completion_tokens_median": 273.5,
+    "completion_tokens_total_observed": 52364,
+    "cost_usd": 0.196572396,
+    "prompt_tokens": 530081,
+    "prompt_tokens_median": 2022.5,
+    "prompt_tokens_total_observed": 530081,
+    "reasoning_tokens": 0,
+    "reasoning_tokens_known": 180,
+    "recorded": 180,
+    "records_with_cost": 180,
+    "with_usage": 180
+  }
+}

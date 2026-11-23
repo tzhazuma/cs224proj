@@ -1,0 +1,242 @@
+{
+  "leak_raw": true,
+  "leak_attributed": true,
+  "leak_blocks": [
+    {
+      "kind": "Direct",
+      "bytes": 73728,
+      "records": 1,
+      "attributed": false,
+      "deciding_frame": null,
+      "allocation_site": {
+        "function": "malloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 67
+      }
+    },
+    {
+      "kind": "Direct",
+      "bytes": 4096,
+      "records": 1,
+      "attributed": false,
+      "deciding_frame": {
+        "function": "printHexCharLine",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c",
+        "line": 59
+      },
+      "allocation_site": {
+        "function": "malloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 67
+      }
+    },
+    {
+      "kind": "Direct",
+      "bytes": 1,
+      "records": 1,
+      "attributed": true,
+      "deciding_frame": {
+        "function": "CWE401_Memory_Leak__new_char_72::bad()",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp",
+        "line": 41
+      },
+      "allocation_site": {
+        "function": "operator new(unsigned long)",
+        "file": "../../../../src/libsanitizer/asan/asan_new_delete.cpp",
+        "line": 109
+      }
+    }
+  ],
+  "attributed_blocks": [
+    {
+      "kind": "Direct",
+      "bytes": 1,
+      "records": 1,
+      "attributed": true,
+      "deciding_frame": {
+        "function": "CWE401_Memory_Leak__new_char_72::bad()",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp",
+        "line": 41
+      },
+      "allocation_site": {
+        "function": "operator new(unsigned long)",
+        "file": "../../../../src/libsanitizer/asan/asan_new_delete.cpp",
+        "line": 109
+      }
+    }
+  ],
+  "attributed_bytes": 1,
+  "raw_bytes": 77825,
+  "leak_kinds": [
+    "Direct"
+  ],
+  "leak_summary": "SUMMARY: AddressSanitizer: 77825 byte(s) leaked in 3 allocation(s)",
+  "leak_summary_bytes": 77825,
+  "leak_summary_records": 3,
+  "asan_errors": [],
+  "deadly_signal": false,
+  "injection": {
+    "realloc_calls": 0,
+    "realloc_null_calls": 0,
+    "realloc_nonnull_calls": 0,
+    "injected": false,
+    "injected_at_call": null
+  },
+  "mode": "nogobal",
+  "build_variant": "plain",
+  "applicable": true,
+  "returncode": 23,
+  "timed_out": false,
+  "wall_ms": 280,
+  "failure_class": "leak",
+  "decision": "leak",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_lines": [],
+  "stderr_path": "cases/d0087_bad/run_nogobal/stderr.txt",
+  "stdout_path": "cases/d0087_bad/run_nogobal/stdout.txt",
+  "env": {
+    "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0:use_globals=0",
+    "DYNENH_REALLOC_FAIL_NONNULL": ""
+  },
+  "gcda_files": [
+    "CWE401_Memory_Leak__new_char_72a.gcda",
+    "CWE401_Memory_Leak__new_char_72b.gcda",
+    "__dynenh_probe_main.gcda"
+  ],
+  "gcov_checks": [
+    {
+      "source": "CWE401_Memory_Leak__new_char_72a.cpp",
+      "returncode": 0,
+      "lines_total": 336,
+      "lines_hit": 216,
+      "lines_total_parsed": 336,
+      "lines_hit_parsed": 210
+    },
+    {
+      "source": "CWE401_Memory_Leak__new_char_72b.cpp",
+      "returncode": 0,
+      "lines_total": 11,
+      "lines_hit": 6,
+      "lines_total_parsed": 11,
+      "lines_hit_parsed": 6
+    }
+  ],
+  "coverage": {
+    "lines_total": 15,
+    "lines_hit": 15,
+    "line_pct": 1.0,
+    "branches_total": 14,
+    "branches_hit": 7,
+    "branch_pct": 0.5,
+    "files": [
+      {
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp",
+        "lines_total": 12,
+        "lines_hit": 12,
+        "line_pct": 1.0,
+        "branches_total": 14,
+        "branches_hit": 7,
+        "branch_pct": 0.5,
+        "uncovered_lines": [],
+        "uncovered_branches": 7
+      },
+      {
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72b.cpp",
+        "lines_total": 3,
+        "lines_hit": 3,
+        "line_pct": 1.0,
+        "branches_total": 0,
+        "branches_hit": 0,
+        "branch_pct": null,
+        "uncovered_lines": [],
+        "uncovered_branches": 0
+      }
+    ],
+    "uncovered_lines": [],
+    "uncovered_branches": [
+      {
+        "line": 41,
+        "source_block_id": 5,
+        "destination_block_id": 59,
+        "throw": true,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp"
+      },
+      {
+        "line": 44,
+        "source_block_id": 6,
+        "destination_block_id": 59,
+        "throw": true,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp"
+      },
+      {
+        "line": 46,
+        "source_block_id": 13,
+        "destination_block_id": 43,
+        "throw": true,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp"
+      },
+      {
+        "line": 47,
+        "source_block_id": 22,
+        "destination_block_id": 47,
+        "throw": true,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp"
+      },
+      {
+        "line": 48,
+        "source_block_id": 31,
+        "destination_block_id": 51,
+        "throw": true,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp"
+      },
+      {
+        "line": 49,
+        "source_block_id": 35,
+        "destination_block_id": 57,
+        "throw": true,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp"
+      },
+      {
+        "line": 49,
+        "source_block_id": 36,
+        "destination_block_id": 55,
+        "throw": true,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_char_72a.cpp"
+      }
+    ],
+    "uncovered_branch_count": 7,
+    "functions": {
+      "_ZN31CWE401_Memory_Leak__new_char_723badEv": 2,
+      "_ZN31CWE401_Memory_Leak__new_char_727badSinkESt6vectorIPcSaIS1_EE": 1
+    },
+    "dead_code_uncovered": [],
+    "effective_lines_total": 15,
+    "effective_line_pct": 1.0
+  },
+  "coverage_tier": "line_complete",
+  "coverage_tier_effective": "line_complete",
+  "coverage_error": [],
+  "entry_executed": true,
+  "site_coverage": {
+    "allocation_sites_total": 1,
+    "allocation_sites_hit": 1,
+    "release_sites_total": 0,
+    "release_sites_hit": 0,
+    "uncovered_sites": []
+  }
+}

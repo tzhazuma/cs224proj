@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:41.742+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 4.9732949860008375,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"a64b50cf-0a45-4ac5-b6a3-ce0150eaef56_2srfwyg528cth12ccg_939df4dd2ea348b1be12ca95435efc4b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": true, \\\"final_alert_verdict\\\": \\\"true_positive\\\", \\\"release_gap\\\": \\\"malloc(100*sizeof(twoIntsStruct)) block: realloc overwrites only pointer; if realloc returns NULL, old block address lost and function exits without free\\\", \\\"reason\\\": \\\"realloc failure path loses the only pointer to the original malloc block; no free occurs before exit, so the allocation leaks on that feasible path.\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344461,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":100,\"prompt_tokens\":775,\"total_tokens\":875,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:36.769+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "a8d0f19247cb9d042ddc184b27446d563c46e55e9bef3a6cab69dfd5679a3b58"
+  },
+  "cache_key": "a8d0f19247cb9d042ddc184b27446d563c46e55e9bef3a6cab69dfd5679a3b58",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": true, \"final_alert_verdict\": \"true_positive\", \"release_gap\": \"malloc(100*sizeof(twoIntsStruct)) block: realloc overwrites only pointer; if realloc returns NULL, old block address lost and function exits without free\", \"reason\": \"realloc failure path loses the only pointer to the original malloc block; no free occurs before exit, so the allocation leaks on that feasible path.\", \"confidence\": 0.95}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 100,
+    "cost_usd": 0.00013650000000000004,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 775
+  },
+  "created_at": "2026-11-22T10:47:41.742+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.95,
+    "final_alert_verdict": "true_positive",
+    "final_leak_present": true,
+    "reason": "realloc failure path loses the only pointer to the original malloc block; no free occurs before exit, so the allocation leaks on that feasible path.",
+    "release_gap": "malloc(100*sizeof(twoIntsStruct)) block: realloc overwrites only pointer; if realloc returns NULL, old block address lost and function exits without free"
+  },
+  "prompt_sha256": "bd864d4d8e6485e2da53cef99d78d975d247d2260c3545fb9f34c034ee22f0d3",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "e300471e6d9629cc70182c3463d9c88b6ac55e91ce86ff4006cd98ff4977a9ea",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 1,
+      "cpp/memory-never-freed": 0
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "bad",
+    "language": "c",
+    "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad",
+    "variant": "01",
+    "y_true": 1
+  },
+  "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad",
+  "usage": {
+    "completion_tokens": 100,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 775,
+    "prompt_tokens_details": null,
+    "total_tokens": 875
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 4.973339828000462
+}

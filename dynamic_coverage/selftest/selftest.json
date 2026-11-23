@@ -1,0 +1,92 @@
+{
+  "status": "PASS",
+  "control": "/tmp/dyncov_selftest",
+  "checks": [
+    {
+      "name": "positive run misses the else line",
+      "ok": true,
+      "actual": [
+        7
+      ],
+      "expected": "7 uncovered, 5 covered"
+    },
+    {
+      "name": "negative run misses the then line",
+      "ok": true,
+      "actual": [
+        5
+      ],
+      "expected": "5 uncovered, 7 covered"
+    },
+    {
+      "name": "neither single run is branch-complete",
+      "ok": true,
+      "actual": [
+        "partial",
+        "partial"
+      ],
+      "expected": "both != branch_complete"
+    },
+    {
+      "name": "union is line- and branch-complete",
+      "ok": true,
+      "actual": {
+        "line_pct": 1.0,
+        "branch_pct": 1.0,
+        "tier": "branch_complete"
+      },
+      "expected": "1.0 / 1.0 / branch_complete"
+    },
+    {
+      "name": "branch totals are two",
+      "ok": true,
+      "actual": [
+        2,
+        2,
+        2
+      ],
+      "expected": "2, 2, 2"
+    }
+  ],
+  "runs": {
+    "positive": {
+      "tier": "partial",
+      "lines": [
+        7,
+        8
+      ],
+      "branches": [
+        1,
+        2
+      ],
+      "uncovered": [
+        7
+      ]
+    },
+    "negative": {
+      "tier": "partial",
+      "lines": [
+        7,
+        8
+      ],
+      "branches": [
+        1,
+        2
+      ],
+      "uncovered": [
+        5
+      ]
+    },
+    "union": {
+      "tier": "branch_complete",
+      "lines": [
+        8,
+        8
+      ],
+      "branches": [
+        2,
+        2
+      ]
+    }
+  }
+}

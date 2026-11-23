@@ -1,0 +1,139 @@
+{
+  "leak_raw": true,
+  "leak_attributed": true,
+  "leak_blocks": [
+    {
+      "kind": "Direct",
+      "bytes": 800,
+      "records": 1,
+      "attributed": true,
+      "deciding_frame": {
+        "function": "CWE401_Memory_Leak__twoIntsStruct_realloc_01_bad",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_01.c",
+        "line": 29
+      },
+      "allocation_site": {
+        "function": "realloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 81
+      }
+    }
+  ],
+  "attributed_blocks": [
+    {
+      "kind": "Direct",
+      "bytes": 800,
+      "records": 1,
+      "attributed": true,
+      "deciding_frame": {
+        "function": "CWE401_Memory_Leak__twoIntsStruct_realloc_01_bad",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_01.c",
+        "line": 29
+      },
+      "allocation_site": {
+        "function": "realloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 81
+      }
+    }
+  ],
+  "attributed_bytes": 800,
+  "raw_bytes": 800,
+  "leak_kinds": [
+    "Direct"
+  ],
+  "leak_summary": "SUMMARY: AddressSanitizer: 800 byte(s) leaked in 1 allocation(s)",
+  "leak_summary_bytes": 800,
+  "leak_summary_records": 1,
+  "asan_errors": [],
+  "deadly_signal": false,
+  "injection": {
+    "realloc_calls": 1,
+    "realloc_null_calls": 1,
+    "realloc_nonnull_calls": 0,
+    "injected": false,
+    "injected_at_call": null
+  },
+  "mode": "realloc_fail",
+  "build_variant": "wrap",
+  "applicable": false,
+  "returncode": 23,
+  "timed_out": false,
+  "wall_ms": 351,
+  "failure_class": "leak",
+  "decision": "leak",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_lines": [],
+  "stderr_path": "cases/d0119_bad/run_realloc_fail/stderr.txt",
+  "stdout_path": "cases/d0119_bad/run_realloc_fail/stdout.txt",
+  "env": {
+    "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0",
+    "DYNENH_REALLOC_FAIL_NONNULL": "1"
+  },
+  "gcda_files": [
+    "CWE401_Memory_Leak__twoIntsStruct_realloc_01.gcda",
+    "__dynenh_probe_main.gcda"
+  ],
+  "gcov_checks": [
+    {
+      "source": "CWE401_Memory_Leak__twoIntsStruct_realloc_01.c",
+      "returncode": 0,
+      "lines_total": 8,
+      "lines_hit": 8,
+      "lines_total_parsed": 8,
+      "lines_hit_parsed": 8
+    }
+  ],
+  "coverage": {
+    "lines_total": 8,
+    "lines_hit": 8,
+    "line_pct": 1.0,
+    "branches_total": 2,
+    "branches_hit": 1,
+    "branch_pct": 0.5,
+    "files": [
+      {
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_01.c",
+        "lines_total": 8,
+        "lines_hit": 8,
+        "line_pct": 1.0,
+        "branches_total": 2,
+        "branches_hit": 1,
+        "branch_pct": 0.5,
+        "uncovered_lines": [],
+        "uncovered_branches": 1
+      }
+    ],
+    "uncovered_lines": [],
+    "uncovered_branches": [
+      {
+        "line": 30,
+        "source_block_id": 2,
+        "destination_block_id": 3,
+        "throw": false,
+        "fallthrough": true,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__twoIntsStruct_realloc_01.c"
+      }
+    ],
+    "uncovered_branch_count": 1,
+    "functions": {
+      "CWE401_Memory_Leak__twoIntsStruct_realloc_01_bad": 1
+    },
+    "dead_code_uncovered": [],
+    "effective_lines_total": 8,
+    "effective_line_pct": 1.0
+  },
+  "coverage_tier": "line_complete",
+  "coverage_tier_effective": "line_complete",
+  "coverage_error": [],
+  "entry_executed": true,
+  "site_coverage": {
+    "allocation_sites_total": 1,
+    "allocation_sites_hit": 1,
+    "release_sites_total": 0,
+    "release_sites_hit": 0,
+    "uncovered_sites": []
+  }
+}

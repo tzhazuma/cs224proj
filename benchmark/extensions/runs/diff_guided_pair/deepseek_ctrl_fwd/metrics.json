@@ -1,0 +1,450 @@
+{
+  "schema_version": "benchmark-extension-metrics-v1",
+  "extension_id": "ext.diff_guided_pair.v1",
+  "design": "diff_guided_pair",
+  "generated_at": "2026-11-22T13:54:49Z",
+  "run_ids": {
+    "run": "next_pair_diff_deepseek_ctrl_fwd_20261122"
+  },
+  "settings": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "confidence": 0.95,
+    "cluster_unit": "pair_id",
+    "coverage_threshold": 0.8,
+    "condition": "ctrl",
+    "presentation_order": "fwd"
+  },
+  "counts": {
+    "pairs": 180,
+    "valid_pairs": 180,
+    "side_records": 360,
+    "both": 3,
+    "neither": 31,
+    "decisive": 146,
+    "by_status": {
+      "ok": 360
+    }
+  },
+  "primary": {
+    "name": "pair_da",
+    "value": 0.6888888888888889,
+    "n": 180,
+    "ci_low": 0.6179052403139406,
+    "ci_high": 0.7519786826934499,
+    "method": "Wilson interval over pairs",
+    "note": "vulnerable side predicted true and fixed side predicted false"
+  },
+  "metrics": {
+    "pair_da": 0.6888888888888889,
+    "committed_da": 0.8493150684931506,
+    "decisive_rate": 0.8111111111111111,
+    "abstention_rate": 0.18888888888888888,
+    "both_rate": 0.016666666666666666,
+    "neither_rate": 0.17222222222222222,
+    "position": {
+      "A": {
+        "n": 90,
+        "correct": 58,
+        "da": 0.6444444444444445
+      },
+      "B": {
+        "n": 90,
+        "correct": 66,
+        "da": 0.7333333333333333
+      }
+    },
+    "position_delta_a_minus_b": -0.0888888888888888,
+    "length_audit": {
+      "choose_shorter_rate": 0.7876712328767124,
+      "heuristic_correct_n": 112,
+      "heuristic_correct_da": 0.9196428571428571,
+      "heuristic_wrong_n": 34,
+      "heuristic_wrong_da": 0.6176470588235294,
+      "gap": 0.30199579831932766
+    },
+    "side_detection": {
+      "scores": {
+        "n": 360,
+        "valid": 360,
+        "invalid": 0,
+        "coverage": 1.0,
+        "invalid_rate": 0.0,
+        "confusion": {
+          "tp": 127,
+          "fp": 25,
+          "tn": 155,
+          "fn": 53
+        },
+        "label_counts": {
+          "vulnerable": 180,
+          "non_vulnerable": 180
+        },
+        "precision": 0.8355263157894737,
+        "recall": 0.7055555555555556,
+        "specificity": 0.8611111111111112,
+        "f1": 0.7650602409638554,
+        "negative_f1": 0.7989690721649485,
+        "macro_f1": 0.7820146565644019,
+        "balanced_accuracy": 0.7833333333333334,
+        "accuracy": 0.7833333333333333,
+        "strict_accuracy": 0.7833333333333333,
+        "mcc": 0.5736496200989556,
+        "mcc_degenerate": false,
+        "predicted_positive_rate": 0.4222222222222222,
+        "undefined_metrics": [],
+        "wilson": {
+          "precision": {
+            "successes": 127,
+            "total": 152,
+            "estimate": 0.8355263157894737,
+            "low": 0.7684693638513513,
+            "high": 0.8860419630565783,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "recall": {
+            "successes": 127,
+            "total": 180,
+            "estimate": 0.7055555555555556,
+            "low": 0.635234436928645,
+            "high": 0.767286302814692,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "specificity": {
+            "successes": 155,
+            "total": 180,
+            "estimate": 0.8611111111111112,
+            "low": 0.8030084994918879,
+            "high": 0.9041225297869472,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "accuracy": {
+            "successes": 282,
+            "total": 360,
+            "estimate": 0.7833333333333333,
+            "low": 0.7379050408401375,
+            "high": 0.8227787269229361,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "strict_accuracy": {
+            "successes": 282,
+            "total": 360,
+            "estimate": 0.7833333333333333,
+            "low": 0.7379050408401375,
+            "high": 0.8227787269229361,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 360,
+            "total": 360,
+            "estimate": 1.0,
+            "low": 0.9894419431113063,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        }
+      },
+      "bootstrap": {
+        "macro_f1": {
+          "ci_low": 0.7303286619432566,
+          "ci_high": 0.8324594334646769,
+          "bootstrap_median": 0.7818181818181819,
+          "bootstrap_mean": 0.781630522151868,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "f1": {
+          "ci_low": 0.70625,
+          "ci_high": 0.8211222245496438,
+          "bootstrap_median": 0.7650602409638554,
+          "bootstrap_mean": 0.7645313469697347,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "mcc": {
+          "ci_low": 0.47161250867707954,
+          "ci_high": 0.6726727939963125,
+          "bootstrap_median": 0.5736496200989556,
+          "bootstrap_mean": 0.5732046348523303,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "balanced_accuracy": {
+          "ci_low": 0.7333333333333333,
+          "ci_high": 0.8333333333333333,
+          "bootstrap_median": 0.7833333333333333,
+          "bootstrap_mean": 0.7830183333333334,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "accuracy": {
+          "ci_low": 0.7333333333333333,
+          "ci_high": 0.8333333333333334,
+          "bootstrap_median": 0.7833333333333333,
+          "bootstrap_mean": 0.7830183333333334,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "strict_accuracy": {
+          "ci_low": 0.7333333333333333,
+          "ci_high": 0.8333333333333334,
+          "bootstrap_median": 0.7833333333333333,
+          "bootstrap_mean": 0.7830183333333334,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "cluster_count": 180,
+      "note": "side-level arithmetic is descriptive; pair DA is the primary endpoint"
+    }
+  },
+  "parent_metrics": {
+    "schema_version": "benchmark-metrics-v1",
+    "run_id": "next_pair_diff_deepseek_ctrl_fwd_20261122",
+    "protocol_version": "1.0.0",
+    "tier": "A",
+    "track": "secvuleval",
+    "generated_at": "2026-11-22T13:54:49Z",
+    "settings": {
+      "bootstrap_resamples": 10000,
+      "bootstrap_seed": 42,
+      "confidence": 0.95,
+      "cluster_unit": "record.cluster_id",
+      "coverage_threshold": 0.8,
+      "strict_policy": "non-ok records count as errors in strict_accuracy; valid-only metrics exclude them"
+    },
+    "tasks": {
+      "pair_detection": {
+        "n_pairs": 180,
+        "valid_pairs": 180,
+        "invalid_pairs": 0,
+        "coverage": 1.0,
+        "invalid_rate": 0.0,
+        "joint_correct_valid_pairs": 124,
+        "joint_correct_all_pairs": 124,
+        "joint_accuracy_valid_pairs": 0.6888888888888889,
+        "joint_accuracy_all_pairs": 0.6888888888888889,
+        "joint_categories": {
+          "vulnerable_detected_fixed_clean": 124,
+          "both_flagged": 3,
+          "both_clean": 31,
+          "vulnerable_missed_fixed_flagged": 22
+        },
+        "joint_rates_valid_pairs": {
+          "vulnerable_detected_fixed_clean": 0.6888888888888889,
+          "both_flagged": 0.016666666666666666,
+          "both_clean": 0.17222222222222222,
+          "vulnerable_missed_fixed_flagged": 0.12222222222222222
+        },
+        "consistent": 146,
+        "swapped": 22,
+        "consistent_rate": 0.8111111111111111,
+        "swapped_rate": 0.12222222222222222,
+        "both_vulnerable_rate": 0.016666666666666666,
+        "both_safe_rate": 0.17222222222222222,
+        "wilson": {
+          "joint_accuracy_valid_pairs": {
+            "successes": 124,
+            "total": 180,
+            "estimate": 0.6888888888888889,
+            "low": 0.6179052403139406,
+            "high": 0.7519786826934499,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "joint_accuracy_all_pairs": {
+            "successes": 124,
+            "total": 180,
+            "estimate": 0.6888888888888889,
+            "low": 0.6179052403139406,
+            "high": 0.7519786826934499,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 180,
+            "total": 180,
+            "estimate": 1.0,
+            "low": 0.979104502078387,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "consistent_rate": {
+            "successes": 146,
+            "total": 180,
+            "estimate": 0.8111111111111111,
+            "low": 0.7476571742735814,
+            "high": 0.861563404797415,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "swapped_rate": {
+            "successes": 22,
+            "total": 180,
+            "estimate": 0.12222222222222222,
+            "low": 0.08211540501521036,
+            "high": 0.17811674897000834,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_vulnerable_rate": {
+            "successes": 3,
+            "total": 180,
+            "estimate": 0.016666666666666666,
+            "low": 0.005684086620487444,
+            "high": 0.047848228037071824,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "both_safe_rate": {
+            "successes": 31,
+            "total": 180,
+            "estimate": 0.17222222222222222,
+            "low": 0.12406395536443113,
+            "high": 0.23407864882862625,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        },
+        "missing_pairs": 0,
+        "by_status": {
+          "ok": 360
+        },
+        "bootstrap": {
+          "joint_accuracy_valid_pairs": {
+            "ci_low": 0.6222222222222222,
+            "ci_high": 0.7555555555555555,
+            "bootstrap_median": 0.6888888888888889,
+            "bootstrap_mean": 0.6886327777777778,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "joint_accuracy_all_pairs": {
+            "ci_low": 0.6222222222222222,
+            "ci_high": 0.7555555555555555,
+            "bootstrap_median": 0.6888888888888889,
+            "bootstrap_mean": 0.6886327777777778,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          },
+          "coverage": {
+            "ci_low": 1.0,
+            "ci_high": 1.0,
+            "bootstrap_median": 1.0,
+            "bootstrap_mean": 1.0,
+            "valid_resamples": 10000,
+            "resamples": 10000,
+            "unstable": false
+          }
+        },
+        "cluster_count": 180
+      }
+    },
+    "cost": {
+      "currency": "USD",
+      "usd_known_sum": 0.19657239599999998,
+      "usd_unknown_records": 180,
+      "usd_complete": false,
+      "wall_s_sum": 790.2541349700186,
+      "cpu_s_sum": null,
+      "peak_rss_mb_max": null,
+      "prompt_tokens_sum": 530081,
+      "completion_tokens_sum": 52364,
+      "cached_prompt_tokens_sum": 86016,
+      "latency_ms_p50": 4102.151277998928,
+      "latency_ms_p95": 6601.79734559806,
+      "latency_samples": 180,
+      "cost_basis_counts": {
+        "api_price": 180
+      },
+      "cost_per_100_units_usd": 0.10920688666666667,
+      "wall_s_per_100_units": 439.0300749833437,
+      "cost_per_true_positive_usd": null
+    },
+    "counts": {
+      "records": 360,
+      "planned_units": 360,
+      "by_task": {
+        "pair_detection": 360
+      },
+      "by_status": {
+        "ok": 360
+      },
+      "missing_units": 0
+    },
+    "provenance": {
+      "run_manifest_sha256": "3fbfa3db3b6487dcf02be963a4ce502afe97dced2d27b30700453ff0b2ec6c87",
+      "predictions_sha256": "c4c3d6752fe1bf655aab7ae9aa3c4d3b9ad647e31784c930184630af58da0177"
+    },
+    "notes": [
+      "Tasks and tiers are not pooled into a single score.",
+      "Detection and pair metrics use valid predictions only; strict accuracy is separate.",
+      "Leak clean predictions below the coverage threshold are inconclusive, not true negatives.",
+      "Cost is a known-sum plus unknown count, never an imputed total."
+    ]
+  },
+  "cost": {
+    "currency": "USD",
+    "usd_known_sum": 0.19657239599999998,
+    "usd_unknown_records": 180,
+    "usd_complete": false,
+    "wall_s_sum": 790.2541349700186,
+    "cpu_s_sum": null,
+    "peak_rss_mb_max": null,
+    "prompt_tokens_sum": 530081,
+    "completion_tokens_sum": 52364,
+    "cached_prompt_tokens_sum": 86016,
+    "latency_ms_p50": 4102.151277998928,
+    "latency_ms_p95": 6601.79734559806,
+    "latency_samples": 180,
+    "cost_basis_counts": {
+      "api_price": 180
+    }
+  },
+  "limitations": [
+    "The control block matches token length but is empty; it changes caution as well as content.",
+    "The diff direction is fixed A-to-B and follows the slot swap; it can introduce a target-side prior.",
+    "The open-choice arm is a cross-design reference from open_choice_pair, never pooled.",
+    "Length strata and matched subsets are post-hoc diagnostics, not pre-registered baselines.",
+    "Single greedy decode, temperature 0; no seed variance."
+  ],
+  "provenance": {
+    "extension_version": "0.3.0",
+    "hashes": {
+      "run_manifest_sha256": "3fbfa3db3b6487dcf02be963a4ce502afe97dced2d27b30700453ff0b2ec6c87",
+      "predictions_sha256": "c4c3d6752fe1bf655aab7ae9aa3c4d3b9ad647e31784c930184630af58da0177",
+      "extension_manifest_sha256": "6b0957acc681d9dabf75ec7bc7a978e0ad0f32edcabf6008ff7ce6b986022915",
+      "design_registry_sha256": "961fafa260e92b2e79d611aefd336c68270bb7d900d27e7abe09760e78a68115",
+      "records": 360
+    },
+    "source": "canonical extension run; metrics recomputed, not copied"
+  }
+}

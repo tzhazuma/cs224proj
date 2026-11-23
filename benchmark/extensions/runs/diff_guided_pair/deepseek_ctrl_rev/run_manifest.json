@@ -1,0 +1,72 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_pair_diff_deepseek_ctrl_rev_20261122",
+  "created_at": "2026-11-22T12:49:16Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "pair_detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1/test-pairs",
+    "path": "splits/test_pairs_180.json",
+    "sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "unit_manifest": null,
+    "unit_count": 360,
+    "group_count": 180,
+    "label_counts": {
+      "vulnerable": 180,
+      "fixed": 180
+    }
+  },
+  "method": {
+    "method_id": "pair-diff-ctrl-deepseek",
+    "family": "llm",
+    "name": "Deepseek ctrl changes-first pair (rev)",
+    "strategy": "pair_diff_ctrl",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "deepseek",
+      "provider": "OpenCode Go",
+      "endpoint": "https://opencode.ai/zen/go/v1",
+      "version": "v4.1-flash",
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "response_format": "json_object",
+        "thinking": "disabled"
+      },
+      "price_snapshot": "OpenCode Go list price 2026-11-22"
+    },
+    "config_sha256": "f1ac8f4f4cfa1627ee7eed2340aca8c7b682209df2d34ccb078ee04772670dbb"
+  },
+  "execution": {
+    "started_at": "2026-11-22T12:49:16Z",
+    "finished_at": "2026-11-22T12:49:16Z",
+    "status": "completed",
+    "planned_units": 360,
+    "recorded_units": 360,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "47325b240adaa3754ec24bd796b919f522f3491f953c130a2cd9d352cd7fc5ee",
+    "extension_manifest_sha256": "c54de57471f7229ea9c28523fd8bed1a5741b0bce932a70172a82cc346fa9b03"
+  },
+  "legacy_import": null,
+  "notes": [
+    "diff-guided pair: ctrl/rev",
+    "one request per pair encoded as two side records; not re-run"
+  ]
+}

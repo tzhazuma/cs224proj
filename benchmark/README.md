@@ -28,6 +28,7 @@
 | Tier B 混合证据 | **done_frozen（canonical v2）** | 2 模型 × {direct, static, dynamic, combined, shuffled} × 140 = 1,400 真实请求，leak-fixed v2 输入；OpenCode Go |
 | Tier B 修复 | **done_frozen（条件口径）** | 70 bad；58 个 baseline 可观测单元 strict pass = 58/58；12 个不可观测单元不入分母 |
 | 新实验结果 | **有（本目录）** | 34 个 canonical run（Tier A 16、Tier B 18，含 2 repair）；另有 11 个以 `superseded/` 冻结保留、但不进入主表的历史 run |
+| 扩展层下一轮（2026-11-22） | **有（extensions/）** | 5 个新 design、30 个 canonical run：CodeQL alert triage 8、conservative verifier 4、diff-guided pair 8、coverage dynamic 1、interpretable baseline 9；见 `results/NEXT_ITERATION.md` |
 
 > `examples/` 是手写合成 fixture，只用于 schema 自检，**不是结果**。`results/` 下的 run 是真实产物的派生视图；Tier A legacy 没有重新调用模型，Tier B 传统工具没有重新运行；round-2 的 evidence/pair-joint/hybrid v2/LLM postleakfix/repair 是真实调用的只读导入。**最终统一 leaderboard 是 [`results/LEADERBOARD.md`](results/LEADERBOARD.md)，机器可读结果是 [`results/final_summary.json`](results/final_summary.json)**；`tier_a_leaderboard.md` / `tier_b_leaderboard.md` 保留为整合前的详细视图。
 
@@ -92,6 +93,10 @@ MiMo 使用 `mimo-v2.6-flash` + `reasoning_effort=none` + `max_completion_tokens
 - **修复**：70 个 test bad；58 个 baseline 可观测单元 strict pass 58/58（两个模型），12 个 LSan 不可观测单元不入分母；它们仍编译/LSan 干净/行为保持，但不能证明泄漏被移除。
 - 完整表、all 200、dev 60、成本/延迟见 [`results/LEADERBOARD.md`](results/LEADERBOARD.md)；整合前的 5-tool 详细视图见 [`results/tier_b_leaderboard.md`](results/tier_b_leaderboard.md)。
 
+### 3.2 扩展层下一轮（2026-11-22，独立报告）
+
+`benchmark/extensions/` 新增五个弱点实验 design，共 30 个 canonical run：CodeQL alert triage（8）、conservative verifier（4）、diff-guided pair（8）、coverage-instrumented dynamic（1）、interpretable baseline（9）。它们不进入上面的 Tier A/B 主表，也不互相池化；统一报告见 [`results/NEXT_ITERATION.md`](results/NEXT_ITERATION.md)，机器可读结果见 [`results/next_iteration_summary.json`](results/next_iteration_summary.json)。关键结论：CodeQL triage 的 68/0/70/2 与零成本文本规则完全同判、对 direct 不显著；pair diff 在 Holm 后没有优势；保守验证器只撤销 4/236；行覆盖不能证明 clean；长度基线在 macro-F1 上高于 LLM，但在 MCC 上不高于最好的 LLM。
+
 ---
 
 ## 4. 目录
@@ -133,6 +138,7 @@ benchmark/
     ├── superseded/           # 11 个被取代的历史 run（冻结保留，主表跳过）
     ├── comparisons/tier_a/   # 18 个历史 bench_compare 输出
     ├── LEADERBOARD.md / final_summary.json # 最终统一汇总
+    ├── NEXT_ITERATION.md / next_iteration_summary.json # 2026-11-22 扩展层下一轮汇总
     ├── tier_a_summary.json / tier_a_leaderboard.md # 整合前历史视图
     └── tier_b_summary.json / tier_b_leaderboard.md # 整合前历史视图
 ```

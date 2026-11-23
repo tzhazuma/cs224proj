@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:42.294+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 2.9425094750004064,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"bea3b0fe-b676-4123-b24d-4ebdd5ad8bad_2y0r4vg528cyg9perk_722bfde3f9784e73b461214d1da136ed\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": true, \\\"final_alert_verdict\\\": \\\"true_positive\\\", \\\"release_gap\\\": \\\"new TwoIntsClass in sym_5 stored in global sym_1; sym_4 copies pointer to local data without freeing; main returns without any delete\\\", \\\"reason\\\": \\\"The only allocation is stored in global sym_1; sym_4 reads it into a local and never frees it, and main returns without releasing it, so it leaks on the sole feasible path.\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344462,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":110,\"prompt_tokens\":846,\"total_tokens\":956,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:39.352+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "59905ff529d93605d04b72f99df6e6cd486bc75ec30f434e46dc2771db5bb5ea"
+  },
+  "cache_key": "59905ff529d93605d04b72f99df6e6cd486bc75ec30f434e46dc2771db5bb5ea",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": true, \"final_alert_verdict\": \"true_positive\", \"release_gap\": \"new TwoIntsClass in sym_5 stored in global sym_1; sym_4 copies pointer to local data without freeing; main returns without any delete\", \"reason\": \"The only allocation is stored in global sym_1; sym_4 reads it into a local and never frees it, and main returns without releasing it, so it leaks on the sole feasible path.\", \"confidence\": 0.95}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 110,
+    "cost_usd": 0.00014924,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 846
+  },
+  "created_at": "2026-11-22T10:47:42.294+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.95,
+    "final_alert_verdict": "true_positive",
+    "final_leak_present": true,
+    "reason": "The only allocation is stored in global sym_1; sym_4 reads it into a local and never frees it, and main returns without releasing it, so it leaks on the sole feasible path.",
+    "release_gap": "new TwoIntsClass in sym_5 stored in global sym_1; sym_4 copies pointer to local data without freeing; main returns without any delete"
+  },
+  "prompt_sha256": "ff5b292243a12b3306506d596e98e4fce26e9462c88efaf431be14d6ea4c4aef",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "72b37317047729dd8959e35355a26612448835c7f7fb0ba5926193b7f7b0eb8f",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 0,
+      "cpp/memory-never-freed": 1
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "bad",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__new_TwoIntsClass_68__bad",
+    "variant": "68",
+    "y_true": 1
+  },
+  "unit_id": "CWE401_Memory_Leak__new_TwoIntsClass_68__bad",
+  "usage": {
+    "completion_tokens": 110,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 846,
+    "prompt_tokens_details": null,
+    "total_tokens": 956
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 2.9425603350027814
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_conservative_deepseek_self_20261122",
+  "created_at": "2026-11-22T12:48:13Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1/test",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": 40,
+    "label_counts": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    }
+  },
+  "method": {
+    "method_id": "conservative-three-way-deepseek_self",
+    "family": "hybrid",
+    "name": "Conservative three-way verifier (deepseek claim, deepseek verifier)",
+    "strategy": "conservative_three_way",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "deepseek",
+      "provider": "OpenCode Go",
+      "endpoint": "https://opencode.ai/zen/go/v1",
+      "version": "v4.1-flash",
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "response_format": "json_object",
+        "thinking": "disabled"
+      },
+      "price_snapshot": "OpenCode Go list price 2026-11-22"
+    },
+    "config_sha256": "2f7710e97a24f2f8aa4c8a33be3ccba20f5b8fbb8404681772942008e17baa30"
+  },
+  "execution": {
+    "started_at": "2026-11-22T12:48:13Z",
+    "finished_at": "2026-11-22T12:48:13Z",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "a8b8cd5ff03de3da2eb00b4576126507377ad5f0c99005a9af7bf957be0d83b9",
+    "extension_manifest_sha256": "4fb577c95d53f864effd9de10bbd1f4364c2f51d9778103970e8c4f9fa66d381"
+  },
+  "legacy_import": null,
+  "notes": [
+    "conservative verifier arm: deepseek_self",
+    "exploratory post hoc; test already seen by the first pass"
+  ]
+}
