@@ -39,12 +39,27 @@ def read_prompt(name: str) -> str:
     return (PROMPT_DIR / name).read_text(encoding="utf-8").rstrip()
 
 
-def audit(text: str, unit_id: str, group_id: str) -> None:
-    hits = {k: v for k, v in scan(text, AUDIT_PATTERNS).items() if v}
+def audit(text: str, unit_id: str, group_id: str, tool_evidence: str = "") -> None:
+    """Forbidden-token scan. `tool_evidence` (analyzer messages, already part of `text`) is scanned with
+    PROMPT_FORBIDDEN_PATTERNS only: Clang's "Potential memory leak" names the defect class, as
+    juliet_llm/cleaning.py allows for tool-evidence text; everything else also excludes memory_leak."""
+    rest = text.replace(tool_evidence, "") if tool_evidence else text
+    hits = {k: v for k, v in scan(rest, AUDIT_PATTERNS).items() if v}
+    if tool_evidence:
+        for k, v in scan(tool_evidence, PROMPT_FORBIDDEN_PATTERNS).items():
+            if v:
+                hits[k] = hits.get(k, 0) + v
     if hits:
         raise PromptAuditError(f"forbidden tokens in prompt: {hits}")
     if unit_id in text or group_id in text:
         raise PromptAuditError("unit identifier in prompt")
+
+
+def number_lines(code: str) -> str:
+    """L4 listing: `<n>| <line>` with n counted from 1, the numbering of model_text_line and L4 Line facts."""
+    lines = code.split("\n")
+    width = len(str(len(lines)))
+    return "\n".join(f"{i:>{width}}| {line}".rstrip() for i, line in enumerate(lines, 1))
 
 
 def fence_language(unit: dict[str, Any]) -> str:
@@ -147,26 +162,31 @@ class PromptSet:
         code = unit["model_text"].rstrip()
         if "```" in code:
             raise PromptAuditError("code contains a Markdown fence")
+        if self.strategy == "L4":
+            code = number_lines(code)
         name = {"L3": "user_L3.txt", "L4": "l4_user.txt"}.get(self.strategy, "user_L1.txt")
         text = self._text[name].replace("{language}", fence_language(unit)).replace("{code}", code)
         info: dict[str, Any] = {}
         if self.strategy == "L3":
             evidence_text, info = render_evidence(evidence, unit)
             text = text.replace("{evidence}", evidence_text)
+            info["_evidence_text"] = evidence_text
         return text, info
 
     def messages(self, unit: dict[str, Any], evidence: dict[str, Any] | None = None) \
             -> tuple[list[dict[str, str]], dict[str, Any]]:
         user, info = self.user_body(unit, evidence)
+        evidence_text = info.pop("_evidence_text", "")
         if self.strategy != "L4":
             user = user + "\n\n" + self._text["user_suffix.txt"]
         messages = [{"role": "system", "content": self.system}, {"role": "user", "content": user}]
-        audit(self.system + "\n" + user, unit["unit_id"], unit["group_id"])
+        audit(self.system + "\n" + user, unit["unit_id"], unit["group_id"], evidence_text)
         return messages, info
 
     def jev_state(self, unit: dict[str, Any], evidence: dict[str, Any] | None = None) \
             -> tuple[str, dict[str, Any]]:
         user, info = self.user_body(unit, evidence)
+        evidence_text = info.pop("_evidence_text", "")
         state = self.jev_prefix + "\n\n" + user
-        audit(state + "\n" + json.dumps(self.jev_question), unit["unit_id"], unit["group_id"])
+        audit(state + "\n" + json.dumps(self.jev_question), unit["unit_id"], unit["group_id"], evidence_text)
         return state, info

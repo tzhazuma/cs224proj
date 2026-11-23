@@ -30,9 +30,13 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--seed", type=int, default=20261123)
     p.add_argument("--name", default="devcheck150")
     p.add_argument("--out-dir", type=Path, default=LLM_DIR / "dev_check")
+    p.add_argument("--exclude", type=Path, action="append", default=[],
+                   help="subsets file whose groups are also excluded (e.g. an earlier sample)")
     args = p.parse_args(argv)
 
     examples = {e["group_id"] for e in json.loads((PROMPT_DIR / "l2_examples.json").read_text())["examples"]}
+    for path in args.exclude:
+        examples |= {g for groups in json.loads(path.read_text()).values() for g in groups}
     units = [u for u in load_units(args.units) if u["set"] == "dev"]
     strata: dict[tuple[str, str], set[str]] = defaultdict(set)
     for u in units:
@@ -54,7 +58,7 @@ def main(argv: list[str] | None = None) -> int:
     (args.out_dir / f"{args.name}_unit_ids.txt").write_text("\n".join(unit_ids) + "\n")
     (args.out_dir / f"{args.name}.meta.json").write_text(json.dumps({
         "units_file": str(args.units.resolve()), "units_sha256": file_sha256(args.units), "seed": args.seed,
-        "groups": len(chosen), "units": len(unit_ids), "excluded_l2_groups": sorted(examples),
+        "groups": len(chosen), "units": len(unit_ids), "excluded_groups": sorted(examples), "exclude_files": [str(x) for x in args.exclude],
         "allocation": {f"{a}|{b}": [alloc[(a, b)], len(strata[(a, b)])] for a, b in sorted(strata)},
     }, indent=1) + "\n")
     print(f"{len(chosen)} groups, {len(unit_ids)} units; allocation (chosen/available):")

@@ -1,19 +1,52 @@
-You extract facts about heap memory from one C/C++ code unit: the translation units that a test harness compiles together and runs to completion, starting at main. A Datalog program will use your facts to decide whether the unit leaks heap memory, so list facts only and do not judge the code.
+You extract facts about heap memory from one C/C++ code unit: the translation units that a test harness compiles together and runs to completion, starting at main. The code is shown with line numbers. A Datalog program will use your facts to decide whether the unit leaks heap memory, so list facts only and do not judge the code.
 
-Output one fact per line, exactly in these forms, and nothing else:
-alloc(Obj, Var, Func).            heap allocation by malloc, calloc, realloc, strdup, new or new[] whose result is stored in Var inside Func; Obj is a fresh id a1, a2, ...
-free(Var, Func).                  a free, delete or delete[] statement written in Func that releases the memory Var points to
-assign(Dst, Src, Func).           pointer copy Dst = Src inside Func
-pass(Callee, Param, Arg, Func).   a call in Func passes pointer Arg (or its address, or a reference to it) as parameter Param of Callee
-retval(Dst, Callee, Func).        Func stores the pointer returned by Callee in Dst
-ret(Func, Var).                   Func returns pointer Var
-call(Caller, Callee).             Caller calls Callee (functions, methods, constructors; write the destructor of a local or deleted object as Class::~Class)
-global(Var).                      Var is a global or file-level static variable
-dead(Func, Var, Kind).            the alloc, free, assign or pass (Kind) of Var in Func lies in a branch that can never execute
-realloc_fail(Obj, Func).          a statement in Func of the form p = realloc(p, ...) stores the result in the same variable p that held the existing block Obj, so a NULL result overwrites the only pointer to Obj (a realloc whose result goes to a different variable, or whose first argument is NULL, is only an alloc)
+Output one fact per line, exactly in these forms, and nothing else. Line is the number of the line that holds the statement.
+alloc(Obj, Var, Func, Line).             Var = malloc, calloc, strdup, wcsdup, new or new[] in Func; Var is the pointer variable that receives the block; Obj is a fresh id a1, a2, ...
+realloc(Obj, Dst, Src, Func, Line).      Dst = realloc(Src, ...) in Func; Obj is a fresh id for the block realloc returns (write no alloc fact for it)
+free(Var, Func, Line).                   free(Var), delete Var or delete[] Var in Func
+assign(Dst, Src, Func, Line).            pointer copy Dst = Src in Func
+pass(Callee, Param, Arg, Func, Line).    a call in Func passes pointer Arg (or its address, or a reference to it) as parameter Param of Callee
+retval(Dst, Callee, Func, Line).         Func stores the pointer returned by Callee in Dst
+ret(Func, Var, Line).                    Func returns pointer Var
+call(Caller, Callee, Line).              Caller calls Callee (functions, methods, constructors; write the destructor of a local or deleted object as Class::~Class)
+global(Var).                             Var is a global or file-level static variable
+dead(Line).                              the statement on Line lies in a branch that can never execute; list only lines that hold one of the facts above
 
 Naming rules:
+- Write each statement exactly once, with the line number shown in front of it. Do not write facts for statements that are not in the code.
 - Use function and variable names exactly as they appear in the code. Write main for the program entry.
-- Write a struct field or array element as Var.field or Var[]; write a class data member as Class::member in every function that uses it; write *p as p.
+- Write a struct field or array element as Var.field or Var[]; write an element stored in or read from a container (push_back, back, operator[], insert) as Container[]; write a class data member as Class::member in every function that uses it; write *p as p.
 - When a parameter receives the address of a pointer or a reference to it, use the parameter name for that pointer inside the callee.
 - Support code (print helpers, ALLOCA, plain data types) needs no facts. If there are no heap facts, output the single line none.
+
+Example. For this code:
+ 1| static int *g;
+ 2| int *make(void) { int *q = (int *)malloc(8); return q; }
+ 3| void keep(list<int *> v) { g = v.front(); }
+ 4| int main(void)
+ 5| {
+ 6|     list<int *> items;
+ 7|     int *a = make();
+ 8|     char *s = strdup("x");
+ 9|     items.push_back(a);
+10|     keep(items);
+11|     s = (char *)realloc(s, 16);
+12|     if (0) { free(s); }
+13|     free(g);
+14|     return 0;
+15| }
+the facts are:
+global(g).
+alloc(a1, q, make, 2).
+ret(make, q, 2).
+assign(g, v[], keep, 3).
+call(main, make, 7).
+retval(a, make, main, 7).
+alloc(a2, s, main, 8).
+assign(items[], a, main, 9).
+call(main, keep, 10).
+pass(keep, v, items, main, 10).
+realloc(a3, s, s, main, 11).
+free(s, main, 12).
+dead(12).
+free(g, main, 13).

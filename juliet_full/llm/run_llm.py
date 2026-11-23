@@ -44,6 +44,43 @@ METHOD = {"deepseek": "deepseek_flash", "qwen": "qwen3_5_4b", "jev": "jev"}
 PAID = {"deepseek", "jev"}
 L2_EXAMPLES_JSON = PROMPT_DIR / "l2_examples.json"
 LOCK_PATH = LLM_DIR / "scratch" / "deepseek_run.lock"
+# Prompt-set hashes frozen by the parent at commit 780ec1e (2026-11-23 11:08 PST). Eval runs refuse any other.
+FROZEN_PROMPT_HASHES = {
+    ("chat", "L1"): "ed8676d1c68c37b01b597d9662dda9e6fde961412ef84eb40a96e8d641ac25c3",
+    ("chat", "L2"): "a932f4394ee0790969095dc9b8a993c20dcf4a7f5a017978781729765308cfc8",
+    ("chat", "L3"): "1b4e5f65088efea1cfff841ca49470f717920fa26aed65d51050baa1d1ee32ae",
+    ("jev", "L1"): "6de1c2a48b327b16b0e8f990f0a701a7647b923ff938965c943dfd40a9dc21ea",
+    ("jev", "L2"): "b623ac7f8d24e75bce174b17d17678a15f7dde22b38da06b4cf15ff25ef69477",
+    ("jev", "L3"): "668f6ef93cadf6915f39b9e0eb8a140a4646be2f360c4feff6c6006415c8c37a",
+    # L4 v3c, frozen by the parent 2026-11-23 12:15 PST (l4/FREEZE_PROPOSAL.md).
+    ("chat", "L4"): "00a81aa6fe372e612d3ea9430b11a7087b6c569a2ed8b0ecacf89958045365e6",
+}
+# The L4 verdict also depends on the Datalog rules and the fact parser; eval runs check them too.
+FROZEN_L4_FILES = {
+    "l4/leak.dl": "ee9cc78ed05b5c496a60e77b33f69584dc6bd58408e77dac2f8a76b3fb057dbc",
+    "llmlane/l4.py": "22f3e53c49456df424c7c922af0b446a13f0c6d500f575605eb8f68320eeffff",
+}
+EVIDENCE_FROZEN_MARKER = "EVIDENCE_FROZEN"
+
+
+def frozen_evidence(evidence_dir: Path) -> tuple[Path, dict[str, str]]:
+    """Resolve the static lane's frozen L3 evidence: marker line `<run_id> <sha256>` -> <run_id>.evidence.jsonl.
+
+    Raises ValueError when the marker is missing/malformed or the file hash differs from the marker."""
+    marker = evidence_dir / EVIDENCE_FROZEN_MARKER
+    if not marker.exists():
+        raise ValueError(f"{marker} does not exist (evidence not frozen yet)")
+    fields = marker.read_text().split()
+    if len(fields) != 2:
+        raise ValueError(f"{marker}: expected '<run_id> <sha256>', got {fields!r}")
+    run_id, sha = fields
+    path = marker.parent / f"{run_id}.evidence.jsonl"
+    if not path.exists():
+        raise ValueError(f"{path} named by {marker} does not exist")
+    actual = file_sha256(path)
+    if actual != sha:
+        raise ValueError(f"{path}: sha256 {actual} != frozen {sha}")
+    return path, {"marker": str(marker), "run_id": run_id, "sha256": sha}
 
 
 def iso(ts: float | None = None) -> str:
@@ -205,11 +242,12 @@ class Run:
         return self.record(unit, verdict.pred, verdict.score, result.latency_s, verdict.status, result.model, extra)
 
     def finish_l4(self, unit: dict[str, Any], result: Any, extra: dict[str, Any]) -> dict[str, Any]:
-        parsed = l4.parse_facts(result.content)
+        parsed = l4.parse_facts(result.content, unit["model_text"].rstrip())
         extra["content"] = (result.content or "")[:1500]
         extra.update({"n_facts": parsed.n_facts, "n_bad_lines": len(parsed.bad_lines),
-                      "facts_strict_ok": parsed.strict_ok, "facts_none": parsed.said_none,
-                      "bad_lines": parsed.bad_lines[:5]})
+                      "n_ungrounded": len(parsed.ungrounded), "facts_strict_ok": parsed.strict_ok,
+                      "facts_none": parsed.said_none, "bad_lines": parsed.bad_lines[:5],
+                      "ungrounded": parsed.ungrounded[:5]})
         if parsed.n_facts == 0 and not parsed.said_none:
             extra["parse_note"] = "no parseable facts"
             return self.record(unit, None, None, result.latency_s, "invalid", result.model, extra)
@@ -279,6 +317,22 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     target = "jev" if args.model == "jev" else "chat"
     prompt_set = PromptSet(args.strategy, target)
+    if args.set == "eval":
+        frozen = FROZEN_PROMPT_HASHES.get((target, args.strategy))
+        if frozen is None:
+            print(f"refused: no frozen {target} {args.strategy} prompt; eval runs need a frozen prompt set")
+            return 2
+        if prompt_set.prompt_hash != frozen:
+            print(f"refused: {target} {args.strategy} prompt hash {prompt_set.prompt_hash} != frozen {frozen}")
+            return 2
+        if args.strategy == "L4":
+            import hashlib
+            here = Path(__file__).resolve().parent
+            for rel, want in FROZEN_L4_FILES.items():
+                got = hashlib.sha256((here / rel).read_bytes()).hexdigest()
+                if got != want:
+                    print(f"refused: {rel} sha256 {got} != frozen {want}")
+                    return 2
     units = load_units(args.units)
     unit_ids = None
     if args.unit_ids:
@@ -291,9 +345,24 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     evidence = None
     evidence_path = None
+    evidence_frozen = None
     if args.strategy == "L3":
-        evidence_path = args.evidence or Path(str(CLANG_EVIDENCE_TEMPLATE).format(layer=args.layer))
+        if args.evidence:
+            if args.set == "eval":
+                print("refused: eval L3 runs use the frozen evidence (EVIDENCE_FROZEN), not --evidence")
+                return 2
+            evidence_path = args.evidence
+        else:
+            try:
+                evidence_path, evidence_frozen = frozen_evidence(Path(str(CLANG_EVIDENCE_TEMPLATE).format(layer=args.layer)).parent)
+            except ValueError as exc:
+                print(f"refused: {exc}")
+                return 2
         evidence = load_evidence(evidence_path)
+        missing = sum(u["unit_id"] not in evidence for u in selected)
+        if missing and args.set == "eval":
+            print(f"refused: frozen evidence lacks {missing} of the selected units")
+            return 2
 
     started = time.time()
     run_id = args.run_id or f"{args.strategy}_{args.set}{'_' + args.subset if args.subset else ''}_" \
@@ -409,6 +478,7 @@ def main(argv: list[str] | None = None) -> int:
         "selection": {"limit": args.limit, "unit_ids_file": str(args.unit_ids) if args.unit_ids else None},
         "evidence_file": str(evidence_path) if evidence_path else None,
         "evidence_sha256": file_sha256(evidence_path) if evidence_path else None,
+        "evidence_frozen": evidence_frozen,
         "start_utc": iso(started), "end_utc": iso(ended), "wall_s": round(ended - started, 2),
         "host": socket.gethostname(), "concurrency": args.concurrency, "warmup_wait_s": args.warmup_wait,
         "loadavg_start": load_start, "loadavg_end": os.getloadavg(), "git_head": git_head(),

@@ -224,6 +224,37 @@ class PromptTest(unittest.TestCase):
         with self.assertRaises(PromptAuditError):
             PromptSet("L3").messages(UNIT, {"status": "ok", "warnings": [{"message": "in goodG2B"}]})
 
+    def test_audit_allows_memory_leak_only_in_tool_evidence(self):
+        row = {"unit_id": "G__bad", "warnings": [{"checker": "unix.Malloc", "message": "Potential memory leak",
+                                                   "model_text_line": 3}]}
+        messages, info = PromptSet("L3").messages(UNIT, row)
+        self.assertIn("Potential memory leak", messages[1]["content"])
+        self.assertNotIn("_evidence_text", info)
+        PromptSet("L3", "jev").jev_state(UNIT, row)
+        with self.assertRaises(PromptAuditError):
+            PromptSet("L3").messages(dict(UNIT, model_text="int memory_leak_sink;"), row)
+
+    def test_frozen_prompt_hashes_match_prompt_files(self):
+        import run_llm
+        for (target, strategy), digest in run_llm.FROZEN_PROMPT_HASHES.items():
+            self.assertEqual(PromptSet(strategy, target).prompt_hash, digest, (target, strategy))
+
+    def test_frozen_evidence_marker(self):
+        import run_llm
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            with self.assertRaises(ValueError):
+                run_llm.frozen_evidence(d)
+            (d / "v2.evidence.jsonl").write_text('{"unit_id": "u", "warnings": []}\n')
+            (d / "EVIDENCE_FROZEN").write_text("v2 " + "0" * 64 + "\n")
+            with self.assertRaises(ValueError):
+                run_llm.frozen_evidence(d)
+            import hashlib
+            sha = hashlib.sha256((d / "v2.evidence.jsonl").read_bytes()).hexdigest()
+            (d / "EVIDENCE_FROZEN").write_text(f"v2 {sha}\n")
+            path, info = run_llm.frozen_evidence(d)
+            self.assertEqual((path.name, info["run_id"], info["sha256"]), ("v2.evidence.jsonl", "v2", sha))
+
     def test_jev_state_has_no_json_format(self):
         state, _ = PromptSet("L1", "jev").jev_state(UNIT)
         self.assertNotIn("JSON", state)
@@ -234,40 +265,72 @@ class PromptTest(unittest.TestCase):
 
 class L4Test(unittest.TestCase):
     def test_parse_facts(self):
-        out = "```\nalloc(a1, data, sym_0).\nfree(*data, sym_1).\npass(sym_1, data, data, sym_0)\n" \
-              "call(main, sym_0()).\ndead(sym_0, data, free).\nfoo(x).\nalloc(a2, x).\n```"
+        out = "```\nalloc(a1, data, sym_0, 3).\nfree(*data, sym_1, 9).\npass(sym_1, data, data, sym_0, 4)\n" \
+              "call(main, sym_0(), 12).\ndead(9).\nfoo(x).\nalloc(a2, x, f).\nfree(p, f, x).\n```"
         parsed = l4.parse_facts(out)
-        self.assertEqual(parsed.facts["alloc"], [("a1", "data", "sym_0")])
-        self.assertEqual(parsed.facts["free"], [("data", "sym_1")])
-        self.assertEqual(parsed.facts["call"], [("main", "sym_0")])
-        self.assertEqual(len(parsed.bad_lines), 2)
+        self.assertEqual(parsed.facts["alloc"], [("a1", "data", "sym_0", "3")])
+        self.assertEqual(parsed.facts["free"], [("data", "sym_1", "9")])
+        self.assertEqual(parsed.facts["call"], [("main", "sym_0", "12")])
+        self.assertEqual(parsed.facts["dead"], [("9",)])
+        self.assertEqual(len(parsed.bad_lines), 3)
         self.assertFalse(parsed.strict_ok)
         self.assertTrue(l4.parse_facts("none").strict_ok)
+
+    def test_grounding_drops_facts_not_on_their_line(self):
+        code = "int main(void)\n{\n    char *p = malloc(4);\n    p[0] = 1;\n    free(p);\n    return 0;\n}"
+        parsed = l4.parse_facts("alloc(a1, p, main, 3).\nfree(p, main, 4).\nfree(p, main, 5).\n"
+                                "free(q, main, 5).\nalloc(a2, p, main, 99).", code)
+        self.assertEqual(parsed.facts["alloc"], [("a1", "p", "main", "3")])
+        self.assertEqual(parsed.facts["free"], [("p", "main", "5")])
+        self.assertEqual(len(parsed.ungrounded), 3)
+        self.assertTrue(parsed.strict_ok)
+
+    def test_parse_facts_delete_alias_is_free(self):
+        code = "int main()\n{\n    int *p = new int;\n    delete p;\n}"
+        parsed = l4.parse_facts("alloc(a1, p, main, 3).\ndelete(p, main, 4).", code)
+        self.assertEqual(parsed.facts["free"], [("p", "main", "4")])
+        self.assertTrue(parsed.strict_ok)
+        self.assertEqual(self._derive("alloc(a1, p, main, 3).\ndelete(p, main, 4)."), [])
+
+    def test_l4_prompt_numbers_lines(self):
+        messages, _ = PromptSet("L4").messages(UNIT)
+        self.assertIn("3|     char *p = malloc(4);", messages[1]["content"])
 
     def _derive(self, text):
         result = l4.run_souffle(l4.parse_facts(text))
         self.assertEqual(result.status, "ok", result.error)
-        return result.leaks
+        return sorted(result.leaks)
 
     def test_souffle_rules(self):
-        self.assertEqual(self._derive("alloc(a1, data, f).\ncall(main, f)."), [("a1", "never_freed")])
-        self.assertEqual(self._derive("alloc(a1, data, f).\ncall(main, f).\nfree(data, f)."), [])
+        self.assertEqual(self._derive("alloc(a1, data, f, 1).\ncall(main, f, 9)."), [("a1", "never_freed")])
+        self.assertEqual(self._derive("alloc(a1, data, f, 1).\ncall(main, f, 9).\nfree(data, f, 2)."), [])
         # interprocedural free through a parameter, and through a copy
-        self.assertEqual(self._derive("alloc(a1, d, f).\ncall(main, f).\npass(g, p, d, f).\nfree(p, g)."), [])
-        self.assertEqual(self._derive("alloc(a1, d, f).\ncall(main, f).\nassign(c, d, f).\nfree(c, f)."), [])
-        # free in a dead branch does not count
-        self.assertEqual(self._derive("alloc(a1, d, f).\ncall(main, f).\nfree(d, f).\ndead(f, d, free)."),
+        self.assertEqual(self._derive("alloc(a1, d, f, 1).\ncall(main, f, 9).\npass(g, p, d, f, 2).\n"
+                                      "free(p, g, 5)."), [])
+        self.assertEqual(self._derive("alloc(a1, d, f, 1).\ncall(main, f, 9).\nassign(c, d, f, 2).\n"
+                                      "free(c, f, 3)."), [])
+        # free on a dead line does not count
+        self.assertEqual(self._derive("alloc(a1, d, f, 1).\ncall(main, f, 9).\nfree(d, f, 2).\ndead(2)."),
                          [("a1", "never_freed")])
         # allocation in a function that main never calls is ignored
-        self.assertEqual(self._derive("alloc(a1, d, h).\ncall(main, f)."), [])
+        self.assertEqual(self._derive("alloc(a1, d, h, 1).\ncall(main, f, 9)."), [])
         # returned pointer freed by caller; global freed elsewhere
-        self.assertEqual(self._derive("alloc(a1, r, src).\nret(src, r).\ncall(main, f).\ncall(f, src).\n"
-                                      "retval(d, src, f).\nfree(d, f)."), [])
-        self.assertEqual(self._derive("global(G).\nalloc(a1, G, f).\ncall(main, f).\ncall(main, k).\n"
-                                      "free(G, k)."), [])
-        self.assertEqual(self._derive("alloc(a1, d, f).\ncall(main, f).\nrealloc_fail(a1, f).\nfree(d, f)."),
-                         [("a1", "realloc_fail")])
+        self.assertEqual(self._derive("alloc(a1, r, src, 1).\nret(src, r, 2).\ncall(main, f, 9).\n"
+                                      "call(f, src, 4).\nretval(d, src, f, 4).\nfree(d, f, 5)."), [])
+        self.assertEqual(self._derive("global(G).\nalloc(a1, G, f, 1).\ncall(main, f, 9).\ncall(main, k, 10).\n"
+                                      "free(G, k, 6)."), [])
         self.assertEqual(self._derive("none"), [])
+
+    def test_souffle_realloc_rules(self):
+        # p = malloc; p = realloc(p): the old block is lost when realloc fails
+        self.assertEqual(self._derive("alloc(a1, d, f, 1).\nrealloc(a2, d, d, f, 2).\nfree(d, f, 3).\n"
+                                      "call(main, f, 9)."), [("a1", "realloc_fail")])
+        # tmp = realloc(p); p = tmp; free(p): no leak
+        self.assertEqual(self._derive("alloc(a1, d, f, 1).\nrealloc(a2, t, d, f, 2).\nassign(d, t, f, 3).\n"
+                                      "free(d, f, 4).\ncall(main, f, 9)."), [])
+        # p = NULL; p = realloc(p) used as malloc: leaks only when never freed
+        self.assertEqual(self._derive("realloc(a1, d, d, f, 2).\ncall(main, f, 9)."), [("a1", "never_freed")])
+        self.assertEqual(self._derive("realloc(a1, d, d, f, 2).\nfree(d, f, 3).\ncall(main, f, 9)."), [])
 
 
 if __name__ == "__main__":

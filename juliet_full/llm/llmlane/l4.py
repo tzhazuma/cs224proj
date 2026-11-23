@@ -16,16 +16,35 @@ SOUFFLE_BIN = Path("/home/barton/tools/cs224/souffle-2.5/usr/bin/souffle")
 SOUFFLE_LIB = SOUFFLE_BIN.parent.parent / "lib"
 RULES_PATH = LLM_DIR / "l4" / "leak.dl"
 
-ARITY = {"alloc": 3, "free": 2, "assign": 3, "pass": 4, "retval": 3, "ret": 2, "call": 2,
-         "global": 1, "dead": 3, "realloc_fail": 2}
-DEAD_KINDS = {"alloc", "free", "assign", "pass"}
+# Fact schema v3 (l4/SCHEMA.md). Line = 1-based line of the numbered listing (model_text line).
+ARITY = {"alloc": 4, "realloc": 5, "free": 3, "assign": 4, "pass": 5, "retval": 4, "ret": 3, "call": 3,
+         "global": 1, "dead": 1}
+VAR_POSITIONS = {"alloc": [1], "realloc": [1, 2], "free": [0], "assign": [0, 1], "pass": [1, 2], "retval": [0],
+                 "ret": [1], "global": [0]}
+FUNC_POSITIONS = {"alloc": [2], "realloc": [3], "free": [1], "assign": [2], "pass": [0, 3], "retval": [1, 2],
+                  "ret": [0], "call": [0, 1]}
+LINE_POSITION = {"alloc": 3, "realloc": 4, "free": 2, "assign": 3, "pass": 4, "retval": 3, "ret": 2, "call": 2,
+                 "dead": 0}
+# Fact names the model uses for a schema fact with the same arguments (the C++ spelling of free).
+FACT_ALIASES = {"delete": "free"}
 _FACT_RE = re.compile(r"^([A-Za-z_]+)\s*\((.*)\)\s*\.?\s*$")
+_IDENT_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+# What the cited line must contain for the fact to be kept (grounding check against the code).
+_LINE_KEYWORD = {"alloc": re.compile(r"\b(malloc|calloc|strdup|wcsdup|new)\b"),
+                 "realloc": re.compile(r"\brealloc\b"), "free": re.compile(r"\b(free|delete)\b"),
+                 "ret": re.compile(r"\breturn\b")}
+# Argument positions of which at least one identifier must occur on the cited line.
+_LINE_NAMES = {"alloc": [1], "realloc": [1, 2], "free": [0], "assign": [0, 1], "pass": [0, 2], "retval": [0, 1],
+               "ret": [1]}
+# A pointer variable cannot be named like the allocator or operator that produced it.
+_NOT_A_VAR = {"new", "malloc", "calloc", "realloc", "strdup", "wcsdup", "free", "delete", "NULL", "nullptr"}
 
 
 @dataclass
 class FactParse:
     facts: dict[str, list[tuple[str, ...]]] = field(default_factory=lambda: {k: [] for k in ARITY})
     bad_lines: list[str] = field(default_factory=list)
+    ungrounded: list[str] = field(default_factory=list)
     n_lines: int = 0
     said_none: bool = False
 
@@ -36,7 +55,7 @@ class FactParse:
     @property
     def strict_ok(self) -> bool:
         """Every non-empty line is a well-formed fact (or the single line ``none``)."""
-        return not self.bad_lines and (self.n_facts > 0 or self.said_none)
+        return not self.bad_lines and (self.n_facts + len(self.ungrounded) > 0 or self.said_none)
 
 
 def _split_args(text: str) -> list[str]:
@@ -56,14 +75,43 @@ def _split_args(text: str) -> list[str]:
 
 
 def _normalize_var(name: str) -> str:
+    """Field- and element-insensitive: s.f, s->f, a[], a[i] all denote the node of the base variable."""
     name = name.replace("->", ".").replace(" ", "")
     while name.startswith(("*", "&")):
         name = name[1:]
-    return name
+    return re.split(r"[.\[]", name, maxsplit=1)[0] or name
 
 
-def parse_facts(text: str | None) -> FactParse:
+def _normalize_func(name: str) -> str:
+    """Namespaces and classes are dropped from function names (sym_1::sym_0 -> sym_0, C::~C -> ~C), so that a
+    function is one node however the model qualifies it; renamed Juliet functions are unique per unit."""
+    return name.replace(" ", "").rsplit("::", 1)[-1]
+
+
+def _grounded(name: str, args: list[str], code_lines: list[str]) -> bool:
+    if any(args[i] in _NOT_A_VAR for i in VAR_POSITIONS.get(name, [])):
+        return False
+    if name == "call" and args[1] == "main":
+        return False  # main is the entry; an edge into it is a reversed call edge
+    line_no = int(args[LINE_POSITION[name]])
+    if not 1 <= line_no <= len(code_lines):
+        return False
+    text = code_lines[line_no - 1]
+    keyword = _LINE_KEYWORD.get(name)
+    if keyword is not None and not keyword.search(text):
+        return False
+    words = set(_IDENT_RE.findall(text))
+    positions = _LINE_NAMES.get(name)
+    if positions is None:
+        return True
+    return any(set(_IDENT_RE.findall(args[i].replace("::~", "::"))) & words for i in positions)
+
+
+def parse_facts(text: str | None, code: str | None = None) -> FactParse:
+    """Parse fact lines. With `code` (the unit's model_text), facts whose Line does not hold the statement
+    (keyword and one of its names) go to `ungrounded` instead of `facts`."""
     result = FactParse()
+    code_lines = code.split("\n") if code is not None else None
     for raw in (text or "").splitlines():
         line = raw.strip()
         if not line or line.startswith("```") or line.startswith("//") or line.startswith("#"):
@@ -74,20 +122,25 @@ def parse_facts(text: str | None) -> FactParse:
             continue
         line = re.sub(r"^[-*]\s+", "", line)
         match = _FACT_RE.match(line)
-        if not match or match.group(1) not in ARITY:
+        name = FACT_ALIASES.get(match.group(1), match.group(1)) if match else None
+        if name not in ARITY:
             result.bad_lines.append(line[:200])
             continue
-        name = match.group(1)
         args = [a.removesuffix("()").strip() for a in _split_args(match.group(2))]
         if len(args) != ARITY[name] or any(not a or "\t" in a for a in args):
             result.bad_lines.append(line[:200])
             continue
-        if name in ("alloc", "free", "assign", "pass", "retval", "ret", "global", "dead"):
-            positions = {"alloc": [1], "free": [0], "assign": [0, 1], "pass": [1, 2], "retval": [0],
-                         "ret": [1], "global": [0], "dead": [1]}[name]
-            args = [(_normalize_var(a) if i in positions else a) for i, a in enumerate(args)]
-        if name == "dead" and args[2] not in DEAD_KINDS:
+        if name in LINE_POSITION and not re.fullmatch(r"\d+", args[LINE_POSITION[name]]):
             result.bad_lines.append(line[:200])
+            continue
+        positions = VAR_POSITIONS.get(name, [])
+        args = [(_normalize_var(a) if i in positions else a) for i, a in enumerate(args)]
+        for i in FUNC_POSITIONS.get(name, []):
+            args[i] = _normalize_func(args[i])
+        if name in LINE_POSITION:
+            args[LINE_POSITION[name]] = str(int(args[LINE_POSITION[name]]))
+        if code_lines is not None and name in LINE_POSITION and not _grounded(name, args, code_lines):
+            result.ungrounded.append(line[:200])
             continue
         result.facts[name].append(tuple(args))
     return result

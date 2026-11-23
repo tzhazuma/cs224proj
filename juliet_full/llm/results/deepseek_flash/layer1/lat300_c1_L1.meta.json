@@ -1,0 +1,127 @@
+{
+  "run_id": "lat300_c1_L1",
+  "method": "deepseek_flash",
+  "strategy": "L1",
+  "layer": "layer1",
+  "set": "eval",
+  "subset": "latency300",
+  "n_units": 300,
+  "status_counts": {
+    "ok": 300
+  },
+  "aborted": null,
+  "model_requested": "deepseek-flash",
+  "models_returned": {
+    "deepseek-flash": 300
+  },
+  "models_listing": null,
+  "client": {
+    "provider": "deepseek",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "extra_body": {
+      "thinking": {
+        "type": "disabled"
+      }
+    },
+    "response_format": "json_object",
+    "retry": {
+      "max_attempts": 5,
+      "base_seconds": 2.0,
+      "cap_seconds": 60.0,
+      "timeout_seconds": 180.0
+    }
+  },
+  "max_tokens": 64,
+  "prompt_hash": "ed8676d1c68c37b01b597d9662dda9e6fde961412ef84eb40a96e8d641ac25c3",
+  "prompt_files": {
+    "task.txt": "aa12d68878ff890f78e3c1a9341846f83c15a164369279f84831e691d5fe86a2",
+    "answer_format.txt": "efdbf90803248c4503d3bfef6d9b2ca79334e7d9160b42f1e9e1ee220d24e036",
+    "user_suffix.txt": "cbd700ce46a511e8d234222fe9ca27d4009bd392eb1a6cc1698b39d42f8c3615",
+    "user_L1.txt": "50f50397398879b1894169c534186af7d049c10ebfb349a4e8d9b69f2ebcb00a"
+  },
+  "l2_examples_excluded": [
+    "CWE401_Memory_Leak__int_malloc_73__bad",
+    "CWE401_Memory_Leak__int_malloc_73__good",
+    "CWE401_Memory_Leak__new_int_41__bad",
+    "CWE401_Memory_Leak__new_int_41__good",
+    "CWE401_Memory_Leak__new_int_65__bad",
+    "CWE401_Memory_Leak__new_int_65__good",
+    "CWE401_Memory_Leak__strdup_char_18__bad",
+    "CWE401_Memory_Leak__strdup_char_18__good"
+  ],
+  "l2_examples_json_sha256": "59a9b069308b682a0dd51d859d686ddf13f97bf558cc1c2a2ac7b785f16b9d10",
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+  "units_sha256": "d4d913c438e8a86fe8fa3c0560aab6320d8bb90b6eca584e1f70ad8183cafad9",
+  "selection": {
+    "limit": null,
+    "unit_ids_file": null
+  },
+  "evidence_file": null,
+  "evidence_sha256": null,
+  "evidence_frozen": null,
+  "start_utc": "2026-11-23T19:52:48Z",
+  "end_utc": "2026-11-23T19:56:50Z",
+  "wall_s": 242.05,
+  "host": "barton-OptiPlex-5000",
+  "concurrency": 1,
+  "warmup_wait_s": 5.0,
+  "loadavg_start": [
+    21.19091796875,
+    19.94384765625,
+    13.82080078125
+  ],
+  "loadavg_end": [
+    21.9560546875,
+    20.6259765625,
+    15.4697265625
+  ],
+  "git_head": "81be21bf127d94d1c4ffba9fcf7800b74c68c730",
+  "usage_totals": {
+    "calls": 300,
+    "prompt_tokens": 156154,
+    "cache_hit_tokens": 95191,
+    "cache_miss_tokens": 60963,
+    "completion_tokens": 4950,
+    "input_tokens": 0,
+    "peak_calls": 0
+  },
+  "cost_total": 0.08266682,
+  "cost_currency": "CNY",
+  "cost_per_call": 0.00027556,
+  "prices": {
+    "offpeak_cny_per_m": {
+      "input_cache_miss": 1.0,
+      "input_cache_hit": 0.02,
+      "output": 4.0
+    },
+    "peak_multiplier": 2.0
+  },
+  "peak_pause_s": 0.0,
+  "balance_before": {
+    "is_available": true,
+    "balance_infos": [
+      {
+        "currency": "CNY",
+        "total_balance": "7.23",
+        "granted_balance": "0.00",
+        "topped_up_balance": "7.23"
+      }
+    ]
+  },
+  "balance_after": {
+    "is_available": true,
+    "balance_infos": [
+      {
+        "currency": "CNY",
+        "total_balance": "7.21",
+        "granted_balance": "0.00",
+        "topped_up_balance": "7.21"
+      }
+    ]
+  },
+  "ledger_total_after": 3.70095684,
+  "souffle": null,
+  "raw_log": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/llm/raw_logs/deepseek_flash/layer1/lat300_c1_L1.jsonl"
+}
