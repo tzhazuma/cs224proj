@@ -1,0 +1,163 @@
+% Backup slides (not counted in the talk).
+\begin{frame}{Backup: layer \ding{172}, all methods and strategies}
+  \centering
+  \includegraphics[width=\linewidth,height=0.86\textheight,keepaspectratio]{figures/prf1_full.pdf}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: robustness, all methods and strategies}
+  \centering
+  \includegraphics[width=\linewidth,height=0.83\textheight,keepaspectratio]{figures/robustness_full.pdf}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: where each method fails, by flow category}
+  \centering
+  \includegraphics[width=\linewidth,height=0.76\textheight,keepaspectratio]{figures/heatmap.pdf}
+  \\[2pt]{\scriptsize Macro-F1 on layer \ding{172}, eval set, per Juliet flow-variant group.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: by leak mechanism and good-unit kind}
+  \centering
+  \includegraphics[width=\linewidth,height=0.80\textheight,keepaspectratio]{figures/mechanism.pdf}
+  \\[2pt]{\scriptsize Leak recall per mechanism (bad units); specificity per good kind (G2B / B2G). Layer \ding{172} vs \ding{174}.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: repeat agreement and merged vs unmerged LoRA}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      {\small Same prompt, 3 runs (layer \ding{172})\\[2pt]
+      \input{figures/repeat.tex}\par}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item Reported LoRA = adapters \textbf{merged} into BF16 weights; 3 held-out folds combined
+        \item Unmerged adapters, layer \ding{172}: L1 \res{lora_unmerged_L1-layer1}{macro}, L3 \res{lora_unmerged_L3-layer1}{macro}
+        \item Held-out predictions that differ: \res{x}{unmerged_flips_L1} (L1), \res{x}{unmerged_flips_L3} (L3) of 2,656
+        \item Scores differ only by BF16 rounding of large logits ($|s|\approx15$--$40$)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: CodeQL batching artifact}
+  \begin{itemize}
+    \item CodeQL builds one database per \textbf{50 units} (7.36\,s $\to$ 0.32\,s per unit)
+    \item \code{\_08} units each define helpers \code{staticReturnsTrue/False}; they are not renamed per unit
+    \item In a shared database, CodeQL cannot resolve which helper a guard calls: ``may not be freed'' fires
+    \item Result: \textbf{4} extra false positives on eval good units (per-unit runs are clean)
+    \item Not corrected: the configuration was frozen before eval. Fix = rename all non-\code{main} functions per unit
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: cost of every API run}
+  \begin{columns}[T]
+    \begin{column}{0.60\textwidth}
+      {\scriptsize\input{figures/cost.tex}\par}
+    \end{column}
+    \begin{column}{0.37\textwidth}
+      \begin{itemize}\small
+        \item User cap: DeepSeek $\le$ \textyen10; client hard stop at \textyen9.5
+        \item Total: \textyen\res{x}{cost_deepseek} and \$\res{x}{cost_jev}, from the shared ledger
+        \item This is why DeepSeek layer \ding{174}, placebo and original use nested25 (664 units)
+        \item Local models: 2$\times$RTX 3090, no API cost
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: latency at concurrency 1 (Pareto x-axis)}
+  \centering
+  {\tiny\renewcommand{\arraystretch}{0.92}\resizebox{\linewidth}{!}{\input{figures/latency.tex}}\par}
+  \vfill
+  {\scriptsize Never \texttt{latency\_s} from bulk runs. Source table: \texttt{figures/latency\_c1.csv}.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: are the labels still right? Compile and run every unit}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item gcc and clang compile \textbf{3,316 / 3,316} units in every layer
+        \item No good unit is flagged by ASan/LSan or the enhanced dynamic run
+        \item Labels are never changed; disagreements are explained, not relabelled
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.51\textwidth}
+      {\footnotesize Enhanced dynamic run: what it takes to catch the 1,658 bad units\\[2pt]
+      \begin{tabular}{@{}lr@{}}
+        \toprule
+        Needed & units \\
+        \midrule
+        plain run, every seed & 1,448 \\
+        some seeds only (variant 12, random) & 34 \\
+        \texttt{use\_globals=0} (globals at exit) & 68 \\
+        \texttt{realloc} failure injected & 108 \\
+        \bottomrule
+      \end{tabular}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: why dynamic tools are a reference line, not a competitor}
+  \begin{itemize}
+    \item Plain ASan/LSan: precision 1.000, macro-F1 \res{asan_lsan-layer1}{macro} on layer \ding{172}
+    \item Misses: \code{realloc} failure 0/84 eval bad units; global still reachable at exit (variants 45/68);
+          random branch not taken (variant 12)
+    \item We run LSan with \code{use\_stacks=0}: default options miss 175 more bad units (stale \code{-O0} stack slots)
+    \item Enhanced (seeds, \code{use\_globals=0}, failure injection) reaches \res{dynamic_enhanced-layer1}{macro}, but
+          only because we know which input and which fault to inject
+    \item They need a build, a run and the right input: a different question from reading code
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}[fragile]{Backup: demo replay}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      {\small Stage unit \texttt{strdup\_char\_01}, bad, after the edit:\par}
+\begin{lstlisting}[style=unit]
+static const int sym_61 = 4; /* added */
+void sym_0() {
+  char * data;
+  data = NULL;
+  {
+    char myString[] = "myString";
+    data = strdup(myString);
+    printLine(data);
+  }
+  if(sym_61 > 4) {  /* added */
+    free(data);     /* never runs */
+  }
+}
+\end{lstlisting}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \begin{itemize}\small
+        \item Fallback if the network or GPU server fails:\\
+              {\scriptsize\texttt{demo.py --replay}\\ \texttt{recordings/stage\_dryrun.json}}
+        \item Dry run cost: \textyen\res{x}{demo_cny} DeepSeek, \$\res{x}{demo_usd} Jev
+        \item Fooled: grep, LoRA L1/L3. Robust: Clang SA, DeepSeek L1/L3, Jev
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: earlier SecVulEval study}
+  \begin{itemize}
+    \item Proposal tier A: real CVE functions from SecVulEval (Ahmed et al., AIware'26)
+    \item Pair task (vulnerable vs patched): MiMo's single-order accuracy of 86.7\% looked strong
+    \item Swapping the order: MiMo 74.44\%, DeepSeek 61.67\% (below a length heuristic)
+    \item Same lesson as Juliet: check the benchmark before ranking models; full write-up goes in the report appendix
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\input{figures/provenance.tex}

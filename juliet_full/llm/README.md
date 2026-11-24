@@ -9,7 +9,7 @@ on the CWE-401 units of `../data/build/*.jsonl`. Predictions and meta files foll
 | `run_llm.py` | driver: one model x strategy x unit set → `results/<method>/<layer>/<run_id>.jsonl` + `.meta.json` |
 | `llmlane/clients.py` | stdlib HTTP clients: `deepseek_client()` (thinking disabled), `qwen_client()` (`chat_template_kwargs.enable_thinking=false`), `JevClient` (one `noul` question, score = probability). Temperature 0, jittered exponential backoff on 408/409/425/429/5xx/transport errors, no retry on other 4xx, HTTP 401/402/403 stop the run, any non-zero `reasoning_tokens` or reasoning text stops the run |
 | `llmlane/pricing.py` | prices, Beijing peak windows (Mon-Fri 09-12, 14-18 Asia/Shanghai), `PeakGate` |
-| `llmlane/ledger.py` | append-only `ledger.jsonl` (flock + fsync), `Budget` (per-run cap + global hard stop: DeepSeek CNY 11.8 since 2026-11-24 (was 9.5), Jev USD 4.0) |
+| `llmlane/ledger.py` | append-only `ledger.jsonl` (flock + fsync), `Budget` (per-run cap + global hard stop: DeepSeek CNY 12.3 since 2026-11-24 07:35 (was 9.5, then 11.8), Jev USD 4.0) |
 | `llmlane/parse.py` | `parse_verdict`: JSON object (fences/prose tolerated) → pred/score; anything else → `status invalid`, `pred null`; valid label with missing/bad confidence → pred kept, score null |
 | `llmlane/prompts.py` | `PromptSet` (prompt files + SHA-256), label-token audit (fail closed), L3 evidence rendering |
 | `llmlane/units.py` | unit loading (final schema; old `{lab, variant, code}` adapter), subsets, stratified `--limit`, evidence loading |

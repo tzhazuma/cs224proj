@@ -1,0 +1,77 @@
+\section{Discussion}
+
+% ------------------------------------------------------------------------------
+% src: paired bootstrap from juliet_full/analysis/near_llm_bootstrap.py (seed 20261123), see the near-LLM results frame; latency figures/latency_c1.csv
+\begin{frame}{In distribution, a decision model reaches near-LLM quality}
+  \begin{itemize}
+    \item Macro-F1 \res{lora_L1-layer1}{macro} vs DeepSeek \res{deepseek_L1-layer1}{macro}
+    \item Gap $-0.011$, inside the 0.02 margin
+    \item 0.105\,s vs 0.715\,s per unit: about 7$\times$ faster
+    \item Local 4B model; beats the Jev API
+  \end{itemize}
+  \vspace{10pt}
+  \centering
+  \begin{tikzpicture}
+    \node[data, minimum width=70mm, minimum height=10mm] {\textbf{Near-LLM quality at decision-model speed: yes}};
+  \end{tikzpicture}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Under DeadFree it does not, yet: robust $\neq$ sound}
+  \begin{itemize}
+    \item LoRA decision model: \res{lora_L1-layer1}{macro} $\to$ \alert{\res{lora_L1-layer3}{macro}}
+    \item Best LLM-based: Jev \res{jev_L1-layer3}{macro}, DeepSeek \res{deepseek_L1-layer3}{macro}$^\dagger$
+    \item Clang SA: 0 flips, but recall \res{clang_sa-layer1}{r}
+    \item High Debiased score $\neq$ program understanding
+  \end{itemize}
+  \vspace{10pt}
+  \centering
+  \begin{tikzpicture}
+    \node[warn, minimum width=70mm, minimum height=10mm] {\textbf{Test with label-preserving edits}};
+  \end{tikzpicture}
+  \vfill
+  {\scriptsize $^\dagger$\,nested25 subset (664 units).\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+% src: juliet_full/STATUS.md (L4-D design, l4d-train running); oracle ceiling with gold facts
+%   juliet_full/l4d/REPORT_stage1.md:94-97,165 (0.991 Debiased/DeadFree/Placebo eval, 0.985 Original).
+\begin{frame}{In progress: L4-D lets the decision model answer facts, not verdicts}
+  \centering
+  \begin{tikzpicture}[node distance=4mm and 6mm]
+    \node[box, align=center] (code) {unit\\code};
+    \node[box, right=of code, align=center] (lex) {candidate\\sites};
+    \node[data, right=of lex, align=center] (q) {decision model\\{\scriptsize answers fact questions}};
+    \node[hero, right=of q, align=center] (dl) {Datalog\\rules};
+    \node[warn, right=of dl, align=center] (out) {leak /\\no leak};
+    \draw[arr] (code) -- (lex);
+    \draw[arr] (lex) -- (q);
+    \draw[arr] (q) -- (dl);
+    \draw[arr] (dl) -- (out);
+  \end{tikzpicture}
+  \vspace{8pt}
+  \begin{itemize}
+    \item ``Does this branch always, never or sometimes run?''
+    \item Fact labels come from dynamic analysis
+    \item Gold-fact ceiling: 0.991 (Debiased, DeadFree, Placebo)
+    \item \alert{Training running: no results yet}
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Four caveats limit these claims}
+  \begin{itemize}
+    \item Juliet is synthetic and public: contamination possible
+    \item DeepSeek DeadFree/Placebo: 664-unit subset (budget)
+    \item One LoRA run; checkpoint choice saturated on dev
+    \item LineVul zero-shot, not fine-tuned
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}[standout]
+  Near-LLM quality at decision-model speed?\\[6pt]
+  \textbf{Yes in distribution, not yet under DeadFree.}\\[14pt]
+  {\normalsize Check the benchmark before ranking models.}\\[18pt]
+  Questions?
+\end{frame}

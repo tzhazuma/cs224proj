@@ -15,7 +15,8 @@ LEDGER_PATH = LLM_DIR / "ledger.jsonl"
 
 # Global hard stops across all runs (README section 7). Currency per provider.
 # DeepSeek raised 9.5 -> 11.8 on 2026-11-24 06:05 PST (user: fill DeadFree L1-L4 to the full eval set, ~CNY 3).
-GLOBAL_CAPS = {"deepseek": ("CNY", 11.8), "jev": ("USD", 4.0)}
+# DeepSeek raised 11.8 -> 12.3 on 2026-11-24 07:35 PST (user: all c1 latency on DeadFree, DeepSeek L1-L4 latency300 ~CNY 0.7).
+GLOBAL_CAPS = {"deepseek": ("CNY", 12.3), "jev": ("USD", 4.0)}
 
 
 class Ledger:

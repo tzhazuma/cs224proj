@@ -1,0 +1,94 @@
+\section{Methods}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Method matrix}
+  \footnotesize
+  \renewcommand{\arraystretch}{0.9}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Line & Method & Program-analysis idea (lecture) \\
+    \midrule
+    Static & grep: is there a \code{free}/\code{delete}? & lexical baseline \\
+           & Cppcheck 2.22 & intraprocedural dataflow \\
+           & Clang Static Analyzer 23.1.6 & path-sensitive symbolic execution \\
+           & CodeQL 2.27.5 & Datalog-style queries over dataflow \\
+           & Infer 1.3 (Pulse) & interprocedural summaries, pointers \\
+    Learned & LineVul, zero-shot & token classifier (CodeBERT) \\
+    LLM & DeepSeek V4.1 Flash (API) $\times$ L1--L4 & L4: LLM facts + Datalog points-to \\
+        & Qwen3.5-4B (local SLM) $\times$ L1--L4 & same prompts, one RTX 3090 \\
+    Decision & Jev 1.14 (API), Intern-Decision-4B $\times$ L1--L3 & read the option probability \\
+             & \textbf{ours}: Qwen3.5-4B + LoRA $\times$ \{L1, L3\} & fine-tuned binary head, 3-fold CV \\
+    \midrule
+    \textcolor{NeutDraw}{Reference} & \textcolor{NeutDraw}{ASan/LSan, Valgrind, enhanced dynamic} &
+      \textcolor{NeutDraw}{runs the program: shown, not ranked} \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  {\scriptsize Missing output, timeout or compile error counts as a wrong prediction. Dynamic tools need a build, a run
+  and the right input, so they answer a different question.}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Strategy ladder L1--L4}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \begin{description}[L4]
+        \item[L1] direct: code $\to$ \code{\{label, confidence\}}
+        \item[L2] few-shot: + fixed dev examples
+        \item[L3] analysis-guided: + Clang SA warnings
+        \item[L4] neuro-symbolic: the LLM lists heap facts, \textbf{Datalog} decides
+      \end{description}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{itemize}\small
+        \item Same prompt text for DeepSeek and Qwen; temperature 0, thinking off
+        \item Prompts frozen in git before any eval run
+        \item Decision models read P(leak) for L1--L3
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{6pt}
+  \centering
+  \begin{tikzpicture}[node distance=4mm and 5mm]
+    \node[box] (code) {unit\\code};
+    \node[hero, right=of code] (llm) {LLM\\{\scriptsize DeepSeek / Qwen}};
+    \node[data, right=8mm of llm, font=\scriptsize, align=left] (facts) {%
+      \texttt{alloc realloc free}\\
+      \texttt{assign pass ret call}\\
+      \texttt{global dead(line)}};
+    \node[hero, right=of facts] (dl) {Souffl\'e\\{\scriptsize \texttt{leak.dl}}};
+    \node[warn, right=of dl] (out) {\texttt{leak(o,\,why)}\\{\scriptsize non-empty $\Rightarrow$ leak}};
+    \draw[arr] (code) -- (llm);
+    \draw[arr] (llm) -- node[lbl, above] {JSON} (facts);
+    \draw[arr] (facts) -- (dl);
+    \draw[arr] (dl) -- (out);
+    \node[lbl, below=1mm of facts] {L4: facts are grounded to source lines};
+  \end{tikzpicture}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{One 4B model, three uses}
+  \centering
+  \begin{tikzpicture}[node distance=3mm and 12mm]
+    \node[hero, minimum height=16mm, minimum width=22mm] (m) {\textbf{Qwen3.5-4B}\\{\scriptsize same weights}};
+    \node[box, right=of m, minimum width=58mm, align=left] (u2) {\textbf{read-out}: P(Yes) vs P(No), no generation\\
+      {\scriptsize zero-shot: Intern-Decision-4B (same base); plain Qwen as ablation}};
+    \node[box, above=of u2, minimum width=58mm, align=left] (u1) {\textbf{generate}: SLM answers L1--L4\\
+      {\scriptsize JSON label, or facts for L4}};
+    \node[data, below=of u2, minimum width=58mm, align=left] (u3) {\textbf{fine-tune}: LoRA + binary head (ours)\\
+      {\scriptsize $s=\ell_{\text{Yes}}-\ell_{\text{No}}$; balanced CE + bad$>$good ranking loss}};
+    \draw[arr] (m.east) -- (u1.west);
+    \draw[arr] (m.east) -- (u2.west);
+    \draw[arr] (m.east) -- (u3.west);
+  \end{tikzpicture}
+  \vspace{4pt}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      {\small LoRA r16, $\alpha$32: 32.5\,M trainable = \textbf{0.70\%}. Train on two folds, predict the
+      third; merged adapters are reported.}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      {\small \textbf{Deployment}: IDE / pre-commit on a laptop $\cdot$ CI runner $\cdot$ nightly GPU server.}
+    \end{column}
+  \end{columns}
+\end{frame}

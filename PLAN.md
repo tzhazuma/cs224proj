@@ -22,6 +22,16 @@
 **任务**【已定】：Juliet C/C++ v1.3 全部 CWE-401（Memory Leak）测试用例上的**单元级二分类**：给定一个单元（一个入口函数及其辅助函数），判断是否存在内存泄漏（leak / no leak）。只报告一个总体结果，family 不作为结果类别。
 
 **主线**【已定，2026-11-23，用户确认限定版本】：*Near-LLM quality at decision-model speed — in distribution, but not (yet) under DeadFree.* 微调过的 4B decision model 在第 ① 层上与 API 大模型差约 1 个百分点、快约 7 倍；在第 ③ 层上质量掉得很多。L3 和 L4-D 研究的是：能否保住速度、同时把鲁棒性找回来。
+
+**主题与叙事更新【已定，2026-11-24 07:30，用户决定；取代上一条主线的表述】**：
+- 主题改为 *Near cloud model quality at local device*；暂定标题 "Near-Cloud Quality on a Local Device? Program-Analysis-Guided Decision Models for C/C++ Memory-Leak Detection"（论文、proposal v2 的标题等 slides 改完再同步）。
+- "本地设备" = 非云端模型的运行环境，单张消费级 GPU（RTX 3090 24 GB）即可；"云端" = DeepSeek（生成式）和 Jev（decision model），"接近云端"以 DeepSeek 为基准，Jev 作为云端上限点。
+- 叙事 = **策略 × 微调**：用单元标签微调（L1/L3）学到 "有 free 就不泄漏" 的捷径，在 DeadFree 上比未微调还差；用事实问题微调（L4-D）才真正提高质量。加 "缩小差距" 指标：gap closed = (F1_ours − F1_naive_local) / (F1_cloud − F1_naive_local)，naive local = 未微调 Qwen3.5-4B L1，cloud = DeepSeek L1 与 DeepSeek 最佳策略各报一个。
+- **之后所有模型横评只在 DeadFree（第 ③ 层）上做**，包括 VulnLLM-R-7B；Debiased / Placebo / Original 只作数据集论证和备用页。
+- 微调前对照：L1–L3 用未微调 Qwen3.5-4B（生成式 LLM 基线）和 Intern-Decision-4B（decision model 基线）；L4-D 用同一 Qwen 直接读出，最后补 Intern-Decision L4-D（第 ① 层 dev 选阈值，DeadFree eval）。
+- 速度目标：L4-D（优化版）比 DeepSeek API 快即可（不再要求 ≤ 0.36 s）。所有单并发延迟都在 DeadFree latency300 上重测（L3 含 Clang 分析时间，L4/L4-D 含解析与 Datalog 推导时间）。
+- Pareto（横轴单并发延迟、对数；纵轴 DeadFree macro-F1）画入静态工具（灰色）和动态参考；方案 A（混合事实）用户未要求，不做。
+- 第 4.2 节预注册的 near-LLM 标准（≥ 参考 − 0.02）照实报告为未达到（DeadFree −.037 vs DeepSeek L1）。
 **主比较轴**【已定，2026-11-23 修改】：模型类型，即生成式 LLM（DeepSeek、Qwen3.5-4B）与 decision model（LoRA、Intern-Decision、Jev）的对比（课程指南允许以模型为主轴）。提示策略 L1–L4 / L4-D 是次要轴，传统程序分析方法是基线。原主轴（提示策略 L1–L4）作废。
 
 | RQ | 问题 | 主要证据 |
@@ -298,7 +308,7 @@ decision model 先判断；置信度低于阈值的单元交给 DeepSeek L3 或 
 | 原始 Juliet 对照，嵌套 25% | 664 | L1 | ¥0.45 | ¥0.57 |
 | **合计** | | | **约 ¥7.9** | 约 ¥14（会被 ¥9.5 硬停截断，从最后一项开始删） |
 
-- **硬上限**：客户端按返回的 token 用量累计费用（所有运行共用一个账本），累计到 ¥9.5 就停止【2026-11-24 06:05 用户同意补 DeadFree 全集后提高到 ¥11.8：已花 ¥8.21 + 预计 ¥3.0 + 余量】；每次运行前后用 `/user/balance` 核对余额。
+- **硬上限**：客户端按返回的 token 用量累计费用（所有运行共用一个账本），累计到 ¥9.5 就停止【2026-11-24 06:05 用户同意补 DeadFree 全集后提高到 ¥11.8：已花 ¥8.21 + 预计 ¥3.0 + 余量；07:35 再提高到 ¥12.3，用于在 DeadFree 上测 DeepSeek L1–L4 单并发延迟（约 ¥0.7）】；每次运行前后用 `/user/balance` 核对余额。
 - **运行顺序即优先级**：第 ① 层评测集全集（L1 → L3 → L2 → L4）→ 重复样本 → 第 ③ 层 → 安慰剂层 → 原始 Juliet 对照。钱不够时从最后一项开始删。
 - **只在空闲时段运行**。dell 用太平洋时间（PST，UTC−8，比北京晚 16 小时）。换算后，北京工作日的空闲时段是 dell 时间 02:00–17:00 和 20:00–22:00；北京周末对应 dell 时间周五 08:00 至周日 17:00。
 - **余额**：现在 ¥5.86，够做 dev 终检和 pre 试跑（估计不到 ¥1）。阶段 B 之前再充约 ¥5，使总花费可以到 ¥10。

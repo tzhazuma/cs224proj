@@ -167,3 +167,11 @@ score, latency_s, status, extra}`.
   is on Thursday 11-26 (Beijing). Start Qwen first (`svc.sh qwen start`, then `svc.sh decide start`; see
   `../gpu/README.md` §2), then `serve.sh start`. If training is not finished by then: checkpoint, restore the
   services, report, and resume only after the parent agrees.
+- **Update 2026-11-24 07:40 (parent; supersedes the "all three" rule above).** Demo services for the pre:
+  `:8003` old LoRA L1/L3 on **GPU 0** and `:8004` L4-D (`l4dft.py serve`, all 3 fold adapters, kernel PYTHONPATH
+  `~/disk4/cs224/pyext_cc1d` if its equivalence check passed) on **GPU 1** — both healthy by **2026-11-25 12:00 PST**.
+  `:8001` Qwen vLLM and `:8002` Intern-Decision are needed only for the DeadFree latency / Intern L4-D measurements
+  (lane latency-deadfree) and are stopped afterwards to make room for `:8004` (the demo uses them only as fallbacks).
+  Start/stop `:8004` with `~/disk4/cs224/l4d_ft/server/serve_l4d.sh start|stop|status` (env `L4D_GPU`, default 1).
+  GPU 1 order: VulnLLM-R (until ~08:10) → `:8001`+`:8002` for latency-deadfree → `:8004`. GPU 0 order: L4-D lane
+  DeadFree latency (its own temporary `:8004`, stopped afterwards) → `:8003` old LoRA (left running).

@@ -1,0 +1,58 @@
+\section{Demo and outlook}
+
+% ------------------------------------------------------------------------------
+\begin{frame}[fragile]{Live demo: one leaking unit, then a \code{free} that never runs}
+  \noindent{\small Stage unit \texttt{CWE401\_Memory\_Leak\_\_strdup\_char\_01} (eval, held-out fold). Edit: \par}
+  \vspace{-2pt}
+\begin{lstlisting}[style=unit]
+static const int sym_61 = 4;                 /* added at file scope */
+data = strdup(myString); printLine(data);    /* bad: no free */
+if(sym_61 > 4) { free(data); }               /* added: never runs, still a leak */
+\end{lstlisting}
+  \vspace{-2pt}
+  \centering
+  {\footnotesize\renewcommand{\arraystretch}{0.88}\input{figures/demo.tex}\par}
+  {\scriptsize Dry run 2026-11-23 (\texttt{presentation/demo/recordings/stage\_dryrun.json}); ms = end-to-end on the bad unit.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Limitations}
+  \begin{itemize}
+    \item \textbf{Synthetic benchmark}: Juliet units are small and single-file; real leaks span files and ownership
+    \item \textbf{Leak definition} includes memory reachable from globals at exit and \code{realloc} failure paths
+    \item \textbf{Weak checkpoint selection}: dev AUROC is saturated, so dev cannot pick the robust LoRA checkpoint
+    \item \textbf{Budget}: DeepSeek runs on the nested25 subset (664 units) for layer \ding{174}, placebo and original
+    \item \textbf{Thresholds are descriptive}: macro-F1 with bootstrap CIs, no tuned cut-offs claimed as deployable
+    \item \textbf{Contamination}: Juliet is public; layer \ding{174} is new, which is why it is the key test
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Take-aways and next steps}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \textbf{Take-aways}
+      \begin{itemize}\small
+        \item Rebuild the benchmark before ranking: a grep rule tops original Juliet
+        \item Near-ceiling layer-\ding{172} scores hide very different robustness
+        \item Path sensitivity (Clang, Infer, L4 Datalog) resists dead frees; fine-tuning on a biased set does not
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \textbf{Until the report (Dec 24)}
+      \begin{itemize}\small
+        \item Finish Qwen / Intern-Decision on layer \ding{174}, placebo, original
+        \item Cascade: fast decision model first, escalate unsure units to L4
+        \item Repeat runs, paired significance tests
+        \item IEEE report, $\ge$ 10 pages
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}[standout]
+  Thank you!\\[8pt]
+  {\normalsize Questions?}\\[14pt]
+  {\small Do detectors read code or templates? Rebuild the benchmark before you rank them.}
+\end{frame}
