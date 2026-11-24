@@ -1,0 +1,715 @@
+{
+ "format": "cs224-demo-run/1",
+ "created_utc": "2026-11-24T18:19:40Z",
+ "run_id": "demo_20261124T181925Z",
+ "host": "barton-OptiPlex-5000",
+ "argv": [
+  "--auto-pause",
+  "4",
+  "--record",
+  "recordings/stage_final_v2.json",
+  "--allow-eval",
+  "--allow-peak",
+  "--ft-l3",
+  "--jev"
+ ],
+ "methods": [
+  "grep",
+  "clang",
+  "ft",
+  "ft_l3",
+  "l4d",
+  "ds_l1",
+  "ds_l3",
+  "jev"
+ ],
+ "cases": [
+  {
+   "key": "bad",
+   "title": "leaking unit",
+   "truth": 1,
+   "highlight": [],
+   "unit": {
+    "unit_id": "CWE401_Memory_Leak__strdup_char_01__bad",
+    "group_id": "CWE401_Memory_Leak__strdup_char_01",
+    "language": "c",
+    "set": "eval",
+    "fold": 0,
+    "flow_category": "01",
+    "mechanism": "c_alloc",
+    "good_kind": null,
+    "model_text": "// ---- part 1 ----\n#include <wchar.h>\n\nvoid sym_0()\n{\n    char * data;\n    data = NULL;\n    {\n        char myString[] = \"myString\";\n\n        data = strdup(myString);\n\n        printLine(data);\n    }\n\n    ;\n}\n\nint main(int argc, char * argv[])\n{\n    srand( (unsigned)time(NULL) );\n    sym_0();\n    return 0;\n}",
+    "transform": null
+   }
+  },
+  {
+   "key": "good",
+   "title": "good twin (B2G)",
+   "truth": 0,
+   "highlight": [],
+   "unit": {
+    "unit_id": "CWE401_Memory_Leak__strdup_char_01__good",
+    "group_id": "CWE401_Memory_Leak__strdup_char_01",
+    "language": "c",
+    "set": "eval",
+    "fold": 0,
+    "flow_category": "01",
+    "mechanism": "c_alloc",
+    "good_kind": "B2G",
+    "model_text": "// ---- part 1 ----\n#include <wchar.h>\n\nvoid sym_0()\n{\n    char * data;\n    data = NULL;\n    {\n        char myString[] = \"myString\";\n\n        data = strdup(myString);\n\n        printLine(data);\n    }\n\n    free(data);\n}\n\nint main(int argc, char * argv[])\n{\n    srand( (unsigned)time(NULL) );\n    sym_0();\n    return 0;\n}",
+    "transform": null
+   }
+  },
+  {
+   "key": "attacked",
+   "title": "+ dead free",
+   "truth": 1,
+   "highlight": [
+    3,
+    4,
+    18,
+    19,
+    20,
+    21
+   ],
+   "unit": {
+    "unit_id": "CWE401_Memory_Leak__strdup_char_01__bad__stress",
+    "group_id": "CWE401_Memory_Leak__strdup_char_01",
+    "language": "c",
+    "set": "eval",
+    "fold": 0,
+    "flow_category": "01",
+    "mechanism": "c_alloc",
+    "good_kind": null,
+    "model_text": "// ---- part 1 ----\n#include <wchar.h>\n\nstatic const int sym_61 = 4;\n\nvoid sym_0()\n{\n    char * data;\n    data = NULL;\n    {\n        char myString[] = \"myString\";\n\n        data = strdup(myString);\n\n        printLine(data);\n    }\n\n    if(sym_61 > 4)\n    {\n        free(data);\n    }\n}\n\nint main(int argc, char * argv[])\n{\n    srand( (unsigned)time(NULL) );\n    sym_0();\n    return 0;\n}",
+    "transform": {
+     "kind": "stress",
+     "guards": [
+      {
+       "name": "sym_61",
+       "value": 4,
+       "op": ">",
+       "const": 4,
+       "truth": false
+      }
+     ],
+     "inserted": [
+      {
+       "line": 20,
+       "file": "unit_1.c",
+       "file_line": 20,
+       "guard_line": 18,
+       "stmt": "free(data);",
+       "guard": "sym_61",
+       "role": "site",
+       "reachable": false
+      }
+     ],
+     "wrapped_real_frees": [],
+     "seed": 20261123,
+     "guard_values": [
+      4,
+      5
+     ],
+     "pointer": "data",
+     "dead_stmt_form": "free",
+     "n_dead": 1,
+     "n_flaw_sites": 1,
+     "extra_position": "after",
+     "inserter": "stress",
+     "source_unit_id": "CWE401_Memory_Leak__strdup_char_01__bad",
+     "matches_layer3": true
+    }
+   }
+  }
+ ],
+ "attack": {
+  "kind": "stress",
+  "guards": [
+   {
+    "name": "sym_61",
+    "value": 4,
+    "op": ">",
+    "const": 4,
+    "truth": false
+   }
+  ],
+  "inserted": [
+   {
+    "line": 20,
+    "file": "unit_1.c",
+    "file_line": 20,
+    "guard_line": 18,
+    "stmt": "free(data);",
+    "guard": "sym_61",
+    "role": "site",
+    "reachable": false
+   }
+  ],
+  "wrapped_real_frees": [],
+  "seed": 20261123,
+  "guard_values": [
+   4,
+   5
+  ],
+  "pointer": "data",
+  "dead_stmt_form": "free",
+  "n_dead": 1,
+  "n_flaw_sites": 1,
+  "extra_position": "after",
+  "inserter": "stress",
+  "source_unit_id": "CWE401_Memory_Leak__strdup_char_01__bad",
+  "matches_layer3": true
+ },
+ "results": {
+  "bad": {
+   "grep": {
+    "method": "grep",
+    "status": "ok",
+    "pred": 1,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 2.3748639941914007,
+    "backend": null,
+    "detail": "no free/delete",
+    "extra": {}
+   },
+   "clang": {
+    "method": "clang",
+    "status": "ok",
+    "pred": 1,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 191.13330899563152,
+    "backend": null,
+    "detail": "line 17: Potential leak of memory pointed to by 'data'",
+    "extra": {
+     "warnings": [
+      {
+       "checker": "unix.Malloc",
+       "message": "Potential leak of memory pointed to by 'data'",
+       "source_file": "unit_1.c",
+       "source_line": 17,
+       "model_text_line": 17,
+       "statement_text": "}"
+      }
+     ]
+    }
+   },
+   "ft": {
+    "method": "ft",
+    "status": "ok",
+    "pred": 1,
+    "score": 17.64212417602539,
+    "score_kind": "logit",
+    "threshold": 2.513676166534424,
+    "latency_ms": 378.44139299704693,
+    "backend": "qwen3.5-4b-lora-L1-fold0",
+    "detail": null,
+    "extra": {
+     "latency_ms_server": 82.91330002248287,
+     "forward_ms": 81.73813205212355,
+     "switch_ms": 252.9507582075894,
+     "checkpoint": "step107",
+     "n_tokens": 407,
+     "prompt_sha256": "8c2d430ea2d946818c1f5c037c470984165dd06a712f2e9629cb9bcca4c24640"
+    }
+   },
+   "ft_l3": {
+    "method": "ft_l3",
+    "status": "ok",
+    "pred": 1,
+    "score": 23.522626876831055,
+    "score_kind": "logit",
+    "threshold": -0.7382984161376953,
+    "latency_ms": 759.5760969852563,
+    "backend": "qwen3.5-4b-lora-L3-fold0",
+    "detail": null,
+    "extra": {
+     "latency_ms_server": 83.24838802218437,
+     "forward_ms": 81.93250698968768,
+     "switch_ms": 447.65197206288576,
+     "checkpoint": "step268",
+     "n_tokens": 473,
+     "prompt_sha256": "85dce74912f6aaf02da5d42cbae6c23292b761a4174456336895982b8ea050d1",
+     "clang_ms": 191.13330899563152
+    }
+   },
+   "l4d": {
+    "method": "l4d",
+    "status": "ok",
+    "pred": 1,
+    "score": 0.9999975344082069,
+    "score_kind": "l4d",
+    "threshold": 0.817574,
+    "latency_ms": 222.79839300608728,
+    "backend": "qwen3.5-4b-lora-l4d-fold0",
+    "detail": "runs, never freed",
+    "extra": {
+     "n_questions": 5,
+     "n_asked": 2,
+     "fold": 0,
+     "question_source": "built live = stored",
+     "build_ms": 0.4216090019326657,
+     "stored": "layer1/CWE401_Memory_Leak__strdup_char_01__bad",
+     "stored_pred": 1,
+     "latency_ms_server": 183.43541724607348,
+     "forward_ms": 178.19510307163,
+     "switch_ms": 0.0,
+     "n_tokens": 569,
+     "checkpoint": "step219",
+     "tau": 0.817574,
+     "leaks": [
+      [
+       "s00",
+       "never_freed"
+      ]
+     ],
+     "derive_ms": 0.018695005564950407,
+     "leak_site": "strdup L11",
+     "answers": {
+      "heap/s00": 0.999999,
+      "exec_any/s00": 0.999998
+     }
+    }
+   },
+   "ds_l1": {
+    "method": "ds_l1",
+    "status": "ok",
+    "pred": 1,
+    "score": 0.99,
+    "score_kind": "p",
+    "threshold": null,
+    "latency_ms": 886.9639670010656,
+    "backend": "deepseek-flash",
+    "detail": null,
+    "extra": {
+     "cost_cny": 0.00024412000000000001,
+     "peak_price": false,
+     "usage": {
+      "prompt_tokens": 431,
+      "completion_tokens": 16,
+      "total_tokens": 447,
+      "prompt_tokens_details": {
+       "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 175
+     },
+     "content": "{\"label\": \"vulnerable\", \"confidence\": 0.99}"
+    }
+   },
+   "ds_l3": {
+    "method": "ds_l3",
+    "status": "ok",
+    "pred": 1,
+    "score": 0.99,
+    "score_kind": "p",
+    "threshold": null,
+    "latency_ms": 1209.0378169959877,
+    "backend": "deepseek-flash",
+    "detail": null,
+    "extra": {
+     "cost_cny": 0.00030812,
+     "peak_price": false,
+     "usage": {
+      "prompt_tokens": 495,
+      "completion_tokens": 16,
+      "total_tokens": 511,
+      "prompt_tokens_details": {
+       "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 239
+     },
+     "content": "{\"label\": \"vulnerable\", \"confidence\": 0.99}",
+     "evidence": "warnings",
+     "n_warnings": 1,
+     "unmapped_lines": 0,
+     "clang_ms": 191.13330899563152
+    }
+   },
+   "jev": {
+    "method": "jev",
+    "status": "ok",
+    "pred": 1,
+    "score": 0.98,
+    "score_kind": "p",
+    "threshold": null,
+    "latency_ms": 948.437876009848,
+    "backend": "jev-1.14.0",
+    "detail": null,
+    "extra": {
+     "cost_usd": 3.0492000000000002e-05
+    }
+   }
+  },
+  "good": {
+   "grep": {
+    "method": "grep",
+    "status": "ok",
+    "pred": 0,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 51.53080499439966,
+    "backend": null,
+    "detail": "free/delete found",
+    "extra": {}
+   },
+   "clang": {
+    "method": "clang",
+    "status": "ok",
+    "pred": 0,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 33.666853996692225,
+    "backend": null,
+    "detail": "no leak warning",
+    "extra": {
+     "warnings": []
+    }
+   },
+   "ft": {
+    "method": "ft",
+    "status": "ok",
+    "pred": 0,
+    "score": -26.815603256225586,
+    "score_kind": "logit",
+    "threshold": 2.513676166534424,
+    "latency_ms": 122.95377299597021,
+    "backend": "qwen3.5-4b-lora-L1-fold0",
+    "detail": null,
+    "extra": {
+     "latency_ms_server": 79.703897703439,
+     "forward_ms": 78.24732409790158,
+     "switch_ms": 0.0,
+     "checkpoint": "step107",
+     "n_tokens": 409,
+     "prompt_sha256": "7ba4ac593be2458ec646d65acb22720a6c96e328f9fab67794b1ad36529074f0"
+    }
+   },
+   "ft_l3": {
+    "method": "ft_l3",
+    "status": "ok",
+    "pred": 0,
+    "score": -31.36102294921875,
+    "score_kind": "logit",
+    "threshold": -0.7382984161376953,
+    "latency_ms": 145.36165300523862,
+    "backend": "qwen3.5-4b-lora-L3-fold0",
+    "detail": null,
+    "extra": {
+     "latency_ms_server": 81.43913093954325,
+     "forward_ms": 80.1052050665021,
+     "switch_ms": 0.0,
+     "checkpoint": "step268",
+     "n_tokens": 452,
+     "prompt_sha256": "5afa3c70b6d96281133ec8c8e5d6ce12538f3d3006806b15d78e602d16cb1e57",
+     "clang_ms": 33.666853996692225
+    }
+   },
+   "l4d": {
+    "method": "l4d",
+    "status": "ok",
+    "pred": 0,
+    "score": 5.823412228923152e-06,
+    "score_kind": "l4d",
+    "threshold": 0.817574,
+    "latency_ms": 261.11334399320185,
+    "backend": "qwen3.5-4b-lora-l4d-fold0",
+    "detail": "free L16 always runs",
+    "extra": {
+     "n_questions": 8,
+     "n_asked": 4,
+     "fold": 0,
+     "question_source": "built live = stored",
+     "build_ms": 0.3378999972483143,
+     "stored": "layer1/CWE401_Memory_Leak__strdup_char_01__good",
+     "stored_pred": 0,
+     "latency_ms_server": 217.4542872235179,
+     "forward_ms": 213.81263714283705,
+     "switch_ms": 0.0,
+     "n_tokens": 1149,
+     "checkpoint": "step219",
+     "tau": 0.817574,
+     "leaks": [],
+     "derive_ms": 0.020081002730876207,
+     "leak_site": null,
+     "answers": {
+      "heap/s00": 1.0,
+      "exec_any/s00": 0.999998,
+      "exec_all/s02": 0.999996,
+      "rel/s02+s00": 0.999998
+     }
+    }
+   },
+   "ds_l1": {
+    "method": "ds_l1",
+    "status": "ok",
+    "pred": 0,
+    "score": 0.010000000000000009,
+    "score_kind": "p",
+    "threshold": null,
+    "latency_ms": 701.1735720006982,
+    "backend": "deepseek-flash",
+    "detail": null,
+    "extra": {
+     "cost_cny": 0.00025012,
+     "peak_price": false,
+     "usage": {
+      "prompt_tokens": 433,
+      "completion_tokens": 17,
+      "total_tokens": 450,
+      "prompt_tokens_details": {
+       "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 177
+     },
+     "content": "{\"label\": \"not_vulnerable\", \"confidence\": 0.99}"
+    }
+   },
+   "ds_l3": {
+    "method": "ds_l3",
+    "status": "ok",
+    "pred": 0,
+    "score": 0.010000000000000009,
+    "score_kind": "p",
+    "threshold": null,
+    "latency_ms": 753.1755639938638,
+    "backend": "deepseek-flash",
+    "detail": null,
+    "extra": {
+     "cost_cny": 0.00029212,
+     "peak_price": false,
+     "usage": {
+      "prompt_tokens": 475,
+      "completion_tokens": 17,
+      "total_tokens": 492,
+      "prompt_tokens_details": {
+       "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 219
+     },
+     "content": "{\"label\": \"not_vulnerable\", \"confidence\": 0.99}",
+     "evidence": "no_warnings",
+     "n_warnings": 0,
+     "clang_ms": 33.666853996692225
+    }
+   },
+   "jev": {
+    "method": "jev",
+    "status": "ok",
+    "pred": 0,
+    "score": 0.07,
+    "score_kind": "p",
+    "threshold": null,
+    "latency_ms": 886.8503909907304,
+    "backend": "jev-1.14.0",
+    "detail": null,
+    "extra": {
+     "cost_usd": 3.0576e-05
+    }
+   }
+  },
+  "attacked": {
+   "grep": {
+    "method": "grep",
+    "status": "ok",
+    "pred": 0,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 1.6524969978490844,
+    "backend": null,
+    "detail": "free/delete found",
+    "extra": {}
+   },
+   "clang": {
+    "method": "clang",
+    "status": "ok",
+    "pred": 1,
+    "score": null,
+    "score_kind": null,
+    "threshold": null,
+    "latency_ms": 34.748682999634184,
+    "backend": null,
+    "detail": "line 22: Potential leak of memory pointed to by 'data'",
+    "extra": {
+     "warnings": [
+      {
+       "checker": "unix.Malloc",
+       "message": "Potential leak of memory pointed to by 'data'",
+       "source_file": "unit_1.c",
+       "source_line": 22,
+       "model_text_line": 22,
+       "statement_text": "}"
+      }
+     ]
+    }
+   },
+   "ft": {
+    "method": "ft",
+    "status": "ok",
+    "pred": 0,
+    "score": -18.430469512939453,
+    "score_kind": "logit",
+    "threshold": 2.513676166534424,
+    "latency_ms": 348.5405209939927,
+    "backend": "qwen3.5-4b-lora-L1-fold0",
+    "detail": null,
+    "extra": {
+     "latency_ms_server": 82.12634408846498,
+     "forward_ms": 81.03741984814405,
+     "switch_ms": 212.98218611627817,
+     "checkpoint": "step107",
+     "n_tokens": 438,
+     "prompt_sha256": "1e244a7569baaaed581343e656da1cf4bd7a74ee8e574bd3b5645779fa3dcc83"
+    }
+   },
+   "ft_l3": {
+    "method": "ft_l3",
+    "status": "ok",
+    "pred": 0,
+    "score": -30.867839813232422,
+    "score_kind": "logit",
+    "threshold": -0.7382984161376953,
+    "latency_ms": 359.62720499082934,
+    "backend": "qwen3.5-4b-lora-L3-fold0",
+    "detail": null,
+    "extra": {
+     "latency_ms_server": 84.69386026263237,
+     "forward_ms": 83.54374533519149,
+     "switch_ms": 210.266487672925,
+     "checkpoint": "step268",
+     "n_tokens": 504,
+     "prompt_sha256": "b3250f8c59ca836417bc103b6a9f132f80167465bad9f0fb72f5abb5fb4d62b3",
+     "clang_ms": 34.748682999634184
+    }
+   },
+   "l4d": {
+    "method": "l4d",
+    "status": "ok",
+    "pred": 1,
+    "score": 0.9999975062514614,
+    "score_kind": "l4d",
+    "threshold": 0.817574,
+    "latency_ms": 312.87960200279485,
+    "backend": "qwen3.5-4b-lora-l4d-fold0",
+    "detail": "free L20 may not run",
+    "extra": {
+     "n_questions": 8,
+     "n_asked": 4,
+     "fold": 0,
+     "question_source": "built live = stored",
+     "build_ms": 0.4249399935360998,
+     "stored": "layer3/CWE401_Memory_Leak__strdup_char_01__bad",
+     "stored_pred": 1,
+     "latency_ms_server": 261.51480711996555,
+     "forward_ms": 251.10122933983803,
+     "switch_ms": 0.0,
+     "n_tokens": 1329,
+     "checkpoint": "step219",
+     "tau": 0.817574,
+     "leaks": [
+      [
+       "s00",
+       "never_freed"
+      ]
+     ],
+     "derive_ms": 0.021473999368026853,
+     "leak_site": "strdup L13",
+     "answers": {
+      "heap/s00": 0.999999,
+      "exec_any/s00": 0.999998,
+      "exec_all/s02": 0.0,
+      "rel/s02+s00": 0.999931
+     }
+    }
+   },
+   "ds_l1": {
+    "method": "ds_l1",
+    "status": "ok",
+    "pred": 1,
+    "score": 0.99,
+    "score_kind": "p",
+    "threshold": null,
+    "latency_ms": 544.0336259925971,
+    "backend": "deepseek-flash",
+    "detail": null,
+    "extra": {
+     "cost_cny": 0.00027012,
+     "peak_price": false,
+     "usage": {
+      "prompt_tokens": 457,
+      "completion_tokens": 16,
+      "total_tokens": 473,
+      "prompt_tokens_details": {
+       "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 201
+     },
+     "content": "{\"label\": \"vulnerable\", \"confidence\": 0.99}"
+    }
+   },
+   "ds_l3": {
+    "method": "ds_l3",
+    "status": "ok",
+    "pred": 1,
+    "score": 0.98,
+    "score_kind": "p",
+    "threshold": null,
+    "latency_ms": 492.69888098933734,
+    "backend": "deepseek-flash",
+    "detail": null,
+    "extra": {
+     "cost_cny": 0.00020868000000000001,
+     "peak_price": false,
+     "usage": {
+      "prompt_tokens": 521,
+      "completion_tokens": 16,
+      "total_tokens": 537,
+      "prompt_tokens_details": {
+       "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 137
+     },
+     "content": "{\"label\": \"vulnerable\", \"confidence\": 0.98}",
+     "evidence": "warnings",
+     "n_warnings": 1,
+     "unmapped_lines": 0,
+     "clang_ms": 34.748682999634184
+    }
+   },
+   "jev": {
+    "method": "jev",
+    "status": "ok",
+    "pred": 1,
+    "score": 0.98,
+    "score_kind": "p",
+    "threshold": null,
+    "latency_ms": 939.553595992038,
+    "backend": "jev-1.14.0",
+    "detail": null,
+    "extra": {
+     "cost_usd": 3.1668e-05
+    }
+   }
+  }
+ },
+ "summary": [
+  "grep fooled, Clang SA robust, FT 4B unit labels fooled, FT 4B unit labels L3 fooled, L4-D robust, DeepSeek L1 robust, DeepSeek L3 robust, Jev robust",
+  "good twin: no false alarm"
+ ],
+ "spent": {
+  "deepseek": 0.0015732799999999998,
+  "jev": 9.2736e-05
+ }
+}

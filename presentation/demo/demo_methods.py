@@ -270,6 +270,14 @@ def run_decision(ctx: DemoContext, unit: dict[str, Any], strategy: str = "L1",
     For L3 `evidence` is the live Clang SA evidence record; the endpoint gets its `warnings` list."""
     method = "ft" if strategy == "L1" else "ft_l3"
     kind, info = ctx.decision_backend()
+    if kind != "ft":  # same model, stored verdict first; the zero-shot fallbacks are other models
+        fold = unit.get("fold") if unit.get("fold") is not None else ctx.ft_fold
+        row = ft_stored(unit, strategy, fold)
+        if row is not None:
+            return Result(method, "ok", pred=int(row["pred"]), score=float(row["score"]), score_kind="logit",
+                          threshold=float(row["extra"]["threshold"]), backend="stored (:8003 offline)",
+                          extra={"stored_model": row.get("model"), "checkpoint": row["extra"].get("checkpoint"),
+                                 "offline_reason": info})
     if kind == "offline":
         return Result(method, "offline", backend="decision model: offline", detail="; ".join(info))
     if strategy != "L1" and kind != "ft":
@@ -331,7 +339,8 @@ def run_decision(ctx: DemoContext, unit: dict[str, Any], strategy: str = "L1",
         return Result(method, "error", latency_ms=ms_since(t0), backend=kind, detail=f"{exc}"[:100])
 
 
-# -------------------------------------------------------------------- L4-D (LAN :8004, stored fallback)
+# -------------------------------------------------------------------- stored records (offline fallbacks)
+FT_RESULTS = JULIET_FULL / "decision_ft" / "results" / "decision_ft"
 L4D_BUILD = L4D_DIR / "build"
 L4D_ANSWERS = L4D_FT_DIR / "results" / "lora_l4d"  # stored per-question answers (full question set)
 L4D_UNITS = L4D_FT_DIR / "results" / "lora_l4d_opt"  # stored unit verdicts of the pruned ("opt") inference
@@ -347,8 +356,8 @@ def _stored_rows(path: Path, unit_id: str) -> tuple[dict[str, Any], ...]:
         return tuple(json.loads(line) for line in handle if needle in line)
 
 
-def l4d_stored_source(unit: dict[str, Any]) -> tuple[str, str] | None:
-    """(layer, unit_id) of the stored L4-D record of this exact code: layer1 for a Juliet unit, layer3 for the
+def stored_source(unit: dict[str, Any]) -> tuple[str, str] | None:
+    """(layer, unit_id) of the stored records of this exact code: layer1 for a Juliet unit, layer3 for the
     dead-free version that equals the stored layer-3 unit; None for --file input and other transforms."""
     transform = unit.get("transform")
     if transform is None:
@@ -356,6 +365,17 @@ def l4d_stored_source(unit: dict[str, Any]) -> tuple[str, str] | None:
     if transform.get("kind") == "stress" and transform.get("matches_layer3"):
         return "layer3", transform["source_unit_id"]
     return None
+
+
+def ft_stored(unit: dict[str, Any], strategy: str, fold: int) -> dict[str, Any] | None:
+    """Stored FT unit-label verdict of this code: eval units from the held-out-fold CV run, dev units from the
+    `fold` adapter's dev run (layer 1 only); None if there is none."""
+    source = stored_source(unit)
+    if source is None:
+        return None
+    layer, unit_id = source
+    name = f"{strategy}_cv_v1.jsonl" if unit.get("set") == "eval" else f"dev_{strategy}_fold{fold}_v1.jsonl"
+    return next((r for r in _stored_rows(FT_RESULTS / layer / name, unit_id) if r.get("status") == "ok"), None)
 
 
 def l4d_stored(layer: str, unit_id: str) -> dict[str, Any]:
@@ -369,10 +389,12 @@ def l4d_stored(layer: str, unit_id: str) -> dict[str, Any]:
 
 
 def l4d_prefetch(unit: dict[str, Any]) -> None:
-    """Read the stored L4-D records of a unit ahead of time (keeps the file scan out of the live run)."""
-    source = l4d_stored_source(unit)
+    """Read the stored L4-D and FT records of a unit ahead of time (keeps the file scan out of the live run)."""
+    source = stored_source(unit)
     if source is not None:
         l4d_stored(*source)
+        for strategy in ("L1", "L3"):
+            ft_stored(unit, strategy, 0)
 
 
 @functools.lru_cache(maxsize=1)
@@ -422,7 +444,7 @@ def run_l4d(ctx: DemoContext, unit: dict[str, Any]) -> Result:
 
     Latency = question build + prune + HTTP round trip + derive. If :8004 is down, the stored answers of the same
     questions are used (Juliet units whose code equals a stored layer-1/layer-3 unit only; latency not measured)."""
-    source = l4d_stored_source(unit)
+    source = stored_source(unit)
     stored = l4d_stored(*source) if source is not None else None  # untimed (prefetched by demo.py)
     fold = unit.get("fold") if unit.get("fold") is not None else ctx.ft_fold
     t0 = time.perf_counter()

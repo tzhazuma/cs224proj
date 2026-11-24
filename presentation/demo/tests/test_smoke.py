@@ -171,7 +171,7 @@ def test_l4d_stored_fallback_on_stage_unit():
     bad, good = pair["bad"], pair["good"]
     attacked = _attacked(STAGE_GROUP, bad)
     assert attacked["transform"]["matches_layer3"] is True
-    assert dm.l4d_stored_source(attacked) == ("layer3", bad["unit_id"])
+    assert dm.stored_source(attacked) == ("layer3", bad["unit_id"])
     ctx = dm.DemoContext("demo_test", l4d_url=OFFLINE_URL)
     got = {}
     for key, unit in (("bad", bad), ("good", good), ("attacked", attacked)):
@@ -185,6 +185,27 @@ def test_l4d_stored_fallback_on_stage_unit():
                    "attacked": (1, "strdup L13", "free L20 may not run", 4, 8)}
     cell = demo.verdict_cell(dm.run_l4d(ctx, attacked), 1, None).plain
     assert "LEAK strdup L13" in cell and "asked 4 of 8 · stored" in cell
+
+
+def test_ft_stored_fallback_on_stage_unit():
+    """:8003 (and the zero-shot fallbacks) down: the FT unit-label rows show the stored held-out-fold verdicts."""
+    pair = {u["label"]: u for u in demo.load_units() if u["group_id"] == STAGE_GROUP}
+    attacked = _attacked(STAGE_GROUP, pair["bad"])
+    ctx = dm.DemoContext("demo_test", ft_url=OFFLINE_URL, intern_url=OFFLINE_URL, qwen_url=OFFLINE_URL)
+    got = {}
+    for key, unit in (("bad", pair["bad"]), ("good", pair["good"]), ("attacked", attacked)):
+        for strategy in ("L1", "L3"):
+            r = dm.run_decision(ctx, unit, strategy)
+            assert (r.status, r.backend, r.latency_ms) == ("ok", "stored (:8003 offline)", None)
+            assert r.extra["stored_model"] == f"qwen3.5-4b-lora-{strategy}-fold0"
+            got[key, strategy] = (r.pred, round(r.score, 2))
+    # = decision_ft/results/decision_ft/<layer>/<L>_cv_v1.jsonl (README "Stage unit")
+    assert got == {("bad", "L1"): (1, 17.64), ("bad", "L3"): (1, 23.52), ("good", "L1"): (0, -26.82),
+                   ("good", "L3"): (0, -31.36), ("attacked", "L1"): (0, -18.43), ("attacked", "L3"): (0, -30.87)}
+    cell = demo.verdict_cell(dm.run_decision(ctx, attacked), 1, None).plain
+    assert "no leak" in cell and "stored" in cell
+    custom = demo.custom_unit(Path(__file__).resolve().parents[1] / "examples" / "leak.c", None)
+    assert dm.run_decision(ctx, custom).status == "offline"  # no stored verdict for --file code
 
 
 class _FakeL4DEndpoint:

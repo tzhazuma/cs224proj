@@ -19,7 +19,7 @@ fooled, L4-D robust, DeepSeek L1 robust, …`.
 | `examples/leak.c` | a small program for the `--file` part |
 | `tests/test_smoke.py` | offline smoke test on 2 dev groups: grep, Clang SA, both inserters, attack = stored layer 3, FT request/response against a local fake of the `:8003` contract, L4-D (stage unit from the stored records; pruned questions + fold against a local fake of `:8004`; `--file`), record + replay |
 | `REPORT_stage3.md` | stage-3 lane report (L4-D row) |
-| `recordings/` | `stage_final.*` (stage group, 2026-11-23, before the L4-D row: grep, Clang SA, FT L1/L3, DeepSeek L1/L3, Jev), `stage_final_v2.*` (with the L4-D row, once `:8004` is up), `stage_dryrun.json` (the stage-2 live check; replayable), `dev_char_malloc_18.*` (dev group, decision model offline), `stage_offline.json` (old stage group `int_malloc_01`, grep + Clang only) |
+| `recordings/` | `stage_final_v2.*` (**the backup**: stage group, 2026-11-24 10:19 PST, all rows live incl. L4-D: grep, Clang SA, FT L1/L3, L4-D, DeepSeek L1/L3, Jev; 120×47 canvas), `stage_final.*` (stage group, 2026-11-23, before the L4-D row), `stage_dryrun_v2.json` + `backup_{int64_t_malloc_01,new_array_int64_t_01}_dryrun_v2.json` (the stage-3 live checks), `stage_dryrun.json` (the stage-2 live check; replayable), `dev_char_malloc_18.*` (dev group, decision model offline), `stage_offline.json` (old stage group `int_malloc_01`, grep + Clang only) |
 
 ## Setup (dell)
 
@@ -38,8 +38,9 @@ The agg binary for gif rendering lives in `.tools/agg` (git-ignored). To fetch i
 - At least **110×34** characters (the doctor checks this); **120×40** is the layout everything was tuned for.
   The three-column results table needs ≥110 columns, and the side-by-side code panels need ≥100.
   Height: the tallest screen of the stage command (attack diff + table + summary) needs ≈36 rows. Each extra row
-  costs lines: `--ft-l3` +3, `--jev` +2, so `--ft-l3 --jev` needs ≈41 rows (smaller font, or the top scrolls away).
-  The diff panel shows no context lines, to fit 40 rows with the L4-D row.
+  costs lines: `--ft-l3` +3, `--jev` +2, so `--ft-l3 --jev` needs ≈42 rows (measured in the stage_final_v2
+  recording: 41 rows + the `recorded →` line; smaller font, or the top scrolls away). The diff panel shows no
+  context lines, to fit 40 rows with the L4-D row.
 - Font: 18–20 pt on a 1080p projector gives 120×40 in full screen. Use a dark theme. The code panels use the
   pygments `monokai` theme (`--theme` changes it).
 - Use a UTF-8 locale (✔ ✘ ⚡ and the box lines). Over ssh: `LANG=C.UTF-8` and `TERM=xterm-256color`.
@@ -58,7 +59,8 @@ If ssh itself is the risk, copy `recordings/` to the laptop and play the mp4/gif
                                # Beijing peak gate, ledger totals, terminal size, recording tools
 ./check.sh --warm              # one Clang SA run + endpoint pings + one request per FT adapter and per L4-D fold
                                # (page cache, TLS, first CUDA request; the stage fold's adapter goes last)
-REC_NAME=stage_final_v2 ./record.sh --allow-eval --allow-peak  # fresh backup of the stage run (~40 s, < CNY 0.01)
+REC_NAME=stage_final_v3 REC_ROWS=47 ./record.sh --allow-eval --allow-peak --ft-l3 --jev
+                               # optional fresh backup of the stage run (~60 s, < CNY 0.01); keep stage_final_v2
 ```
 
 Peak gate: DeepSeek peak is Beijing Mon–Fri 09:00–12:00 and 14:00–18:00. On **Thu 2026-11-26 (PST)** that is
@@ -167,7 +169,21 @@ Sources: `juliet_full/static/results/{grep_v0,clang_sa}/layer1/full_v{1,2}.jsonl
 fallback). The demo's live-built questions equal `juliet_full/l4d/build/questions_{layer1,layer3}.jsonl` for the
 stage and backup units (the row's `question_source` in a recording says `built live = stored`).
 
-Live check (2026-11-23 15:08 PST, run_id `demo_20261123T230820Z`, `--allow-eval --allow-peak --ft-l3 --jev`, `recordings/stage_dryrun.json`): all 21
+Live check with the L4-D row (2026-11-24 10:17–10:18 PST, `:8003` GPU 0 + `:8004` GPU 1, `--allow-eval --allow-peak
+--ft-l3 --jev`; run_ids `demo_20261124T181727Z` stage, `demo_20261124T181749Z` int64_t_malloc_01,
+`demo_20261124T181752Z` new_array_int64_t_01; `recordings/stage_dryrun_v2.json`,
+`recordings/backup_*_dryrun_v2.json`): all 72 live verdicts (3 groups × 3 units × 8 rows) equal the stored ones in
+the table above. L4-D: question source `built live = stored` everywhere, every live p_yes on the same side of τ as
+the stored answer (max |Δp| 1e-5 except int64_t_malloc_01 attacked 0.028), so no BF16 flip on these units. Summary on
+all three: `grep fooled, Clang SA robust, FT 4B unit labels fooled, FT 4B unit labels L3 fooled, L4-D robust,
+DeepSeek L1 robust, DeepSeek L3 robust, Jev robust` / `good twin: no false alarm`. Latency on the stage unit
+(bad / good / attacked, end-to-end ms from dell; server ms): grep 1 / 2 / 0.6; Clang SA 20 / 37 / 24; FT L1 168 /
+326 / 338 (server 80–95; +210 ms adapter switch on good/attacked because L1 and L3 alternate); FT L3 351 / 362 / 357
+(incl. Clang SA; server 82–85); L4-D 169 / 255 / 278 (server 134 / 218 / 233; 2 / 4 / 4 questions); DeepSeek L1
+863 / 569 / 1097; DeepSeek L3 593 / 839 / 587; Jev 954 / 938 / 940. Backups: L4-D 229 / 262 / 440 ms
+(int64_t_malloc_01, 2 / 4 / 6 questions) and 158 / 288 / 289 ms (new_array_int64_t_01).
+
+Earlier live check (2026-11-23 15:08 PST, run_id `demo_20261123T230820Z`, `--allow-eval --allow-peak --ft-l3 --jev`, `recordings/stage_dryrun.json`): all 21
 live verdicts equal the stored ones. The decision-model scores are identical to two decimals (the server renders
 the training prompt; the live Clang SA warnings equal the frozen evidence). DeepSeek and Jev probabilities equal
 the stored ones except Jev on the bad unit (0.98 live vs 0.97). Summary line: `grep fooled, Clang SA robust,
@@ -179,7 +195,7 @@ twin: no false alarm`. The backups were checked live for grep, Clang SA and deci
 
 | problem | what to do |
 |---|---|
-| decision model endpoint down | nothing: the row says `offline` (probe order: fine-tuned `:8003/score` → Intern-Decision `:8002/decide` zero-shot → Qwen3.5-4B vLLM `:8001` zero-shot, 1 s health probe each (run while the code is on screen), 10 s request timeout). The row's note shows which backend answered: an adapter name `qwen3.5-4b-lora-…` = the fine-tuned model, `… (fallback)` = zero-shot. The L3 row has no fallback (`offline`). |
+| decision model endpoint down | nothing: for Juliet units with a stored FT verdict (the stage and backup units, layer 1 and the dead-free version; eval = held-out-fold CV run, dev = fold-0 adapter) both FT rows show the stored score and say `stored (:8003 offline)` / `· stored` instead of a latency. Other code: probe order fine-tuned `:8003/score` → Intern-Decision `:8002/decide` zero-shot → Qwen3.5-4B vLLM `:8001` zero-shot, else `offline`; 1 s health probe each (run while the code is on screen), 10 s request timeout. The row's note shows which backend answered: an adapter name `qwen3.5-4b-lora-…` = the fine-tuned model, `… (fallback)` = zero-shot. The L3 row has no fallback (`offline`). |
 | L4-D endpoint `:8004` down | nothing: for Juliet units whose code equals a stored layer-1/layer-3 unit (the stage unit and its dead-free version) the row uses the stored answers of the same pruned questions and says `stored (:8004 offline)` / `· stored` instead of a latency; other code says `offline`. Health probe 1 s, request timeout 10 s. |
 | DeepSeek / Jev slow or failing | each call has a 10 s timeout and 1 attempt; the cell shows `timeout`/`error` and the demo goes on. `--offline` drops the paid rows. |
 | network gone | `./demo.py --replay recordings/stage_final_v2.json` (or `stage_final.json`, without the L4-D row): the same screens, the recorded results revealed in recorded latency order (`--replay-cap` = max seconds per result). The header says REPLAY. |
@@ -189,22 +205,24 @@ twin: no false alarm`. The backups were checked live for grep, Clang SA and deci
 ## Backup recording
 
 ```bash
-REC_NAME=stage_final_v2 ./record.sh --allow-eval --allow-peak   # any demo.py arguments; default: --allow-eval
+REC_NAME=stage_final_v2 REC_ROWS=47 ./record.sh --allow-eval --allow-peak --ft-l3 --jev   # how stage_final_v2 was made
 ```
 
+Any demo.py arguments work; without arguments the default is `--allow-eval`.
+
 The script runs `demo.py --auto-pause 4 --record recordings/<name>.json …` inside
-`uvx --from 'asciinema>=2.4,<3' asciinema rec --cols 120 --rows 40`, renders the cast with `.tools/agg` (font 20,
+`uvx --from 'asciinema>=2.4,<3' asciinema rec --cols 120 --rows 40` (REC_ROWS 47 for the full row set), renders the cast with `.tools/agg` (font 20,
 monokai) to a gif, and converts the gif to an mp4 with `/usr/bin/ffmpeg`. If asciinema fails, it falls back to
 `script --log-timing` (play with `scriptreplay`). Environment: `REC_COLS`, `REC_ROWS`, `REC_HOLD` (seconds per
 step), `REC_FONT`. `.cast`, `.typescript` and `.timing` are git-ignored. The replay `.json` and the `.gif`/`.mp4`
 are small (≈0.3 MB each) and are not ignored.
 
-**Final backup (when `:8004` is up, marker `184-toast:~/disk4/cs224/L4D_8004_UP`):** `./check.sh` (rows
-"decision FT :8003" and "L4-D :8004" must be `up`), `./check.sh --warm`, then the command above. Check that the
-FT row's note shows `qwen3.5-4b-lora-L1-fold0` (the stage unit is fold 0) and not `(fallback)`, that the L4-D row's
-note shows `qwen3.5-4b-lora-l4d-fold0` and not `stored`, and that the verdicts match the table in "Stage unit",
-then copy `recordings/stage_final_v2.{mp4,gif}` to the slides. `stage_final.*` (2026-11-23, without the L4-D row)
-stays as the older backup.
+**Final backup: `recordings/stage_final_v2.{gif,mp4,cast,json}`** (2026-11-24 10:19 PST, run_id
+`demo_20261124T181925Z`, `:8003` and `:8004` live, 21 s mp4 1468×1344). Notes `qwen3.5-4b-lora-L1-fold0`,
+`…-L3-fold0`, `qwen3.5-4b-lora-l4d-fold0` (no `stored`, no `(fallback)`); all 24 verdicts equal the "Stage unit"
+table; the last frame (attack screen + summary) fits the canvas. Copy the mp4/gif to the slides.
+`stage_final.*` (2026-11-23, without the L4-D row) stays as the older backup. To re-record: `./check.sh` (rows
+"decision FT :8003" and "L4-D :8004" `up`), `./check.sh --warm`, then the command above with a new `REC_NAME`.
 
 ## Cost and ledger rules
 

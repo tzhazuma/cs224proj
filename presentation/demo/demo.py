@@ -257,6 +257,8 @@ def verdict_cell(r: dm.Result | None, truth: int | None, before: dm.Result | Non
         top.append("  ⚡flipped", style="bold yellow")
     if r.score_kind == "logit":  # decision model: score vs threshold, then end-to-end and server-side time
         timing = " · ".join(x for x in (latency_text(r.latency_ms), server_ms_text(r)) if x)
+        if not timing and r.backend and r.backend.startswith("stored"):
+            timing = "stored"
         return Text.assemble(top, "\n", (score_text(r), "dim"), "\n", (timing, "dim"))
     if r.score_kind == "l4d":  # L4-D: the derived reason, then how many questions the rules needed
         asked = f"asked {r.extra.get('n_asked')} of {r.extra.get('n_questions')}"
