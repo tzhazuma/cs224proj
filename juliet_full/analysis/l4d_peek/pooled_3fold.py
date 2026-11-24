@@ -49,7 +49,7 @@ def boot(ids, a, b, B=2000, seed=20261123):
 
 
 L = {}
-for lay in ['layer1', 'layer3', 'placebo']:
+for lay in ['layer1', 'layer3', 'placebo', 'original']:
     d = {}
     for k in range(3):
         for u, p in load(f'/tmp/l4dpeek2/{lay}_f{k}_units.jsonl').items():
@@ -73,6 +73,8 @@ refs = {
     'placebo': [('DeepSeek L1', load(D + 'placebo/pl_n25_L1_r1.jsonl'), 'n25'),
                 ('DeepSeek L3', load(D + 'placebo/pl_n25_L3_r1.jsonl'), 'n25'),
                 ('Jev L3', load(J + 'placebo/pl_eval_L3_r1.jsonl'), 'all')],
+    'original': [('DeepSeek L1', load(D + 'original/orig_n25_L1_r1.jsonl'), 'n25'),
+                 ('Jev L1', load(J + 'original/orig_eval_L1_r1.jsonl'), 'all')],
 }
 for lay, d in L.items():
     ids_all = sorted(d)
