@@ -56,7 +56,8 @@ void sym_0() { sym_1(); sym_2(); }
 % ------------------------------------------------------------------------------
 % src: figures/nearllm.pdf (Debiased eval, v3 figure); bootstrap juliet_full/analysis/near_llm_bootstrap.py
 %   (seed 20261123, B=2000): LoRA L1 - DeepSeek L1 = -0.0113 [-0.0143, -0.0084]; latencies figures/latency_c1.csv
-%   (Debiased latency300, quiet re-measure)
+%   (Debiased latency300, quiet re-measure); L4-D (opt.) Debiased 0.214 s: juliet_full/l4d_ft/REPORT_stage1.md:137
+%   (fallback kernel = prediction config)
 \begin{frame}{Backup: on Debiased, the unit-label LoRA was near-cloud}
   \begin{columns}[c]
     \begin{column}{0.58\textwidth}
@@ -70,7 +71,7 @@ void sym_0() { sym_1(); sym_2(); }
         \item Same model on DeadFree: \res{df-lora_L1}{macro}
       \end{itemize}
       \vspace{4pt}
-      {\scriptsize Debiased latencies (concurrency 1): Clang 0.018, LoRA L1 0.105, Intern 0.132, Qwen 0.333, DeepSeek 0.715, Jev 0.907\,s.\par}
+      {\scriptsize Debiased latencies (concurrency 1): Clang 0.018, LoRA L1 0.105, Intern 0.132, L4-D (opt.) 0.214, Qwen 0.333, DeepSeek 0.715, Jev 0.907\,s.\par}
     \end{column}
   \end{columns}
 \end{frame}
@@ -210,6 +211,28 @@ void sym_0() { sym_1(); sym_2(); }
   {\small\resizebox{\linewidth}{!}{\input{figures/df_strategies.tex}}\par}
   \vfill
   {\scriptsize DeadFree eval, 2,656 units; latency per unit at concurrency 1 on one RTX 3090.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+% src: juliet_full/analysis/deadfree/deadfree_quality.json intern_l4d (tau 0.5, primary), intern_l4d_devtau
+%   (dev tau 0.182426, secondary), readout_l4d, paired_deltas; notes[0] (switch after eval), notes[1] (failure)
+\begin{frame}{Backup: Intern-Decision L4-D and its threshold}
+  \centering
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{@{}lcccc@{}}
+    \toprule
+    Intern-Decision-4B, L4-D & macro-F1 [95\,\% CI] & leak P & leak R & gap closed \\
+    \midrule
+    $\tau = 0.5$ (reported) & \res{df-intern_l4d}{macro} \res{df-intern_l4d}{ci} & \res{df-intern_l4d}{p} & \res{df-intern_l4d}{r} & \res{df-intern_l4d}{gap1} \\
+    dev $\tau = 0.18$ (frozen) & \res{df-intern_l4d_devtau}{macro} \res{df-intern_l4d_devtau}{ci} & \res{df-intern_l4d_devtau}{p} & \res{df-intern_l4d_devtau}{r} & \res{df-intern_l4d_devtau}{gap1} \\
+    \bottomrule
+  \end{tabular}
+  \vspace{6pt}
+  \begin{itemize}\small
+    \item \alert{Disclosure}: the primary was switched to $\tau=0.5$ after seeing eval, for consistency with Intern L1--L3; the switch favours the baseline
+    \item Low dev $\tau$: every exec/release question is answered Yes (Intern's $p_{\text{yes}}$ lies in $\approx$0.45--0.65), so dead frees count as ``runs on every path''; a $\tau$ tuned on Debiased (no dead frees) does not transfer
+    \item Paired: Intern L4-D $-$ Qwen read-out L4-D \res{df-x}{pd_intern_l4d__readout_l4d} \res{df-x}{pd_intern_l4d__readout_l4d_ci};\\ FT L4-D $-$ Intern L4-D \res{df-x}{pd_lora_l4d_opt__intern_l4d} \res{df-x}{pd_lora_l4d_opt__intern_l4d_ci}
+  \end{itemize}
 \end{frame}
 
 % ------------------------------------------------------------------------------

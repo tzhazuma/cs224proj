@@ -808,9 +808,9 @@ def load_deadfree(registry: dict) -> dict[str, dict]:
     if lpath.exists():
         with lpath.open() as fh:
             for row in csv.DictReader(fh):
-                # first row per quality_key is the primary measurement; later rows (e.g. "(fallback kernel)")
-                # are secondary checks and must not override it
-                if row.get("quality_key"):
+                # role "primary" = the configuration that produced the reported predictions; "secondary" rows
+                # (other kernel) are checks only. Older files without a role column: first row per key wins.
+                if row.get("quality_key") and row.get("role", "primary") == "primary":
                     latency.setdefault(row["quality_key"], row)
 
     def num(row, field):
@@ -1016,11 +1016,19 @@ def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
     fig, ax = plt.subplots(figsize=(6.7, 3.1), layout="constrained")
     xmin, xmax, xend, strip = 0.005, 30.0, 200.0, 80.0
     shade_budgets(ax, xmin, y=1.0)
-    ax.axvspan(xmax, xend, color=LIGHT, zorder=0, lw=0)
-    ax.text(strip, 1.0, "latency\npending", ha="center", va="bottom", fontsize=7, color=GREY,
-            transform=ax.get_xaxis_transform())
+    strip_artists = [ax.axvspan(xmax, xend, color=LIGHT, zorder=0, lw=0),
+                     ax.text(strip, 1.0, "latency\npending", ha="center", va="bottom", fontsize=7, color=GREY,
+                             transform=ax.get_xaxis_transform())]
     pts, front_pts, pending = [], [], []
     exclude = set(cfg["pareto_exclude"])
+    # cloud services: one label per service (at its best strategy), the legend names the rest
+    cloud_label = {}
+    for kind, name in (("deepseek", "DeepSeek"), ("jev", "Jev")):
+        ks = [k for k, m in df.items() if k not in exclude and m.get("role") == "primary" and m["macro_f1"] is not None
+              and m["lat"] is not None and df_kind(m) == kind]
+        if ks:
+            strategies = sorted(df[k]["strategy"] for k in ks)
+            cloud_label[max(ks, key=lambda k: df[k]["macro_f1"])] = f"{name} {strategies[0]}–{strategies[-1]}"
     for key, m in df.items():
         if key in exclude or m["macro_f1"] is None or m.get("role") != "primary":
             continue
@@ -1041,12 +1049,17 @@ def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
             ax.plot([x, x], m["macro_f1_ci"], color=color, lw=0.8, zorder=2)
         ax.scatter(x, y, s=130 if hero else 36, marker="*" if hero else marker, color=color, zorder=4,
                    edgecolors=INK if hero else "white", linewidths=0.6)
-        pts.append((x, y, m["short"], color, kind == "static"))
+        if kind in ("deepseek", "jev"):
+            if key in cloud_label:
+                pts.append((x, y, cloud_label[key], color, False))
+        else:
+            pts.append((x, y, m["short"], color, kind == "static"))
         if kind != "static":
             front_pts.append((x, y))
     full, opt = df.get("lora_l4d") or {}, df.get("lora_l4d_opt") or {}
     if full.get("lat") and opt.get("lat"):  # speed-up from asking only the facts the rules read
         ax.scatter(full["lat"], full["macro_f1"], s=30, marker="P", facecolors="white", edgecolors=GREEN, zorder=3)
+        pts.append((full["lat"], full["macro_f1"], "all questions", GREEN, True))
         ax.annotate("", (opt["lat"], opt["macro_f1"]), (full["lat"], full["macro_f1"]),
                     arrowprops=dict(arrowstyle="-|>", color=GREEN, lw=0.8))
     front, best = [], -1.0
@@ -1057,7 +1070,12 @@ def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
     if len(front) > 1:
         ax.step([p[0] for p in front], [p[1] for p in front], where="post", color=INK, lw=0.9, alpha=0.55, zorder=1)
     ax.set_xscale("log")
-    ax.set_xlim(xmin, xend)
+    if pending:
+        ax.set_xlim(xmin, xend)
+    else:
+        for a in strip_artists:
+            a.remove()
+        ax.set_xlim(xmin, xmax)
     ax.set_xticks([0.01, 0.1, 1, 10], ["0.01", "0.1", "1", "10"])
     ax.set_ylim(0.3, 1.04)
     label_points(ax, pts)
@@ -1116,9 +1134,10 @@ def plot_df_attribution(attr: dict) -> None:
     save(fig, "df_attribution.pdf")
 
 
-def deadfree_numbers(df: dict, attr: dict) -> dict[str, dict[str, str]]:
+def deadfree_numbers(df: dict, attr: dict, meta: dict) -> dict[str, dict[str, str]]:
     """\\res{df-<key>}{<metric>}: macro ci p r f1 tp fp tn fn lat p90 d1 d1ci gap1 gap1ci d4 d4ci gap4 gap4ci;
-    \\res{df-x}{...}: speed-up, pruning, fact attribution, per-layer / per-fold L4-D scores, shortcut probes."""
+    \\res{df-x}{...}: speed-up, paired deltas (pd_<a>__<b>, pd_<a>__<b>_ci), pruning, fact attribution,
+    per-layer / per-fold L4-D scores, shortcut probes."""
     out: dict[str, dict[str, str]] = {}
     for key, m in df.items():
         cells = {}
@@ -1145,6 +1164,10 @@ def deadfree_numbers(df: dict, attr: dict) -> dict[str, dict[str, str]]:
     ds, ours = df.get("deepseek_L1") or {}, df.get("lora_l4d_opt") or {}
     if ds.get("lat") and ours.get("lat"):
         x["speedup_ds_l1"] = f"{ds['lat'] / ours['lat']:.1f}"
+    for pd in meta.get("paired_deltas", []):
+        tag = f"pd_{pd['a']}__{pd['b']}"
+        x[tag] = signed(pd["delta"])
+        x[tag + "_ci"] = "[" + ", ".join(signed(v) for v in pd["delta_ci"]) + "]"
     if PRUNE_TEST_PATH.exists():
         total = 0
         for layer, info in json.loads(PRUNE_TEST_PATH.read_text())["layers"].items():
@@ -1198,7 +1221,7 @@ def write_df_strategy_table(df: dict, cfg: dict) -> None:
 
 def write_df_by_flow(df: dict) -> None:
     """Backup: DeadFree macro-F1 per flow category for the main methods."""
-    keys = ["deepseek_L1", "deepseek_L4", "jev_L3", "qwen_L3", "intern_L3", "lora_L1", "lora_l4d_opt", "clang_sa"]
+    keys = ["deepseek_L1", "deepseek_L4", "jev_L3", "qwen_L3", "intern_L3", "intern_l4d", "lora_L1", "lora_l4d_opt", "clang_sa"]
     lines = ["% generated by figures/make_figures.py from juliet_full/analysis/deadfree/deadfree_quality.json",
              "\\begin{tabular}{@{}l" + "c" * len(FLOW_CATEGORIES) + "@{}}", "\\toprule",
              "Method & " + " & ".join(FLOW_LABELS[c] for c in FLOW_CATEGORIES) + " \\\\", "\\midrule"]
@@ -1514,7 +1537,7 @@ def main() -> None:
     write_df_strategy_table(df, cfg)
     write_df_by_flow(df)
     extra = {**write_demo_table(), **write_cost_table(), **unmerged_flips(results), **probe_numbers()}
-    write_numbers(results, extra, deadfree_numbers(df, attr))
+    write_numbers(results, extra, deadfree_numbers(df, attr, df_meta))
     write_original_table(results)
     write_repeat_table(registry)
     write_latency_table(latency, results)

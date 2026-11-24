@@ -55,33 +55,35 @@
 % ------------------------------------------------------------------------------
 % src: figures/df_strategies.pdf <- juliet_full/analysis/deadfree/deadfree_quality.json (strategy_x_ft) and
 %   latency_deadfree.csv (median_s); grey = pending
-\begin{frame}{For local models, fact questions beat every prompt strategy}
+\begin{frame}{The strategy does most of the work: L4-D lifts an untuned decision model}
   \centering
   \includegraphics[width=\linewidth,height=0.60\textheight,keepaspectratio]{figures/df_strategies.pdf}\\[2pt]
-  {\small Few-shot (L2) barely helps; Clang evidence (L3) helps both untuned models;
-  fine-tuned L4-D: \alert{\res{df-lora_l4d_opt}{macro}}, the best local result.\par}
+  {\small Untuned Intern-Decision: best prompt (L3) \res{df-intern_L3}{macro} $\to$ L4-D \alert{\res{df-intern_l4d}{macro}}.
+  Untuned Qwen read-out L4-D \res{df-readout_l4d}{macro} $\approx$ Qwen L3 \res{df-qwen_L3}{macro}.
+  Fine-tuned L4-D: \res{df-lora_l4d_opt}{macro}.\par}
   \vfill
   {\scriptsize DeadFree eval, 2,656 units; same model across strategies. Latency: median per unit, concurrency 1, one RTX 3090.\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
 % src: figures/df_before_after.pdf <- deadfree_quality.json strategy_x_ft (pre-FT: Qwen gen., Intern-Decision,
-%   Qwen read-out; post-FT: lora_L1, lora_L3, lora_l4d_opt)
+%   Qwen read-out; post-FT: lora_L1, lora_L3, lora_l4d_opt); paired delta: deadfree_quality.json paired_deltas
 \begin{frame}{Fine-tuning on unit labels hurts; fine-tuning on facts helps}
   \centering
   \includegraphics[width=\linewidth,height=0.51\textheight,keepaspectratio]{figures/df_before_after.pdf}\\[2pt]
   {\footnotesize L1 \res{df-qwen_L1}{macro} / \res{df-intern_L1}{macro} $\to$ \alert{\res{df-lora_L1}{macro}} \quad
   L3 \res{df-qwen_L3}{macro} / \res{df-intern_L3}{macro} $\to$ \alert{\res{df-lora_L3}{macro}} \quad
-  L4-D read-out \res{df-readout_l4d}{macro}, Intern \res{df-intern_l4d}{macro} $\to$ \textbf{\res{df-lora_l4d_opt}{macro}}\\
-  FT L1 leak recall \res{df-lora_L1}{r}: it learned ``a \code{free} means no leak''.\par}
+  L4-D \res{df-readout_l4d}{macro} / \res{df-intern_l4d}{macro} $\to$ \textbf{\res{df-lora_l4d_opt}{macro}}\\
+  FT L1 leak recall \res{df-lora_L1}{r}: it learned ``a \code{free} means no leak''.
+  Fact FT vs Intern L4-D: \res{df-x}{pd_lora_l4d_opt__intern_l4d} \res{df-x}{pd_lora_l4d_opt__intern_l4d_ci}.\par}
   \vfill
-  {\scriptsize Before: untuned Qwen3.5-4B (LLM baseline), Intern-Decision-4B (decision baseline), Qwen read-out (L4-D). After: our LoRA per strategy.\par}
+  {\scriptsize Before: untuned Qwen3.5-4B (LLM baseline), Intern-Decision-4B (decision baseline, $\tau=0.5$), Qwen read-out (L4-D). After: our LoRA per strategy. Paired family-cluster bootstrap.\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
 % src: figures/df_pareto.pdf <- deadfree_quality.json (macro_f1) x latency_deadfree.csv (median_s, log axis);
 %   front over model-based methods; static tools grey; dynamic analysis dashed reference
-\begin{frame}{FT L4-D is the best local point, still below the cloud}
+\begin{frame}{FT L4-D is the most accurate local model, still below the cloud}
   \centering
   \includegraphics[width=\linewidth,height=0.70\textheight,keepaspectratio]{figures/df_pareto.pdf}
   \vfill
@@ -90,26 +92,28 @@
 \end{frame}
 
 % ------------------------------------------------------------------------------
-% src: deadfree_quality.json lora_l4d_opt / clang_sa: delta_vs_ds_l1(_ci), gap_closed_ds_l1(_ci), delta_vs_ds_l4(_ci),
+% src: deadfree_quality.json lora_l4d_opt / intern_l4d / clang_sa: delta_vs_ds_l1(_ci), gap_closed_ds_l1(_ci), delta_vs_ds_l4(_ci),
 %   gap_closed_ds_l4(_ci); family-cluster bootstrap. Criterion pre-registered PLAN.md:224-226 (2026-11-23 22:30 PST,
 %   before L4-D ran): near if macro-F1 point estimate >= reference - 0.02; reported as not met PLAN.md:34.
-\begin{frame}{We close most of the gap, but not near-cloud by our own criterion}
+\begin{frame}{L4-D closes \res{df-intern_l4d}{gap1} of the gap untuned, \res{df-lora_l4d_opt}{gap1} fine-tuned; not near-cloud}
   \centering
   \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}{@{}lccc@{}}
+  {\small
+  \begin{tabular}{@{}llcc@{}}
     \toprule
-    FT L4-D (opt.) vs & $\Delta$ macro-F1 [95\,\% CI] & gap closed & speed-up \\
+    & vs & $\Delta$ macro-F1 [95\,\% CI] & gap closed \\
     \midrule
-    DeepSeek L1 (\res{df-deepseek_L1}{macro}) & \res{df-lora_l4d_opt}{d1} \res{df-lora_l4d_opt}{d1ci} & \res{df-lora_l4d_opt}{gap1} & \res{df-x}{speedup_ds_l1} \\
-    DeepSeek L4 (\res{df-deepseek_L4}{macro}) & \res{df-lora_l4d_opt}{d4} \res{df-lora_l4d_opt}{d4ci} & \res{df-lora_l4d_opt}{gap4} & \\
+    Intern L4-D (untuned) & DeepSeek L1 (\res{df-deepseek_L1}{macro}) & \res{df-intern_l4d}{d1} \res{df-intern_l4d}{d1ci} & \res{df-intern_l4d}{gap1} \\
+    \textbf{FT L4-D (opt.)} & DeepSeek L1 (\res{df-deepseek_L1}{macro}) & \res{df-lora_l4d_opt}{d1} \res{df-lora_l4d_opt}{d1ci} & \textbf{\res{df-lora_l4d_opt}{gap1}} \\
+    \textbf{FT L4-D (opt.)} & DeepSeek L4 (\res{df-deepseek_L4}{macro}) & \res{df-lora_l4d_opt}{d4} \res{df-lora_l4d_opt}{d4ci} & \res{df-lora_l4d_opt}{gap4} \\
     \bottomrule
-  \end{tabular}
-  \vspace{10pt}
+  \end{tabular}}\par
+  \vspace{8pt}
   \begin{itemize}
     \item Gap measured from untuned Qwen L1 (\res{df-qwen_L1}{macro}) to the cloud model
     \item Criterion: $\geq$ reference $- 0.02$. \alert{Not met}: \res{df-lora_l4d_opt}{d1} vs DeepSeek L1
-    \item Jev (\res{df-jev_L3}{macro}) stays well ahead
-    \item Median latency: FT L4-D \res{df-lora_l4d_opt}{lat}, DeepSeek L1 \res{df-deepseek_L1}{lat}, Jev L1 \res{df-jev_L1}{lat}
+    \item Median latency: FT L4-D \res{df-lora_l4d_opt}{lat}, Intern L4-D \res{df-intern_l4d}{lat}, DeepSeek L1 \res{df-deepseek_L1}{lat} (FT L4-D \res{df-x}{speedup_ds_l1}$\times$ faster)
+    \item Jev stays well ahead: L3 \res{df-jev_L3}{macro}; L1 at \res{df-jev_L1}{lat}
   \end{itemize}
 \end{frame}
 

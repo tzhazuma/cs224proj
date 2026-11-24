@@ -59,7 +59,7 @@ oblique face. matplotlib registers the same Fira Sans files directly.
 | `notes.md` | speaker script (17:00) and Q&A prep |
 | `.gitignore` | ignores `build/` |
 
-The deck has 56 pages: title, 4 section dividers, 23 numbered frames and 29 backup pages (incl. the generated result-file list). See `REPORT_v4.md` for the frame list.
+The deck has 57 pages: title, 4 section dividers, 23 numbered frames, the standout and 28 backup pages (incl. the generated result-file list). See `REPORT_v4.md` for the frame list.
 
 ## How the numbers are made
 

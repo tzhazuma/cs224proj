@@ -1,7 +1,38 @@
 # REPORT v4: slides "Near-Cloud Quality on a Local Device?"
 
-Lane slides-v4, 2026-11-24 (build ~08:10 PST). Deck: `presentation/pre/main.pdf`, 56 pages = title + 4 section
-dividers + 23 numbered main frames + 29 backup pages (incl. generated provenance pages). Beamer metropolis, 16:9,
+## v4.1 update (2026-11-24 ~09:45 PST, English fixes only; the Chinese version was cancelled by the user)
+- Intern-Decision L4-D is final (`intern_l4d`, τ 0.5): .799 [.770, .823], gap closed 81 % vs DeepSeek L1. Its dev-τ
+  variant (`intern_l4d_devtau`, τ 0.18) .373, recall .037 appears in backup only. A new backup frame, "Intern-Decision
+  L4-D and its threshold", discloses that τ 0.5 was chosen after seeing eval (it favours the baseline) and explains
+  the dev-τ failure (from `deadfree_quality.json` notes).
+- Paired deltas come from `deadfree_quality.json` `paired_deltas` via `\res{df-x}{pd_<a>__<b>}` (+`_ci`):
+  FT L4-D − Intern L4-D +.027 [+.003, +.054]; Intern L4-D − Qwen read-out L4-D +.047 [+.029, +.064].
+- Main message is now "the strategy does most of the work". Reworded claims:
+  - slide 2 "best untuned local" → "best untuned local prompt (L1–L4): Qwen L3" (because untuned Intern L4-D .799 is higher);
+  - slide 17 title "For local models, fact questions beat every prompt strategy" → "The strategy does most of the
+    work: L4-D lifts an untuned decision model". The old title was false for untuned Qwen (read-out L4-D .752 < Qwen L3 .760);
+  - slide 18: Intern L4-D bar added; "FT vs best untuned" on L4-D is +.027 (vs Intern L4-D), no longer +.074; paired CI on the slide;
+  - slide 19 title "best local point" → "most accurate local model" (untuned Qwen L1–L3 are faster);
+  - slide 20 title → "L4-D closes 81 % of the gap untuned, 89 % fine-tuned; not near-cloud" (both percentages via `\res`).
+    Its table now has an Intern L4-D row, and the latency/speed-up lines are bullets;
+  - take-aways title → "the strategy does most of the work", with new points "Facts + Datalog do most of the work" and
+    "Fact labels add a little (+.027)";
+  - limitations: the "Pending" item is replaced by the Intern L4-D τ disclosure;
+  - standout: "Program-analysis facts do most of the work; fine-tune on facts, not on verdicts."
+- Latency: `load_deadfree` now reads only `role == primary` rows of `latency_deadfree.csv` (the prediction configuration,
+  i.e. the fallback kernel). The Debiased backup line adds L4-D (opt.) 0.214 s (`% src: juliet_full/l4d_ft/REPORT_stage1.md:137`).
+- Pareto: one label per cloud service ("DeepSeek L1–L4", "Jev L1–L3"); "all questions" point for unpruned L4-D; the
+  grey "latency pending" strip disappears automatically when nothing is pending.
+- Backup by-flow table: Intern L4-D row added. Deck now 57 pages (title, 4 dividers, 23 numbered main frames, standout, 28 backup pages); the frame list below shows v4 titles, the reworded ones are listed above.
+- notes.md is updated for all of the above (+ Q&A "Was the Intern L4-D threshold chosen fairly?" and "If the strategy does
+  most of the work, why fine-tune at all?").
+- Pending at 09:45: DeadFree latency for Intern L1–L3, Intern L4-D, Qwen read-out L4-D, CodeQL, Infer, grep, ASan/LSan,
+  Dynamic-enhanced. `readout_l4d` has **no row at all** in `latency_deadfree.csv`, so it will stay pending unless the
+  latency lane adds one.
+
+
+Lane slides-v4, 2026-11-24 (build ~08:10 PST). Deck: `presentation/pre/main.pdf`, v4: 56 pages = title + 4 section
+dividers + 23 numbered main frames + standout + 27 backup pages (incl. generated provenance pages); v4.1: 57. Beamer metropolis, 16:9,
 English. Build: `make && make check && make pngs` → "clean: no errors, overfull boxes or missing fonts".
 
 v3 sources (main.tex, sections/, make_figures.py, methods.json, latency_c1.csv, notes.md, main.pdf, REPORT_v3.md)

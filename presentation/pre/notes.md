@@ -8,12 +8,13 @@ All numbers on the slides come from `figures/numbers.tex`, written by `make figu
 (DeadFree quality: `juliet_full/analysis/deadfree/deadfree_quality.json`; DeadFree latency:
 `juliet_full/analysis/deadfree/latency_deadfree.csv`). Values not yet measured print as *pending* and fill in on the
 next `make`. **Read numbers off the slide, not off these notes**: the values quoted below are the build of
-2026-11-24 ~08:10 PST and may move when the latency lane finishes. From the dataset slide on, every model
+2026-11-24 ~09:45 PST (Intern L4-D final; some latencies still being measured). From the dataset slide on, every model
 comparison is on **DeadFree** (eval set, 2,656 units, 39 flow variants never used for prompts, τ or checkpoints).
 
-Main line in one sentence: **fine-tuning a local 4B model on program-analysis facts (L4-D) closes most of the gap
-to the cloud on DeadFree — fine-tuning on unit labels makes it worse — but it is not near-cloud by our own
-pre-registered criterion.**
+Main line in one sentence: **the strategy does most of the work — an untuned local decision model answering
+program-analysis fact questions, with Datalog deciding (L4-D), already closes ~81 % of the gap to the cloud on
+DeadFree; fine-tuning on those facts adds +.027 (→ 89 %), fine-tuning on unit labels makes it worse — and it is
+still not near-cloud by our own pre-registered criterion.**
 
 | # | Section | Slide (assertion title) | Time | Running |
 |---|---------|-------------------------|------|---------|
@@ -34,12 +35,12 @@ pre-registered criterion.**
 | 14 | Methods | Fine-tuning: one recipe, different labels per strategy | 0:40 | 9:40 |
 | 15 | Results | DeadFree removes the label shortcuts; one cue is left in G2B goods | 0:35 | 10:15 |
 | 16 | Results | Two cloud services, three local models, one fine-tuned model | 0:20 | 10:35 |
-| 17 | Results | For local models, fact questions beat every prompt strategy | 0:45 | 11:20 |
+| 17 | Results | The strategy does most of the work: L4-D lifts an untuned decision model | 0:45 | 11:20 |
 | 18 | Results | **Fine-tuning on unit labels hurts; fine-tuning on facts helps** (key slide) | 1:00 | 12:20 |
-| 19 | Results | FT L4-D is the best local point, still below the cloud (Pareto) | 0:50 | 13:10 |
-| 20 | Results | We close most of the gap, but not near-cloud by our own criterion | 0:35 | 13:45 |
+| 19 | Results | FT L4-D is the most accurate local model, still below the cloud (Pareto) | 0:50 | 13:10 |
+| 20 | Results | L4-D closes 81 % of the gap untuned, 89 % fine-tuned; not near-cloud | 0:35 | 13:45 |
 | 21 | Results | Live: one dead free fools grep and the old LoRA, not L4-D | 2:00 | 15:45 |
-| 22 | Discussion | Take-aways: what to fine-tune matters more than whether | 0:35 | 16:20 |
+| 22 | Discussion | Take-aways: the strategy does most of the work | 0:35 | 16:20 |
 | 23 | Discussion | Limitations | 0:30 | 16:50 |
 | 24 | Discussion | Near-cloud quality on a local device? (+ Questions) | 0:10 | 17:00 |
 
@@ -147,27 +148,33 @@ the cloud — for us one RTX 3090 with 24 GB."
   questions.
 
 ## 17. Strategies × local models (0:45)
-- Left quality, right latency (fills in). Few-shot barely helps; Clang evidence helps both untuned models
-  (Qwen .533 → .760). The fine-tuned L4-D model is the best local result, .826.
+- Left quality, right latency. Few-shot barely helps; Clang evidence helps both untuned models (Qwen .533 → .760).
+- The big jump is the strategy: untuned Intern-Decision goes from its best prompt (L3 .664) to .799 with L4-D facts
+  + Datalog. Be precise: for untuned Qwen the L4-D read-out (.752) is only on par with Qwen's own L3 (.760), so
+  "facts beat every prompt" holds for the decision models, not for every model.
+- Fine-tuned L4-D is the best local result, .826.
 
 ## 18. Before vs after fine-tuning — key slide (1:00)
 - L1: untuned .533 / .584 → fine-tuned .372. L3: .760 / .664 → .639. Fine-tuning on unit labels makes it
   **worse** than untuned on DeadFree.
 - Why: the L1 model's leak recall is .041 — it learned "a free() means no leak". On Debiased that shortcut was
   almost always right (.984), so the training loss could not see it.
-- L4-D: read-out .752 → fine-tuned .826 (+.074 over the best untuned). Intern L4-D is still pending.
-- "What you fine-tune on matters more than whether you fine-tune."
+- L4-D: read-out .752 / Intern .799 → fine-tuned .826, +.027 [+.003, +.054] over the best untuned (Intern L4-D,
+  paired bootstrap). Small but the CI excludes zero.
+- "The strategy does most of the work; fine-tuning on facts adds a little; fine-tuning on verdicts hurts."
 
 ## 19. Pareto (0:50)
 - x = median latency at concurrency 1 (log), y = DeadFree macro-F1 with CI. Budget bands as on slide 1. Static
   tools grey; dynamic analysis dashed as an upper reference (it runs the code with chosen inputs).
-- FT L4-D is the best local point; cloud points are higher. Points in the grey strip still wait for latency.
+- FT L4-D is the most accurate local point (.826 at ≈0.47 s); cloud points are higher at ≈0.9 s. Untuned
+  Qwen is faster (≈0.35 s) but much worse. Read latencies off the slide.
 
 ## 20. Gap and criterion (0:35)
-- vs DeepSeek L1: −.037 [−.055, −.017], 89 % of the gap closed (from untuned Qwen L1 .533). vs DeepSeek L4:
-  −.074, 80 %.
+- Gap measured from untuned Qwen L1 (.533) to the cloud model. Untuned Intern L4-D: −.064 vs DeepSeek L1, 81 %
+  of the gap. FT L4-D: −.037 [−.055, −.017], 89 %; vs DeepSeek L4 −.074, 80 %.
 - Pre-registered criterion (before L4-D ran): near if ≥ reference − 0.02. **Not met.** Jev (.949) is well ahead.
-- Speed-up vs DeepSeek: read from the slide once measured.
+- Speed-up vs DeepSeek L1 is on the slide (≈1.9× at the 09:45 build): local is faster, but not by an order of
+  magnitude at concurrency 1.
 
 ## 21. Live demo (2:00)
 - Unit `CWE401_Memory_Leak__strdup_char_01`: bad, good twin, and the DeadFree bad version with `if(sym_61 > 4)
@@ -178,16 +185,19 @@ the cloud — for us one RTX 3090 with 24 GB."
 - Fallback: `demo.py --replay recordings/<file>` or the mp4.
 
 ## 22. Take-aways (0:35)
-1. Check the benchmark first. 2. Unit labels teach shortcuts. 3. Fact labels transfer. 4. Ask only what the
-rules read. 5. The remaining gap is path feasibility.
+1. Check the benchmark first. 2. Facts + Datalog do most of the work (untuned Intern L4-D, 81 % of the gap).
+3. Unit labels teach shortcuts. 4. Fact labels add a little (+.027, 89 %). 5. Ask only what the rules read.
+6. The remaining gap is path feasibility.
 
 ## 23. Limitations (0:30)
 - Clang SA is as good (.855) and faster, without a GPU: path-sensitive analysis still matters.
-- Synthetic data; post-hoc pruning; τ and checkpoints chosen on a near-saturated dev set; one local device;
-  pending numbers fill in automatically.
+- Synthetic data; post-hoc pruning; τ and checkpoints chosen on a near-saturated dev set; one local device.
+- Intern L4-D threshold: τ = 0.5 (as for Intern L1–L3) was set as primary after seeing eval; it favours the
+  baseline (the frozen dev τ 0.18 gives .373). Say this out loud.
 
 ## 24. Take-home (0:10)
-"Close — about 89 % of the gap — but not yet near-cloud. Fine-tune on program-analysis facts, not on verdicts."
+"Close — about 89 % of the gap — but not yet near-cloud. Program-analysis facts do most of the work; fine-tune on
+facts, not on verdicts."
 
 ## Q&A prep
 
@@ -201,8 +211,19 @@ a path-sensitive analyzer does. A natural next step is to feed Clang's path fact
 
 **Is L4-D really near-cloud?**
 No, and we say so. Δ vs DeepSeek L1 is −.037 [−.055, −.017]; the pre-registered threshold was −.02 on the point
-estimate. It closes ≈89 % of the gap to DeepSeek L1 and ≈80 % to DeepSeek L4. Jev is far ahead (.949). The positive
-result is relative: L4-D is the only fine-tuning that helps on DeadFree.
+estimate. It closes ≈89 % of the gap to DeepSeek L1 and ≈80 % to DeepSeek L4. Jev is far ahead (.949). Most of that
+comes from the strategy: untuned Intern with L4-D already closes ≈81 %. Fact fine-tuning is the only fine-tuning
+that helps on DeadFree, by +.027 [+.003, +.054].
+
+**Was the Intern L4-D threshold chosen fairly?**
+No — and in the baseline's favour. The frozen dev τ (0.18, tuned on Debiased) makes Intern answer Yes to every
+exec/release question, so dead frees count as "runs on every path" and leak recall is .037 (macro-F1 .373). The
+primary was switched to τ = 0.5 after seeing eval, to match Intern L1–L3 (calibrated default). Our fine-tuned model
+keeps its dev-chosen τ. Backup slide "Intern-Decision L4-D and its threshold".
+
+**If the strategy does most of the work, why fine-tune at all?**
++.027 is significant (paired CI excludes 0) and it is the step from 81 % to 89 % of the gap, with τ chosen on dev
+rather than after eval. But the honest headline is the strategy.
 
 **Is DeadFree fair?**
 Labels do not change and are re-checked by compiling and running every unit. Dead frees appear in both labels, so
