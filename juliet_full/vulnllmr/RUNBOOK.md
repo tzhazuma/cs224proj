@@ -13,7 +13,8 @@ tail -f vulnllmr/raw_logs/run_all.log                                  # poll; e
 ```
 
 `run_all.sh` stops the server on exit, including on failure; set `VULNLLMR_KEEP=1` to keep it running.
-`VULNLLMR_NOHINT=1` adds the optional no-hint run. Every step is resumable: rerun the same command after any failure.
+`VULNLLMR_NOHINT=1` adds the optional no-hint run. `VULNLLMR_C1_GROUPS=50` caps c1 latency to 50 stratified groups
+(100 units, `lat100_c1_policy_r1`). `VULNLLMR_LOCK_WAIT` sets the c1 lock wait in seconds (default 43200). Every step is resumable: rerun the same command after any failure.
 A runner exit code of 3 means some units ended `error` after retries, and the script stops there; rerunning retries
 only those units.
 

@@ -8,6 +8,8 @@
 #   VULNLLMR_NOHINT=1   also run the optional layer1 nested25 --cwe-hint none run
 #   VULNLLMR_KEEP=1     leave the server running at the end
 #   VULNLLMR_BASE_URL   default http://10.15.89.184:8005/v1
+#   VULNLLMR_C1_GROUPS  cap c1 latency to N stratified latency300 groups (run_id lat<2N>_c1_policy_r1); empty = all 150
+#   VULNLLMR_LOCK_WAIT  c1: max seconds to wait for /tmp/cs224_latency.lock + quiet load (default 43200)
 set -euo pipefail
 GPUS=${1:?usage: run_all.sh <gpu index: 0, 1 or 0,1>}
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -52,9 +54,21 @@ run layer1 eval; score layer1 eval_policy_r1 eval
 for layer in layer3 placebo original; do
   run "$layer" eval; score "$layer" eval_policy_r1 eval
 done
-echo "[$(ts)] c1 latency (layer1 latency300)"
-python3 "$HERE/run_vulnllmr.py" --layer layer1 --c1-latency --base-url "$BASE_URL"
-score layer1 lat300_c1_policy_r1 eval --subset latency300
+C1_GROUPS=${VULNLLMR_C1_GROUPS:-}
+echo "[$(ts)] c1 latency (layer1 latency300${C1_GROUPS:+, $C1_GROUPS stratified groups})"
+python3 "$HERE/run_vulnllmr.py" --layer layer1 --c1-latency --base-url "$BASE_URL" \
+  --lock-wait "${VULNLLMR_LOCK_WAIT:-43200}" ${C1_GROUPS:+--c1-groups "$C1_GROUPS"}
+if [[ -n $C1_GROUPS ]]; then
+  C1_ID=lat$((2 * C1_GROUPS))_c1_policy_r1
+  python3 - "$RES/layer1/$C1_ID.jsonl" "$HERE/build/subsets_$C1_ID.json" <<'EOF'
+import json, sys
+groups = sorted({json.loads(line)["unit_id"].rsplit("__", 1)[0] for line in open(sys.argv[1])})
+json.dump({"c1_capped": groups}, open(sys.argv[2], "w"))
+EOF
+  score layer1 "$C1_ID" eval --subset c1_capped --subsets-file "$HERE/build/subsets_$C1_ID.json"
+else
+  score layer1 lat300_c1_policy_r1 eval --subset latency300
+fi
 if [[ ${VULNLLMR_NOHINT:-0} == 1 ]]; then
   run layer1 eval --subset nested25 --cwe-hint none; score layer1 n25_nohint_r1 eval --subset nested25
 fi

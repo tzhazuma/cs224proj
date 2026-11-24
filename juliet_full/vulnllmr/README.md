@@ -210,6 +210,10 @@ Runs on `latency300` (150 eval groups, 300 units) with concurrency 1:
 - Refuses if the server reports `vllm:num_requests_running > 0`.
 - Sends one unrecorded warm-up request.
 
+`--c1-groups N` caps the run to N latency300 groups (both units each). The groups are a stratified pick: each
+(flow_category × mechanism) stratum gets a largest-remainder proportional quota, filled in subsets.json order. The
+run_id becomes `lat<2N>_c1_policy_r1`, and the rule is recorded in the meta `selection`.
+
 Latency = client-measured HTTP round trip from dell to 184-toast (LAN), with no other request on the server.
 
 ## 7. Tests

@@ -1,0 +1,853 @@
+{
+  "runs": {
+    "layer1__dev_policy_r1": {
+      "layer": "layer1",
+      "run_id": "dev_policy_r1",
+      "set": "dev",
+      "subset": null,
+      "cwe_hint": "policy",
+      "lenient": {
+        "n": 660,
+        "macro_f1": 0.4041240052661149,
+        "macro_f1_ci95": [
+          0.36694792943870536,
+          0.44533346506530447
+        ],
+        "precision": 0.5686274509803921,
+        "recall": 0.08787878787878788,
+        "specificity": 0.9333333333333333,
+        "f1_leak": 0.15223097112860892,
+        "mcc": 0.03971954872947807,
+        "tp": 29,
+        "fp": 22,
+        "tn": 308,
+        "fn": 301,
+        "invalid": 0,
+        "valid_only_macro_f1": 0.4041240052661149,
+        "latency": {
+          "n": 660,
+          "median_s": 19.0625,
+          "p90_s": 24.4054,
+          "mean_s": 18.974025757575756,
+          "total_s": 12522.857
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 153,
+            "fp": 16,
+            "specificity": 0.8954248366013072
+          },
+          "G2B": {
+            "n": 153,
+            "fp": 4,
+            "specificity": 0.9738562091503268
+          },
+          "other": {
+            "n": 24,
+            "fp": 2,
+            "specificity": 0.9166666666666666
+          }
+        },
+        "mcnemar": null
+      },
+      "strict": {
+        "n": 660,
+        "macro_f1": 0.3913461868921195,
+        "macro_f1_ci95": [
+          0.3561086437284378,
+          0.4333929298295266
+        ],
+        "precision": 0.6111111111111112,
+        "recall": 0.06666666666666667,
+        "specificity": 0.9575757575757575,
+        "f1_leak": 0.12021857923497269,
+        "mcc": 0.053376051268362375,
+        "tp": 22,
+        "fp": 14,
+        "tn": 316,
+        "fn": 308,
+        "invalid": 0,
+        "valid_only_macro_f1": 0.3913461868921195,
+        "latency": {
+          "n": 660,
+          "median_s": 19.0625,
+          "p90_s": 24.4054,
+          "mean_s": 18.974025757575756,
+          "total_s": 12522.857
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 153,
+            "fp": 11,
+            "specificity": 0.9281045751633987
+          },
+          "G2B": {
+            "n": 153,
+            "fp": 3,
+            "specificity": 0.9803921568627451
+          },
+          "other": {
+            "n": 24,
+            "fp": 0,
+            "specificity": 1.0
+          }
+        },
+        "mcnemar": null
+      },
+      "stats": {
+        "units": 660,
+        "status_counts": {
+          "ok": 660
+        },
+        "invalid_rate": 0.0,
+        "truncated": 0,
+        "truncation_rate": 0.0,
+        "pred_counts": {
+          "0": 609,
+          "1": 51
+        },
+        "pred_strict_counts": {
+          "0": 624,
+          "1": 36
+        },
+        "yes_type_counts": {
+          "CWE-401": 36,
+          "CWE-703": 8,
+          "CWE-404": 7
+        },
+        "finish_reason_counts": {
+          "stop": 660
+        },
+        "completion_tokens_mean": 372.7,
+        "completion_tokens_median": 371.0,
+        "completion_tokens_p90": 477,
+        "completion_tokens_max": 654,
+        "latency_median_s": 19.062,
+        "latency_p90_s": 24.427,
+        "wall_s": 202.35,
+        "concurrency": 64,
+        "units_per_s": 3.262,
+        "output_tok_per_s": 1215.7,
+        "start_utc": "2026-11-24T14:29:01Z",
+        "end_utc": "2026-11-24T14:32:23Z",
+        "loadavg_start": [
+          1.0751953125,
+          1.2685546875,
+          1.3837890625
+        ],
+        "latency_lock": null
+      }
+    },
+    "layer1__eval_policy_r1": {
+      "layer": "layer1",
+      "run_id": "eval_policy_r1",
+      "set": "eval",
+      "subset": null,
+      "cwe_hint": "policy",
+      "lenient": {
+        "n": 2656,
+        "macro_f1": 0.39780367106326764,
+        "macro_f1_ci95": [
+          0.38372023481243916,
+          0.41309254670405204
+        ],
+        "precision": 0.6282051282051282,
+        "recall": 0.07379518072289157,
+        "specificity": 0.9563253012048193,
+        "f1_leak": 0.1320754716981132,
+        "mcc": 0.06405126152203486,
+        "tp": 98,
+        "fp": 58,
+        "tn": 1270,
+        "fn": 1230,
+        "invalid": 1,
+        "valid_only_macro_f1": 0.3979348917555482,
+        "latency": {
+          "n": 2656,
+          "median_s": 19.09,
+          "p90_s": 24.619500000000002,
+          "mean_s": 19.40503576807229,
+          "total_s": 51539.775
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 621,
+            "fp": 48,
+            "specificity": 0.9227053140096618
+          },
+          "G2B": {
+            "n": 621,
+            "fp": 6,
+            "specificity": 0.9903381642512077
+          },
+          "other": {
+            "n": 86,
+            "fp": 4,
+            "specificity": 0.9534883720930233
+          }
+        },
+        "mcnemar": null
+      },
+      "strict": {
+        "n": 2656,
+        "macro_f1": 0.38740817263544536,
+        "macro_f1_ci95": [
+          0.3729879994269982,
+          0.4026239336763741
+        ],
+        "precision": 0.6875,
+        "recall": 0.05798192771084337,
+        "specificity": 0.973644578313253,
+        "f1_leak": 0.10694444444444447,
+        "mcc": 0.0786831477245862,
+        "tp": 77,
+        "fp": 35,
+        "tn": 1293,
+        "fn": 1251,
+        "invalid": 1,
+        "valid_only_macro_f1": 0.3875315979964703,
+        "latency": {
+          "n": 2656,
+          "median_s": 19.09,
+          "p90_s": 24.619500000000002,
+          "mean_s": 19.40503576807229,
+          "total_s": 51539.775
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 621,
+            "fp": 30,
+            "specificity": 0.9516908212560387
+          },
+          "G2B": {
+            "n": 621,
+            "fp": 5,
+            "specificity": 0.9919484702093397
+          },
+          "other": {
+            "n": 86,
+            "fp": 0,
+            "specificity": 1.0
+          }
+        },
+        "mcnemar": null
+      },
+      "stats": {
+        "units": 2656,
+        "status_counts": {
+          "ok": 2655,
+          "invalid": 1
+        },
+        "invalid_rate": 0.0004,
+        "truncated": 1,
+        "truncation_rate": 0.0004,
+        "pred_counts": {
+          "0": 2500,
+          "1": 155,
+          "None": 1
+        },
+        "pred_strict_counts": {
+          "0": 2544,
+          "1": 111,
+          "None": 1
+        },
+        "yes_type_counts": {
+          "CWE-401": 111,
+          "CWE-703": 23,
+          "CWE-404": 21
+        },
+        "finish_reason_counts": {
+          "stop": 2655,
+          "length": 1
+        },
+        "completion_tokens_mean": 374.2,
+        "completion_tokens_median": 365.0,
+        "completion_tokens_p90": 475,
+        "completion_tokens_max": 8192,
+        "latency_median_s": 19.09,
+        "latency_p90_s": 24.628,
+        "wall_s": 900.77,
+        "concurrency": 64,
+        "units_per_s": 2.949,
+        "output_tok_per_s": 1103.5,
+        "start_utc": "2026-11-24T14:32:24Z",
+        "end_utc": "2026-11-24T14:47:24Z",
+        "loadavg_start": [
+          1.75537109375,
+          1.5546875,
+          1.470703125
+        ],
+        "latency_lock": null
+      }
+    },
+    "layer3__eval_policy_r1": {
+      "layer": "layer3",
+      "run_id": "eval_policy_r1",
+      "set": "eval",
+      "subset": null,
+      "cwe_hint": "policy",
+      "lenient": {
+        "n": 2656,
+        "macro_f1": 0.47120422470977136,
+        "macro_f1_ci95": [
+          0.4487757148317603,
+          0.4949702976323477
+        ],
+        "precision": 0.562753036437247,
+        "recall": 0.20933734939759036,
+        "specificity": 0.8373493975903614,
+        "f1_leak": 0.3051591657519209,
+        "mcc": 0.05999297105844438,
+        "tp": 278,
+        "fp": 216,
+        "tn": 1112,
+        "fn": 1050,
+        "invalid": 0,
+        "valid_only_macro_f1": 0.47120422470977136,
+        "latency": {
+          "n": 2656,
+          "median_s": 20.7095,
+          "p90_s": 27.2155,
+          "mean_s": 21.265020331325303,
+          "total_s": 56479.894
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 621,
+            "fp": 86,
+            "specificity": 0.8615136876006442
+          },
+          "G2B": {
+            "n": 621,
+            "fp": 111,
+            "specificity": 0.821256038647343
+          },
+          "other": {
+            "n": 86,
+            "fp": 19,
+            "specificity": 0.7790697674418605
+          }
+        },
+        "mcnemar": [
+          {
+            "other": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/vulnllmr/results/vulnllm_r_7b/layer1/eval_policy_r1.jsonl",
+            "n": 2656,
+            "both_right": 1089,
+            "a_only_right": 301,
+            "b_only_right": 279,
+            "both_wrong": 987,
+            "test": "chi2_continuity",
+            "statistic": 0.7603448275862069,
+            "p_value": 0.3832206312856441,
+            "p_holm": 0.3832206312856441
+          }
+        ]
+      },
+      "strict": {
+        "n": 2656,
+        "macro_f1": 0.4531972282975288,
+        "macro_f1_ci95": [
+          0.43144595478066217,
+          0.4749775868651881
+        ],
+        "precision": 0.596100278551532,
+        "recall": 0.16114457831325302,
+        "specificity": 0.8908132530120482,
+        "f1_leak": 0.25370480142264373,
+        "mcc": 0.07598386293896425,
+        "tp": 214,
+        "fp": 145,
+        "tn": 1183,
+        "fn": 1114,
+        "invalid": 0,
+        "valid_only_macro_f1": 0.4531972282975288,
+        "latency": {
+          "n": 2656,
+          "median_s": 20.7095,
+          "p90_s": 27.2155,
+          "mean_s": 21.265020331325303,
+          "total_s": 56479.894
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 621,
+            "fp": 58,
+            "specificity": 0.9066022544283414
+          },
+          "G2B": {
+            "n": 621,
+            "fp": 82,
+            "specificity": 0.8679549114331723
+          },
+          "other": {
+            "n": 86,
+            "fp": 5,
+            "specificity": 0.9418604651162791
+          }
+        },
+        "mcnemar": null
+      },
+      "stats": {
+        "units": 2656,
+        "status_counts": {
+          "ok": 2656
+        },
+        "invalid_rate": 0.0,
+        "truncated": 0,
+        "truncation_rate": 0.0,
+        "pred_counts": {
+          "0": 2162,
+          "1": 494
+        },
+        "pred_strict_counts": {
+          "0": 2297,
+          "1": 359
+        },
+        "yes_type_counts": {
+          "CWE-401": 359,
+          "CWE-404": 128,
+          "CWE-703": 7
+        },
+        "finish_reason_counts": {
+          "stop": 2656
+        },
+        "completion_tokens_mean": 407.0,
+        "completion_tokens_median": 395.0,
+        "completion_tokens_p90": 520,
+        "completion_tokens_max": 1554,
+        "latency_median_s": 20.709,
+        "latency_p90_s": 27.22,
+        "wall_s": 888.51,
+        "concurrency": 64,
+        "units_per_s": 2.989,
+        "output_tok_per_s": 1216.5,
+        "start_utc": "2026-11-24T14:47:25Z",
+        "end_utc": "2026-11-24T15:02:13Z",
+        "loadavg_start": [
+          0.89990234375,
+          1.06494140625,
+          1.1689453125
+        ],
+        "latency_lock": null
+      }
+    },
+    "layer3__lat300_c1_policy_r1": {
+      "layer": "layer3",
+      "run_id": "lat300_c1_policy_r1",
+      "set": "eval",
+      "subset": "latency300",
+      "cwe_hint": "policy",
+      "lenient": {
+        "n": 300,
+        "macro_f1": 0.44972109151213624,
+        "macro_f1_ci95": [
+          0.40575553373120793,
+          0.4933568401871404
+        ],
+        "precision": 0.5416666666666666,
+        "recall": 0.17333333333333334,
+        "specificity": 0.8533333333333334,
+        "f1_leak": 0.2626262626262626,
+        "mcc": 0.036369648372665396,
+        "tp": 26,
+        "fp": 22,
+        "tn": 128,
+        "fn": 124,
+        "invalid": 0,
+        "valid_only_macro_f1": 0.44972109151213624,
+        "latency": {
+          "n": 300,
+          "median_s": 8.0465,
+          "p90_s": 10.4677,
+          "mean_s": 8.236956666666666,
+          "total_s": 2471.087
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 71,
+            "fp": 9,
+            "specificity": 0.8732394366197183
+          },
+          "G2B": {
+            "n": 69,
+            "fp": 12,
+            "specificity": 0.8260869565217391
+          },
+          "other": {
+            "n": 10,
+            "fp": 1,
+            "specificity": 0.9
+          }
+        },
+        "mcnemar": null
+      },
+      "strict": {
+        "n": 300,
+        "macro_f1": 0.43782678775012784,
+        "macro_f1_ci95": [
+          0.39422348918689315,
+          0.4777796098779144
+        ],
+        "precision": 0.6060606060606061,
+        "recall": 0.13333333333333333,
+        "specificity": 0.9133333333333333,
+        "f1_leak": 0.21857923497267762,
+        "mcc": 0.07457365674506919,
+        "tp": 20,
+        "fp": 13,
+        "tn": 137,
+        "fn": 130,
+        "invalid": 0,
+        "valid_only_macro_f1": 0.43782678775012784,
+        "latency": {
+          "n": 300,
+          "median_s": 8.0465,
+          "p90_s": 10.4677,
+          "mean_s": 8.236956666666666,
+          "total_s": 2471.087
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 71,
+            "fp": 4,
+            "specificity": 0.9436619718309859
+          },
+          "G2B": {
+            "n": 69,
+            "fp": 9,
+            "specificity": 0.8695652173913043
+          },
+          "other": {
+            "n": 10,
+            "fp": 0,
+            "specificity": 1.0
+          }
+        },
+        "mcnemar": null
+      },
+      "stats": {
+        "units": 300,
+        "status_counts": {
+          "ok": 300
+        },
+        "invalid_rate": 0.0,
+        "truncated": 0,
+        "truncation_rate": 0.0,
+        "pred_counts": {
+          "0": 252,
+          "1": 48
+        },
+        "pred_strict_counts": {
+          "0": 267,
+          "1": 33
+        },
+        "yes_type_counts": {
+          "CWE-401": 33,
+          "CWE-404": 13,
+          "CWE-416": 1,
+          "CWE-703": 1
+        },
+        "finish_reason_counts": {
+          "stop": 300
+        },
+        "completion_tokens_mean": 409.8,
+        "completion_tokens_median": 400.0,
+        "completion_tokens_p90": 524,
+        "completion_tokens_max": 912,
+        "latency_median_s": 8.046,
+        "latency_p90_s": 10.483,
+        "wall_s": 2480.07,
+        "concurrency": 1,
+        "units_per_s": 0.121,
+        "output_tok_per_s": 49.6,
+        "start_utc": "2026-11-24T15:12:14Z",
+        "end_utc": "2026-11-24T15:53:34Z",
+        "loadavg_start": [
+          0.50634765625,
+          0.869140625,
+          1.08642578125
+        ],
+        "latency_lock": {
+          "lock": "/tmp/cs224_latency.lock",
+          "lock_wait_s": 0.0,
+          "quiet_wait_s": 120.0,
+          "loadavg_at_start": [
+            0.50634765625,
+            0.869140625,
+            1.08642578125
+          ]
+        }
+      }
+    },
+    "layer3__n25_nohint_r1": {
+      "layer": "layer3",
+      "run_id": "n25_nohint_r1",
+      "set": "eval",
+      "subset": "nested25",
+      "cwe_hint": "none",
+      "lenient": {
+        "n": 664,
+        "macro_f1": 0.3986367319700653,
+        "macro_f1_ci95": [
+          0.3732832060957061,
+          0.42439345888523117
+        ],
+        "precision": 0.3709677419354839,
+        "recall": 0.20783132530120482,
+        "specificity": 0.6475903614457831,
+        "f1_leak": 0.26640926640926643,
+        "mcc": -0.16097959000411963,
+        "tp": 69,
+        "fp": 117,
+        "tn": 215,
+        "fn": 263,
+        "invalid": 0,
+        "valid_only_macro_f1": 0.3986367319700653,
+        "latency": {
+          "n": 664,
+          "median_s": 16.1035,
+          "p90_s": 21.1828,
+          "mean_s": 16.47211144578313,
+          "total_s": 10937.482
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 168,
+            "fp": 58,
+            "specificity": 0.6547619047619048
+          },
+          "G2B": {
+            "n": 143,
+            "fp": 47,
+            "specificity": 0.6713286713286714
+          },
+          "other": {
+            "n": 21,
+            "fp": 12,
+            "specificity": 0.42857142857142855
+          }
+        },
+        "mcnemar": null
+      },
+      "strict": {
+        "n": 664,
+        "macro_f1": 0.33599199990361334,
+        "macro_f1_ci95": [
+          0.331887083715913,
+          0.34383052956187554
+        ],
+        "precision": 0.5,
+        "recall": 0.0030120481927710845,
+        "specificity": 0.9969879518072289,
+        "f1_leak": 0.005988023952095808,
+        "mcc": 0.0,
+        "tp": 1,
+        "fp": 1,
+        "tn": 331,
+        "fn": 331,
+        "invalid": 0,
+        "valid_only_macro_f1": 0.33599199990361334,
+        "latency": {
+          "n": 664,
+          "median_s": 16.1035,
+          "p90_s": 21.1828,
+          "mean_s": 16.47211144578313,
+          "total_s": 10937.482
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 168,
+            "fp": 0,
+            "specificity": 1.0
+          },
+          "G2B": {
+            "n": 143,
+            "fp": 1,
+            "specificity": 0.993006993006993
+          },
+          "other": {
+            "n": 21,
+            "fp": 0,
+            "specificity": 1.0
+          }
+        },
+        "mcnemar": null
+      },
+      "stats": {
+        "units": 664,
+        "status_counts": {
+          "ok": 664
+        },
+        "invalid_rate": 0.0,
+        "truncated": 0,
+        "truncation_rate": 0.0,
+        "pred_counts": {
+          "0": 478,
+          "1": 186
+        },
+        "pred_strict_counts": {
+          "0": 662,
+          "1": 2
+        },
+        "yes_type_counts": {
+          "CWE-415": 82,
+          "CWE-416": 82,
+          "CWE-476": 8,
+          "CWE-761": 6,
+          "CWE-121": 3,
+          "CWE-401": 2,
+          "CWE-457": 1,
+          "CWE-758": 1,
+          "CWE-125": 1
+        },
+        "finish_reason_counts": {
+          "stop": 664
+        },
+        "completion_tokens_mean": 400.3,
+        "completion_tokens_median": 388.0,
+        "completion_tokens_p90": 511,
+        "completion_tokens_max": 1024,
+        "latency_median_s": 16.104,
+        "latency_p90_s": 21.184,
+        "wall_s": 177.11,
+        "concurrency": 64,
+        "units_per_s": 3.749,
+        "output_tok_per_s": 1500.8,
+        "start_utc": "2026-11-24T15:07:17Z",
+        "end_utc": "2026-11-24T15:10:14Z",
+        "loadavg_start": [
+          1.7568359375,
+          1.447265625,
+          1.306640625
+        ],
+        "latency_lock": null
+      }
+    }
+  },
+  "deltas_vs_layer1_eval": {
+    "layer3-layer1": {
+      "macro_f1": 0.07340055364650372,
+      "macro_f1_strict": 0.06578905566208343,
+      "mcnemar": [
+        {
+          "other": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/vulnllmr/results/vulnllm_r_7b/layer1/eval_policy_r1.jsonl",
+          "n": 2656,
+          "both_right": 1089,
+          "a_only_right": 301,
+          "b_only_right": 279,
+          "both_wrong": 987,
+          "test": "chi2_continuity",
+          "statistic": 0.7603448275862069,
+          "p_value": 0.3832206312856441,
+          "p_holm": 0.3832206312856441
+        }
+      ]
+    }
+  },
+  "hint_vs_nohint_nested25": {
+    "layer3": {
+      "policy_n25": {
+        "n": 664,
+        "macro_f1": 0.457817115091886,
+        "macro_f1_ci95": [
+          0.4229503779979948,
+          0.4968769605737289
+        ],
+        "precision": 0.5327868852459017,
+        "recall": 0.19578313253012047,
+        "specificity": 0.8283132530120482,
+        "f1_leak": 0.28634361233480177,
+        "mcc": 0.031110746234128312,
+        "tp": 65,
+        "fp": 57,
+        "tn": 275,
+        "fn": 267,
+        "invalid": 0,
+        "valid_only_macro_f1": 0.457817115091886,
+        "latency": {
+          "n": 664,
+          "median_s": 20.882,
+          "p90_s": 27.2605,
+          "mean_s": 21.430632530120484,
+          "total_s": 14229.94
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 168,
+            "fp": 22,
+            "specificity": 0.8690476190476191
+          },
+          "G2B": {
+            "n": 143,
+            "fp": 31,
+            "specificity": 0.7832167832167832
+          },
+          "other": {
+            "n": 21,
+            "fp": 4,
+            "specificity": 0.8095238095238095
+          }
+        },
+        "mcnemar": [
+          {
+            "other": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/vulnllmr/results/vulnllm_r_7b/layer3/n25_nohint_r1.jsonl",
+            "n": 664,
+            "both_right": 203,
+            "a_only_right": 137,
+            "b_only_right": 81,
+            "both_wrong": 243,
+            "test": "chi2_continuity",
+            "statistic": 13.876146788990825,
+            "p_value": 0.00019526100138856628,
+            "p_holm": 0.00019526100138856628
+          }
+        ]
+      },
+      "nohint_n25": {
+        "n": 664,
+        "macro_f1": 0.3986367319700653,
+        "macro_f1_ci95": [
+          0.3732832060957061,
+          0.42439345888523117
+        ],
+        "precision": 0.3709677419354839,
+        "recall": 0.20783132530120482,
+        "specificity": 0.6475903614457831,
+        "f1_leak": 0.26640926640926643,
+        "mcc": -0.16097959000411963,
+        "tp": 69,
+        "fp": 117,
+        "tn": 215,
+        "fn": 263,
+        "invalid": 0,
+        "valid_only_macro_f1": 0.3986367319700653,
+        "latency": {
+          "n": 664,
+          "median_s": 16.1035,
+          "p90_s": 21.1828,
+          "mean_s": 16.47211144578313,
+          "total_s": 10937.482
+        },
+        "by_good_kind": {
+          "B2G": {
+            "n": 168,
+            "fp": 58,
+            "specificity": 0.6547619047619048
+          },
+          "G2B": {
+            "n": 143,
+            "fp": 47,
+            "specificity": 0.6713286713286714
+          },
+          "other": {
+            "n": 21,
+            "fp": 12,
+            "specificity": 0.42857142857142855
+          }
+        },
+        "mcnemar": null
+      }
+    }
+  },
+  "bootstrap": 2000
+}

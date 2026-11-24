@@ -100,6 +100,8 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     p.add_argument("--limit", type=int, help="first N selected units only (smoke tests)")
     p.add_argument("--c1-latency", action="store_true",
                    help="latency300 eval units, concurrency 1, flock /tmp/cs224_latency.lock, load1 < 2.5")
+    p.add_argument("--c1-groups", type=int,
+                   help="c1: only N latency300 groups (both units each), stratified by flow_category x mechanism")
     p.add_argument("--lock-wait", type=float, default=1200.0, help="c1: max seconds to wait for lock + quiet load")
     p.add_argument("--dry-run", action="store_true", help="render prompts to build/prompts/, send nothing")
     p.add_argument("--units-file", type=Path, help="override data/build/<layer>.jsonl")
@@ -110,13 +112,30 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
         if args.subset not in (None, "latency300") or args.set not in (None, "eval"):
             p.error("--c1-latency always uses --set eval --subset latency300")
         args.set, args.subset, args.concurrency = "eval", "latency300", 1
+    elif args.c1_groups:
+        p.error("--c1-groups needs --c1-latency")
     if args.set is None:
         p.error("--set is required")
     if args.run_id is None:
         scope = SUBSET_TAGS[args.subset] if args.subset else args.set
+        if args.c1_groups:
+            scope = f"lat{2 * args.c1_groups}"
         c1 = "_c1" if args.c1_latency else ""
         args.run_id = f"{scope}{c1}_{HINT_TAGS[args.cwe_hint]}_r1"
     return args
+
+
+def stratified_groups(order: list[str], first_unit: dict[str, dict[str, Any]], n: int) -> set[str]:
+    """n groups from `order`: largest-remainder proportional quota per (flow_category, mechanism) stratum, filled
+    with each stratum's groups in `order` (subsets.json) order."""
+    strata: dict[tuple[str, str], list[str]] = collections.defaultdict(list)
+    for g in order:
+        strata[(first_unit[g]["flow_category"], first_unit[g]["mechanism"])].append(g)
+    exact = {k: n * len(v) / len(order) for k, v in strata.items()}
+    quota = {k: int(x) for k, x in exact.items()}
+    for k in sorted(exact, key=lambda k: (-(exact[k] - quota[k]), k))[: n - sum(quota.values())]:
+        quota[k] += 1
+    return {g for k, v in strata.items() for g in v[: quota[k]]}
 
 
 def select_units(args: argparse.Namespace) -> tuple[Path, list[dict[str, Any]]]:
@@ -126,6 +145,10 @@ def select_units(args: argparse.Namespace) -> tuple[Path, list[dict[str, Any]]]:
     if args.subset:
         groups = set(json.loads((DATA_BUILD / "subsets.json").read_text())[args.subset])
         units = [u for u in units if u["group_id"] in groups]
+    if args.c1_groups:
+        order = json.loads((DATA_BUILD / "subsets.json").read_text())["latency300"]
+        chosen = stratified_groups(order, {u["group_id"]: u for u in units}, args.c1_groups)
+        units = [u for u in units if u["group_id"] in chosen]
     if args.limit:
         units = units[: args.limit]
     return path, units
@@ -378,7 +401,9 @@ def main(argv: list[str] | None = None) -> int:
             "server": {"base_url": args.base_url, "served_model_name": args.served_model_name,
                        "models_listing": listing, "running_requests_before": running_before},
             "units_file": str(units_path), "units_sha256": config["units_sha256"],
-            "selection": {"limit": args.limit},
+            "selection": {"limit": args.limit, "c1_groups": args.c1_groups,
+                          "c1_group_rule": "stratified_groups(): largest-remainder quota per flow_category x "
+                                           "mechanism, subsets.json order" if args.c1_groups else None},
             "start_utc": iso(started), "end_utc": iso(ended), "wall_s": round(ended - started, 2),
             "host": socket.gethostname(), "concurrency": args.concurrency, "timeout_s": args.timeout,
             "retries": args.retries, "loadavg_start": load_start, "loadavg_end": os.getloadavg(),

@@ -1,0 +1,144 @@
+{
+  "run_id": "n25_nohint_r1",
+  "method": "vulnllm_r_7b",
+  "strategy": "nohint",
+  "model": "VulnLLM-R-7B",
+  "layer": "layer3",
+  "set": "eval",
+  "subset": "nested25",
+  "cwe_hint": "none",
+  "c1_latency": false,
+  "n_units": 664,
+  "status_counts": {
+    "ok": 664
+  },
+  "invalid_rate": 0.0,
+  "pred_counts": {
+    "0": 478,
+    "1": 186
+  },
+  "pred_strict_counts": {
+    "0": 662,
+    "1": 2
+  },
+  "yes_type_counts": {
+    "CWE-415": 82,
+    "CWE-416": 82,
+    "CWE-476": 8,
+    "CWE-761": 6,
+    "CWE-121": 3,
+    "CWE-401": 2,
+    "CWE-457": 1,
+    "CWE-758": 1,
+    "CWE-125": 1
+  },
+  "finish_reason_counts": {
+    "stop": 664
+  },
+  "usage_totals": {
+    "prompt_tokens": 318481,
+    "completion_tokens": 265799,
+    "requests": 664
+  },
+  "completion_tokens_mean": 400.3,
+  "completion_tokens_max": 1024,
+  "latency_s_mean": 16.472,
+  "prompt_sha256": "13fd77f3f412d6316bd7fcce0a97892f5bdcf06d5507f854e86005c0c73f0262",
+  "prompt_spec": {
+    "system": "You are a helpful and harmless assistant. You are Qwen developed by Alibaba. You should think step-by-step.",
+    "user_template": "You are an advanced vulnerability detection model. Your task is to check if a specific vulnerability exists in a given piece of code. You need to output whether the code is vulnerable and the type of vulnerability present with cwe id (CWE-xx). \n\n## You are given the following code snippet:\n```\n{CODE}\n```\n\n\n{CWE_INFO}\n\n\n{REASONING} \n\n\n## Final Answer\n#judge: <yes/no>\n#type: <vulnerability type>\n\n## Additional Constraint:\n- If `#judge: yes`, then `#type:` **must contain exactly one CWE**.\n- If `#judge: yes`, the model must output **only the most probable CWE** related to the given code snippet.\n{ADDITIONAL_CONSTRAINT}\n\n## Example\n- If the code is vulnerable to a CWE-79, you should finally output:\n## Final Answer\n#judge: yes\n#type: CWE-79\n\n- If the code does not contain vulnerabilities related to the given CWE, you should finally output:\n## Final Answer\n#judge: no\n#type: N/A\n",
+    "reasoning": "You should STRICTLY structure your response as follows:",
+    "additional_constraint": "",
+    "cwe_hint": "none",
+    "policy_header": null,
+    "cwe_list": null,
+    "cwe_descriptions": null,
+    "cwe_order": null
+  },
+  "prompt_module": "vulnllmr_prompt.py",
+  "prompt_module_sha256": "4c2629edcef5bcb748bc92f043e35b63c7ee6b5676c18aae8af152ad9bb0e223",
+  "generation": {
+    "temperature": 0.0,
+    "top_p": 0.9,
+    "top_k": -1,
+    "repetition_penalty": 1.0,
+    "seed": 42,
+    "max_tokens": 8192
+  },
+  "config_sha": "622efbd9253b23ee",
+  "model_sha": {
+    "hf_repo": "Virtue-AI-HUB/VulnLLM-R-7B",
+    "hf_revision": "8cd13d7a35f13b187102dba166413d4450836a40",
+    "files_sha256_list": "model_files.sha256",
+    "files_sha256_list_sha256": "2a00a63f7b0a70d450375f6814d76c5d5508da3d7fbbb0c908d47f0304fcda43",
+    "safetensors": {
+      "model-00001-of-00004.safetensors": "d4144e04a93cc1cc9597e0f6be4482dd4c3fdc977d05750ca5e75070a8a77b9f",
+      "model-00002-of-00004.safetensors": "98f08b8b8aa161bb8e09372a0722bb2526bc2715118f6159f922607c9fde7233",
+      "model-00003-of-00004.safetensors": "24df8ea9836da349bb165dfac07269c61919f32554fb1d80400e9e67141680f4",
+      "model-00004-of-00004.safetensors": "87e8a73cb26cdb9e5f963b420d52b0d1af812374ff5808b2a9bac3b33e5b718d"
+    }
+  },
+  "server": {
+    "base_url": "http://10.15.89.184:8005/v1",
+    "served_model_name": "vulnllm-r-7b",
+    "models_listing": {
+      "object": "list",
+      "data": [
+        {
+          "id": "vulnllm-r-7b",
+          "object": "model",
+          "created": 1795532837,
+          "owned_by": "vllm",
+          "root": "/home/zhangzx/disk4/cs224/models/VulnLLM-R-7B",
+          "parent": null,
+          "max_model_len": 12288,
+          "permission": [
+            {
+              "id": "modelperm-9fab19ccbeef7899",
+              "object": "model_permission",
+              "created": 1795532837,
+              "allow_create_engine": false,
+              "allow_sampling": true,
+              "allow_logprobs": true,
+              "allow_search_indices": false,
+              "allow_view": true,
+              "allow_fine_tuning": false,
+              "organization": "*",
+              "group": null,
+              "is_blocking": false
+            }
+          ]
+        }
+      ]
+    },
+    "running_requests_before": 0.0
+  },
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+  "units_sha256": "033945a8799a51e5881c9cb4a209d0348b857d8bbf0b869b1f112c043bc65111",
+  "selection": {
+    "limit": null,
+    "c1_groups": null,
+    "c1_group_rule": null
+  },
+  "start_utc": "2026-11-24T15:07:17Z",
+  "end_utc": "2026-11-24T15:10:14Z",
+  "wall_s": 177.11,
+  "host": "barton-OptiPlex-5000",
+  "concurrency": 64,
+  "timeout_s": 1800.0,
+  "retries": 3,
+  "loadavg_start": [
+    1.7568359375,
+    1.447265625,
+    1.306640625
+  ],
+  "loadavg_end": [
+    0.61181640625,
+    1.05078125,
+    1.1728515625
+  ],
+  "latency_lock": null,
+  "warmup": null,
+  "git_head": "279749d14d0afdc8921e119eb9570f28a3e98164",
+  "raw_log": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/vulnllmr/build/raw/layer3/n25_nohint_r1.raw.jsonl"
+}

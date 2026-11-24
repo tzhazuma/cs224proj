@@ -1,0 +1,152 @@
+{
+  "run_id": "eval_policy_r1",
+  "method": "vulnllm_r_7b",
+  "strategy": "policy",
+  "model": "VulnLLM-R-7B",
+  "layer": "layer1",
+  "set": "eval",
+  "subset": null,
+  "cwe_hint": "policy",
+  "c1_latency": false,
+  "n_units": 2656,
+  "status_counts": {
+    "ok": 2655,
+    "invalid": 1
+  },
+  "invalid_rate": 0.0004,
+  "pred_counts": {
+    "0": 2500,
+    "1": 155,
+    "None": 1
+  },
+  "pred_strict_counts": {
+    "0": 2544,
+    "1": 111,
+    "None": 1
+  },
+  "yes_type_counts": {
+    "CWE-401": 111,
+    "CWE-703": 23,
+    "CWE-404": 21
+  },
+  "finish_reason_counts": {
+    "stop": 2655,
+    "length": 1
+  },
+  "usage_totals": {
+    "prompt_tokens": 1961473,
+    "completion_tokens": 993973,
+    "requests": 2656
+  },
+  "completion_tokens_mean": 374.2,
+  "completion_tokens_max": 8192,
+  "latency_s_mean": 19.405,
+  "prompt_sha256": "275b9b80d866fcefb12cebdc9bc144a4055838f3742fe2357219292f8deb3d86",
+  "prompt_spec": {
+    "system": "You are a helpful and harmless assistant. You are Qwen developed by Alibaba. You should think step-by-step.",
+    "user_template": "You are an advanced vulnerability detection model. Your task is to check if a specific vulnerability exists in a given piece of code. You need to output whether the code is vulnerable and the type of vulnerability present with cwe id (CWE-xx). \n\n## You are given the following code snippet:\n```\n{CODE}\n```\n\n\n{CWE_INFO}\n\n\n{REASONING} \n\n\n## Final Answer\n#judge: <yes/no>\n#type: <vulnerability type>\n\n## Additional Constraint:\n- If `#judge: yes`, then `#type:` **must contain exactly one CWE**.\n- If `#judge: yes`, the model must output **only the most probable CWE** related to the given code snippet.\n{ADDITIONAL_CONSTRAINT}\n\n## Example\n- If the code is vulnerable to a CWE-79, you should finally output:\n## Final Answer\n#judge: yes\n#type: CWE-79\n\n- If the code does not contain vulnerabilities related to the given CWE, you should finally output:\n## Final Answer\n#judge: no\n#type: N/A\n",
+    "reasoning": "You should STRICTLY structure your response as follows:",
+    "additional_constraint": "",
+    "cwe_hint": "policy",
+    "policy_header": "You should only focus on checking and reasoning if the code contains one of the following CWEs:",
+    "cwe_list": [
+      "CWE-401",
+      "CWE-1333",
+      "CWE-703",
+      "CWE-404"
+    ],
+    "cwe_descriptions": {
+      "CWE-401": "Missing Release of Memory after Effective Lifetime. This is often triggered by improper handling of malformed data or unexpectedly interrupted sessions. In some languages, developers are responsible for tracking memory allocation and releasing the memory. If there are no more pointers or references to the memory, then it can no longer be tracked and identified for release.",
+      "CWE-1333": "Inefficient Regular Expression Complexity. Some regular expression engines have a feature called backtracking. If the token cannot match, the engine backtracks to a position that may result in a different token that can match. Backtracking becomes a weakness if all of these conditions are met: The number of possible backtracking attempts are exponential relative to the length of the input. The input can fail to match the regular expression. The input can be long enough. Attackers can create crafted inputs that intentionally cause the regular expression to use excessive backtracking in a way that causes the CPU consumption to spike.",
+      "CWE-703": "Improper Check or Handling of Exceptional Conditions. The product does not properly anticipate or handle exceptional conditions that rarely occur during normal operation of the product.",
+      "CWE-404": "Improper Resource Shutdown or Release. When a resource is created or allocated, the developer is responsible for properly releasing the resource as well as accounting for all potential paths of expiration or invalidation, such as a set period of time or revocation."
+    },
+    "cwe_order": "random.Random(int(sha256(unit_id|20261123)[:8])).sample"
+  },
+  "prompt_module": "vulnllmr_prompt.py",
+  "prompt_module_sha256": "4c2629edcef5bcb748bc92f043e35b63c7ee6b5676c18aae8af152ad9bb0e223",
+  "generation": {
+    "temperature": 0.0,
+    "top_p": 0.9,
+    "top_k": -1,
+    "repetition_penalty": 1.0,
+    "seed": 42,
+    "max_tokens": 8192
+  },
+  "config_sha": "5474f9c7670bdab6",
+  "model_sha": {
+    "hf_repo": "Virtue-AI-HUB/VulnLLM-R-7B",
+    "hf_revision": "8cd13d7a35f13b187102dba166413d4450836a40",
+    "files_sha256_list": "model_files.sha256",
+    "files_sha256_list_sha256": "2a00a63f7b0a70d450375f6814d76c5d5508da3d7fbbb0c908d47f0304fcda43",
+    "safetensors": {
+      "model-00001-of-00004.safetensors": "d4144e04a93cc1cc9597e0f6be4482dd4c3fdc977d05750ca5e75070a8a77b9f",
+      "model-00002-of-00004.safetensors": "98f08b8b8aa161bb8e09372a0722bb2526bc2715118f6159f922607c9fde7233",
+      "model-00003-of-00004.safetensors": "24df8ea9836da349bb165dfac07269c61919f32554fb1d80400e9e67141680f4",
+      "model-00004-of-00004.safetensors": "87e8a73cb26cdb9e5f963b420d52b0d1af812374ff5808b2a9bac3b33e5b718d"
+    }
+  },
+  "server": {
+    "base_url": "http://10.15.89.184:8005/v1",
+    "served_model_name": "vulnllm-r-7b",
+    "models_listing": {
+      "object": "list",
+      "data": [
+        {
+          "id": "vulnllm-r-7b",
+          "object": "model",
+          "created": 1795530743,
+          "owned_by": "vllm",
+          "root": "/home/zhangzx/disk4/cs224/models/VulnLLM-R-7B",
+          "parent": null,
+          "max_model_len": 12288,
+          "permission": [
+            {
+              "id": "modelperm-9c72102933c298c4",
+              "object": "model_permission",
+              "created": 1795530743,
+              "allow_create_engine": false,
+              "allow_sampling": true,
+              "allow_logprobs": true,
+              "allow_search_indices": false,
+              "allow_view": true,
+              "allow_fine_tuning": false,
+              "organization": "*",
+              "group": null,
+              "is_blocking": false
+            }
+          ]
+        }
+      ]
+    },
+    "running_requests_before": 0.0
+  },
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer1.jsonl",
+  "units_sha256": "d4d913c438e8a86fe8fa3c0560aab6320d8bb90b6eca584e1f70ad8183cafad9",
+  "selection": {
+    "limit": null,
+    "c1_groups": null,
+    "c1_group_rule": null
+  },
+  "start_utc": "2026-11-24T14:32:24Z",
+  "end_utc": "2026-11-24T14:47:24Z",
+  "wall_s": 900.77,
+  "host": "barton-OptiPlex-5000",
+  "concurrency": 64,
+  "timeout_s": 1800.0,
+  "retries": 3,
+  "loadavg_start": [
+    1.75537109375,
+    1.5546875,
+    1.470703125
+  ],
+  "loadavg_end": [
+    0.89990234375,
+    1.06494140625,
+    1.1689453125
+  ],
+  "latency_lock": null,
+  "warmup": null,
+  "git_head": "279749d14d0afdc8921e119eb9570f28a3e98164",
+  "raw_log": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/vulnllmr/build/raw/layer1/eval_policy_r1.raw.jsonl"
+}
