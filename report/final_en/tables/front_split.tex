@@ -1,0 +1,24 @@
+% front lane. src: juliet/full_split_v1.json (dev_variants, fold_variants, summary); subsets: juliet_full/data/build/subsets.json
+\begin{table}[t]
+\centering
+\caption{Flow-variant split and evaluation subsets. All test results use eval units. Trained models use 3-fold grouped cross-validation over eval (train on two folds, test on the third) and dev only for validation. Variant lists are in Appendix~\ref{app:split}.}
+\label{tab:split}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\columnwidth}{@{}lrrr>{\raggedright\arraybackslash}X@{}}
+\toprule
+Set & variants & groups & units & use \\
+\midrule
+dev & 9 & 330 & 660 & tuning, selection \\
+eval & 39 & 1,328 & 2,656 & all reported scores \\
+\quad fold 0 & 15 & 472 & 944 & CV test fold \\
+\quad fold 1 & 12 & 424 & 848 & CV test fold \\
+\quad fold 2 & 12 & 432 & 864 & CV test fold \\
+\midrule
+\code{api\_subset} & -- & 664 & 1,328 & DeepSeek L1--L3 on \Dead \\
+\code{nested25} & -- & 332 & 664 & DeepSeek paired \Dead/\Plac/\Orig \\
+\code{repeat100} & -- & 100 & 200 & LLM repeat runs \\
+\code{latency300} & -- & 150 & 300 & latency (concurrency 1) \\
+\bottomrule
+\end{tabularx}
+\end{table}

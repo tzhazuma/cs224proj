@@ -1,0 +1,115 @@
+% 06_discussion -- paper-results lane. Numbers: \res macros (generated/numbers.tex) or % src: comments.
+\section{Error Analysis and Discussion}\label{sec:discussion}
+
+\subsection{Where the detectors fail}\label{sec:errors}
+
+\textbf{Frees behind a flag (DeepSeek).}
+All \res{x}{fp_deepseek_L1_layer1_B2G} false positives of DeepSeek L1 on \Deb{} are B2G goods,
+in which the free is reached only through a flag or a helper function.
+In the unit below the free is guarded by a global that is set just before the call.
+DeepSeek answers ``vulnerable'' with confidence 0.95.
+% src: juliet_full/llm/results/deepseek_flash/layer1/eval_L1_r1.jsonl, unit CWE401_Memory_Leak__new_char_21__good
+\par\noindent\begin{minipage}{\columnwidth}
+\begin{lstlisting}[language=C++]
+// new_char_21, good (B2G)
+static int sym_2 = 0;
+void sym_3(char *data)
+{ if (sym_2) { delete data; } }
+void sym_0() {
+  char *data = new char; *data = 'A';
+  printHexCharLine(*data);
+  sym_2 = 1; sym_3(data); } // DeepSeek: leak
+\end{lstlisting}
+\end{minipage}\par
+
+\textbf{realloc (Jev).}
+Jev L1 misses \res{jev_L1-layer1}{fn} leaks, and all of them are realloc failures.
+It also flags \res{x}{fp_jev_L1_layer1_other} of the \res{x}{n_jev_L1_layer1_other} fixed realloc goods.
+% src: \res{x}{fn_jev_L1_layer1_realloc_fail} = \res{jev_L1-layer1}{fn} in generated/numbers.tex
+The two versions differ only in whether the result of \code{realloc} goes to a temporary:
+\code{data = realloc(data, n)} loses the old block when \code{realloc} fails, while \code{tmp = realloc(data, n)} keeps it.
+The model does not reliably see this one-identifier difference.
+
+\textbf{Path-insensitive facts (DeepSeek L4).}
+L4 asks the model for Datalog-style facts and evaluates them with a fixed rule set.
+The facts are path-insensitive.
+All \res{deepseek_L4-layer1}{fn} L4 misses on \Deb{} are on flow~12, where an unpredictable branch either allocates or frees.
+For \code{char\_calloc\_12} (bad) the model emits
+\code{alloc(a1, data, sym\_0, 11).} and \code{free(data, sym\_0, 33).}
+These facts match the program text but lose the fact that the two lines are on different paths.
+% src: juliet_full/llm/results/deepseek_flash/layer1/eval_L4_r1.jsonl (extra.content), unit CWE401_Memory_Leak__char_calloc_12__bad; 34 FN all flow 12
+The same weakness produces its \res{x}{fp_deepseek_L4_layer1_B2G} B2G false positives, mostly C++ classes
+whose destructor frees a field (flows 51--84).
+% src: same file; FP 29, B2G 26, flows 71-84: 20, 51-68: 6
+A dev run of an earlier prompt wrote identical facts for a leaking and a fixed realloc.
+A separate \code{realloc} fact fixed this, and on the eval set only the \code{virtual\_destructor} pair still yields identical facts.
+% src: juliet_full/lane_reports/2026-11-23_llm_stage1.md (prompt v1 identical facts); 2026-11-23_llm_stage2b.md (v3c realloc fact)
+
+\textbf{Escaping pointers (Clang SA).}
+Clang SA misses every leak of the \code{new[]} families, e.g.\ the trivial \code{new\_array\_char\_01}.
+\par\noindent\begin{minipage}{\columnwidth}
+\begin{lstlisting}[language=C++]
+void sym_0() {   // new_array_char_01, bad
+  char *data = new char[100];
+  strcpy(data, "A String");
+  printLine(data); } // Clang SA: no finding
+\end{lstlisting}
+\end{minipage}\par
+The pointer is passed to a helper that the checker does not analyze, so it is treated as escaped.
+All 132 \code{new} leaks whose pointer reaches a print helper are missed,
+against 44 of 429 for \code{malloc}.
+% src: juliet_full/static/results/clang_sa/layer1/full_v2.jsonl x data/build/layer1.jsonl (eval bads, regex print\w*Line\(&?data): cpp_new 132/132 missed, c_alloc 44/429 missed
+CodeQL reports all 132 and Infer 62.
+% src: same join, infer/codeql layer1 runs in generated/results_summary.json: codeql 132/132, infer 62/132
+
+\textbf{Dead and guarded frees (\Dead).}
+The \Dead{} version of \code{int\_calloc\_01} (good) shows both failure modes at once.
+\par\noindent\begin{minipage}{\columnwidth}
+\begin{lstlisting}
+static const int sym_25 = 4, sym_81 = 5;
+...
+if (sym_81 != 5) { free(data); } // dead
+if (sym_25 == 4) { free(data); } // real
+\end{lstlisting}
+\end{minipage}\par
+Qwen L1 flags it as a leak, although it judged the \Deb{} version correctly.
+In the bad twin both guards are false.
+grep and both LoRA models accept that version as clean, while every analyzer still reports the leak.
+% src: juliet_full/data/build/layer3.jsonl + layer3 runs in generated/results_summary.json, units CWE401_Memory_Leak__int_calloc_01__{bad,good}
+
+\textbf{Batching artifact (CodeQL).}
+For speed, CodeQL analyzed 50 units per database.
+Units of flow~08 share the unrenamed helpers \code{staticReturnsTrue}/\code{staticReturnsFalse}.
+When several of them sit in one database, the guard cannot be resolved, and CodeQL reports 4 good units as leaks.
+This costs about .002 macro-F1 and does not affect the \Dead{} deltas.
+The runs are frozen, so we did not correct it.
+% src: juliet_full/lane_reports/2026-11-23_static_stage2.md (4 eval goods, ~-.003 spec, ~-.002 macro-F1, not original)
+
+\subsection{Implications}\label{sec:implications}
+
+\textbf{Deployment.}
+In an IDE ($<$0.1\,s), Clang SA is the robust choice: it is accurate on \Deb{} and changes no verdict on \Dead.
+The LoRA classifier is faster than its accuracy suggests, but without analyzer evidence it is unreliable on code with infeasible paths
+(\res{lora_L1-layer3}{macro} on \Dead).
+In a pre-commit hook ($<$1\,s), DeepSeek gives the best accuracy at \textyen\res{x}{cost1k_deepseek_L1} per 1,000 units.
+Its residual errors are false alarms on flag-guarded frees, which a reviewer can dismiss quickly.
+In CI ($<$10\,s), Infer and CodeQL fit, and Infer is the path-sensitive one.
+The two failure modes in RQ4 suggest a combination:
+a path-sensitive analyzer can confirm the frees that an LLM doubts, and an LLM can cover the escapes that the analyzer gives up on.
+
+\textbf{What a synthetic score means.}
+Juliet leaks are small, single-file and labeled by construction.
+DeepSeek's \res{deepseek_L1-layer1}{macro} on \Deb{} therefore says that the model reads short C/C++ allocation code correctly.
+It does not say that it finds leaks in real repositories, where LineVul-style models that look strong on real-world data~\cite{fu2022linevul}
+are at chance here.
+Our debiasing shows the converse risk: a benchmark with template cues rewards a text rule (grep \res{grep-original}{macro} on \Orig).
+High scores are only meaningful after shortcut probes are run, and after a stress layer with dead code that leaves the probes at chance.
+
+\textbf{Course link.}
+The results follow the analysis concepts of the course.
+Path sensitivity decides RQ4.
+Clang SA and Infer's Pulse~\cite{le2022pulse} track feasible paths and are untouched by dead frees.
+CodeQL's leak query~\cite{avgustinov2016ql} tracks data flow without evaluating guards, and loses \res{codeql-layer3}{lost} detections.
+Interprocedural reasoning explains the remaining errors: frees in helpers (DeepSeek's B2G false alarms) and pointers escaping into helpers (Clang SA's misses).
+Datalog gives the model a sound evaluation of its facts (L4, cf.~\cite{jordan2016souffle}),
+but the result is only as path-sensitive as the facts the model writes.

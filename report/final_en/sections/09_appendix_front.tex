@@ -1,0 +1,84 @@
+% 09_appendix_front -- front lane.
+% src: report/report_latest_zh.tex (SecVulEval pilot); juliet_full/llm/prompts/; juliet_full/llm/l4/leak.dl;
+%      juliet/full_split_v1.json (dev/fold variants)
+\section{Pilot Study on SecVulEval}
+\label{app:pilot}
+Before this study we ran a pilot on SecVulEval~\cite{ahmed2026secvuleval}, a real-world benchmark of C/C++ functions from CVE fixes.
+The frozen test set had 160 detection functions (128 vulnerable, 32 not) and 180 vulnerable/fixed pairs. % src: report/report_latest_zh.tex:70
+We compared three strategies, direct (M1), few-shot (M2) and context from a whitelist of dataset fields (M3), on DeepSeek and MiMo-V2.6-Flash.
+Detection macro-F1 was .383/.399/.381 for DeepSeek and .346/.346/.365 for MiMo.
+None of the six same-strategy model comparisons was significant after Holm correction. % src: report/report_latest_zh.tex:83,105
+In the pair task, swap-consistent pairwise accuracy was 61.7\% (DeepSeek) and 74.4\% (MiMo).
+A heuristic that always picks the shorter version reached 72.2\%: it beat DeepSeek (Holm $p=.029$) and could not be distinguished from MiMo ($p=.644$), so the pair task partly measured a length cue. % src: report/report_latest_zh.tex:70
+Only four source records carried a \cwe{} label, too few to say anything about memory leaks.
+These two observations, a shortcut and missing leak data, led to the present study on Juliet.
+
+\section{Prompts}
+\label{app:prompts}
+The L1 system prompt (\code{task.txt} + \code{answer\_format.txt}), verbatim except for line breaks:
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize,breaklines=true,columns=fullflexible,frame=single]
+You are a careful C/C++ memory-safety auditor. You receive one code unit: the translation units that a test harness compiles together and runs to completion. Decide whether the executed code leaks heap memory.
+Definition used for this audit:
+- A leak is heap memory obtained from malloc, calloc, realloc, strdup, or new/new[] that is never released with free, delete, or delete[] before the program ends.
+- This includes memory that becomes unreachable, memory still held by a global or static pointer at exit, and memory that leaks only on some paths, for example when a reallocation fails.
+- Stack storage, static storage, and memory released on every path are not leaks.
+Support code outside the audited unit: the print* helpers (printLine, printIntLine, ...) only write to stdout; ALLOCA(n) reserves n bytes in the current stack frame; twoIntsStruct and TwoIntsClass are plain data types with two int fields; the standard C and C++ libraries are available.
+The verdict is "vulnerable" when the unit leaks heap memory and "not_vulnerable" otherwise.
+Answer with one JSON object and nothing else:
+{"label": "vulnerable" or "not_vulnerable", "confidence": <number from 0 to 1>}
+\end{lstlisting}
+The L1 user message is ``Audit the code unit below and return the verdict.'', the unit in a code fence, and ``Return only the JSON object.''
+L3 inserts, after the code, ``Static analysis evidence for this code unit (Clang Static Analyzer, memory checkers; line numbers refer to the code unit above, counting its first line as line 1):'' and the warnings.
+The Jev and Intern-Decision question is:
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize,breaklines=true,columns=fullflexible,frame=single]
+type: noul
+instructions: Does the executed code unit leak heap memory, so that the verdict is "vulnerable"?
+true:  Some heap memory obtained on an executed path is never released before the program ends (including memory lost when a reallocation fails or still held by a global or static pointer at exit).
+false: Every heap allocation on every executed path is released before the program ends.
+\end{lstlisting}
+The L4 prompt shows the code with line numbers and asks for facts only, one per line, in the ten relation forms of \S\ref{sec:m-strategies}, for example \code{alloc(Obj, Var, Func, Line)} and \code{dead(Line)} for ``the statement on Line lies in a branch that can never execute''.
+It adds naming rules (fields as \code{Var.field}, container elements as \code{Container[]}, class members as \code{Class::member}) and one worked example.
+
+\section{Datalog Rules}
+\label{app:datalog}
+Excerpt of \code{leak.dl} (86 lines, Souffl\'e 2.5); the omitted part declares the relations and defines \code{func}, \code{mention} and \code{scope} (globals and class members share one scope).
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize,breaklines=true,columns=fullflexible,frame=single]
+reach("main").
+reach(g) :- reach(f), call(f, g, l), !dead(l).
+reach(g) :- reach(f), pass(g, _, _, f, l), !dead(l).
+reach(g) :- reach(f), retval(_, g, f, l), !dead(l).
+new_obj(o, v, f) :- alloc(o, v, f, l), reach(f), !dead(l).
+new_obj(o, d, f) :- realloc(o, d, _, f, l), reach(f), !dead(l).
+pts(s, v, o) :- new_obj(o, v, f), scope(f, v, s).
+pts(sd, d, o) :- assign(d, x, f, l), reach(f), !dead(l),
+    scope(f, d, sd), scope(f, x, sx), pts(sx, x, o).
+// parameters alias their argument in both directions
+pts(sp, p, o) :- pass(g, p, a, f, l), reach(f), !dead(l),
+    scope(f, a, sa), scope(g, p, sp), pts(sa, a, o).
+pts(sa, a, o) :- pass(g, p, a, f, l), reach(f), !dead(l),
+    scope(f, a, sa), scope(g, p, sp), pts(sp, p, o).
+pts(sd, d, o) :- retval(d, g, f, l), reach(f), !dead(l),
+    scope(f, d, sd), ret(g, r, lr), !dead(lr),
+    scope(g, r, sr), pts(sr, r, o).
+freed(o) :- free(v, f, l), reach(f), !dead(l),
+    scope(f, v, s), pts(s, v, o).
+freed(o) :- realloc(n, _, src, f, l), reach(f), !dead(l),
+    scope(f, src, s), pts(s, src, o), o != n.
+leak(o, "never_freed") :- new_obj(o, _, _), !freed(o).
+// p = realloc(p, ...): on failure NULL overwrites the only pointer
+leak(o, "realloc_fail") :- realloc(n, v, v, f, l), reach(f),
+    !dead(l), scope(f, v, s), pts(s, v, o), o != n.
+\end{lstlisting}
+
+\section{Split Details}
+\label{app:split}
+Flow variants per set (\code{juliet/full\_split\_v1.json}, seed 20261123):
+\begin{itemize}
+\item dev: 04, 10, 17, 18, 31, 41, 65, 68, 73;
+\item fold 0: 01, 05, 09, 11, 14, 22, 32, 42, 43, 52, 61, 62, 67, 81, 83;
+\item fold 1: 02, 08, 12, 15, 16, 44, 45, 54, 63, 66, 72, 84;
+\item fold 2: 03, 06, 07, 13, 21, 33, 34, 51, 53, 64, 74, 82.
+\end{itemize}
+Dev variants were drawn with quotas 4/2/2/1 for flow categories 02--22, 31--45, 51--68 and 71--84, among variants that contain \code{cpp\_new} groups (for 02--22 also \code{realloc\_fail}).
+Variants 01 and 12 were kept in eval.
+The folds are balanced per flow category by group count.

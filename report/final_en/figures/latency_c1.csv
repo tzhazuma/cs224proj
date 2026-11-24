@@ -1,0 +1,18 @@
+key,file,latency_s,p90_s,source,note
+grep,static/results/grep_v0/layer1/lat300_c1.jsonl,0.000001,0.000001,lane_reports/2026-11-23_static_stage2.md,in-process; median of 300 units (1 us)
+cppcheck,static/results/cppcheck/layer1/lat300_c1.jsonl,0.008,0.010,lane_reports/2026-11-23_static_stage2.md,lat300; per unit
+clang_sa,static/results/clang_sa/layer1/lat300_c1.jsonl,0.018,0.022,lane_reports/2026-11-23_static_stage2.md,lat300; per unit
+infer,static/results/infer/layer1/lat300_c1.jsonl,0.278,0.647,lane_reports/2026-11-23_static_stage2.md,lat300; per unit
+codeql,static/results/codeql/layer1/lat300_per_unit20_c1.jsonl,7.36,7.91,lane_reports/2026-11-23_static_stage2.md,per unit: database creation + queries (20 units)
+codeql_amortized,static/results/codeql/layer1/lat300_batch50_c1.jsonl,0.318,0.334,lane_reports/2026-11-23_static_stage2.md,50 units per database; amortized
+linevul,,0.0059,0.0070,lane_reports/2026-11-23_gpu_stage1.md,GPU (RTX 3090); server side
+linevul_cpu,gpu/results/linevul_cpu/layer1/lat300_cpu_quiet.jsonl,0.088,0.124,lane_reports/2026-11-23_gpu_stage2.md,CPU 6 threads; quiet; median of 300
+deepseek_L1,llm/results/deepseek_flash/layer1/lat300_c1_L1_quiet.jsonl,0.715,1.026,lane_reports/2026-11-23_llm_stage2d.md,quiet re-measure (load1 1.27); API incl. network
+qwen_L1,gpu/results/bench/lat300/qwen3_5_4b/layer1/lat300_c1_L1_gpuidle.jsonl,0.333,0.357,lane_reports/2026-11-23_gpu_stage2.md,vLLM on idle GPU 1 (the GPU-shared 0.635 s run is not used)
+jev_L1,llm/results/jev/layer1/lat300_c1_L1_quiet.jsonl,0.907,0.931,lane_reports/2026-11-23_llm_stage2d.md,quiet re-measure (load1 1.14); API incl. network
+intern_L1,gpu/results/intern_decision/layer1/lat300_L1_c1.jsonl,0.132,0.149,lane_reports/2026-11-23_gpu_stage2.md,/decide on idle GPU 1; server 129.6 ms
+lora_L1,decision_ft/results/decision_ft/layer1/latency300_L1_v1.jsonl,0.105,0.130,lane_reports/2026-11-23_decision_ft_stage2.md,end-to-end from dell; GPU 0 (RTX 3090)
+lora_L3,decision_ft/results/decision_ft/layer1/latency300_L3_v1.jsonl,0.133,0.148,lane_reports/2026-11-23_decision_ft_stage2.md,end-to-end from dell; GPU 0 (RTX 3090)
+asan_lsan,data/results/asan_lsan/layer1/lat300_c1.jsonl,0.134,0.209,lane_reports/2026-11-23_data_stage4.md,compile included
+valgrind,data/results/valgrind/layer1/lat300_c1.jsonl,0.407,0.548,lane_reports/2026-11-23_data_stage4.md,compile included
+dynamic_enhanced,data/results/dynamic_enhanced/layer1/lat300_c1.jsonl,1.194,2.203,lane_reports/2026-11-23_data_stage4.md,compile included

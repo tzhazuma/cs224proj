@@ -1,0 +1,32 @@
+% front lane. src: juliet_full/STATUS.md (versions), juliet_full/lane_reports/2026-11-23_static_stage1.md (checker mapping),
+% juliet_full/llm/README.md, juliet_full/gpu/README.md, juliet_full/decision_ft/README.md
+\begin{table}[t]
+\centering
+\caption{Detectors. Strategies: L1 direct, L2 few-shot, L3 with Clang SA warnings, L4 LLM facts + Datalog. Dynamic tools execute the code and serve only as a reference.}
+\label{tab:methods}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\columnwidth}{@{}l>{\raggedright\arraybackslash}X l@{}}
+\toprule
+Detector & Technique / configuration & Runs \\
+\midrule
+grep rule & no \code{free}/\code{delete} $\Rightarrow$ leak & -- \\
+Cppcheck 2.22.0 & patterns + value flow; \code{memleak*}, \code{leak*} checks & -- \\
+Clang SA 23.1.6 & path-sensitive symbolic execution; \code{unix.Malloc}, \code{cplusplus.NewDeleteLeaks} & -- \\
+Infer 1.3.0 & Pulse (incorrectness separation logic); \code{MEMORY\_LEAK\_C/CPP} & -- \\
+CodeQL 2.27.5 & Datalog dataflow queries; never-freed, may-not-be-freed, realloc & -- \\
+LineVul & CodeBERT fine-tuned on Big-Vul; zero-shot, 512 tokens & -- \\
+\midrule
+DeepSeek-V4.1-Flash & API LLM, temperature 0, no thinking & L1--L4 \\
+Qwen3.5-4B & local LLM (vLLM), temperature 0, no thinking & L1--L4 \\
+\midrule
+Jev 1.14.0 & hosted decision model, one \code{noul} question & L1--L3 \\
+Intern-Decision-4B & local decision model, placeholder logits & L1--L3 \\
+LoRA decision (ours) & Qwen3.5-4B + LoRA, binary head, 3-fold CV & L1, L3 \\
+\midrule
+ASan/LSan & GCC 13.3, \code{use\_stacks=0} & ref. \\
+Valgrind 3.28.0 & Memcheck, definite + indirect & ref. \\
+dynamic-enhanced & ASan/LSan + globals + \code{realloc} fault injection, 24 runs & ref. \\
+\bottomrule
+\end{tabularx}
+\end{table}

@@ -1,0 +1,106 @@
+% 04_methods -- front lane.
+% src: juliet_full/static/README.md; juliet_full/llm/README.md; juliet_full/llm/prompts/; juliet_full/llm/l4/leak.dl;
+%      juliet_full/gpu/README.md; juliet_full/decision_ft/README.md; juliet_full/analysis/score.py; juliet_full/STATUS.md
+\section{Approaches and Setup}
+\label{sec:methods}
+
+Table~\ref{tab:methods} lists every detector.
+All of them see the same \Deb{} unit text and answer one question: does the executed unit leak heap memory?
+Everything that could be tuned (checker mapping, prompts, examples, thresholds, training checkpoints) was fixed on dev before any eval run.
+
+\input{tables/front_methods}
+
+\subsection{Static analyzers and the dynamic reference}
+\label{sec:m-static}
+Each analyzer runs on the source files of a unit.
+A unit is a leak iff the analyzer reports at least one mapped finding in the unit's own files.
+We chose the mapping on the dev units only; for every tool the union of its leak checkers had the best dev macro-F1 among rule subsets. % src: juliet_full/static/README.md (verdict mapping decisions)
+Table~\ref{tab:methods} lists the mapped checkers.
+Two settings mattered.
+Clang needs \code{-analyzer-opt-analyze-headers}: without it, the path-sensitive engine skipped every function in an included source file, and dev recall on flows 51--84 was 0.
+Infer gets each source file as its own compilation entry for the same reason. % src: static/README.md (dev_v1; per_file 0.710 -> 0.784)
+CodeQL builds one database per batch of 50 units.
+Each unit's \code{sym\_N} names are renamed per unit at compile time, and no batch holds both units of a group.
+A tool error or timeout is an invalid prediction.
+
+ASan/LSan and Valgrind use the settings of \S\ref{sec:verify}.
+The \emph{dynamic-enhanced} reference covers the cases plain LSan misses by running every unit 24 times: three configurations (plain; \code{use\_globals=0}, so memory held only by a global at exit counts; the first \code{realloc} returns \code{NULL}) times eight fixed values of \code{time()}, which cover all branch combinations of variant~12. % src: juliet_full/data/README.md (dynamic_enhanced)
+A unit is a leak if any run reports one.
+On all good units of \Deb, \Dead{} and \Plac{} it raises no alarm.
+
+\subsection{Prompting strategies L1--L4}
+\label{sec:m-strategies}
+DeepSeek and Qwen receive identical prompts (Appendix~\ref{app:prompts}).
+The system prompt states the task and our leak definition from \S\ref{sec:background}.
+It also describes the Juliet support code (print helpers, \code{ALLOCA}).
+L1--L3 ask for one compact JSON object, \code{\{"label": ..., "confidence": ...\}}; the API runs use JSON mode.
+\begin{itemize}
+\item \textbf{L1} (direct) shows the unit in a code fence.
+\item \textbf{L2} (few-shot) adds four dev units with their verdicts, two bad and two good, one per dev flow category, selected by a deterministic rule (shortest unit per slot). Both units of these four groups are excluded from every run.
+\item \textbf{L3} (evidence) adds the Clang SA warnings of the frozen \code{full\_v2} run, with line numbers relative to the shown unit, or a sentence saying that there are none.
+\item \textbf{L4} (neuro-symbolic) asks the model only for facts, not for a verdict. The schema has ten relations: \code{alloc}, \code{realloc}, \code{free}, \code{assign}, \code{pass}, \code{retval}, \code{ret}, \code{call}, \code{global} and \code{dead}. Every fact carries the line of its statement, and facts whose line does not contain the statement are dropped. A Datalog program for Souffl\'e~\cite{jordan2016souffle} (\code{leak.dl}, Appendix~\ref{app:datalog}) computes the functions reachable from \code{main} and a flow-insensitive, Andersen-style points-to relation. It then derives \code{leak(o, never\_freed)} for an allocated object that no live \code{free} reaches, and \code{leak(o, realloc\_fail)} for \code{p = realloc(p, ...)}. Facts on lines marked \code{dead} are ignored. The unit is a leak iff a leak is derived.
+\end{itemize}
+Prompt files are hashed, and an eval run refuses to start unless the hash equals the frozen value.
+Decoding uses temperature 0 with thinking disabled; a run stops if a reasoning trace appears.
+An output that cannot be parsed, an API error, or a timeout is counted as wrong, never retried with a different prompt. % src: juliet_full/analysis/score.py:9-10
+
+\noindent\textbf{Models.}
+DeepSeek-V4.1-Flash~\cite{deepseek2026v4} is called through its official API~\cite{deepseekdocs}.
+Qwen3.5-4B~\cite{qwen35card} runs locally on vLLM~\cite{kwon2023vllm} (BF16, one RTX 3090).
+The API budget was a hard cap of \yen10 for DeepSeek (the ledger stops at \yen9.5) and \$4 for Jev. % src: juliet_full/llm/README.md (Budget: DeepSeek CNY 9.5, Jev USD 4.0)
+DeepSeek runs only in off-peak hours, which are half price.
+Under this budget, DeepSeek covers all eval units on \Deb{} with L1--L4. On \Dead{} it covers \code{api\_subset} with L1--L3 and \code{nested25} with L4; on \Plac{} (L1, L3) and \Orig{} (L1) it covers \code{nested25}. % src: juliet_full/llm/results/deepseek_flash/*/ (line counts)
+
+\subsection{Decision models}
+\label{sec:m-decision}
+\noindent\textbf{Jev} (hosted, version 1.14.0~\cite{typesafe2026jev}) gets the same L1--L3 content as its \emph{state} and one yes/no (\code{noul}) question with our leak criteria.
+It returns a probability.
+The primary threshold is 0.5; a secondary threshold per strategy, chosen on dev by macro-F1 (L1 0.58, L2 0.635, L3 0.585), is reported separately. % src: juliet_full/llm/results/jev_thresholds.json
+
+\noindent\textbf{Intern-Decision-4B}~\cite{zhu2026interndecision} runs zero-shot on our GPU server with the same Jev prompts.
+It reads the logits of one forward pass at a decision placeholder, as in its model card, and returns calibrated option probabilities.
+We use threshold 0.5 and a secondary threshold frozen on 652 dev units before any eval call (L1 0.823, L2 0.673, L3 0.539). % src: juliet_full/gpu/README.md:139-140
+
+\noindent\textbf{Our LoRA decision model} starts from Qwen3.5-4B (BF16, frozen) and adds LoRA~\cite{hu2022lora} adapters (rank 16, $\alpha=32$, dropout 0.05) to all linear projections of the language model: attention, linear attention and MLP. This gives 32,464,896 trainable parameters. % src: juliet_full/decision_ft/README.md §3
+The head is a $2\times2560$ linear layer initialized from the output-embedding rows of the tokens \code{Yes} and \code{No}.
+It reads the final hidden state at the last prompt position, and the score is $s=\mathrm{logit}_\mathrm{Yes}-\mathrm{logit}_\mathrm{No}$.
+The input is the L1 or L3 prompt followed by ``Does the executed code unit leak heap memory? Answer Yes or No.''
+The loss is class-balanced cross-entropy plus a group ranking term,
+\[
+\mathcal{L}=\mathrm{CE}+\lambda\cdot\frac{1}{|G|}\sum_{g\in G}-\log\sigma\!\left(\frac{s_{\mathrm{bad}(g)}-s_{\mathrm{good}(g)}}{\tau}\right),
+\]
+with $\tau=1$ and $\lambda=1$. Each micro-batch holds whole groups.
+We train with AdamW (LoRA lr $10^{-4}$, head lr $10^{-3}$, 5\% warmup, cosine decay) for at most three epochs, at eight groups per step.
+The model is evaluated on dev every half epoch.
+We keep the checkpoint with the highest dev AUROC (ties: lower dev loss) and set the threshold on dev scores to maximize macro-F1.
+The adapter is merged into the weights for prediction, and the reported numbers come from the merged model.
+Training uses three-fold cross-validation over the eval variants (\S\ref{sec:split}).
+Each fold model trains on two folds, uses the 330 dev groups only for selection, and predicts the held-out fold.
+The six jobs (two inputs $\times$ three folds) took \res{x}{ft_hours_total} GPU hours.
+
+\noindent\textbf{LineVul}~\cite{fu2022linevul} uses the public Big-Vul checkpoint zero-shot, with inputs truncated to 512 tokens and threshold 0.5.
+
+\subsection{Runner, metrics and measurement}
+\label{sec:m-metrics}
+Every method writes one JSON line per unit in a common schema (unit, method, strategy, model, layer, prediction, score, latency, status), read by a single scorer.
+Paid calls go to an append-only cost ledger with per-run caps, and DeepSeek runs pause during peak hours.
+
+\noindent\textbf{Metrics.}
+The positive class is \emph{leak}.
+We report its precision, recall and F1, and macro-F1 over both classes as the headline, end to end with invalid outputs counted wrong.
+For confidence intervals we use a percentile bootstrap that resamples the 42 families with replacement (2,000 iterations)~\cite{efron1979}, because units of one family share code.
+Paired comparisons use McNemar's test~\cite{mcnemar1947} on per-unit correctness, exact binomial when there are at most 25 discordant pairs.
+We apply a Holm correction~\cite{holm1979} across the planned comparisons.
+For score-based methods we also report AUROC.
+Robustness is the change from \Deb{} to \Dead{} and \Plac{} on the same units: \emph{lost} leaks (bad units detected on \Deb{} but missed on \Dead) and \emph{gained} false alarms (good units that were correct on \Deb{} but are flagged on \Dead).
+
+\noindent\textbf{Latency and cost.}
+Latency is wall-clock time per unit at concurrency~1 on the 300-unit \code{latency300} subset, with median and p90.
+It includes the analyzers' own compilation; CodeQL is reported per unit (first 20 units) and amortized over batches of 50.
+Latency runs hold a host-wide lock and start only when the host is quiet (1-minute load below 2.5).
+Cost is the API charge from the ledger in CNY for DeepSeek and USD for Jev; local models are reported in GPU time.
+
+\noindent\textbf{Hardware.}
+Clients, static and dynamic tools run on a Dell OptiPlex 5000 (Intel i5-12500, 12 threads, 31\,GB RAM). % src: lscpu / free -g on dell
+Qwen3.5-4B, Intern-Decision-4B and the LoRA model run on a server with two RTX 3090 GPUs.
+Tool versions: Clang 23.1.6, Infer 1.3.0, CodeQL 2.27.5, Cppcheck 2.22.0, Valgrind 3.28.0, Souffl\'e 2.5, GCC 13.3. % src: juliet_full/STATUS.md:33; gcc --version

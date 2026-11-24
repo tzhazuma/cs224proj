@@ -1,0 +1,93 @@
+% 03_benchmark -- front lane.
+% src (counts): juliet/full_split_v1.json; juliet_full/data/README.md; juliet_full/data/build/verify_report.md;
+%      juliet_full/data/build/verify_layer3_report.md; juliet_full/lane_reports/data_stage3.md; probes via \res{x}{probe_*}.
+\section{Benchmark Construction}
+\label{sec:benchmark}
+
+\subsection{Source}
+We start from all \cwe{} test cases of Juliet C/C++ v1.3~\cite{black2018juliet13,sardjuliet13}.
+They form 1,658 groups from 42 families and 48 flow variants, 868 in C and 790 in C++ (Table~\ref{tab:dataset}). % src: juliet/full_split_v1.json
+Each group yields one bad and one good \emph{unit}: the source files that a harness compiles, links and runs.
+We tag every group with its leak mechanism.
+\code{c\_alloc} (960 groups) leaks a block from \code{malloc}, \code{calloc}, \code{realloc} or \code{strdup}.
+\code{cpp\_new} (588) leaks an object or array from \code{new}.
+\code{realloc\_fail} (108) leaks the old block when \code{realloc} fails.
+\code{destructor} (2) leaks through a class without a proper destructor.
+
+\subsection{Shortcut audit}
+\label{sec:audit}
+Before we used Juliet, we asked whether a detector could score well without reading the code.
+We ran six probes on the eval units (Table~\ref{tab:probes}); thresholds and the bag-of-words (BoW) logistic regression are fitted on dev.
+On \Orig, the presence of a \code{static void} definition separates the labels perfectly (\res{x}{probe_static_void_original}).
+In Juliet the good functions are \code{static} and are called from a non-static \code{good()} wrapper; every good file contains a \code{static void} definition and no bad file does. % src: juliet_full/data/build/probes_report.md (good 100.0%, bad 0.0%)
+Function count (\res{x}{probe_func_count_original}) and length (\res{x}{probe_length_lines_original}) work because a good file holds two good functions and a wrapper.
+The grep rule ``no \code{free}/\code{delete} $\Rightarrow$ leak'' reaches \res{x}{probe_grep_v0_original}, because the B2G function in every good file contains the fixing \code{free}.
+None of these features is about leaks.
+For \Deb{} we fixed an acceptance limit before the build: macro-F1 $\le 0.6$ for every format probe. % src: juliet_full/data/README.md (probe acceptance limit)
+On \Deb{} the format probes fall to \res{x}{probe_static_void_layer1}--\res{x}{probe_length_lines_layer1}, and grep to \res{x}{probe_grep_v0_layer1}, because G2B good units use stack memory and have no \code{free} either.
+A BoW model still reaches \res{x}{probe_bow_lr_layer1}, and this cannot be removed without changing semantics: a G2B good unit allocates on the stack where the bad unit calls \code{malloc} or \code{new}, and a B2G good unit contains a \code{free} that the bad unit lacks.
+\Dead{} (\S\ref{sec:dead}) removes the second cue.
+
+\IfFileExists{tables/res_probes.tex}{\input{tables/res_probes}}{}
+\input{tables/front_dataset}
+
+\subsection{Construction of \Deb}
+\label{sec:deb}
+\noindent\textbf{Good entry.}
+Each good file contains a G2B and a B2G function; we keep exactly one, so that a good unit has the shape of a bad unit.
+The choice is stratified by set, flow category and mechanism: half of each stratum gets G2B and half B2G, and an odd stratum is decided by a seeded coin flip (seed 20261123). % src: juliet_full/data/README.md
+The result is 621 G2B and 621 B2G good units in eval. % src: \res{x}{n_kind_G2B}, \res{x}{n_kind_B2G}
+The 110 \code{realloc\_fail} and \code{destructor} groups have numbered good functions (\code{good1}, \code{good2}) instead of a G2B/B2G pair; we pick one with a per-group seeded generator. % src: juliet_full/data/README.md (good_kind other = 110)
+Only code reachable from the chosen entry is kept; the bad unit is the \code{OMITGOOD} view of the file.
+
+\noindent\textbf{Format.}
+We remove \code{static} from every function definition and prototype in both labels; file-scope variables keep it.
+The entry becomes \code{void sym\_0()}, called by the same driver \code{main} in both labels.
+Comments are removed, the \code{OMITBAD}/\code{OMITGOOD}/\code{INCLUDEMAIN} macros are resolved, and every Juliet identifier is renamed to \code{sym\_N}.
+A leakage test checks that no identifier, comment or string in any of the 6,632 records across \Deb{} and \Orig{} matches \code{bad}, \code{good}, \code{g2b}, \code{b2g}, \code{cwe}, \code{leak}, \code{omit}, \code{flaw} or \code{fix}. % src: juliet_full/data/README.md (leakage test passes all 6,632 records)
+
+\subsection{Label verification}
+\label{sec:verify}
+All 3,316 \Deb{} units compile and link with both GCC~13 and Clang~23. % src: juliet_full/data/build/verify_report.md
+We run every unit under ASan/LSan (\code{-O0 -g}, \code{detect\_leaks=1}, 10\,s timeout, stdin closed).
+We set \code{use\_stacks=0}: at \code{-O0} stale stack slots keep leaked blocks ``reachable'', and the default setting misses 175 more bad units. % src: verify_report.md
+No good unit leaks (1,658/1,658).
+For bad units, LSan reports a leak in 1,474 of 1,658 cases (\code{c\_alloc} 914/960, \code{cpp\_new} 558/588, \code{destructor} 2/2). % src: verify_report.md
+All 184 misses have a documented cause, none a labeling error: 68 units (variants 45, 68) leak a block still held by a global at exit, 108 \code{realloc\_fail} units leak only if \code{realloc} fails, and 8 units of variant~12 take the leaking branch only on some runs (\code{rand()}; we run up to six times).
+Valgrind~3.28 on a stratified sample of 200 units agrees: it reports no leak for 100/100 good units, and for the 100 bad units it agrees with LSan on 99 and with the label on 87. % src: verify_report.md
+The dynamic-enhanced reference (\S\ref{sec:methods}) closes the three documented gaps by fault injection.
+
+\subsection{\Dead: never-executed frees}
+\label{sec:dead}
+A detector that reasons about paths must ignore a \code{free} that cannot run.
+\Dead{} tests this by making every unit contain the same kind of release statements, live or dead.
+\begin{itemize}
+\item \emph{Flaw sites.} Where the good sink frees and the bad sink does not, we insert a dead release of the sink pointer under an always-false guard. G2B good units, whose sink equals the bad sink, get the same dead release.
+\item \emph{Real frees.} Every real \code{free}/\code{delete}/\code{delete[]} in both labels is wrapped in an always-true guard, so a live release also sits inside an \code{if}.
+\item \emph{Matching forms.} The dead form matches the allocation (\code{free}, \code{delete}, \code{delete[]}); empty destructors get a dead release inside. For \code{realloc}, the dead free of the new pointer follows the call.
+\item \emph{Count matching.} Each group gets $e\in\{0,1\}$ extra dead releases at the same anchor in both labels, chosen by a seeded generator, so the number of release statements and guards is equal within every bad/good pair.
+\end{itemize}
+Guards compare a file-local constant \code{static const int sym\_N = V;} ($V\in\{4,5\}$, $N$ random in 10--99) in six forms (e.g.\ \code{==5}, \code{>4}, \code{!=4}), each used as both true and false guard. % src: juliet_full/data/README.md (layer3 guards)
+We chose this on dev with a leave-variant-out BoW probe on B2G pairs: a fixed constant gives AUROC 0.989, our design 0.572. % src: juliet_full/lane_reports/data_stage3.md (dev design check)
+On eval, every grep variant falls to $\le$\res{x}{probe_grep_v2_layer3}, and the BoW AUROC is \res{x}{probe_bow_auroc_layer3}.
+The remaining BoW signal comes from G2B units, whose stack allocation is intrinsic to the label. % src: juliet_full/data/build/probes_layer3_report.md (B2G .609, G2B .986)
+
+All 3,316 \Dead{} units compile with GCC and Clang; all 3,236 units outside variant~12 keep their \Deb{} dynamic verdict. % src: juliet_full/data/build/verify_layer3_report.md
+
+\subsection{\Plac{} and \Orig}
+\label{sec:plac}
+\Plac{} uses the same insertion points, guards and counts as \Dead, but the dead statement is a print call, \code{printLine("Status ok")} or one of three similar strings.
+Real frees are not wrapped, so a drop that also appears on \Plac{} is an editing effect.
+\Plac{} passes the same compile and dynamic checks. % src: verify_layer3_report.md (placebo 3316/3316, same verdicts outside variant 12)
+\Orig{} pairs the \Deb{} bad unit with the complete original good program (both static good functions and the wrapper).
+
+\subsection{Split and subsets}
+\label{sec:split}
+We split by flow variant, not by family (Table~\ref{tab:split}).
+Families differ only in data type and API, so a family split would leave each control-flow template on both sides.
+The dev set has nine variants (04, 10, 17, 18, 31, 41, 65, 68, 73), drawn per flow category with quotas 4/2/2/1 from variants that contain \code{cpp\_new} (Appendix~\ref{app:split}). % src: juliet/full_split_v1.json (rules)
+This gives 330 dev groups (660 units) and 1,328 eval groups (2,656 units) over 39 variants.
+Trained methods use three folds of eval variants: fold $k$ is predicted by a model trained on the other two, so no eval unit is scored by a model that saw its variant.
+Nested subsets (stratified by flow category and mechanism) serve the budget-limited DeepSeek runs, repeats and latency.
+
+\input{tables/front_split}

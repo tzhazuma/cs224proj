@@ -1,0 +1,13 @@
+% 08_conclusion -- front lane. Numbers: \res macros (generated/numbers.tex).
+\section{Conclusion}
+\label{sec:conclusion}
+
+Original Juliet \cwe{} can be solved without reading any memory operation: \code{static void} alone separates the labels, and a grep rule beats every static analyzer.
+We rebuilt the suite into \Deb, 3,316 compiled and sanitizer-checked units with a flow-variant split, plus a dead-free stress layer and a placebo control.
+On \Deb{} the format probes are at chance, and the ranking of detectors becomes meaningful.
+\Dead{} then separates path reasoning from token cues.
+Path-sensitive analyzers do not move, a LoRA model fine-tuned on Juliet learns that any \code{free} is a fix (recall \res{lora_L1-layer3}{r}), and small models raise false alarms on dead code.
+Three lessons follow.
+First, audit a benchmark with shortcut probes before reporting scores on it.
+Second, test every detector with semantics-preserving stress edits and a placebo, because a high score on clean code says little about how a model handles infeasible paths.
+Third, structured LLM output checked by a symbolic rule (L4) is the most stable prompting strategy, and analyzer evidence (L3) recovers part of the fine-tuned model's loss; the two families are complementary.

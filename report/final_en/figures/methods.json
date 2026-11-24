@@ -1,0 +1,747 @@
+{
+ "_doc": "Copied from presentation/pre/figures/methods.json (slides registry; keys kept stable for \\res macros) and extended by the paper-results lane: secondary-threshold variants of Jev (rethreshold from llm/results/jev_thresholds.json) and Intern-Decision (gpu/results/intern_decision_th2/). Result registry for make_figures.py. runs[layer] = globs relative to juliet_full/; the first glob whose newest matching file covers >= min_coverage of the target units (0.995, so a run that is still being written stays pending) (eval set, intersected with subset[layer] if given) is used. Files whose name starts with an exclude prefix are skipped (default list below; an entry may override it). Layers: layer1 = debiased main (1), layer3 = stress test (3), placebo, original = original Juliet.",
+ "min_coverage": 0.995,
+ "exclude": [
+  "dev_",
+  "rep_",
+  "det50_",
+  "devcheck",
+  "smoke",
+  "sample",
+  "lat300",
+  "latency",
+  "unmerged_"
+ ],
+ "methods": [
+  {
+   "key": "grep",
+   "label": "grep",
+   "family": "Static",
+   "model": "grep",
+   "runs": {
+    "layer1": [
+     "static/results/grep_v0/layer1/full_v1.jsonl"
+    ],
+    "layer3": [
+     "static/results/grep_v0/layer3/full_v1.jsonl"
+    ],
+    "placebo": [
+     "static/results/grep_v0/placebo/full_v1.jsonl"
+    ],
+    "original": [
+     "static/results/grep_v0/original/full_v1.jsonl"
+    ]
+   }
+  },
+  {
+   "key": "cppcheck",
+   "label": "Cppcheck",
+   "family": "Static",
+   "model": "Cppcheck",
+   "runs": {
+    "layer1": [
+     "static/results/cppcheck/layer1/full_v2.jsonl"
+    ],
+    "layer3": [
+     "static/results/cppcheck/layer3/full_v1.jsonl"
+    ],
+    "placebo": [
+     "static/results/cppcheck/placebo/full_v1.jsonl"
+    ],
+    "original": [
+     "static/results/cppcheck/original/full_v1.jsonl"
+    ]
+   }
+  },
+  {
+   "key": "clang_sa",
+   "label": "Clang SA",
+   "family": "Static",
+   "model": "Clang SA",
+   "runs": {
+    "layer1": [
+     "static/results/clang_sa/layer1/full_v2.jsonl"
+    ],
+    "layer3": [
+     "static/results/clang_sa/layer3/full_v1.jsonl"
+    ],
+    "placebo": [
+     "static/results/clang_sa/placebo/full_v1.jsonl"
+    ],
+    "original": [
+     "static/results/clang_sa/original/full_v1.jsonl"
+    ]
+   }
+  },
+  {
+   "key": "codeql",
+   "label": "CodeQL",
+   "family": "Static",
+   "model": "CodeQL",
+   "runs": {
+    "layer1": [
+     "static/results/codeql/layer1/full_batch50_merged.jsonl"
+    ],
+    "layer3": [
+     "static/results/codeql/layer3/full_batch50.jsonl"
+    ],
+    "placebo": [
+     "static/results/codeql/placebo/full_batch50.jsonl"
+    ],
+    "original": [
+     "static/results/codeql/original/full_batch50.jsonl"
+    ]
+   }
+  },
+  {
+   "key": "infer",
+   "label": "Infer",
+   "family": "Static",
+   "model": "Infer",
+   "runs": {
+    "layer1": [
+     "static/results/infer/layer1/full_per_file_merged.jsonl"
+    ],
+    "layer3": [
+     "static/results/infer/layer3/full_per_file.jsonl"
+    ],
+    "placebo": [
+     "static/results/infer/placebo/full_per_file.jsonl"
+    ],
+    "original": [
+     "static/results/infer/original/full_per_file.jsonl"
+    ]
+   }
+  },
+  {
+   "key": "linevul",
+   "label": "LineVul",
+   "family": "Learned",
+   "model": "LineVul",
+   "runs": {
+    "layer1": [
+     "gpu/results/linevul_gpu/layer1/deveval_v1.jsonl"
+    ],
+    "layer3": [
+     "gpu/results/linevul_gpu/layer3/all_v1.jsonl"
+    ],
+    "placebo": [
+     "gpu/results/linevul_gpu/placebo/all_v1.jsonl"
+    ],
+    "original": [
+     "gpu/results/linevul_gpu/original/all_v1.jsonl"
+    ]
+   }
+  },
+  {
+   "key": "asan_lsan",
+   "label": "ASan/LSan",
+   "family": "Dynamic",
+   "model": "ASan/LSan",
+   "runs": {
+    "layer1": [
+     "data/results/asan_lsan/layer1/full_v1.jsonl"
+    ],
+    "layer3": [
+     "data/results/asan_lsan/stress/full_v1.jsonl"
+    ],
+    "placebo": [
+     "data/results/asan_lsan/placebo/full_v1.jsonl"
+    ],
+    "original": [
+     "data/results/asan_lsan/original/full_v1.jsonl"
+    ]
+   },
+   "ranked": false
+  },
+  {
+   "key": "valgrind",
+   "label": "Valgrind",
+   "family": "Dynamic",
+   "model": "Valgrind",
+   "runs": {
+    "layer1": [
+     "data/results/valgrind/layer1/full_v1.jsonl"
+    ]
+   },
+   "ranked": false
+  },
+  {
+   "key": "dynamic_enhanced",
+   "label": "Dynamic-enh.",
+   "family": "Dynamic",
+   "model": "Dyn. enhanced",
+   "runs": {
+    "layer1": [
+     "data/results/dynamic_enhanced/layer1/full_v1.jsonl"
+    ],
+    "layer3": [
+     "data/results/dynamic_enhanced/stress/full_v1.jsonl"
+    ],
+    "placebo": [
+     "data/results/dynamic_enhanced/placebo/full_v1.jsonl"
+    ]
+   },
+   "ranked": false
+  },
+  {
+   "key": "deepseek_L1",
+   "label": "DeepSeek L1",
+   "family": "DeepSeek",
+   "model": "DeepSeek",
+   "runs": {
+    "layer1": [
+     "llm/results/deepseek_flash/layer1/eval_L1_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/deepseek_flash/layer3/l3_n25_L1_r1.jsonl"
+    ],
+    "placebo": [
+     "llm/results/deepseek_flash/placebo/pl_n25_L1_r1.jsonl"
+    ],
+    "original": [
+     "llm/results/deepseek_flash/original/orig_n25_L1_r1.jsonl"
+    ]
+   },
+   "strategy": "L1",
+   "subset": {
+    "layer3": "nested25",
+    "placebo": "nested25",
+    "original": "nested25"
+   }
+  },
+  {
+   "key": "deepseek_L2",
+   "label": "DeepSeek L2",
+   "family": "DeepSeek",
+   "model": "DeepSeek",
+   "runs": {
+    "layer1": [
+     "llm/results/deepseek_flash/layer1/eval_L2_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/deepseek_flash/layer3/l3_n25_L2_r1.jsonl"
+    ]
+   },
+   "strategy": "L2",
+   "subset": {
+    "layer3": "nested25",
+    "placebo": "nested25",
+    "original": "nested25"
+   }
+  },
+  {
+   "key": "deepseek_L3",
+   "label": "DeepSeek L3",
+   "family": "DeepSeek",
+   "model": "DeepSeek",
+   "runs": {
+    "layer1": [
+     "llm/results/deepseek_flash/layer1/eval_L3_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/deepseek_flash/layer3/l3_n25_L3_r1.jsonl"
+    ],
+    "placebo": [
+     "llm/results/deepseek_flash/placebo/pl_n25_L3_r1.jsonl"
+    ]
+   },
+   "strategy": "L3",
+   "subset": {
+    "layer3": "nested25",
+    "placebo": "nested25",
+    "original": "nested25"
+   }
+  },
+  {
+   "key": "deepseek_L4",
+   "label": "DeepSeek L4",
+   "family": "DeepSeek",
+   "model": "DeepSeek",
+   "runs": {
+    "layer1": [
+     "llm/results/deepseek_flash/layer1/eval_L4_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/deepseek_flash/layer3/l3_n25_L4_r1.jsonl"
+    ]
+   },
+   "strategy": "L4",
+   "subset": {
+    "layer3": "nested25",
+    "placebo": "nested25",
+    "original": "nested25"
+   }
+  },
+  {
+   "key": "qwen_L1",
+   "label": "Qwen L1",
+   "family": "Qwen3.5-4B",
+   "model": "Qwen",
+   "runs": {
+    "layer1": [
+     "llm/results/qwen3_5_4b/layer1/eval_L1_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/qwen3_5_4b/layer3/*_L1_r1.jsonl"
+    ],
+    "placebo": [
+     "llm/results/qwen3_5_4b/placebo/*_L1_r1.jsonl"
+    ],
+    "original": [
+     "llm/results/qwen3_5_4b/original/*_L1_r1.jsonl"
+    ]
+   },
+   "strategy": "L1"
+  },
+  {
+   "key": "qwen_L2",
+   "label": "Qwen L2",
+   "family": "Qwen3.5-4B",
+   "model": "Qwen",
+   "runs": {
+    "layer1": [
+     "llm/results/qwen3_5_4b/layer1/eval_L2_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/qwen3_5_4b/layer3/*_L2_r1.jsonl"
+    ]
+   },
+   "strategy": "L2"
+  },
+  {
+   "key": "qwen_L3",
+   "label": "Qwen L3",
+   "family": "Qwen3.5-4B",
+   "model": "Qwen",
+   "runs": {
+    "layer1": [
+     "llm/results/qwen3_5_4b/layer1/eval_L3_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/qwen3_5_4b/layer3/*_L3_r1.jsonl"
+    ],
+    "placebo": [
+     "llm/results/qwen3_5_4b/placebo/*_L3_r1.jsonl"
+    ]
+   },
+   "strategy": "L3"
+  },
+  {
+   "key": "qwen_L4",
+   "label": "Qwen L4",
+   "family": "Qwen3.5-4B",
+   "model": "Qwen",
+   "runs": {
+    "layer1": [
+     "llm/results/qwen3_5_4b/layer1/eval_L4_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/qwen3_5_4b/layer3/*_L4_r1.jsonl"
+    ]
+   },
+   "strategy": "L4"
+  },
+  {
+   "key": "jev_L1",
+   "label": "Jev L1",
+   "family": "Decision",
+   "model": "Jev",
+   "runs": {
+    "layer1": [
+     "llm/results/jev/layer1/eval_L1_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/jev/layer3/l3_eval_L1_r1.jsonl"
+    ],
+    "placebo": [
+     "llm/results/jev/placebo/pl_eval_L1_r1.jsonl"
+    ],
+    "original": [
+     "llm/results/jev/original/orig_eval_L1_r1.jsonl"
+    ]
+   },
+   "strategy": "L1"
+  },
+  {
+   "key": "jev_L2",
+   "label": "Jev L2",
+   "family": "Decision",
+   "model": "Jev",
+   "runs": {
+    "layer1": [
+     "llm/results/jev/layer1/eval_L2_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/jev/layer3/l3_eval_L2_r1.jsonl"
+    ]
+   },
+   "strategy": "L2"
+  },
+  {
+   "key": "jev_L3",
+   "label": "Jev L3",
+   "family": "Decision",
+   "model": "Jev",
+   "runs": {
+    "layer1": [
+     "llm/results/jev/layer1/eval_L3_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/jev/layer3/l3_eval_L3_r1.jsonl"
+    ],
+    "placebo": [
+     "llm/results/jev/placebo/pl_eval_L3_r1.jsonl"
+    ]
+   },
+   "strategy": "L3"
+  },
+  {
+   "key": "intern_L1",
+   "label": "Intern-Dec. L1",
+   "family": "Decision",
+   "model": "Intern-D",
+   "runs": {
+    "layer1": [
+     "gpu/results/intern_decision/layer1/eval_L1_r1.jsonl"
+    ],
+    "layer3": [
+     "gpu/results/intern_decision/layer3/*_L1_r1.jsonl"
+    ],
+    "placebo": [
+     "gpu/results/intern_decision/placebo/*_L1_r1.jsonl"
+    ],
+    "original": [
+     "gpu/results/intern_decision/original/*_L1_r1.jsonl"
+    ]
+   },
+   "strategy": "L1"
+  },
+  {
+   "key": "intern_L2",
+   "label": "Intern-Dec. L2",
+   "family": "Decision",
+   "model": "Intern-D",
+   "runs": {
+    "layer1": [
+     "gpu/results/intern_decision/layer1/eval_L2_r1.jsonl"
+    ],
+    "layer3": [
+     "gpu/results/intern_decision/layer3/*_L2_r1.jsonl"
+    ]
+   },
+   "strategy": "L2"
+  },
+  {
+   "key": "intern_L3",
+   "label": "Intern-Dec. L3",
+   "family": "Decision",
+   "model": "Intern-D",
+   "runs": {
+    "layer1": [
+     "gpu/results/intern_decision/layer1/eval_L3_r1.jsonl"
+    ],
+    "layer3": [
+     "gpu/results/intern_decision/layer3/*_L3_r1.jsonl"
+    ],
+    "placebo": [
+     "gpu/results/intern_decision/placebo/*_L3_r1.jsonl"
+    ]
+   },
+   "strategy": "L3"
+  },
+  {
+   "key": "lora_L1",
+   "label": "LoRA L1",
+   "family": "Decision",
+   "model": "LoRA",
+   "runs": {
+    "layer1": [
+     "decision_ft/results/decision_ft/layer1/L1_cv_v1.jsonl"
+    ],
+    "layer3": [
+     "decision_ft/results/decision_ft/layer3/L1_cv_v1.jsonl"
+    ],
+    "placebo": [
+     "decision_ft/results/decision_ft/placebo/L1_cv_v1.jsonl"
+    ],
+    "original": [
+     "decision_ft/results/decision_ft/original/L1_cv_v1.jsonl"
+    ]
+   },
+   "strategy": "L1"
+  },
+  {
+   "key": "lora_L3",
+   "label": "LoRA L3",
+   "family": "Decision",
+   "model": "LoRA",
+   "runs": {
+    "layer1": [
+     "decision_ft/results/decision_ft/layer1/L3_cv_v1.jsonl"
+    ],
+    "layer3": [
+     "decision_ft/results/decision_ft/layer3/L3_cv_v1.jsonl"
+    ],
+    "placebo": [
+     "decision_ft/results/decision_ft/placebo/L3_cv_v1.jsonl"
+    ]
+   },
+   "strategy": "L3"
+  },
+  {
+   "key": "readout_L1",
+   "label": "Read-out L1",
+   "family": "Ablation",
+   "model": "Read-out",
+   "runs": {
+    "layer1": [
+     "decision_ft/results/qwen_readout_zeroshot/layer1/L1_v1.jsonl"
+    ],
+    "layer3": [
+     "decision_ft/results/qwen_readout_zeroshot/layer3/L1_v1.jsonl"
+    ]
+   },
+   "strategy": "L1",
+   "pred_field": "pred_at_dev_threshold"
+  },
+  {
+   "key": "lora_unmerged_L1",
+   "label": "LoRA L1 unmerged",
+   "family": "Ablation",
+   "model": "LoRA unmerged",
+   "runs": {
+    "layer1": [
+     "decision_ft/results/decision_ft/layer1/unmerged_L1_fold*_v1.jsonl"
+    ]
+   },
+   "strategy": "L1",
+   "mode": "union",
+   "exclude": []
+  },
+  {
+   "key": "readout_L3",
+   "label": "Read-out L3",
+   "family": "Ablation",
+   "model": "Read-out",
+   "runs": {
+    "layer1": [
+     "decision_ft/results/qwen_readout_zeroshot/layer1/L3_v1.jsonl"
+    ],
+    "layer3": [
+     "decision_ft/results/qwen_readout_zeroshot/layer3/L3_v1.jsonl"
+    ]
+   },
+   "strategy": "L3",
+   "pred_field": "pred_at_dev_threshold"
+  },
+  {
+   "key": "lora_unmerged_L3",
+   "label": "LoRA L3 unmerged",
+   "family": "Ablation",
+   "model": "LoRA unmerged",
+   "runs": {
+    "layer1": [
+     "decision_ft/results/decision_ft/layer1/unmerged_L3_fold*_v1.jsonl"
+    ]
+   },
+   "strategy": "L3",
+   "mode": "union",
+   "exclude": []
+  },
+  {
+   "key": "jev_th2_L1",
+   "label": "Jev L1 (dev thr.)",
+   "family": "Ablation",
+   "model": "Jev thr2",
+   "runs": {
+    "layer1": [
+     "llm/results/jev/layer1/eval_L1_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/jev/layer3/l3_eval_L1_r1.jsonl"
+    ],
+    "placebo": [
+     "llm/results/jev/placebo/pl_eval_L1_r1.jsonl"
+    ],
+    "original": [
+     "llm/results/jev/original/orig_eval_L1_r1.jsonl"
+    ]
+   },
+   "strategy": "L1",
+   "rethreshold": {
+    "file": "llm/results/jev_thresholds.json",
+    "key": "L1"
+   }
+  },
+  {
+   "key": "intern_th2_L1",
+   "label": "Intern-Dec. L1 (dev thr.)",
+   "family": "Ablation",
+   "model": "Intern thr2",
+   "runs": {
+    "layer1": [
+     "gpu/results/intern_decision_th2/layer1/eval_L1_r1.jsonl"
+    ],
+    "layer3": [
+     "gpu/results/intern_decision_th2/layer3/*_L1_r1.jsonl"
+    ],
+    "placebo": [
+     "gpu/results/intern_decision_th2/placebo/*_L1_r1.jsonl"
+    ],
+    "original": [
+     "gpu/results/intern_decision_th2/original/*_L1_r1.jsonl"
+    ]
+   },
+   "strategy": "L1"
+  },
+  {
+   "key": "jev_th2_L2",
+   "label": "Jev L2 (dev thr.)",
+   "family": "Ablation",
+   "model": "Jev thr2",
+   "runs": {
+    "layer1": [
+     "llm/results/jev/layer1/eval_L2_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/jev/layer3/l3_eval_L2_r1.jsonl"
+    ]
+   },
+   "strategy": "L2",
+   "rethreshold": {
+    "file": "llm/results/jev_thresholds.json",
+    "key": "L2"
+   }
+  },
+  {
+   "key": "intern_th2_L2",
+   "label": "Intern-Dec. L2 (dev thr.)",
+   "family": "Ablation",
+   "model": "Intern thr2",
+   "runs": {
+    "layer1": [
+     "gpu/results/intern_decision_th2/layer1/eval_L2_r1.jsonl"
+    ],
+    "layer3": [
+     "gpu/results/intern_decision_th2/layer3/*_L2_r1.jsonl"
+    ]
+   },
+   "strategy": "L2"
+  },
+  {
+   "key": "jev_th2_L3",
+   "label": "Jev L3 (dev thr.)",
+   "family": "Ablation",
+   "model": "Jev thr2",
+   "runs": {
+    "layer1": [
+     "llm/results/jev/layer1/eval_L3_r1.jsonl"
+    ],
+    "layer3": [
+     "llm/results/jev/layer3/l3_eval_L3_r1.jsonl"
+    ],
+    "placebo": [
+     "llm/results/jev/placebo/pl_eval_L3_r1.jsonl"
+    ]
+   },
+   "strategy": "L3",
+   "rethreshold": {
+    "file": "llm/results/jev_thresholds.json",
+    "key": "L3"
+   }
+  },
+  {
+   "key": "intern_th2_L3",
+   "label": "Intern-Dec. L3 (dev thr.)",
+   "family": "Ablation",
+   "model": "Intern thr2",
+   "runs": {
+    "layer1": [
+     "gpu/results/intern_decision_th2/layer1/eval_L3_r1.jsonl"
+    ],
+    "layer3": [
+     "gpu/results/intern_decision_th2/layer3/*_L3_r1.jsonl"
+    ],
+    "placebo": [
+     "gpu/results/intern_decision_th2/placebo/*_L3_r1.jsonl"
+    ]
+   },
+   "strategy": "L3"
+  }
+ ],
+ "repeats": [
+  {
+   "label": "DeepSeek L1",
+   "files": [
+    "llm/results/deepseek_flash/layer1/eval_L1_r1.jsonl",
+    "llm/results/deepseek_flash/layer1/rep_L1_r2.jsonl",
+    "llm/results/deepseek_flash/layer1/rep_L1_r3.jsonl"
+   ]
+  },
+  {
+   "label": "DeepSeek L2",
+   "files": [
+    "llm/results/deepseek_flash/layer1/eval_L2_r1.jsonl",
+    "llm/results/deepseek_flash/layer1/rep_L2_r2.jsonl",
+    "llm/results/deepseek_flash/layer1/rep_L2_r3.jsonl"
+   ]
+  },
+  {
+   "label": "DeepSeek L3",
+   "files": [
+    "llm/results/deepseek_flash/layer1/eval_L3_r1.jsonl",
+    "llm/results/deepseek_flash/layer1/rep_L3_r2.jsonl",
+    "llm/results/deepseek_flash/layer1/rep_L3_r3.jsonl"
+   ]
+  },
+  {
+   "label": "Jev L1",
+   "files": [
+    "llm/results/jev/layer1/eval_L1_r1.jsonl",
+    "llm/results/jev/layer1/eval_L1_r2.jsonl",
+    "llm/results/jev/layer1/eval_L1_r3.jsonl"
+   ]
+  },
+  {
+   "label": "Jev L2",
+   "files": [
+    "llm/results/jev/layer1/eval_L2_r1.jsonl",
+    "llm/results/jev/layer1/eval_L2_r2.jsonl",
+    "llm/results/jev/layer1/eval_L2_r3.jsonl"
+   ]
+  },
+  {
+   "label": "Jev L3",
+   "files": [
+    "llm/results/jev/layer1/eval_L3_r1.jsonl",
+    "llm/results/jev/layer1/eval_L3_r2.jsonl",
+    "llm/results/jev/layer1/eval_L3_r3.jsonl"
+   ]
+  },
+  {
+   "label": "Qwen L1",
+   "files": [
+    "llm/results/qwen3_5_4b/layer1/eval_L1_r1.jsonl",
+    "llm/results/qwen3_5_4b/layer1/rep_L1_r2.jsonl",
+    "llm/results/qwen3_5_4b/layer1/rep_L1_r3.jsonl"
+   ]
+  },
+  {
+   "label": "Qwen L2",
+   "files": [
+    "llm/results/qwen3_5_4b/layer1/eval_L2_r1.jsonl",
+    "llm/results/qwen3_5_4b/layer1/rep_L2_r2.jsonl",
+    "llm/results/qwen3_5_4b/layer1/rep_L2_r3.jsonl"
+   ]
+  },
+  {
+   "label": "Qwen L3",
+   "files": [
+    "llm/results/qwen3_5_4b/layer1/eval_L3_r1.jsonl",
+    "llm/results/qwen3_5_4b/layer1/rep_L3_r2.jsonl",
+    "llm/results/qwen3_5_4b/layer1/rep_L3_r3.jsonl"
+   ]
+  }
+ ]
+}

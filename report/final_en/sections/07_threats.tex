@@ -1,0 +1,28 @@
+% 07_threats -- front lane. Limitations per OUTLINE.md §7.
+\section{Threats to Validity}
+\label{sec:threats}
+
+\noindent\textbf{Construct validity.}
+Juliet is synthetic: its leaks are small, local and labeled by construction, so our scores do not transfer to real code.
+Our leak definition counts memory still held by a global at exit and leaks on \code{realloc} failure.
+A tool that follows the narrower ``unreachable at exit'' notion (e.g.\ plain LSan) is penalized on these 176 bad units by design, which is why dynamic tools are a reference and not ranked. % src: data/build/verify_report.md (68 global + 108 realloc_fail)
+\Dead{} tests one specific skill, ignoring frees behind always-false guards over file-local constants.
+A detector that resolves such guards is not necessarily path-sensitive in general, and one that fails may still handle other infeasible paths.
+The guards were designed against our own probes; a learner could still find another residual cue, although the BoW AUROC is \res{x}{probe_bow_auroc_layer3} on \Dead{} and stems from intrinsic G2B cues (\S\ref{sec:dead}).
+
+\noindent\textbf{Internal validity.}
+Dev AUROC of the LoRA model was saturated, so checkpoint selection fell back to dev loss and was weak.
+Thresholds tuned on dev are descriptive: a secondary threshold shows how much a detector depends on calibration, not a deployable setting.
+Single runs carry noise even at temperature 0: Qwen gives the same verdict in all three runs on \res{x}{rep_Qwen_L1}--\res{x}{rep_Qwen_L2} of the repeat units, so differences of a few units are not meaningful (Table~\ref{tab:repeat}).
+CodeQL's 50-unit batching shared unrenamed Juliet helpers across units and produced 4 extra false alarms (\S\ref{sec:errors}).
+LLM services can change behind a model name; we record model identifiers, prompt hashes and dates for every run.
+
+\noindent\textbf{External validity and contamination.}
+Juliet has been public for more than a decade~\cite{boland2012juliet} and is likely in the training data of every LLM we test.
+Renaming identifiers, removing comments and the \Dead{} rewrite reduce verbatim recall, but a model may still recognize the templates.
+That DeepSeek and Jev score higher on \Deb{} than on \Orig{} (Table~\ref{tab:orig}) suggests that recalled labels do not drive the results.
+Our models are one API model, one 4B open model and two decision models.
+
+\noindent\textbf{Coverage.}
+Because of the \yen10 budget, DeepSeek is evaluated on \Dead, \Plac{} and \Orig{} only on \code{nested25} (\res{x}{n_nested25} units) in the paired comparisons, not on all 2,656 eval units.
+\code{nested25} is stratified by flow category and mechanism, but its confidence intervals are wider.

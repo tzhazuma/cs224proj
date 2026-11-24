@@ -1,0 +1,18 @@
+% 00_abstract -- front lane. Numbers: \res macros (generated/numbers.tex).
+\begin{abstract}
+Juliet is the standard synthetic test suite for memory-leak (\cwe) detectors, but its templates reveal the label.
+On the original \cwe{} units, the rule ``\code{static void} $\Rightarrow$ good'' reaches macro-F1 \res{x}{probe_static_void_original},
+and ``no \code{free}/\code{delete} $\Rightarrow$ leak'' reaches \res{grep-original}{macro},
+above Clang SA (\res{clang_sa-original}{macro}), CodeQL and Infer.
+We rebuild all 1,658 \cwe{} groups into a debiased benchmark of 3,316 compiled, sanitizer-checked units with a flow-variant split.
+We add a stress layer with never-executed frees and a placebo layer with never-executed prints.
+On it we compare four static analyzers, LineVul, two LLMs with four prompting strategies, two decision models, and a LoRA decision model fine-tuned on Juliet.
+On the debiased layer, the best learned detectors reach \res{jev_L1-layer1}{macro}--\res{deepseek_L2-layer1}{macro}.
+Dead frees separate the detectors.
+Clang SA and Infer do not change.
+The grep rule falls to \res{grep-layer3}{macro}.
+Our fine-tuned model drops from \res{lora_L1-layer1}{macro} to \res{lora_L1-layer3}{macro} because it treats any \code{free} as a fix.
+Small LLMs and Intern-Decision instead raise false alarms.
+Letting the LLM extract facts and a Datalog rule decide loses the least among prompting strategies.
+The placebo layer moves every detector much less, so the drops come from the dead frees and not from the edit itself.
+\end{abstract}

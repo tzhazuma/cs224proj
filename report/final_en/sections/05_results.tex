@@ -1,0 +1,191 @@
+% 05_results -- paper-results lane. Numbers: \res macros from generated/numbers.tex (figures/make_figures.py),
+% generated tables (tables/res_*.tex), or a % src: comment.
+\section{Results}\label{sec:results}
+
+Unless stated otherwise, every method is scored on the 2,656 \Deb{} eval units with the same scorer;
+invalid outputs count as wrong, and brackets are 95\% family-cluster bootstrap CIs
+over the 42 families~\cite{efron1979}.
+DeepSeek runs on \Dead, \Plac{} and \Orig{} cover the nested25 subset (\res{x}{n_nested25} units, paired).
+
+\subsection{RQ1: Is the benchmark measuring leaks?}\label{sec:rq1}
+
+Table~\ref{tab:probes} shows that original Juliet can be solved without looking at memory.
+On \Orig, the string \code{static void} separates good from bad perfectly
+(\res{x}{probe_static_void_original}),
+and a function-count rule reaches \res{x}{probe_func_count_original}.
+Debiasing removes these template cues: on \Deb{} both fall to chance
+(\res{x}{probe_static_void_layer1} and \res{x}{probe_func_count_layer1}).
+What remains is the free itself.
+A bag-of-words model still scores \res{x}{probe_bow_lr_layer1} on \Deb,
+because a unit without any \code{free}/\code{delete} is almost always a leak;
+only on \Dead, where both labels contain the same number of frees, does it drop to \res{x}{probe_bow_lr_layer3}.
+
+\input{tables/res_orig}
+
+Table~\ref{tab:orig} runs every detector on \Orig{} and \Deb.
+The grep rule ``no \code{free}/\code{delete} $\Rightarrow$ leak'' falls from
+\res{grep-original}{macro} to \res{grep-layer1}{macro}:
+on \Orig, every good unit happens to contain a free
+(specificity \res{grep-original}{spec} vs \res{grep-layer1}{spec} on \Deb).
+No other method profits from the template.
+Clang SA (\res{clang_sa-original}{macro} $\rightarrow$ \res{clang_sa-layer1}{macro}),
+CodeQL (\res{codeql-original}{macro} $\rightarrow$ \res{codeql-layer1}{macro})
+and Qwen L1 (\res{qwen_L1-original}{macro} $\rightarrow$ \res{qwen_L1-layer1}{macro})
+all \emph{improve} on \Deb.
+The bad units are identical on the two layers, so all of this change comes from the good units.
+An original good unit carries the extra helper functions and control flow of Juliet's template.
+These cause false alarms, e.g.\ CodeQL specificity is \res{codeql-original}{spec} on \Orig
+and \res{codeql-layer1}{spec} on \Deb.
+Original Juliet therefore overrates a trivial text rule and underrates real analyzers.
+\Deb{} ranks detectors by what they do with memory, and \Dead{} then removes the last lexical cue.
+
+\input{tables/res_main}
+
+\subsection{RQ2: How do the approaches compare on \Deb?}\label{sec:rq2}
+
+Table~\ref{tab:main} lists all methods.
+\textbf{DeepSeek} is near ceiling with every strategy
+(L1 \res{deepseek_L1-layer1}{macro}, L2 \res{deepseek_L2-layer1}{macro}, L3 \res{deepseek_L3-layer1}{macro});
+the Datalog route L4 is lower (\res{deepseek_L4-layer1}{macro}).
+For \textbf{Qwen3.5-4B} the strategy matters:
+L1 \res{qwen_L1-layer1}{macro}, L2 \res{qwen_L2-layer1}{macro}, L3 \res{qwen_L3-layer1}{macro}, L4 \res{qwen_L4-layer1}{macro}.
+The analyzer evidence of L3 helps the small model most.
+Among the \textbf{decision models}, our LoRA classifier reaches \res{lora_L1-layer1}{macro} and Jev \res{jev_L3-layer1}{macro} (L3).
+Intern-Decision stays at \res{intern_L1-layer1}{macro}--\res{intern_L3-layer1}{macro},
+because it over-flags good units (specificity \res{intern_L1-layer1}{spec} for L1).
+Among the \textbf{static analyzers}, CodeQL (\res{codeql-layer1}{macro}) and Clang SA (\res{clang_sa-layer1}{macro}) lead,
+followed by Infer (\res{infer-layer1}{macro}).
+Cppcheck finds few leaks (recall \res{cppcheck-layer1}{r}).
+\textbf{LineVul}, trained on real-world CVE functions~\cite{fu2022linevul}, is at chance (\res{linevul-layer1}{macro}).
+Dynamic tools are a reference, not a competitor, because they execute the program.
+ASan/LSan reaches \res{asan_lsan-layer1}{macro}.
+It misses every realloc-failure leak (recall \res{asan_lsan-layer1}{r_realloc_fail}),
+since \code{realloc} never fails in the test run.
+Our dynamic-enhanced variant forces that failure and is perfect (\res{dynamic_enhanced-layer1}{macro}).
+
+\textbf{Pre-registered tests.}
+We ran the 18 pre-registered paired McNemar tests~\cite{mcnemar1947} with Holm correction~\cite{holm1979}
+(Table~\ref{tab:mcnemar} in the appendix).
+The test treats units as independent, as in the static lane's exploratory analysis, but the units are clustered by family.
+We therefore also report a family-cluster bootstrap CI for the accuracy difference.
+\res{x}{mc_n_sig} of \res{x}{mc_n_tests} comparisons stay significant after Holm,
+and for each of them the clustered CI excludes zero.
+For DeepSeek, L1, L2 and L3 are indistinguishable
+(e.g.\ L1 vs L3: $p_{\mathrm{Holm}}=\res{x}{mcdeepseekL1vsdeepseekL3_holm}$),
+while L4 is worse than each of them ($p_{\mathrm{Holm}}\le\res{x}{mcdeepseekL3vsdeepseekL4_holm}$).
+For Qwen, every pair differs except L2 vs L4 ($p_{\mathrm{Holm}}=\res{x}{mcqwenL2vsqwenL4_holm}$).
+DeepSeek beats Qwen under every strategy ($p_{\mathrm{Holm}}\le\res{x}{mcdeepseekL3vsqwenL3_holm}$).
+The best LLM (DeepSeek L2) beats the best static analyzer (CodeQL) on
+\res{x}{mcdeepseekL2vscodeql_b} units and loses on \res{x}{mcdeepseekL2vscodeql_c}
+($p_{\mathrm{Holm}}=\res{x}{mcdeepseekL2vscodeql_holm}$).
+It also beats grep ($p_{\mathrm{Holm}}=\res{x}{mcdeepseekL2vsgrep_holm}$).
+
+\input{tables/res_flow}
+
+\textbf{By program type} (Table~\ref{tab:flow}, required by the course).
+The flow categories separate the analyzers.
+Clang SA loses most on C++ objects (71--84, \res{clang_sa-layer1}{flow_71-84}) and data flow (31--45, \res{clang_sa-layer1}{flow_31-45}).
+It also misses every leak of some \code{new}/\code{new[]} families (recall \res{clang_sa-layer1}{r_cpp_new} on \code{new} units),
+plus the C leaks that leave a function through a global or a container (flows 45, 72, 74).
+% src: juliet_full/static/results/clang_sa/layer1/full_v2.jsonl -- 304 eval FNs: 222 cpp_new; flows 45/72/74 34 FNs each
+Infer is weakest on control flow (\res{infer-layer1}{flow_02-22}).
+DeepSeek L4 loses only on control flow (\res{deepseek_L4-layer1}{flow_02-22}),
+and all its misses are on flow~12 (Sec.~\ref{sec:discussion}).
+The good kind exposes the false alarms.
+DeepSeek's \res{x}{fp_deepseek_L1_layer1_B2G} L1 false positives are all B2G goods,
+i.e.\ code whose free is reached only through a flag or a helper function
+(specificity \res{deepseek_L1-layer1}{spec_B2G} on B2G vs \res{deepseek_L1-layer1}{spec_G2B} on G2B).
+Jev's errors are concentrated in realloc.
+It misses realloc-failure leaks (recall \res{jev_L1-layer1}{r_realloc_fail} for L1)
+and flags the fixed realloc goods (``other'', specificity \res{jev_L1-layer1}{spec_other}).
+
+\subsection{RQ3: What does accuracy cost?}\label{sec:rq3}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/pareto.pdf}
+\caption{Accuracy vs latency per unit at concurrency 1 (Table~\ref{tab:latency}), against the deployment budgets of an IDE ($<$0.1\,s), a pre-commit hook ($<$1\,s) and CI ($<$10\,s).
+Vertical bars: 95\% CI. The hollow CodeQL marker is the amortized cost with 50 units per database.
+grep (1\,\textmu s) is drawn at the left edge.}
+\label{fig:pareto}
+\end{figure}
+
+\input{tables/res_latency}
+
+Fig.~\ref{fig:pareto} plots macro-F1 against median latency at concurrency 1 (Table~\ref{tab:latency}).
+Bulk runs were concurrent, so their per-call times are not used.
+Four methods form the Pareto front: grep, Clang SA (\res{x}{lat_clang_sa}\,s), our LoRA classifier
+(\res{x}{lat_lora_L1}\,s on one RTX 3090) and DeepSeek L1 (\res{x}{lat_deepseek_L1}\,s over the API).
+Clang SA is the only accurate analyzer inside the IDE budget.
+LoRA sits on the IDE boundary and comes close to DeepSeek's accuracy at a seventh of its latency.
+CodeQL needs \res{x}{lat_codeql}\,s per unit when it builds one database per unit
+and \res{x}{lat_codeql_amortized}\,s when 50 units share a database.
+That puts it in CI rather than in an editor.
+Both API models fit a pre-commit hook.
+They cost \textyen\res{x}{cost1k_deepseek_L1} (DeepSeek L1) and \$\res{x}{cost1k_jev_L1} (Jev L1) per 1,000 units.
+All DeepSeek runs of the project cost \textyen\res{x}{cost_deepseek} and all Jev runs \$\res{x}{cost_jev}.
+The local models need \res{x}{gpuh1k_lora_L1}--\res{x}{gpuh1k_qwen_L1} GPU-hours per 1,000 units.
+Training the six LoRA adapters took \res{x}{ft_hours_total} GPU-hours.
+Dynamic analysis is accurate and cheap per unit (ASan/LSan \res{x}{lat_asan_lsan}\,s including compilation).
+However, it needs a harness that drives the leaking path, which a static setting does not have.
+
+\subsection{RQ4: Robustness to never-executed frees}\label{sec:rq4}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/robust.pdf}
+\caption{Paired macro-F1 on \Deb{} (hollow) and \Dead{} (filled) for the same units, with \Plac{} (diamond) as the control for inserting code at all.
+$\Delta$ = \Dead{} $-$ \Deb. $^\dagger$DeepSeek on nested25 (\res{x}{n_nested25} units).}
+\label{fig:robust}
+\end{figure}
+
+\input{tables/res_robust}
+
+\Dead{} adds frees under always-false guards and wraps every real free in an always-true guard.
+\Plac{} inserts the same guards around a harmless print.
+Fig.~\ref{fig:robust} and Table~\ref{tab:robust} give the paired changes.
+The placebo deltas are small for every method except Qwen L1 (\res{qwen_L1-placebo}{d}),
+so the \Dead{} deltas measure guard reasoning, not the edit itself.
+The methods fail in two opposite ways.
+\textbf{Trusting a dead free causes misses.}
+grep loses all \res{grep-layer3}{lost} of its detections (\res{grep-layer3}{d}).
+CodeQL loses \res{codeql-layer3}{lost} (\res{codeql-layer3}{d}): in these units its query accepts a never-executed free as a release.
+Our LoRA classifier loses \res{lora_L1-layer3}{lost} with L1 input:
+macro-F1 falls from \res{lora_L1-layer1}{macro} to \res{lora_L1-layer3}{macro} and leak recall to \res{lora_L1-layer3}{r}.
+\textbf{Doubting a guarded real free causes false alarms.}
+Qwen L1 adds \res{qwen_L1-layer3}{gained} false positives and Intern-Decision L1 adds \res{intern_L1-layer3}{gained},
+while both still find almost every leak (recall \res{qwen_L1-layer3}{r} and \res{intern_L1-layer3}{r}).
+The path-sensitive analyzers Clang SA and Infer do not change a single verdict (\res{clang_sa-layer3}{flips} and \res{infer-layer3}{flips} flips),
+and neither does dynamic-enhanced, which executes the guards.
+ASan/LSan changes \res{asan_lsan-layer3}{flips} verdicts, all on flow~12, whose path is random at run time.
+
+DeepSeek loses \res{deepseek_L1-layer3}{d} (L1) to \res{deepseek_L3-layer3}{d} (L3) in both directions:
+\res{deepseek_L1-layer3}{lost} lost detections and \res{deepseek_L1-layer3}{gained} new false positives for L1.
+L4 is its most robust strategy (\res{deepseek_L4-layer3}{d}).
+Its errors shift towards misses (\res{deepseek_L4-layer3}{fp} FP and \res{deepseek_L4-layer3}{fn} FN, against \res{deepseek_L1-layer3}{fp} and \res{deepseek_L1-layer3}{fn} for L1).
+Jev is the most robust LLM-based detector (\res{jev_L1-layer3}{d} to \res{jev_L3-layer3}{d}).
+
+\input{tables/res_lora}
+
+\textbf{The LoRA shortcut} (Table~\ref{tab:lora}).
+With the same base model and read-out head, the classifier without LoRA reaches only \res{readout_L1-layer1}{macro} on \Deb.
+The adapter therefore learned almost all of the task.
+Under cross-validation it scores \res{lora_L1-layer1}{macro} on \Deb, and the merged and unmerged weights agree on every unit
+(\res{x}{unmerged_flips_L1} flips for L1, \res{x}{unmerged_flips_L3} for L3).
+On \Dead{} it collapses: per-fold AUROC drops from
+\res{x}{auroc_lora_L1_layer1_f0}/\res{x}{auroc_lora_L1_layer1_f1}/\res{x}{auroc_lora_L1_layer1_f2}
+to \res{x}{auroc_lora_L1_layer3_f0}/\res{x}{auroc_lora_L1_layer3_f1}/\res{x}{auroc_lora_L1_layer3_f2}.
+What it learned is ``a free is present'', not whether the free executes.
+Adding the Clang SA evidence (L3 input) recovers part of the gap (\res{lora_L3-layer3}{macro}, recall \res{lora_L3-layer3}{r}).
+Dev AUROC was saturated at 1.0, so checkpoints were chosen by dev loss, and dev data could not have revealed this failure.
+% src: juliet_full/lane_reports/2026-11-23_decision_ft_stage2.md (dev AUROC 1.0, selection by dev loss)
+
+\input{tables/res_repeat}
+
+\textbf{Run-to-run variation} (Table~\ref{tab:repeat}).
+DeepSeek gives the same verdict in all three runs for \res{x}{rep_DeepSeek_L1} (L1) to \res{x}{rep_DeepSeek_L3} (L3) of the repeat units,
+and Jev for \res{x}{rep_Jev_L1}--\res{x}{rep_Jev_L2} of all eval units,
+so single-run differences of a few units are noise.
+Qwen agrees on \res{x}{rep_Qwen_L1}--\res{x}{rep_Qwen_L2} of the repeat units.
+Intern-Decision reproduces its scores exactly in a rerun (\res{x}{intern_det_same}/\res{x}{intern_det_n} units),
+and the LoRA endpoint replays the bulk scores exactly.

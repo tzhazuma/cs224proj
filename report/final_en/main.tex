@@ -1,0 +1,97 @@
+% !TeX program = xelatex
+% CS224 final project paper (IEEE conference format). Owner of this file: parent (orchestrator).
+% Lanes edit only the files they own (see OUTLINE.md). Build: `make` (latexmk -xelatex).
+\RequirePackage[T1]{fontenc}
+\documentclass[conference]{IEEEtran}
+
+\usepackage{fontspec}
+% Times/Helvetica/Courier-compatible fonts available in TeX Live and Overleaf (same as proposal/proposal_en.tex).
+\setmainfont{TeX Gyre Termes}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{TeX Gyre Cursor}
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{balance}
+\usepackage{xurl}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+\urlstyle{tt}
+\hypersetup{
+    pdfauthor={Yu Zhang and MingDong Wu and Zhixiong Zhang and Zhihao Tang},
+    pdftitle={Do Memory-Leak Detectors Read Code or Templates? Rebuilding Juliet CWE-401 to Compare Static Analyzers, LLMs, and Decision Models}
+}
+
+% Keep four full author blocks in two centered rows (copied from proposal/proposal_en.tex).
+\makeatletter
+\newcommand{\linebreakand}{%
+    \end{@IEEEauthorhalign}
+    \hfill\mbox{}\par
+    \mbox{}\hfill\begin{@IEEEauthorhalign}
+}
+\makeatother
+
+% ---- shared notation (see OUTLINE.md section 3; do not redefine in section files) ----
+\newcommand{\Orig}{\textsc{Orig}}          % original Juliet units (two good entries + wrapper)
+\newcommand{\Deb}{\textsc{Debiased}}       % main benchmark layer (slides: layer 1)
+\newcommand{\Dead}{\textsc{DeadFree}}      % stress layer: never-executed frees (slides: layer 3)
+\newcommand{\Plac}{\textsc{Placebo}}       % control layer: never-executed non-free statement
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\cwe}{CWE-401}
+\lstset{basicstyle=\ttfamily\scriptsize, columns=fullflexible, keepspaces=true, frame=single,
+        numbers=left, numberstyle=\tiny, xleftmargin=1.5em, language=C, showstringspaces=false}
+% Generated result macros: \res{<method key>-<layer>}{<metric>} (layer: layer1|layer3|placebo|original),
+% metrics p r f1 macro spec ci n tp fp tn fn (+ paired: base d lost gained flips). Unknown -> "pending".
+\input{generated/numbers.tex}
+
+\title{Do Memory-Leak Detectors Read Code or Templates?\\
+Rebuilding Juliet CWE-401 to Compare Static Analyzers, LLMs, and Decision Models}
+\author{
+\IEEEauthorblockN{Yu Zhang}
+\IEEEauthorblockA{ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:Zhangyu12026@shanghaitech.edu.cn}{Zhangyu12026@shanghaitech.edu.cn}}
+\and
+\IEEEauthorblockN{MingDong Wu}
+\IEEEauthorblockA{ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:wumd2024@shanghaitech.edu.cn}{wumd2024@shanghaitech.edu.cn}}
+\linebreakand
+\IEEEauthorblockN{Zhixiong Zhang}
+\IEEEauthorblockA{ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:zhangzhx2026@shanghaitech.edu.cn}{zhangzhx2026@shanghaitech.edu.cn}}
+\and
+\IEEEauthorblockN{Zhihao Tang}
+\IEEEauthorblockA{ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:tangzhh2026@shanghaitech.edu.cn}{tangzhh2026@shanghaitech.edu.cn}}
+}
+
+\begin{document}
+\maketitle
+
+\input{sections/00_abstract}
+\input{sections/01_introduction}
+\input{sections/02_background}
+\input{sections/03_benchmark}
+\input{sections/04_methods}
+\input{sections/05_results}
+\input{sections/06_discussion}
+\input{sections/07_threats}
+\input{sections/08_conclusion}
+
+% (no \balance: material follows the bibliography, and \balance caused overfull vboxes)
+\bibliographystyle{IEEEtran}
+\bibliography{references,references_results}
+
+\appendices
+\input{sections/09_appendix_front}
+\input{sections/10_appendix_results}
+
+\end{document}

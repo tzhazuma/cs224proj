@@ -1,0 +1,72 @@
+% 02_background -- front lane. No result numbers here; Juliet counts are given in Sec. III.
+\section{Background and Related Work}
+\label{sec:background}
+
+\subsection{Memory leaks and the definition we use}
+\cwe{} describes memory that is not released after its effective lifetime~\cite{mitrecwe401}.
+In all prompts, labels and checks, a unit leaks if heap memory obtained from \code{malloc}, \code{calloc}, \code{realloc}, \code{strdup} or \code{new}/\code{new[]} is not released with \code{free}, \code{delete} or \code{delete[]} before the program ends.
+This includes memory that becomes unreachable and memory still held by a global or static pointer at exit.
+It also includes memory that leaks only on some paths, for example the old block when \code{p = realloc(p, n)} fails and returns \code{NULL}~\cite{cppreference_realloc}.
+Both cases follow Juliet's labels, and standard leak checkers treat them differently (\S\ref{sec:bg-dyn}).
+
+\subsection{The Juliet test suite}
+Juliet is a synthetic C/C++ and Java test suite from NIST's Software Assurance Reference Dataset~\cite{boland2012juliet,sard}; we use version~1.3~\cite{black2018juliet13,sardjuliet13}.
+Each test case is one \emph{group}: a \emph{bad} function that contains the flaw and \emph{good} functions that do not.
+Good functions come in two forms.
+\emph{Good-to-bad} (G2B) feeds a safe source into the bad sink.
+\emph{Bad-to-good} (B2G) keeps the bad source and fixes the sink, here by adding the missing \code{free}.
+A group is the product of a \emph{family}, which fixes the data type and the allocation API (e.g.\ \code{int\_malloc}, \code{new\_array\_class}), and a \emph{flow variant}.
+Flow variants wrap the flaw in different control and data flow.
+Variant 01 is the plain baseline; 02--22 add control flow (constant or global conditions, loops, \code{goto}); 31--45 pass data within a file (copies, unions, function arguments, return values, globals); 51--68 pass it across source files; 71--84 use C++ containers, virtual calls and classes.
+Preprocessor macros (\code{OMITBAD}, \code{OMITGOOD}) select the bad or good half of each file, and the \code{good()} wrapper calls the static good functions.
+These conventions make Juliet easy to label but leave label-correlated structure in the code (\S\ref{sec:benchmark}).
+
+\subsection{Static leak detection}
+The four static analyzers we use implement different analysis techniques from the course.
+\emph{Clang Static Analyzer}~\cite{clangsa} performs path-sensitive symbolic execution~\cite{king1976symbolic}.
+It tracks symbolic values and path constraints, drops infeasible branches, and reports allocations that become unreachable on a path.
+\emph{Infer} grew out of separation-logic bi-abduction, which infers compositional pre/post specifications per procedure~\cite{calcagno2009biabduction}.
+Its current engine, Pulse, is based on incorrectness separation logic and reports only bugs that manifest regardless of the calling context~\cite{le2022pulse,inferpulse}.
+\emph{CodeQL} compiles the program into a relational database and evaluates Datalog-style queries over it~\cite{avgustinov2016ql,codeqldocs}.
+Its leak queries are dataflow and reachability queries over the control-flow graph, but they do not check whether path conditions are satisfiable.
+\emph{Cppcheck}~\cite{cppcheck} combines syntactic patterns with a lightweight value-flow analysis and needs no build.
+
+\subsection{Dynamic leak detection}
+\label{sec:bg-dyn}
+AddressSanitizer instruments memory accesses at compile time~\cite{serebryany2012asan}.
+Its LeakSanitizer component scans the heap at exit for blocks that are no longer reachable from roots such as globals, stacks and registers~\cite{lsan}.
+Valgrind's Memcheck runs the binary on a synthetic CPU and classifies leaked blocks as definitely, indirectly or possibly lost, or as still reachable~\cite{nethercote2007valgrind,valgrindmanual}.
+Both see only executed paths, so a \code{realloc} failure is never observed unless injected, and memory that a global holds at exit counts as reachable.
+Because they execute the code, we use them as a label check and a reference, not as competitors.
+
+\subsection{LLMs for vulnerability detection and benchmark shortcuts}
+Learned detectors range from graph neural networks~\cite{zhou2019devign} to fine-tuned code transformers such as LineVul~\cite{fu2022linevul}, which builds on CodeBERT~\cite{feng2020codebert}, and recent reasoning LLMs such as VulnLLM-R~\cite{nie2025vulnllmr}.
+Several studies question what these scores measure.
+Chakraborty et al.\ found that models trained on synthetic data transfer poorly to real code~\cite{chakraborty2021reveal}.
+Risse and B\"ohme show that models exploit spurious features and lose accuracy under semantic-preserving transformations~\cite{risse2024limits}.
+Risse et al.\ argue that function-level benchmarks often cannot be solved from the given code at all~\cite{risse2025topscore}.
+PrimeVul reports that code LMs perform far worse once duplicates and label noise are removed and paired evaluation is used~\cite{ding2025primevul}.
+Closest to our work, Germano et al.\ show that Juliet-style synthetic data carries structural bias, such as \code{static void} functions that appear far more often in non-vulnerable files, and that this bias affects LLM-based detection~\cite{germano2025biased}.
+We extend this line from a data-bias observation to a rebuilt, label-verified benchmark with a stress layer and a placebo control.
+
+\subsection{Neuro-symbolic analysis}
+A second line of work combines LLMs with program analysis instead of replacing it.
+LLift uses an LLM to resolve uncertain cases in a static analyzer~\cite{li2024llift}, and LLM4SA uses one to triage static warnings~\cite{wen2024llm4sa}.
+LLMDFA decomposes dataflow analysis into LLM-solvable subproblems and synthesized scripts~\cite{wang2024llmdfa}.
+NESA (earlier LLMSA) writes analyses as Datalog-style relational programs whose neural relations are evaluated by an LLM~\cite{wang2026nesa}.
+IRIS infers taint specifications with an LLM and checks them with CodeQL~\cite{li2025iris}.
+KNighter synthesizes Clang SA checkers from historical patches~\cite{yang2025knighter}.
+For memory leaks specifically, LAMeD generates allocator and deallocator annotations for existing analyzers~\cite{shemetova2025lamed}.
+MemHint generates memory-management summaries, validates them symbolically and injects them into CodeQL and Infer~\cite{huang2026memhint}.
+LeakGuard is a scalable non-LLM leak detector for real projects~\cite{liang2025leakguard}.
+Our L4 strategy borrows the common pattern: the LLM extracts facts and a Datalog program~\cite{jordan2016souffle} makes the decision.
+
+\subsection{Decision models}
+Decision models answer a fixed question with a probability over the given options in a single forward pass instead of generating text.
+Jev is a hosted ``System One'' model that takes a state and typed questions and returns option probabilities~\cite{typesafe2026jev}.
+Intern-Decision reads the decision from logits at a placeholder position in a JSON answer skeleton~\cite{zhu2026interndecision}.
+AnyJev turns any causal LM into a decision model with a restricted softmax over option tokens and position debiasing~\cite{zhang2026anyjev}.
+Cyber-JEV fine-tunes Qwen3.5-4B with LoRA, a binary head initialized from token embeddings and a matched-pair ranking loss for vulnerability triage~\cite{zhao2026cyberjev}.
+Our LoRA decision model follows this recipe.
+``Look Here, Then Decide'' places a small decision model between a syntactic locator and sanitizer-based reproduction to find memory-safety bugs at scale~\cite{dewachter2026lookhere}.
+None of these works evaluates on \cwe{} with controls for dead code.
