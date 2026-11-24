@@ -1,0 +1,93 @@
+% CS224 course-project presentation (Beamer, metropolis, 16:9). Build: `make` (figures + latexmk -xelatex).
+\documentclass[aspectratio=169,11pt]{beamer}
+\usetheme[progressbar=frametitle, numbering=fraction, sectionpage=progressbar, block=fill]{metropolis}
+% Fira Sans is found by name through fontconfig/fonts.conf (exported by the Makefile);
+% Fira Mono is set by file name so the upright face is used.
+\setmonofont{FiraMono-Regular.otf}[BoldFont=FiraMono-Medium.otf, Scale=0.95]
+% metropolis' title page is a \paperheight-tall minipage, 15.6pt taller than the frame (Overfull \vbox);
+% same template, minus that overshoot.
+\makeatletter
+\setbeamertemplate{title page}{
+  \begin{minipage}[b][\dimexpr\paperheight-16pt\relax]{\textwidth}
+    \ifx\inserttitlegraphic\@empty\else\usebeamertemplate*{title graphic}\fi
+    \vfill%
+    \ifx\inserttitle\@empty\else\usebeamertemplate*{title}\fi
+    \ifx\insertsubtitle\@empty\else\usebeamertemplate*{subtitle}\fi
+    \usebeamertemplate*{title separator}
+    \ifx\beamer@shortauthor\@empty\else\usebeamertemplate*{author}\fi
+    \ifx\insertdate\@empty\else\usebeamertemplate*{date}\fi
+    \ifx\insertinstitute\@empty\else\usebeamertemplate*{institute}\fi
+    \vfill
+    \vspace*{1mm}
+  \end{minipage}
+}
+\makeatother
+
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, fit, calc, backgrounds, shapes.misc, decorations.pathreplacing}
+\usepackage{appendixnumberbeamer}
+\usepackage{pifont}
+
+% ---- palette (Okabe-Ito accents + muted box palette) ----------------------------
+\definecolor{Ink}{HTML}{26303A}
+\definecolor{OIblue}{HTML}{0072B2}
+\definecolor{OIsky}{HTML}{56B4E9}
+\definecolor{OIorange}{HTML}{E69F00}
+\definecolor{OIgreen}{HTML}{009E73}
+\definecolor{OIvermil}{HTML}{D55E00}
+\definecolor{OIpurple}{HTML}{CC79A7}
+\definecolor{HeroFill}{HTML}{E9F1FB}\definecolor{HeroDraw}{HTML}{2F6FB0}
+\definecolor{DataFill}{HTML}{E6F3EE}\definecolor{DataDraw}{HTML}{2E8B7A}
+\definecolor{WarnFill}{HTML}{FBF1E3}\definecolor{WarnDraw}{HTML}{BE8A2E}
+\definecolor{NeutFill}{HTML}{F2F4F8}\definecolor{NeutDraw}{HTML}{5A6472}
+\setbeamercolor{alerted text}{fg=OIvermil}
+
+% ---- small helpers --------------------------------------------------------------
+\newcommand{\cmark}{\textcolor{OIgreen}{\ding{51}}}
+\newcommand{\xmark}{\textcolor{OIvermil}{\ding{55}}}
+\newcommand{\code}[1]{\texttt{\small #1}}
+\input{figures/numbers.tex} % \res{<method key>}{p|r|f1|macro|lat}; "pending" when no eval run yet
+
+\lstdefinestyle{unit}{language=C++, basicstyle=\ttfamily\scriptsize, keywordstyle=\color{OIblue}\bfseries,
+  commentstyle=\color{NeutDraw}, stringstyle=\color{DataDraw}, columns=fullflexible, keepspaces=true,
+  showstringspaces=false, frame=single, rulecolor=\color{NeutDraw!40}, backgroundcolor=\color{NeutFill},
+  framesep=2pt, xleftmargin=3pt, xrightmargin=3pt, aboveskip=2pt, belowskip=2pt,
+  escapeinside={(*}{*)}, morekeywords={printLine, ALLOCA}}
+% highlighted span inside a `unit` listing: (*\hlc{static void}*) -- escaped, so keyword colours do not apply
+\newcommand{\hlc}[1]{\textcolor{OIvermil}{\bfseries #1}}
+\lstdefinestyle{dl}{basicstyle=\ttfamily\scriptsize, columns=fullflexible, keepspaces=true,
+  commentstyle=\color{NeutDraw}, morecomment=[l]{//}, frame=single, rulecolor=\color{NeutDraw!40},
+  backgroundcolor=\color{NeutFill}, framesep=2pt, xleftmargin=3pt, xrightmargin=3pt,
+  escapeinside={(*}{*)}}
+
+\tikzset{
+  box/.style={draw=NeutDraw, fill=NeutFill, rounded corners=2pt, line width=0.6pt, align=center,
+              inner sep=4pt, font=\small},
+  hero/.style={box, draw=HeroDraw, fill=HeroFill, line width=0.9pt},
+  data/.style={box, draw=DataDraw, fill=DataFill},
+  warn/.style={box, draw=WarnDraw, fill=WarnFill},
+  arr/.style={-{Stealth[length=2.2mm]}, line width=0.8pt, draw=Ink},
+  aux/.style={arr, dashed, draw=NeutDraw},
+  lbl/.style={font=\scriptsize, text=NeutDraw, align=center},
+}
+
+\title{Near-LLM Quality at Decision-Model Speed?}
+\subtitle{Comparing LLM-based approaches for C/C++ memory-leak detection on a debiased Juliet}
+\author{Yu Zhang \and MingDong Wu \and Zhixiong Zhang \and Zhihao Tang}
+\institute{CS224 Program Analysis --- course project\quad\textbullet\quad ShanghaiTech University}
+\date{Nov 26, 2026}
+
+\begin{document}
+\maketitle
+
+\input{sections/01_motivation}
+\input{sections/02_benchmark}
+\input{sections/03_methods}
+\input{sections/04_results}
+\input{sections/05_demo_plan}
+
+\appendix
+\input{sections/99_appendix}
+\end{document}

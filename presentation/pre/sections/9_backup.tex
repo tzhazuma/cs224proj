@@ -1,0 +1,353 @@
+% Backup slides (after \appendix, not counted in the talk).
+
+% ------------------------------------------------------------------------------
+\begin{frame}[fragile]{Backup: where the template shortcut comes from}
+  \begin{columns}[T]
+    \begin{column}{0.42\textwidth}
+      \textbf{bad unit}\\[1pt]
+\begin{lstlisting}[style=unit]
+void sym_0() {
+  char *data = NULL;
+  data = (char *)malloc(100);
+  if (data == NULL) exit(-1);
+  strcpy(data, "A String");
+  printLine(data);
+  ;                  /* no free */
+}
+\end{lstlisting}
+      {\small Function names renamed to \texttt{sym\_N}; abridged.}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \textbf{good unit (Original)}\\[1pt]
+\begin{lstlisting}[style=unit]
+(*\hlc{static void}*) sym_1() {        /* G2B */
+  char *data = (char *)ALLOCA(100);
+  strcpy(data, "A String"); printLine(data);
+}
+(*\hlc{static void}*) sym_2() {        /* B2G */
+  char *data = (char *)malloc(100);
+  ...; printLine(data); free(data);
+}
+void sym_0() { sym_1(); sym_2(); }
+\end{lstlisting}
+      {\small Length, function count and \code{static} reveal the label.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: task and data}
+  \begin{itemize}
+    \item One Juliet CWE-401 unit (C or C++) $\to$ leak / no leak
+    \item 1,658 bad/good groups, 42 families, 48 flow variants
+    \item C 868 / C++ 790 groups; 3,316 units per layer
+    \item Debiased G2B / B2G good units $\approx$ 50/50 per flow category
+    \item Dev 330 groups (9 variants); eval 1,328 groups (39 variants)
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: Original vs Debiased, all detectors}
+  \centering
+  {\footnotesize\renewcommand{\arraystretch}{0.86}\input{figures/original.tex}}\\[2pt]
+  {\scriptsize Macro-F1 on the eval set (2,656 units). $^\dagger$\,DeepSeek: nested25 subset (664 units).\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: method matrix with versions}
+  \footnotesize
+  \renewcommand{\arraystretch}{0.9}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Group & Method & Program-analysis idea \\
+    \midrule
+    Static & grep: is there a \code{free}/\code{delete}? & lexical baseline \\
+           & Cppcheck 2.22 & intraprocedural dataflow \\
+           & Clang SA 23.1.6 & path-sensitive symbolic execution \\
+           & CodeQL 2.27.5 & Datalog-style queries over dataflow \\
+           & Infer 1.3 (Pulse) & interprocedural summaries \\
+    Learned & LineVul, zero-shot & token classifier (CodeBERT) \\
+    Generative & DeepSeek V4.1 Flash (API) $\times$ L1--L4 & L4: LLM facts + Datalog \\
+        & Qwen3.5-4B (local) $\times$ L1--L4 & same prompts, one RTX 3090 \\
+    Decision & Jev 1.14 (API), Intern-Decision-4B $\times$ L1--L3 & read the option probability \\
+             & \textbf{ours}: LoRA decision model $\times$ \{L1, L3\} & fine-tuned score, 3-fold CV \\
+    \midrule
+    \textcolor{NeutDraw}{Reference} & \textcolor{NeutDraw}{ASan/LSan, Valgrind, Dynamic-enhanced} &
+      \textcolor{NeutDraw}{runs the program: shown, not ranked} \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  {\scriptsize Missing output, timeout or compile error counts as a wrong prediction.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: prompt strategies L1--L4}
+  \begin{description}[L4]
+    \item[L1] direct: code $\to$ \code{\{label, confidence\}}
+    \item[L2] few-shot: + fixed dev examples
+    \item[L3] analysis-guided: + Clang SA warnings
+    \item[L4] neuro-symbolic: the LLM lists heap facts, \textbf{Datalog} decides
+  \end{description}
+  \vspace{4pt}
+  \centering
+  \begin{tikzpicture}[node distance=4mm and 4mm]
+    \node[box] (code) {unit\\code};
+    \node[hero, right=of code] (llm) {LLM\\{\scriptsize DeepSeek / Qwen3.5-4B}};
+    \node[data, right=6mm of llm, font=\scriptsize, align=left] (facts) {%
+      \texttt{alloc realloc free}\\
+      \texttt{assign pass ret call}\\
+      \texttt{global dead(line)}};
+    \node[hero, right=of facts] (dl) {Souffl\'e\\{\scriptsize \texttt{leak.dl}}};
+    \node[warn, right=of dl] (out) {\texttt{leak(o,\,why)}\\{\scriptsize non-empty $\Rightarrow$ leak}};
+    \draw[arr] (code) -- (llm);
+    \draw[arr] (llm) -- node[lbl, above] {JSON} (facts);
+    \draw[arr] (facts) -- (dl);
+    \draw[arr] (dl) -- (out);
+  \end{tikzpicture}
+  \vfill
+  {\scriptsize Same prompt text for DeepSeek and Qwen3.5-4B; temperature 0, thinking off; prompts frozen before eval.
+  Decision models read P(leak) for L1--L3.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}[fragile]{Backup: L4 (LLM facts + Datalog) is the most robust prompt}
+  \begin{columns}[T]
+    \begin{column}{0.59\textwidth}
+\begin{lstlisting}[style=dl]
+reach("main").
+reach(g) :- reach(f), call(f, g, l), !dead(l).
+new_obj(o, v, f) :- alloc(o, v, f, l),
+                    reach(f), !dead(l).
+pts(s, v, o) :- new_obj(o, v, f),
+                scope(f, v, s).
+pts(sd, d, o) :- assign(d, x, f, l), !dead(l),
+                 ..., pts(sx, x, o).
+freed(o) :- free(v, f, l), reach(f), !dead(l),
+            ..., pts(s, v, o).
+(*\textcolor{OIblue}{\bfseries leak(o, "never\_freed")}*) :-
+        new_obj(o, _, _), !freed(o).
+\end{lstlisting}
+      {\tiny Abridged from \texttt{juliet\_full/llm/l4/leak.dl} (v3): Andersen-style, flow-insensitive;
+      + \texttt{realloc\_fail} rule.\par}
+    \end{column}
+    \begin{column}{0.39\textwidth}
+      \begin{itemize}\small
+        \item DeepSeek L4, Debiased: \res{deepseek_L4-layer1}{macro} (L1 \res{deepseek_L1-layer1}{macro})
+        \item DeadFree $\Delta$ \res{deepseek_L4-layer3}{d}, smallest of L1--L4 (L1 \res{deepseek_L1-layer3}{d})
+        \item FP/FN: L1 \res{deepseek_L1-layer3}{fp}/\res{deepseek_L1-layer3}{fn},
+              L4 \res{deepseek_L4-layer3}{fp}/\res{deepseek_L4-layer3}{fn}
+        \item 99.87\% of facts grounded to a source line
+        \item Qwen3.5-4B L4: \res{qwen_L4-layer1}{macro} $\to$ \res{qwen_L4-layer3}{macro}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vfill
+  {\scriptsize Paired on nested25 (664 units). A dead \code{free} is dropped by \code{!dead(l)}, so the leak survives.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: one 4B base model, three uses}
+  \centering
+  \begin{tikzpicture}[node distance=3mm and 12mm]
+    \node[hero, minimum height=16mm, minimum width=22mm] (m) {\textbf{Qwen3.5-4B}\\{\scriptsize same base}};
+    \node[box, right=of m, minimum width=62mm, align=left] (u2) {\textbf{read-out}: P(Yes) vs P(No), no generation\\
+      {\scriptsize Intern-Decision (same base); plain Qwen3.5-4B as ablation}};
+    \node[box, above=of u2, minimum width=62mm, align=left] (u1) {\textbf{generate}: answers L1--L4\\
+      {\scriptsize JSON label, or facts for L4}};
+    \node[data, below=of u2, minimum width=62mm, align=left] (u3) {\textbf{fine-tune}: LoRA decision model (ours)\\
+      {\scriptsize $s=\ell_{\text{Yes}}-\ell_{\text{No}}$; balanced CE + bad$>$good ranking loss}};
+    \draw[arr] (m.east) -- (u1.west);
+    \draw[arr] (m.east) -- (u2.west);
+    \draw[arr] (m.east) -- (u3.west);
+  \end{tikzpicture}
+  \vspace{4pt}
+
+  {\small LoRA r16, $\alpha$32: 32.5\,M trainable = 0.70\%. Train on two folds, predict the third; merged adapters.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: Debiased, all methods and strategies}
+  \centering
+  \includegraphics[width=\linewidth,height=0.86\textheight,keepaspectratio]{figures/prf1_full.pdf}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+% src: McNemar rows from report/final_en/tables/res_mcnemar.tex (18 pre-registered tests, Holm);
+%   bootstrap rows from parent analysis juliet_full/analysis/near_llm_bootstrap.py (seed 20261123, B=2000, family-cluster, macro-F1 difference).
+\begin{frame}{Backup: paired tests on Debiased (2,656 units)}
+  \centering
+  \small
+  \begin{tabular}{@{}llr@{}}
+    \toprule
+    A vs B & statistic & result \\
+    \midrule
+    LoRA L1 vs DeepSeek L1 & $\Delta$macro-F1, 95\% CI & $-0.0113$ $[-0.0143, -0.0084]$ \\
+    & only-right units & 12 vs 42 \\
+    LoRA L1 vs Jev L1 & $\Delta$macro-F1, 95\% CI & $+0.0132$ $[+0.0029, +0.0282]$ \\
+    Intern-Decision L1 vs Qwen3.5-4B L1 & $\Delta$macro-F1 & $+0.0711$ \\
+    \midrule
+    DeepSeek L1 vs DeepSeek L4 & McNemar $b$/$c$, $p_\text{Holm}$ & 63 / 12, $6.2{\times}10^{-8}$ \\
+    DeepSeek L1 vs Qwen3.5-4B L1 & McNemar $b$/$c$, $p_\text{Holm}$ & 641 / 0, $9.4{\times}10^{-140}$ \\
+    DeepSeek L2 vs CodeQL & McNemar $b$/$c$, $p_\text{Holm}$ & 306 / 0, $5.7{\times}10^{-67}$ \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  {\scriptsize Bootstrap: 2,000 family-cluster resamples. McNemar: 18 pre-registered tests, Holm-corrected.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: DeadFree vs Placebo, all methods and strategies}
+  \centering
+  \includegraphics[width=\linewidth,height=0.83\textheight,keepaspectratio]{figures/robustness_full.pdf}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: DeadFree vs Placebo deltas, key methods}
+  \centering
+  \small
+  \begin{tabular}{@{}lccccc@{}}
+    \toprule
+    Method & Debiased & DeadFree & $\Delta$ & Placebo & $\Delta$ \\
+    \midrule
+    DeepSeek L1$^\dagger$ & \res{deepseek_L1-layer3}{base} & \res{deepseek_L1-layer3}{macro} & \res{deepseek_L1-layer3}{d} & \res{deepseek_L1-placebo}{macro} & \res{deepseek_L1-placebo}{d} \\
+    Jev L1 & \res{jev_L1-layer1}{macro} & \res{jev_L1-layer3}{macro} & \res{jev_L1-layer3}{d} & \res{jev_L1-placebo}{macro} & \res{jev_L1-placebo}{d} \\
+    Qwen3.5-4B L1 & \res{qwen_L1-layer1}{macro} & \res{qwen_L1-layer3}{macro} & \res{qwen_L1-layer3}{d} & \res{qwen_L1-placebo}{macro} & \res{qwen_L1-placebo}{d} \\
+    Intern-Decision L1 & \res{intern_L1-layer1}{macro} & \res{intern_L1-layer3}{macro} & \res{intern_L1-layer3}{d} & \res{intern_L1-placebo}{macro} & \res{intern_L1-placebo}{d} \\
+    LoRA decision model L1 & \res{lora_L1-layer1}{macro} & \res{lora_L1-layer3}{macro} & \res{lora_L1-layer3}{d} & \res{lora_L1-placebo}{macro} & \res{lora_L1-placebo}{d} \\
+    LoRA decision model L3 & \res{lora_L3-layer1}{macro} & \res{lora_L3-layer3}{macro} & \res{lora_L3-layer3}{d} & \res{lora_L3-placebo}{macro} & \res{lora_L3-placebo}{d} \\
+    CodeQL & \res{codeql-layer1}{macro} & \res{codeql-layer3}{macro} & \res{codeql-layer3}{d} & \res{codeql-placebo}{macro} & \res{codeql-placebo}{d} \\
+    grep & \res{grep-layer1}{macro} & \res{grep-layer3}{macro} & \res{grep-layer3}{d} & \res{grep-placebo}{macro} & \res{grep-placebo}{d} \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  {\scriptsize Macro-F1, paired units. $^\dagger$\,nested25 subset (664 units) for DeadFree and Placebo.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: where each method fails, by flow category}
+  \centering
+  \includegraphics[width=\linewidth,height=0.76\textheight,keepaspectratio]{figures/heatmap.pdf}
+  \\[2pt]{\scriptsize Macro-F1 on Debiased, eval set, per Juliet flow-variant group.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: by leak mechanism and good-unit kind}
+  \centering
+  \includegraphics[width=\linewidth,height=0.80\textheight,keepaspectratio]{figures/mechanism.pdf}
+  \\[2pt]{\scriptsize Leak recall per mechanism (bad units); specificity per good kind (G2B / B2G). Debiased vs DeadFree.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: repeat agreement and merged vs unmerged LoRA}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      {\small Same prompt, 3 runs (Debiased)\\[2pt]
+      \input{figures/repeat.tex}\par}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\small
+        \item Reported LoRA = adapters \textbf{merged} into BF16 weights
+        \item Unmerged, Debiased: L1 \res{lora_unmerged_L1-layer1}{macro}, L3 \res{lora_unmerged_L3-layer1}{macro}
+        \item Predictions that differ: \res{x}{unmerged_flips_L1} (L1), \res{x}{unmerged_flips_L3} (L3) of 2,656
+        \item Only BF16 rounding of large logits
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: CodeQL batching artifact}
+  \begin{itemize}
+    \item CodeQL builds one database per \textbf{50 units} (7.36\,s $\to$ 0.32\,s per unit)
+    \item \code{\_08} units define helpers \code{staticReturnsTrue/False}, not renamed per unit
+    \item In a shared database the guard cannot be resolved: ``may not be freed'' fires
+    \item \textbf{4} extra false positives on eval good units (per-unit runs are clean)
+    \item Not corrected: configuration frozen before eval
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: cost of every API run}
+  \begin{columns}[T]
+    \begin{column}{0.60\textwidth}
+      {\scriptsize\resizebox{\linewidth}{!}{\input{figures/cost.tex}}\par}
+    \end{column}
+    \begin{column}{0.37\textwidth}
+      \begin{itemize}\small
+        \item DeepSeek cap \textyen10; hard stop at \textyen9.5
+        \item Total: \textyen\res{x}{cost_deepseek} and \$\res{x}{cost_jev}
+        \item Per 1k units: DeepSeek L1 \textyen0.397, Jev L1 \$0.0345
+        \item Hence DeepSeek nested25 (664 units)
+        \item Local models: no API cost
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  % src: per-1k cost from report/final_en/generated/numbers.tex (res-x-cost1k_deepseek_L1, res-x-cost1k_jev_L1)
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: latency at concurrency 1}
+  \centering
+  {\tiny\renewcommand{\arraystretch}{0.92}\resizebox{\linewidth}{!}{\input{figures/latency.tex}}\par}
+  \vfill
+  {\scriptsize Median end-to-end per unit. Source table: \texttt{figures/latency\_c1.csv}.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: are the labels still right? Compile and run every unit}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}\small
+        \item gcc and clang compile \textbf{3,316 / 3,316} units in every layer
+        \item No good unit flagged by ASan/LSan or Dynamic-enhanced
+        \item Labels never changed; disagreements explained
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.51\textwidth}
+      {\footnotesize Dynamic-enhanced: what it takes to catch the 1,658 bad units\\[2pt]
+      \begin{tabular}{@{}lr@{}}
+        \toprule
+        Needed & units \\
+        \midrule
+        plain run, every seed & 1,448 \\
+        some seeds only (variant 12, random) & 34 \\
+        \texttt{use\_globals=0} (globals at exit) & 68 \\
+        \texttt{realloc} failure injected & 108 \\
+        \bottomrule
+      \end{tabular}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: why dynamic tools are a reference line, not a competitor}
+  \begin{itemize}
+    \item Plain ASan/LSan: precision 1.000, macro-F1 \res{asan_lsan-layer1}{macro} on Debiased
+    \item Misses: \code{realloc} failure 0/84; globals at exit; random branch not taken
+    \item LSan with \code{use\_stacks=0}: default options miss 175 more bad units
+    \item Dynamic-enhanced reaches \res{dynamic_enhanced-layer1}{macro}: we chose inputs and faults
+    \item They need a build, a run and the right input
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: demo dry run (stage unit, all detectors)}
+  \centering
+  {\small\input{figures/demo.tex}\par}
+  \vfill
+  {\scriptsize Fallback: \texttt{demo.py --replay recordings/stage\_final.json} or \texttt{recordings/stage\_final.mp4}.
+  Dry-run cost: \textyen\res{x}{demo_cny} DeepSeek, \$\res{x}{demo_usd} Jev.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Backup: earlier SecVulEval study}
+  \begin{itemize}
+    \item Real CVE functions from SecVulEval (Ahmed et al., AIware'26)
+    \item Pair task: MiMo single-order accuracy 86.7\%
+    \item Swapped order: MiMo 74.44\%, DeepSeek 61.67\%
+    \item Same lesson: check the benchmark before ranking models
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\input{figures/provenance.tex}

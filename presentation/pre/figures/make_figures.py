@@ -9,8 +9,12 @@ cover >= min_coverage of its target units is "pending": drawn grey, printed as "
 Robustness deltas are paired: layer 1 is rescored on exactly the units of the layer-3 (placebo) run.
 Latency on the Pareto plot comes only from latency_c1.csv (concurrency-1 measurements with their source).
 
+Layer names on the slides: layer1 = Debiased, layer3 = DeadFree (never-executed frees), placebo = Placebo
+(never-executed prints), original = Original Juliet.
+
 Outputs (next to this file): probes.pdf, prf1.pdf, pareto.pdf, robustness.pdf, lora.pdf, heatmap.pdf,
-mechanism.pdf, numbers.tex (\\res{<key>-<layer>}{<metric>}), original.tex, demo.tex, repeat.tex, cost.tex,
+mechanism.pdf, the single-message main-slide figures hook_original.pdf, quality.pdf, nearllm.pdf, deadfree.pdf,
+numbers.tex (\\res{<key>-<layer>}{<metric>}), original.tex, demo.tex, repeat.tex, cost.tex,
 latency.tex, provenance.tex and results_summary.json.
 """
 from __future__ import annotations
@@ -42,6 +46,7 @@ REGISTRY_PATH = HERE / "methods.json"
 LATENCY_PATH = HERE / "latency_c1.csv"
 EVAL_SET = "eval"
 LAYERS = ("layer1", "layer3", "placebo", "original")
+LAYER_NAMES = {"layer1": "Debiased", "layer3": "DeadFree", "placebo": "Placebo", "original": "Original"}
 FLOW_CATEGORIES = ["01", "02-22", "31-45", "51-68", "71-84"]
 FLOW_LABELS = {"01": "01 baseline", "02-22": "02–22 control flow", "31-45": "31–45 data flow",
                "51-68": "51–68 cross-file", "71-84": "71–84 C++ objects"}
@@ -285,7 +290,7 @@ def plot_probes() -> None:
     ax.set_xlim(0.12, 1.13)
     ax.set_xlabel("macro-F1 (probe fitted on dev)")
     ax.legend(handles=[Line2D([], [], marker="o", color=VERMIL, ls="", label="original Juliet"),
-                       Line2D([], [], marker="D", color=BLUE, ls="", label="debiased layer 1")],
+                       Line2D([], [], marker="D", color=BLUE, ls="", label="Debiased")],
               loc="lower left", frameon=False, ncol=2, bbox_to_anchor=(0.0, 1.0), borderaxespad=0.1)
     save(fig, "probes.pdf")
 
@@ -350,8 +355,8 @@ def plot_prf1(results: list[dict], name: str, exclude: frozenset = frozenset(),
             ax.text(0.015, y, short(info["macro"]), ha="left", va="center", fontsize=7.5, zorder=5,
                     color="white" if r["ranked"] else INK, fontweight="semibold")
         ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0], ["0", ".25", ".5", ".75", "1"])
-    axes[0].set_xlabel("score on layer 1", fontsize=9)
-    axes[1].set_xlabel("score on layer 1", fontsize=9)
+    axes[0].set_xlabel("score on Debiased", fontsize=9)
+    axes[1].set_xlabel("score on Debiased", fontsize=9)
     fig.legend(handles=[Patch(color=GREY, label="bar: macro-F1 (95% CI)"),
                         Line2D([], [], marker="|", color=INK, ls="", markersize=8, markeredgewidth=1.4,
                                label="precision (leak)"),
@@ -451,7 +456,7 @@ def plot_pareto(results: list[dict], latency: dict[str, dict]) -> list[str]:
     ax.set_ylim(0.42, 1.03)
     label_points(ax, pts)
     ax.set_xlabel("latency per unit at concurrency 1 (s, log scale)")
-    ax.set_ylabel("macro-F1 on layer 1 (95% CI)")
+    ax.set_ylabel("macro-F1 on Debiased (95% CI)")
     handles = [Line2D([], [], marker=FAMILY_STYLE[f][1], color=FAMILY_STYLE[f][0], ls="", label=FAMILY_LABELS[f])
                for f in ("Static", "Learned", "DeepSeek", "Qwen3.5-4B", "Decision", "Dynamic")]
     handles += [Line2D([], [], marker="s", markerfacecolor="white", color=BLUE, ls=":", lw=0.7,
@@ -480,7 +485,7 @@ def plot_robustness(results: list[dict], name: str, exclude: frozenset = frozens
             if info is None or "base" not in info:
                 ax.barh(y, 0.7, 0.62, left=0.3, color=LIGHT, zorder=1)
                 ax.text(0.65, y, "pending", ha="center", va="center", fontsize=7.5, color=GREY)
-                pending.append(r["label"] + " layer 3")
+                pending.append(r["label"] + " DeadFree")
                 continue
             color = FAMILY_STYLE[r["family"]][0] if r["ranked"] else GREY
             a, b = info["base"], info["macro"]
@@ -503,10 +508,10 @@ def plot_robustness(results: list[dict], name: str, exclude: frozenset = frozens
                     color=VERMIL if d < -0.05 else INK, clip_on=False)
         ax.set_xticks([0.4, 0.6, 0.8, 1.0], [".4", ".6", ".8", "1"])
         ax.set_xlabel("macro-F1", fontsize=9)
-    fig.legend(handles=[Line2D([], [], marker="o", markerfacecolor="white", color=INK, ls="", label="layer 1"),
-                        Line2D([], [], marker="o", color=INK, ls="", label="layer 3 dead frees"),
-                        Line2D([], [], marker="D", markerfacecolor="none", color=GREY, ls="", label="placebo"),
-                        Line2D([], [], ls="", label="Δ = layer 3 − layer 1, paired;  † nested25 (664 units)")],
+    fig.legend(handles=[Line2D([], [], marker="o", markerfacecolor="white", color=INK, ls="", label="Debiased"),
+                        Line2D([], [], marker="o", color=INK, ls="", label="DeadFree"),
+                        Line2D([], [], marker="D", markerfacecolor="none", color=GREY, ls="", label="Placebo"),
+                        Line2D([], [], ls="", label="Δ = DeadFree − Debiased, paired;  † nested25 (664 units)")],
                loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4, frameon=False, fontsize=8, handletextpad=0.3, columnspacing=1.2)
     pending_note(fig, pending)
     save(fig, name)
@@ -515,10 +520,10 @@ def plot_robustness(results: list[dict], name: str, exclude: frozenset = frozens
 
 def plot_lora(results: list[dict]) -> list[str]:
     """Shortcut amplification: zero-shot read-out (same base, no LoRA) vs LoRA, layer 1 / 3 / placebo."""
-    groups = [("readout_L1", "read-out\nL1"), ("lora_L1", "LoRA\nL1"), ("readout_L3", "read-out\nL3"),
+    groups = [("readout_L1", "no LoRA\nL1"), ("lora_L1", "LoRA\nL1"), ("readout_L3", "no LoRA\nL3"),
               ("lora_L3", "LoRA\nL3")]
-    series = [("layer1", "layer 1", BLUE, ""), ("layer3", "layer 3 dead frees", VERMIL, ""),
-              ("placebo", "placebo", GREY, "")]
+    series = [("layer1", "Debiased", BLUE, ""), ("layer3", "DeadFree", VERMIL, ""),
+              ("placebo", "Placebo", GREY, "")]
     fig, ax = plt.subplots(figsize=(3.7, 2.5), layout="constrained")
     width, pending = 0.26, []
     for i, (key, _) in enumerate(groups):
@@ -547,6 +552,156 @@ def plot_lora(results: list[dict]) -> list[str]:
     pending_note(fig, pending)
     save(fig, "lora.pdf")
     return pending
+
+
+# ---------------------------------------------------------------------------
+# Single-message figures for the main slides (v3): few methods, one claim each
+# ---------------------------------------------------------------------------
+# primary axis of the talk: generative LLM vs decision model; static analyzers are baselines
+KIND_COLOR = {"DeepSeek": VERMIL, "Qwen3.5-4B": VERMIL, "Decision": GREEN, "Static": BLUE, "Learned": PURPLE}
+KIND_LEGEND = [(VERMIL, "generative LLM"), (GREEN, "decision model"), (BLUE, "static analyzer"),
+               (PURPLE, "learned classifier")]
+
+
+def bar_labels(ax, ys, values, colors, fmt=short, dx=0.012, fontsize=8.5):
+    for y, v, c in zip(ys, values, colors):
+        ax.text(v + dx, y, fmt(v), va="center", ha="left", fontsize=fontsize, color=c, fontweight="semibold")
+
+
+def plot_hook_original(results: list[dict]) -> None:
+    """Intro: on Original Juliet two shortcut rules score above the static analyzers (eval set, macro-F1)."""
+    probes = json.loads(PROBES_PATH.read_text())
+    rows = [("'static void' → good", probes["original"]["static_void"]["macro_f1"]["all"], VERMIL),
+            ("no free/delete → leak", ok(get(results, "grep"), "original")["macro"], VERMIL)]
+    rows += [(get(results, k)["label"], ok(get(results, k), "original")["macro"], BLUE)
+             for k in ("clang_sa", "codeql", "infer")]
+    fig, ax = plt.subplots(figsize=(4.4, 1.95), layout="constrained")
+    ys = list(range(len(rows)))
+    ax.barh(ys, [r[1] for r in rows], 0.62, color=[r[2] for r in rows], alpha=0.88)
+    bar_labels(ax, ys, [r[1] for r in rows], [r[2] for r in rows], fmt=lambda v: f"{v:.3f}", fontsize=9.5)
+    ax.set_yticks(ys, [r[0] for r in rows], fontsize=10)
+    ax.set_ylim(len(rows) - 0.5, -0.5)
+    ax.set_xlim(0, 1.13)
+    ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0], ["0", ".25", ".5", ".75", "1"])
+    ax.set_xlabel("macro-F1 on Original Juliet (eval, 2,656 units)", fontsize=9)
+    ax.spines["left"].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+    ax.legend(handles=[Patch(color=VERMIL, label="one-line shortcut rule"), Patch(color=BLUE, label="static analyzer")],
+              loc="lower left", bbox_to_anchor=(0, 1.0), ncol=2, frameon=False, fontsize=8.5)
+    save(fig, "hook_original.pdf")
+
+
+def plot_quality(results: list[dict]) -> None:
+    """Main quality comparison on Debiased: L1 of every model, the static tools, LineVul; ASan/LSan as a line."""
+    keys = ["deepseek_L1", "lora_L1", "jev_L1", "intern_L1", "qwen_L1", "codeql", "clang_sa", "infer", "grep",
+            "cppcheck", "linevul"]
+    rows = sorted((get(results, k) for k in keys), key=lambda r: -ok(r, "layer1")["macro"])
+    fig, ax = plt.subplots(figsize=(5.2, 2.75), layout="constrained")
+    ys = list(range(len(rows)))
+    vals = [ok(r, "layer1")["macro"] for r in rows]
+    cols = [KIND_COLOR[r["family"]] for r in rows]
+    ax.barh(ys, vals, 0.66, color=cols, alpha=0.88, zorder=2)
+    for y, r in zip(ys, rows):
+        lo, hi = ok(r, "layer1")["macro_ci"]
+        ax.plot([lo, hi], [y, y], color=INK, lw=0.8, zorder=3)
+    tips = [max(v, ok(r, "layer1")["macro_ci"][1]) for v, r in zip(vals, rows)]
+    for y, v, t, c in zip(ys, vals, tips, cols):
+        ax.text(t + 0.015, y, short(v), va="center", ha="left", fontsize=8, color=c, fontweight="semibold", zorder=4,
+                bbox=dict(fc="white", ec="none", pad=0.6))
+    ax.set_yticks(ys, [r["label"] for r in rows], fontsize=8.5)
+    for tick, r in zip(ax.get_yticklabels(), rows):
+        if r["key"] == "lora_L1":
+            tick.set_fontweight("bold")
+    ref = ok(get(results, "asan_lsan"), "layer1")["macro"]
+    ax.axvline(ref, color=GREY, ls="--", lw=0.9, zorder=1)
+    ax.text(ref + 0.012, len(rows) - 1, f"ASan/LSan\n{short(ref)}", ha="left", va="center",
+            fontsize=7.5, color=GREY)
+    ax.set_ylim(len(rows) - 0.4, -0.6)
+    ax.set_xlim(0, 1.1)
+    ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0], ["0", ".25", ".5", ".75", "1"])
+    ax.set_xlabel("macro-F1 on Debiased (eval, 2,656 units; 95% CI)", fontsize=8.5)
+    ax.spines["left"].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+    ax.legend(handles=[Patch(color=c, label=lab) for c, lab in KIND_LEGEND], loc="lower left",
+              bbox_to_anchor=(0, 1.0), ncol=4, frameon=False, fontsize=8, handlelength=1.0, columnspacing=1.0)
+    save(fig, "quality.pdf")
+
+
+def plot_nearllm(results: list[dict], latency: dict[str, dict]) -> None:
+    """Near-LLM quality: DeepSeek L1 vs our LoRA decision model L1 (and Jev L1), macro-F1 and c1 latency."""
+    keys = [("deepseek_L1", "DeepSeek L1 (API)", VERMIL), ("jev_L1", "Jev L1 (API)", "#7CC4AE"),
+            ("lora_L1", "LoRA decision model L1", GREEN)]
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(5.6, 1.6), layout="constrained", sharey=True)
+    ys = list(range(len(keys)))
+    vals = [ok(get(results, k), "layer1")["macro"] for k, _, _ in keys]
+    lats = [float(latency[k]["latency_s"]) for k, _, _ in keys]
+    cols = [c for _, _, c in keys]
+    a1.barh(ys, vals, 0.62, color=cols)
+    bar_labels(a1, ys, vals, [INK] * 3, fmt=lambda v: f"{v:.3f}", dx=0.02, fontsize=9)
+    a1.set_xlim(0, 1.25)
+    a1.set_xticks([0, 0.5, 1.0], ["0", ".5", "1"])
+    a1.set_xlabel("macro-F1 on Debiased", fontsize=9)
+    a2.barh(ys, lats, 0.62, color=cols)
+    bar_labels(a2, ys, lats, [INK] * 3, fmt=lambda v: f"{v:.3f} s", dx=0.02, fontsize=9)
+    a2.set_xlim(0, 1.2)
+    a2.set_xlabel("latency per unit, median (s)", fontsize=9)
+    a1.set_yticks(ys, [lab for _, lab, _ in keys], fontsize=9.5)
+    for tick, (k, _, _) in zip(a1.get_yticklabels(), keys):
+        if k == "lora_L1":
+            tick.set_fontweight("bold")
+    a1.set_ylim(len(keys) - 0.5, -0.5)
+    for ax in (a1, a2):
+        ax.spines["left"].set_visible(False)
+        ax.tick_params(axis="y", length=0)
+    save(fig, "nearllm.pdf")
+
+
+def plot_deadfree(results: list[dict]) -> None:
+    """DeadFree, key methods: paired Debiased -> DeadFree macro-F1, Placebo as a diamond, failure mode on the right.
+    Mode: 0 flips = robust; |delta| < 0.05 = small drop; else more new misses (lost) or more new false alarms (gained)."""
+    keys = ["clang_sa", "infer", "jev_L1", "deepseek_L1", "codeql", "qwen_L1", "intern_L1", "lora_L3", "grep",
+            "lora_L1"]
+    fig, ax = plt.subplots(figsize=(5.6, 2.75), layout="constrained")
+    for y, key in enumerate(keys):
+        r = get(results, key)
+        info, pl = ok(r, "layer3"), ok(r, "placebo")
+        a, b = info["base"], info["macro"]
+        if info["flips"] == 0:
+            color, note = BLUE, "0 flips"
+        elif abs(info["d"]) < 0.05:
+            color, note = GREY, "small drop"
+        elif info["lost"] >= info["gained"]:
+            color, note = VERMIL, f"+{info['lost']:,} misses"
+        else:
+            color, note = ORANGE, f"+{info['gained']:,} false alarms"
+        if abs(b - a) > 0.012:
+            ax.annotate("", (b, y), (a, y), arrowprops=dict(arrowstyle="-|>", color=color, lw=1.5, mutation_scale=9,
+                                                             shrinkA=0, shrinkB=1), zorder=3)
+        ax.scatter(a, y, s=30, facecolors="white", edgecolors=color, linewidths=1.2, zorder=4)
+        ax.scatter(b, y, s=30, color=color, zorder=4)
+        if pl and "base" in pl:
+            ax.scatter(pl["macro"], y, s=22, marker="D", facecolors="none", edgecolors=GREY, linewidths=0.9, zorder=5)
+        d = f"{info['d']:+.3f}".replace("-", "−").replace("+0.000", "±0")
+        ax.text(1.03, y, d + ("†" if info.get("subset") else ""), transform=ax.get_yaxis_transform(), ha="left",
+                va="center", fontsize=8.5, color=INK, clip_on=False)
+        ax.text(1.20, y, note, transform=ax.get_yaxis_transform(), ha="left", va="center", fontsize=8.5,
+                color=color, clip_on=False, fontweight="semibold")
+    ax.set_yticks(range(len(keys)), [get(results, k)["label"] for k in keys], fontsize=8.5)
+    ax.set_ylim(len(keys) - 0.5, -0.6)
+    ax.set_xlim(0.3, 1.02)
+    ax.set_xticks([0.4, 0.6, 0.8, 1.0], [".4", ".6", ".8", "1"])
+    ax.set_xlabel("macro-F1 (paired units)", fontsize=9)
+    ax.spines["left"].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+    ax.grid(axis="x", color=LIGHT, lw=0.6, zorder=0)
+    ax.set_axisbelow(True)
+    ax.legend(handles=[Line2D([], [], marker="o", markerfacecolor="white", color=INK, ls="", label="Debiased"),
+                       Line2D([], [], marker="o", color=INK, ls="", label="DeadFree"),
+                       Line2D([], [], marker="D", markerfacecolor="none", color=GREY, ls="", label="Placebo"),
+                       Line2D([], [], ls="", label="† nested25 (664 units)")],
+              loc="lower left", bbox_to_anchor=(0, 1.0), ncol=4, frameon=False, fontsize=8, handletextpad=0.3,
+              columnspacing=1.0)
+    save(fig, "deadfree.pdf")
 
 
 def heat(ax, grid, xlabels, ylabels, cmap="cividis", fontsize=7.0):
@@ -599,7 +754,7 @@ def plot_mechanism(results: list[dict]) -> None:
             ("spec_by_good_kind", "B2G", "Spec B2G")]
     rows = main_rows(results, "layer1")
     fig, axes = plt.subplots(1, 2, figsize=(6.9, 3.1), layout="constrained", sharey=True)
-    for ax, layer, title in zip(axes, ("layer1", "layer3"), ("layer 1", "layer 3 (dead frees)")):
+    for ax, layer, title in zip(axes, ("layer1", "layer3"), ("Debiased", "DeadFree")):
         grid = []
         for r in rows:
             info = ok(r, layer)
@@ -677,7 +832,7 @@ def write_original_table(results: list[dict]) -> None:
     done = sorted([x for x in rows if x[1] is not None], key=lambda x: -x[1])
     pend = [x for x in rows if x[1] is None]
     lines = ["% generated by figures/make_figures.py -- do not edit", "\\begin{tabular}{@{}lrr@{}}", "\\toprule",
-             "Detector & original & layer \\ding{172} \\\\", "\\midrule"]
+             "Detector & Original & Debiased \\\\", "\\midrule"]
     for name, o, l1, mark, ref in done + pend:
         cells = [name, ("\\textit{pending}" if o is None else f"{o:.3f}{mark}"),
                  "\\textit{pending}" if l1 is None else f"{l1:.3f}"]
@@ -697,7 +852,8 @@ def write_demo_table() -> dict[str, str]:
         (HERE / "demo.tex").write_text("\\textit{demo recording pending}\n")
         return {}
     rec = json.loads(DEMO_PATH.read_text())
-    names = {"grep": "grep", "clang": "Clang SA", "ft": "LoRA L1", "ft_l3": "LoRA L3", "ds_l1": "DeepSeek L1",
+    names = {"grep": "grep", "clang": "Clang SA", "ft": "LoRA decision model L1", "ft_l3": "LoRA decision model L3",
+             "ds_l1": "DeepSeek L1",
              "ds_l3": "DeepSeek L3", "jev": "Jev L1"}
     truth = {c["key"]: c["truth"] for c in rec["cases"]}
     lines = ["% generated by figures/make_figures.py from presentation/demo/recordings/stage_dryrun.json",
@@ -749,8 +905,8 @@ def write_cost_table() -> dict[str, str]:
         c[0] += 1
         c[1] += r.get("cost") or 0.0
         currency[r["provider"]] = r.get("currency")
-    names = {"layer1": "layer \\ding{172} (incl.\\ dev, repeats, latency)", "layer3": "layer \\ding{174}",
-             "placebo": "placebo", "original": "original", "demo": "demo"}
+    names = {"layer1": "Debiased (incl.\\ dev, repeats, latency)", "layer3": "DeadFree",
+             "placebo": "Placebo", "original": "Original", "demo": "demo"}
     lines = ["% generated by figures/make_figures.py from juliet_full/llm/ledger.jsonl",
              "\\begin{tabular}{@{}llrr@{}}", "\\toprule", "Provider & Runs & calls & cost \\\\", "\\midrule"]
     extra = {}
@@ -797,13 +953,13 @@ def write_provenance(results: list[dict], rows_per_frame: int = 22) -> None:
                 continue
             f = info["files"][0].replace("results/", "r/") + (f" (+{len(info['files']) - 1})"
                                                                if len(info["files"]) > 1 else "")
-            rows.append(f"{tex_escape(r['label'])} & {layer} & \\texttt{{{tex_escape(f)}}} & "
+            rows.append(f"{tex_escape(r['label'])} & {LAYER_NAMES[layer]} & \\texttt{{{tex_escape(f)}}} & "
                         f"\\texttt{{{info['sha256_8']}}} \\\\")
     chunks = [rows[i:i + rows_per_frame] for i in range(0, len(rows), rows_per_frame)] or [[]]
     out = ["% generated by figures/make_figures.py -- do not edit (input outside a frame)"]
     for k, chunk in enumerate(chunks, 1):
         out += [f"\\begin{{frame}}{{Backup: result files used ({k}/{len(chunks)})}}", "\\centering",
-                "{\\tiny\\renewcommand{\\arraystretch}{0.85}\\begin{tabular}{@{}llll@{}}", "\\toprule",
+                "{\\tiny\\renewcommand{\\arraystretch}{0.85}\\setlength{\\tabcolsep}{4pt}\\begin{tabular}{@{}llll@{}}", "\\toprule",
                 "Method & Layer & Run file (juliet\\_full/\\ldots; r = results) & sha256 \\\\", "\\midrule"] + chunk
         if k == len(chunks) and pend:
             out += ["\\midrule", f"\\multicolumn{{4}}{{@{{}}p{{0.9\\textwidth}}}}{{\\textit{{pending: "
@@ -813,6 +969,13 @@ def write_provenance(results: list[dict], rows_per_frame: int = 22) -> None:
                 "\\texttt{figures/make\\_figures.py}.\\par}", "\\end{frame}"]
     (HERE / "provenance.tex").write_text("\n".join(out) + "\n")
     print(f"wrote figures/provenance.tex ({len(chunks)} frames)")
+
+
+def probe_numbers() -> dict[str, str]:
+    """\\res{x}{probe_<probe>_<layer>}: shortcut-probe macro-F1 from data/build/probes.json (eval set)."""
+    probes = json.loads(PROBES_PATH.read_text())
+    return {f"probe_{key}_{layer}": f3(probes[layer][key]["macro_f1"]["all"])
+            for layer in ("original", "layer1") for key in ("static_void", "func_count", "length_lines", "bow_lr")}
 
 
 def unmerged_flips(results: list[dict]) -> dict[str, str]:
@@ -833,10 +996,14 @@ def main() -> None:
     plot_robustness(results, "robustness.pdf", MAIN_EXCLUDE, (5.7, 2.25))
     pending = {"prf1": plot_prf1(results, "prf1_full.pdf"), "pareto": plot_pareto(results, latency),
                "robustness": plot_robustness(results, "robustness_full.pdf"), "lora": plot_lora(results)}
+    plot_hook_original(results)
+    plot_quality(results)
+    plot_nearllm(results, latency)
+    plot_deadfree(results)
     plot_probes()
     plot_heatmap(results)
     plot_mechanism(results)
-    extra = {**write_demo_table(), **write_cost_table(), **unmerged_flips(results)}
+    extra = {**write_demo_table(), **write_cost_table(), **unmerged_flips(results), **probe_numbers()}
     write_numbers(results, extra)
     write_original_table(results)
     write_repeat_table(registry)
