@@ -91,6 +91,7 @@ def main() -> None:
     ap.add_argument("--out-root", type=Path, required=True)
     ap.add_argument("--run-id", default=None)
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--subset", default=None, help="group subset name in data/build/subsets.json, e.g. latency300")
     ap.add_argument("--threads", type=int, default=None, help="torch CPU threads (default: torch default)")
     args = ap.parse_args()
 
@@ -103,6 +104,10 @@ def main() -> None:
     units = [json.loads(line) for line in args.units.open()]
     if args.set != "all":
         units = [u for u in units if u.get("set") == args.set]
+    if args.subset:
+        subsets = Path(__file__).resolve().parents[1] / "data/build/subsets.json"
+        groups = set(json.loads(subsets.read_text())[args.subset])
+        units = [u for u in units if u["group_id"] in groups]
     if args.limit:
         units = units[: args.limit]
     run_id = args.run_id or f"{args.set}_{dt.datetime.now(dt.timezone.utc):%Y%m%dT%H%M%SZ}"
@@ -111,7 +116,7 @@ def main() -> None:
     out_path = out_dir / f"{run_id}.jsonl"
 
     meta = {"method": args.method, "layer": args.layer, "run_id": run_id, "units_file": str(args.units),
-            "units_sha256": sha256(args.units), "set": args.set, "n_units": len(units),
+            "units_sha256": sha256(args.units), "set": args.set, "subset": args.subset, "n_units": len(units),
             "checkpoint": "MickyMike/LineVul", "checkpoint_sha256": sha256(args.checkpoint / "pytorch_model.bin"),
             "tokenizer": "microsoft/codebert-base", "block_size": BLOCK_SIZE, "threshold": 0.5,
             "torch": torch.__version__, "transformers": transformers.__version__, "python": platform.python_version(),

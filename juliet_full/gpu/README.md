@@ -12,38 +12,44 @@ Scripts in this directory are the source of truth; they are copied to `184-toast
 | `server/decide_server.py` | Intern-Decision-4B forward-only read-out (FastAPI/uvicorn) |
 | `linevul_infer.py` | LineVul zero-shot inference, methods `linevul_cpu` / `linevul_gpu` |
 | `run_linevul.sh` | `run_linevul.sh <units.jsonl> <run_id> [set] [layer]`: CPU run on dell, then GPU run on 184-toast GPU 1, results synced back |
+| `run_decide.py` | Intern-Decision zero-shot runs (`run` / `freeze` / `score`) against `/decide` with the frozen Jev prompts of the LLM lane; outputs `results/intern_decision/<layer>/<run_id>.jsonl` + `.meta.json`, thresholds in `results/intern_decision/FROZEN` |
+| `run_decide_stage2.sh` | resumable stage-2 sequence: layer1 dev L1–L3 → freeze → layer1 eval → layer3 eval → placebo L1/L3 → original L1 → determinism rerun (50 units) |
+| `bench/quiet_run.sh` | `quiet_run.sh <label> <cmd...>`: latency runs under `flock /tmp/cs224_latency.lock` after dell load1 < 2.5 (20-min cap, else labelled LOADED); log `results/bench/quiet_runs.log` |
 | `bench/bench_qwen.py`, `bench/bench_decide.py` | probes + latency/throughput from dell (stdlib only, keep-alive HTTP) |
 | `bench/l1_probe_prompt.txt` | L1-style probe prompt (copy of the 2026-11-23 DeepSeek probe prompt; not the frozen L1 prompt) |
 | `results/bench/*.json` | raw benchmark reports; `results/linevul_{cpu,gpu}/layer1/*.jsonl` predictions (contract §4) |
+| `score_stage2.py` | scores every stage-2 eval run with `analysis/score.py` (primary 0.5 and frozen secondary threshold) and `analysis/robustness.py`, checks determinism; writes `results/STAGE2_SCORES.md`, `results/stage2_scores.json`, `results/scores/`, `results/robustness/`, and the secondary-threshold copies `results/intern_decision_th2/<layer>/<run_id>.jsonl` (method `intern_decision_th2`, pred := `extra.pred_secondary`) |
 | `.venv/` | dell CPU venv for LineVul (git-ignored): torch 2.14.0+cpu, transformers 5.22.2 |
 
 ## 2. Start / stop
 
-**Current state (2026-11-23 10:46 PST): both services STOPPED on purpose** so the fine-tuning lane gets both
-GPUs (marker file `184-toast:~/disk4/cs224/GPU_FREE_FOR_FT` created after nvidia-smi showed 38 / 15 MiB used and no
-compute processes). Restart only after fine-tuning has released the GPUs:
+**Current state (started 2026-11-23 13:39 PST, still RUNNING and healthy at 16:25 PST after the stage-2 runs): both
+services on GPU 1**; GPU 0 belongs to the
+fine-tuning lane (decision_ft, :8003) and must not be used. Started after the FT lane touched
+`184-toast:~/disk4/cs224/GPU1_FREE_FOR_SERVICES` (13:37) and nvidia-smi listed no compute process on GPU 1
+(uuid GPU-3b11ffc9-...; 15 MiB used). `svc.sh` defaults are now GPU 1 for both (`QWEN_GPU=1`, `DECIDE_GPU=1`)
+and `QWEN_GPU_UTIL=0.45`. Start qwen first: vLLM checks at start-up that util × 24 GiB is still free.
 
 ```bash
-ssh 184-toast 'nvidia-smi --query-compute-apps=pid,used_memory --format=csv'  # must list nothing on GPU 0/1
-ssh 184-toast 'bash ~/disk4/cs224/gpu/server/svc.sh qwen start'    # GPU 0, ~100 s until healthy (profiling + CUDA graphs)
-ssh 184-toast 'bash ~/disk4/cs224/gpu/server/svc.sh decide start'  # GPU 1, ~40 s
+ssh 184-toast 'nvidia-smi --query-compute-apps=gpu_uuid,pid,used_memory --format=csv'  # nothing on GPU 1
+ssh 184-toast 'bash ~/disk4/cs224/gpu/server/svc.sh qwen start'    # GPU 1, healthy after ~40 s (compile cache warm)
+ssh 184-toast 'bash ~/disk4/cs224/gpu/server/svc.sh decide start'  # GPU 1, healthy after ~15 s
 ssh 184-toast 'bash ~/disk4/cs224/gpu/server/svc.sh qwen health; bash ~/disk4/cs224/gpu/server/svc.sh decide health'
 # from dell:
 curl -s --noproxy '*' http://10.15.89.184:8001/v1/models   # lists qwen3.5-4b
 curl -s --noproxy '*' http://10.15.89.184:8002/health      # {"status":"ok","model":"Intern-Decision-4B",...}
-ssh 184-toast 'bash ~/disk4/cs224/gpu/server/svc.sh qwen stop; bash ~/disk4/cs224/gpu/server/svc.sh decide stop'
+ssh 184-toast 'bash ~/disk4/cs224/gpu/server/svc.sh decide stop; bash ~/disk4/cs224/gpu/server/svc.sh qwen stop'
 ```
 `health` prints `<name> healthy (...)` and exits 0 when the endpoint answers; `status` shows pid or `not running`.
-Re-verify after restart: `cd juliet_full/gpu/bench && python3 bench_qwen.py && python3 bench_decide.py`
-(~90 s; writes new `results/bench/*.json`). If the fine-tuned adapter is to be served, that is a new vLLM flag
+Stage-1 layout (qwen on GPU 0 with util 0.55, decide on GPU 1) is `QWEN_GPU=0 QWEN_GPU_UTIL=0.55 svc.sh qwen start`;
+all §4 Qwen numbers were measured in that layout. Serving a fine-tuned adapter needs new vLLM flags
 (`--enable-lora --lora-modules ...`), not covered here.
-`QWEN_GPU_UTIL=0.45 svc.sh qwen start` lowers the vLLM memory share (default 0.55).
 
 ## 3. Endpoints (both bound to 0.0.0.0, reachable from dell without a tunnel)
 
-**Qwen3.5-4B** — `http://10.15.89.184:8001/v1` (OpenAI API), served name `qwen3.5-4b`, GPU 0.
+**Qwen3.5-4B** — `http://10.15.89.184:8001/v1` (OpenAI API), served name `qwen3.5-4b`, GPU 1 (stage 1: GPU 0).
 `vllm serve ~/disk4/cs224/models/Qwen3.5-4B --language-model-only --max-model-len 8192 --enable-prefix-caching
---dtype bfloat16 --gpu-memory-utilization 0.55 --max-num-seqs 64 --generation-config vllm
+--dtype bfloat16 --gpu-memory-utilization 0.45 (stage 1: 0.55) --max-num-seqs 64 --generation-config vllm
 --default-chat-template-kwargs '{"enable_thinking": false}'`. Vision encoder is not loaded (`--language-model-only`).
 Thinking is off by server default; clients should still send `"chat_template_kwargs": {"enable_thinking": false}`
 and `temperature: 0`. Probe on 6 layer1 dev units: 6/6 valid JSON, no `<think>` text, no reasoning field.
@@ -89,21 +95,74 @@ should give roughly 0.3 s at concurrency 1.
 | LineVul zero-shot, batch 1 | latency median / p90 per unit |
 |---|---|
 | `linevul_gpu` (184-toast GPU 1, fp32; host-local time, no LAN) | 5.9 ms / 7.0 ms (eval) |
-| `linevul_cpu` (dell, 6 torch threads; `deveval_v1`, dell load average 10–22) | 0.161 s / 0.388 s (eval), 0.147 / 0.388 s (dev) |
+| `linevul_cpu` (dell, 6 torch threads; `deveval_v1`, dell load average 10–22, LOADED) | 0.161 s / 0.388 s (eval), 0.147 / 0.388 s (dev) |
+| `linevul_cpu` quiet, latency300 (300 eval units, `bench/quiet_run.sh`, load1 1.66 before) | **88.4 ms / 124.1 ms** (`results/linevul_cpu/layer1/lat300_cpu_quiet.jsonl`) |
 
-## 5. GPU memory (nvidia-smi, both services up)
+### 4.1 Stage 2: concurrency-1 latency on the latency300 sample (300 layer1 eval units), services on GPU 1
+
+Measured 2026-11-24 00:21–00:24 UTC from dell under `bench/quiet_run.sh` (lock `/tmp/cs224_latency.lock`,
+dell load1 1.68–1.85 before each run, labelled quiet in `results/bench/quiet_runs.log`), after all bulk runs of
+every lane had finished: GPU 1 utilisation 0 %, vLLM 0 running / 0 waiting requests before and after
+(`/tmp/jfull_gpu/lat300.sh` log). Real frozen prompts, not the stage-1 probe prompt.
+
+| Run | Prompt | client median / p90 | server side |
+|---|---|---|---|
+| Intern-Decision `/decide`, `results/intern_decision/layer1/lat300_L1_c1.jsonl` | Jev L1 state (median 703 input tokens) | **132 ms / 149 ms** | `latency_ms_server` 129.6 / 146.3 ms, forward 127.4 ms, client − server 3.1 ms |
+| Qwen3.5-4B via `llm/run_llm.py --model qwen`, `results/bench/lat300/qwen3_5_4b/layer1/lat300_c1_L1_gpuidle.jsonl` | frozen chat L1 (535 prompt / 17.3 completion tokens per call, max_tokens 64) | **333 ms / 357 ms** | – |
+
+The LLM lane's own `llm/results/qwen3_5_4b/layer1/lat300_c1_L1.jsonl` (00:08–00:11 UTC, dell quiet) reports
+635 / 687 ms for the identical requests (same 300 predictions): during that window this lane's
+`orig_eval_L1_r1` decide bulk run (00:08:34–00:17:10 UTC, concurrency 2) was using the same GPU 1, so that number
+is GPU-contended. Use the 333 ms run for the Qwen c1 latency.
+
+## 5. GPU memory
+
+Stage 2 (now, both services on GPU 1; nvidia-smi 2026-11-23 13:39 PST): GPU 1 **19.5 GiB of 24 used**
+(vLLM 10.4 GiB: weights 7.94 GiB + KV/mamba cache 2.39 GiB = 31,597 tokens, 3.86 × 8192; decide_server 9.1 GiB);
+LineVul GPU runs add < 1 GiB. After the stage-2 runs (16:21 PST) GPU 1 shows 20.6 GiB (vLLM 10.8 GiB,
+decide_server 9.8 GiB: PyTorch caching allocator kept the peak of the longest inputs). GPU 0 is used only by the FT lane.
+
+Stage 1 (qwen GPU 0 util 0.55, decide GPU 1):
 
 | GPU | Process | Used | Breakdown |
 |---|---|---|---|
 | 0 | vLLM Qwen3.5-4B | 13.3 GiB of 24 | weights 7.94 GiB (text only), KV/mamba cache 3.78 GiB = 83,870 tokens (10.2 × 8192), CUDA graphs 0.29 GiB |
-| 1 | decide_server | 9.4 GiB of 24 | bf16 weights incl. vision tower (~8.6 GiB) + activations; LineVul GPU runs add < 1 GiB transiently |
+| 1 | decide_server | 9.4 GiB of 24 | bf16 weights incl. vision tower (~8.6 GiB) + activations |
 
-Room for Phase C (LoRA r16 on Qwen3.5-4B, PLAN §5.2 estimate 12–16 GiB): ~11 GiB free on GPU 0, ~15 GiB free on
-GPU 1. Recommended: train on GPU 1 after `svc.sh decide stop` (whole 24 GiB card), or on GPU 1 next to the
-decide service only if the run stays under ~14 GiB and no latency measurement is running. Restarting vLLM with
-`QWEN_GPU_UTIL=0.45` frees ~2.4 GiB more on GPU 0 (KV cache then ~1.4 GiB, still > 4 × 8192 tokens).
+## 6. Zero-shot results, eval set (`analysis/score.py --set eval`, 2656 units, invalid counted wrong)
 
-## 6. LineVul results (zero-shot, threshold 0.5; quick counts, the official scorer is analysis/score.py)
+Full tables incl. family-cluster bootstrap CIs (2000) and robustness: `results/STAGE2_SCORES.md`
+(`python3 score_stage2.py`). TP FN FP TN; AUROC from the scores of all units.
+
+### 6.1 Intern-Decision-4B (frozen Jev prompts, noul yes/no, score = calibrated P(yes))
+
+Secondary thresholds frozen on layer1 dev (652 units, L2 example groups excluded) before any eval call,
+`results/intern_decision/FROZEN` (2026-11-23T21:53:15Z): L1 0.8230, L2 0.6729, L3 0.5391 (argmax dev macro-F1).
+Dev: L1 macro-F1@0.5 0.861 / AUROC 0.967; L2 0.884 / 0.965; L3 0.898 / 0.976.
+
+| Strategy | Layer | macro-F1 @0.5 [95% CI] | TP FN FP TN @0.5 | macro-F1 @secondary [95% CI] | TP FN FP TN @sec. | AUROC |
+|---|---|---|---|---|---|---|
+| L1 | layer1 | **0.825** [0.805, 0.843] | 1217 111 350 978 | 0.827 [0.795, 0.854] | 1016 312 146 1182 | 0.920 |
+| L2 | layer1 | **0.844** [0.831, 0.857] | 1274 54 356 972 | 0.859 [0.836, 0.879] | 1188 140 234 1094 | 0.935 |
+| L3 | layer1 | **0.876** [0.862, 0.893] | 1305 23 302 1026 | 0.875 [0.858, 0.892] | 1284 44 285 1043 | 0.943 |
+| L1 | layer3 | 0.583 [0.546, 0.622] | 1307 21 950 378 | 0.630 [0.593, 0.667] | 635 693 265 1063 | 0.729 |
+| L2 | layer3 | 0.500 [0.475, 0.527] | 1314 14 1094 234 | 0.625 [0.599, 0.651] | 1151 177 769 559 | 0.734 |
+| L3 | layer3 | 0.664 [0.636, 0.693] | 1309 19 796 532 | 0.700 [0.675, 0.724] | 1305 23 720 608 | 0.879 |
+| L1 | placebo | 0.814 [0.794, 0.834] | 1209 119 371 957 | 0.825 [0.786, 0.860] | 1022 306 157 1171 | 0.907 |
+| L3 | placebo | 0.871 [0.856, 0.888] | 1314 14 324 1004 | 0.868 [0.854, 0.884] | 1294 34 312 1016 | 0.936 |
+| L1 | original | 0.642 [0.614, 0.670] | 1217 111 779 549 | 0.769 [0.744, 0.793] | 1016 312 302 1026 | 0.851 |
+
+Robustness layer1 → layer3 (`analysis/robustness.py`, Δmacro-F1 [95% CI]; adjusted = stress − placebo):
+L1 @0.5 −0.242 [−0.269, −0.211], adjusted −0.230 [−0.258, −0.202]; L1 @sec −0.197, adjusted −0.195 [−0.217, −0.171];
+L2 @0.5 −0.343 [−0.369, −0.318], @sec −0.234 [−0.251, −0.215] (no L2 placebo run);
+L3 @0.5 −0.212 [−0.238, −0.189], adjusted −0.207 [−0.236, −0.182]; L3 @sec −0.176, adjusted −0.169 [−0.192, −0.147].
+The drop is almost entirely new false positives on good units (good flip rate L1 0.456, L3 0.390 at 0.5;
+placebo flips 0.04–0.05); recall stays ≥ 0.98 at 0.5.
+
+Determinism: `det50_L1_r2` (50 layer1 eval units, rerun after all other runs) vs `eval_L1_r1`: 50/50 identical
+`pred` and `pred_secondary`, scores bit-identical (max |Δ| 0.0).
+
+### 6.2 LineVul (threshold 0.5; no secondary threshold)
 
 Checkpoint `MickyMike/LineVul` `pytorch_model.bin` (sha256 be824c90...), tokenizer `microsoft/codebert-base`,
 512-token truncation (`tokenize(code)[:510]` + `<s>`/`</s>`), head on the `<s>` vector as in the LineVul repo.
@@ -114,6 +173,18 @@ CPU and GPU predictions agree on every unit: `deveval_v1` 3316/3316 identical `p
 | `smoke_sample` (layer1_sample, dev) | 48 | 12 12 13 11 | 0.48 / 0.50 / 0.49 | 1 |
 | `deveval_v1` dev | 660 | 188 142 195 135 | 0.49 / 0.57 / 0.53 | 1 |
 | `deveval_v1` eval | 2656 | 884 444 851 477 | 0.51 / 0.67 / 0.58 | 19 |
+
+Eval-set scores (`analysis/score.py`, `linevul_gpu`; `linevul_cpu` layer1 is identical):
+
+| Layer (run) | macro-F1 [95% CI] | F1_leak | TP FN FP TN | AUROC | truncated (all 3316) |
+|---|---|---|---|---|---|
+| layer1 (`deveval_v1`) | 0.501 [0.479, 0.520] | 0.577 | 884 444 851 477 | 0.504 | 20 |
+| layer3 (`all_v1`) | 0.449 [0.428, 0.469] | 0.622 | 1084 244 1075 253 | 0.492 | 203 |
+| placebo (`all_v1`) | 0.480 [0.460, 0.499] | 0.624 | 1058 270 1005 323 | 0.519 | 144 |
+| original (`all_v1`) | 0.356 [0.338, 0.377] | 0.527 | 884 444 1146 182 | 0.331 | 955 |
+
+Robustness layer1 → layer3: Δmacro-F1 −0.051 [−0.070, −0.034], placebo-adjusted −0.031 [−0.047, −0.014].
+`all_v1` latency is not usable (runs shared GPU 1 with the decide bulk runs; median 28 ms vs 5.9 ms alone).
 
 Accuracy is ≈ 0.5: LineVul (Big-Vul) does not separate the debiased bad/good units. `deveval_v1` was run on
 `data/build/layer1.jsonl` sha256 `5c15ac96...` (snapshot 2026-11-23 10:23 PST), both `linevul_cpu` and
@@ -146,5 +217,10 @@ dell: `juliet_full/gpu/.venv` (Python 3.12.3, torch 2.14.0+cpu, transformers 5.2
 - `linevul_gpu` latency is host-local on 184-toast (no LAN hop, LAN RTT 0.08 ms). `linevul_cpu` latency on dell is
   very load-dependent (load average 18 on 12 threads during `deveval_v1` because other lanes were running; median
   0.13 s on a quieter dell for the 40-unit pre-plan smoke); re-measure on `latency300` with an idle dell before reporting.
-- The decide service and the LineVul GPU runs share GPU 1; do not measure decide latency while LineVul runs.
+- The decide service, vLLM and the LineVul GPU runs share GPU 1 in stage 2: any latency measured while another
+  lane's bulk run uses GPU 1 is contended (see §4.1); bulk-run `latency_s` in `results/intern_decision/*` is
+  concurrency-2 wall time incl. queueing and GPU sharing, not a latency figure.
+- `results/intern_decision/original/orig_eval_L1_r1`: in `data/build/original.jsonl` every bad unit's
+  `model_text` equals layer1's (1658/1658) and every good unit's differs, so TP/FN equal layer1's for a
+  deterministic method; only the good-unit side (FP/TN) measures the original-vs-debiased effect.
 - The cs253-pre SGLang containers stay stopped (not touched by these scripts).

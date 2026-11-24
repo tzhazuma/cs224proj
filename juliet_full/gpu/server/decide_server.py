@@ -1,8 +1,11 @@
 """Forward-only HTTP read-out for Intern-Decision-4B (zero-shot decision model).
 
-POST /decide  {"state": <str|obj>, "question": <str>, "options": [<str>...] | {<value>: <description>}}
+POST /decide  {"state": <str|obj>, "question": <str>, "options": [<str>...] | {<value>: <description>},
+               optional "type": "choice" (default) | "noul", optional "name": field name (default "answer")}
            -> {"probs": {<value>: p}, "probs_raw": {...}, "decision": <value>, "input_tokens": n,
                "forward_ms": f, "latency_ms_server": t, "model": "Intern-Decision-4B", "temperature": T}
+  type "noul" is the model card's binary question: values no, yes; `options` is optional and may describe
+  them with no/yes or false/true keys (Jev noul criteria pass through unchanged).
 GET  /health  -> {"status": "ok"} once the model is loaded and warmed up.
 
 The prompt compiler, candidate-symbol read-out and calibration are the model card's own
@@ -18,7 +21,7 @@ import sys
 import threading
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import torch
 import uvicorn
@@ -31,7 +34,9 @@ FIELD_NAME = "answer"
 class DecideRequest(BaseModel):
     state: Any
     question: str
-    options: list[str] | dict[str, str]
+    options: list[str] | dict[str, str] | None = None
+    type: Literal["choice", "noul"] = "choice"
+    name: str = FIELD_NAME
 
 
 def build_app(checkpoint: Path) -> FastAPI:
@@ -44,21 +49,26 @@ def build_app(checkpoint: Path) -> FastAPI:
 
     def decide(req: DecideRequest) -> dict[str, Any]:
         start = time.perf_counter()
-        if isinstance(req.options, dict):
-            criteria = dict(req.options)
+        if req.type == "noul":
+            if isinstance(req.options, list):
+                raise HTTPException(400, "noul options must be an object of no/yes (false/true) descriptions")
+            question = {"type": "noul", "instructions": req.question}
+            if req.options:
+                question["criteria"] = dict(req.options)
         else:
-            criteria = {opt: opt for opt in req.options}
-        if len(criteria) < 2:
-            raise HTTPException(400, "need at least two distinct options")
-        request = {"state": req.state,
-                   "questions": {FIELD_NAME: {"type": "choice", "instructions": req.question,
-                                              "criteria": criteria}}}
+            criteria = dict(req.options) if isinstance(req.options, dict) else {o: o for o in req.options or []}
+            if len(criteria) < 2:
+                raise HTTPException(400, "need at least two distinct options")
+            question = {"type": "choice", "instructions": req.question, "criteria": criteria}
+        if not req.name:
+            raise HTTPException(400, "name must be nonempty")
+        request = {"state": req.state, "questions": {req.name: question}}
         try:
             with lock:
                 result = engine.predict(request)
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from exc
-        raw = result["answers"][FIELD_NAME]["probabilities"]
+        raw = result["answers"][req.name]["probabilities"]
         probs = inference.scale_probabilities(raw, calibration_temperature)
         return {"probs": probs, "probs_raw": raw, "decision": inference.argmax(probs),
                 "input_tokens": result["usage"]["input_tokens"],
