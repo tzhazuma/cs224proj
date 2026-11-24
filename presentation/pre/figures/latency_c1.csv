@@ -7,10 +7,10 @@ codeql,7.36,7.36,juliet_full/lane_reports/2026-11-23_static_stage2.md,per unit: 
 codeql_amortized,0.318,0.318,juliet_full/lane_reports/2026-11-23_static_stage2.md,50 units per database; amortized (hollow marker)
 linevul,0.006,0.006,juliet_full/lane_reports/2026-11-23_gpu_stage1.md,GPU (RTX 3090)
 linevul_cpu,0.088,0.088,juliet_full/gpu/results/linevul_cpu/layer1/lat300_cpu_quiet.jsonl,CPU 6 threads; quiet; median of 300
-deepseek_L1,0.721,0.721,juliet_full/lane_reports/2026-11-23_llm_stage2b.md,lat300_c1_L1 at load ~21; quiet 0.640 s on 30 dev units (llm_stage2a)
-qwen_L1,0.665,0.665,juliet_full/lane_reports/2026-11-23_gpu_stage1.md,vLLM from dell; 30 requests
-jev_L1,0.961,0.961,juliet_full/lane_reports/2026-11-23_llm_stage2b.md,lat300_c1_L1 at load ~22
-intern_L1,0.083,0.083,juliet_full/lane_reports/2026-11-23_gpu_stage1.md,/decide read-out from dell (82.7 ms)
+deepseek_L1,0.715,0.715,juliet_full/llm/results/deepseek_flash/layer1/lat300_c1_L1_quiet.jsonl,"quiet re-measure (load1 1.27), median of 300; p90 1.026 s; loaded run 0.721 s"
+qwen_L1,0.333,0.333,juliet_full/gpu/results/bench/lat300/qwen3_5_4b,"frozen L1 prompt, vLLM on idle GPU 1, from dell, median of 300; p90 0.357 s (0.635 s run was GPU-shared, not used)"
+jev_L1,0.907,0.907,juliet_full/llm/results/jev/layer1/lat300_c1_L1_quiet.jsonl,"quiet re-measure (load1 1.14), median of 300; p90 0.931 s; loaded run 0.961 s"
+intern_L1,0.132,0.132,juliet_full/lane_reports/2026-11-23_gpu_stage2.md,"/decide frozen L1 state, idle GPU 1, from dell, median of 300; p90 0.149 s; server 129.6 ms"
 lora_L1,0.105,0.105,juliet_full/lane_reports/2026-11-23_decision_ft_stage2.md,latency300; dell end-to-end
 lora_L3,0.133,0.133,juliet_full/lane_reports/2026-11-23_decision_ft_stage2.md,latency300; dell end-to-end
 asan_lsan,0.134,0.134,juliet_full/lane_reports/2026-11-23_data_stage4.md,lat300_c1; compile included

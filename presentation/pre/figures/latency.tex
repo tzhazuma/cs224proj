@@ -11,10 +11,10 @@ CodeQL & 7.36 & \texttt{static\_stage2.md}; per unit: database creation + querie
 CodeQL (50 per database) & 0.318 & \texttt{static\_stage2.md}; 50 units per database; amortized (hollow marker) \\
 LineVul (GPU) & 0.006 & \texttt{gpu\_stage1.md}; GPU (RTX 3090) \\
 LineVul (CPU) & 0.088 & \texttt{gpu/results/linevul\_cpu/layer1/lat300\_cpu\_quiet.jsonl}; CPU 6 threads; quiet; median of 300 \\
-DeepSeek L1 & 0.721 & \texttt{llm\_stage2b.md}; lat300\_c1\_L1 at load ~21; quiet 0.640 s on 30 dev units (llm\_stage2a) \\
-Qwen L1 & 0.665 & \texttt{gpu\_stage1.md}; vLLM from dell; 30 requests \\
-Jev L1 & 0.961 & \texttt{llm\_stage2b.md}; lat300\_c1\_L1 at load ~22 \\
-Intern-D L1 & 0.083 & \texttt{gpu\_stage1.md}; /decide read-out from dell (82.7 ms) \\
+DeepSeek L1 & 0.715 & \texttt{llm/results/deepseek\_flash/layer1/lat300\_c1\_L1\_quiet.jsonl}; quiet re-measure (load1 1.27), median of 300; p90 1.026 s; loaded run 0.721 s \\
+Qwen L1 & 0.333 & \texttt{gpu/results/bench/lat300/qwen3\_5\_4b}; frozen L1 prompt, vLLM on idle GPU 1, from dell, median of 300; p90 0.357 s (0.635 s run was GPU-shared, not used) \\
+Jev L1 & 0.907 & \texttt{llm/results/jev/layer1/lat300\_c1\_L1\_quiet.jsonl}; quiet re-measure (load1 1.14), median of 300; p90 0.931 s; loaded run 0.961 s \\
+Intern-D L1 & 0.132 & \texttt{gpu\_stage2.md}; /decide frozen L1 state, idle GPU 1, from dell, median of 300; p90 0.149 s; server 129.6 ms \\
 LoRA L1 & 0.105 & \texttt{decision\_ft\_stage2.md}; latency300; dell end-to-end \\
 LoRA L3 & 0.133 & \texttt{decision\_ft\_stage2.md}; latency300; dell end-to-end \\
 ASan/LSan & 0.134 & \texttt{data\_stage4.md}; lat300\_c1; compile included \\
