@@ -118,7 +118,7 @@
 | **SLM 线** | Qwen/Qwen3.5-4B（本地，vLLM） | L1、L2、L3、L4 | 2× RTX 3090 |
 | **decision model 线** | Jev（TypeSafe API，`jev-latest`）；internlm/Intern-Decision-4B（零样本）；在 Qwen3.5-4B 上 LoRA 微调（三折） | L1、L2、L3（微调模型只做 L1 和 L3 两种输入） | API / GPU |
 | **参考线（不参与排名）** | ASan/LSan（gcc 13.3）、Valgrind 3.28.0、dynamic_enhanced（realloc 失败注入，并关闭 LSan 的全局根） | — | CPU |
-| 附录（可选） | VulnLLM-R-7B（Virtue-AI-HUB/VulnLLM-R-7B）L1；AnyJev 读出 Qwen3.5-4B；SecVulEval 已有结果 | — | — |
+| 附录 | VulnLLM-R-7B（Virtue-AI-HUB/VulnLLM-R-7B），用作者原始提示格式【已定，2026-11-23 22:30，用户：只做 VulnLLM-R-7B】；SecVulEval 已有结果；LLM4SA、LLM4PFA、LASAA 等告警裁决方法**不复现**，只在 Background 中提及【已定】；AnyJev 不做 | — | — |
 
 说明：
 - 用 Qwen3.5-4B 替换原计划的微调 LineVul，LineVul 改为另一种基线【已定】。
