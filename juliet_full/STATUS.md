@@ -9,6 +9,7 @@ It records progress and is how information passes between the parent and the lan
 Last update: 2026-11-23 11:44 PST (dell clock is America/Los_Angeles; Beijing = PST + 16 h).
 
 ## 1. Decisions log (newest first; source = user message or parent)
+- 2026-11-23 22:16 user: no old-LoRA-on-L4-D control. Training must run in parallel to save time. Contract §5 now has a "Parallelism" rule: both GPUs busy; folds 0 and 1 together; DDP or co-location if faster; FROZEN entry per fold. Steered l4d-train at 22:17.
 - 2026-11-23 22:05 user (main line decided + new stage):
   - **Main line, qualified version: "Near-LLM quality at decision-model speed — in distribution, but not (yet) under DeadFree."** It is now written into PLAN §1, and the primary axis is now model type (generative LLM vs decision model).
   - **New stage: LoRA L4-D.** Qwen3.5-4B + LoRA is trained on the L4-D fact questions, with labels produced automatically by dynamic analysis, and it uses layer1 training folds only. This replaces the earlier "LoRA = N/A" for L4-D. The question is whether it reaches near-LLM quality on all four layers.

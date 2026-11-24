@@ -135,6 +135,15 @@ score, latency_s, status, extra}`.
   break ties by question-level AUROC. Then write `l4d_ft/FROZEN` with the adapter/head hashes, τ, the template hash,
   the rules hash and the derive.py hash. Notify the parent **before** running any eval-set or non-layer1 prediction.
 - **Prediction:** merged weights, as in decision_ft. Batch all questions of one unit into one forward batch.
+- **Parallelism (user 2026-11-23 22:16: "务必并行训练，节省时间").** Keep both GPUs busy throughout; no serial step where parallel is possible.
+  - Default schedule: folds 0 and 1 start together, one per GPU. Fold 2 starts the moment either GPU is free.
+  - Use the smoke-test measurements to choose whichever option gives the smaller wall-clock time:
+    - (a) 2-GPU DDP per fold (torchrun), with the folds run one after another, if the speedup is ≥ 1.6×;
+    - (b) two jobs co-located on one GPU, if the peak memory per job is ≤ 11 GB.
+  - Selection is **per fold**: fold k's checkpoint and τ are chosen on layer1 dev from fold k's model only.
+  - Its entry, with a timestamp, goes into `l4d_ft/FROZEN` (one entry per fold) before **that fold's** eval or non-layer1 predictions start.
+  - While one GPU trains fold 2, the other GPU runs the work that is already allowed: dev selection for folds 0 and 1, their frozen eval predictions, and `qwen_readout_l4d`. CPU work (rendering, scoring) runs in parallel with the GPU jobs.
+- No old-LoRA-on-L4-D control (user decision 22:16).
 - **Latency:** end to end, measured from dell at concurrency 1 on the `latency300` units of layer1, GPU otherwise idle.
   The time covers parse + questions + derive. Wrap the measurement in `flock /tmp/cs224_latency.lock` and start only
   when load1 < 2.5.
