@@ -370,15 +370,18 @@ def plot_prf1(results: list[dict], name: str, exclude: frozenset = frozenset(),
     return pending
 
 
-def label_points(ax, points: list[tuple[float, float, str, str, bool]]) -> None:
+def label_points(ax, points: list[tuple[float, float, str, str, bool]],
+                 obstacles: list[tuple[float, float, float]] = ()) -> None:
     """points = (x, y, text, color, optional).  Each label takes the first free slot around its point; an optional
-    label (reference methods) is dropped when no slot is free."""
+    label (reference methods) is dropped when no slot is free.  obstacles = extra unlabelled markers (x, y, radius in
+    points) that labels must avoid."""
     ax.figure.draw_without_rendering()
 
     def pt(x, y):
         return ax.transData.transform((x, y)) * 72.0 / ax.figure.dpi
 
     boxes = [(*(pt(x, y) - 5), *(pt(x, y) + 5)) for x, y, *_ in points]
+    boxes += [(*(pt(x, y) - r), *(pt(x, y) + r)) for x, y, r in obstacles]
     slots = [(6, 1, "left"), (-6, 1, "right"), (6, -10, "left"), (-6, -10, "right"), (0, 7, "center"),
              (0, -16, "center"), (6, 9, "left"), (-6, 9, "right")]
     for x, y, text, color, optional in sorted(points, key=lambda p: (p[4], -p[1])):
@@ -925,6 +928,9 @@ def grouped_bars(ax, df: dict, cfg: dict, value, log: bool = False) -> None:
                 continue
             x = j + (i - (len(rows) - 1) / 2) * width
             v = value(df, key)
+            if v is None and log and key in cfg.get("latency_not_measured", []):
+                ax.text(x, 0.012, "not measured", rotation=90, ha="center", va="bottom", fontsize=6.5, color=GREY)
+                continue
             if v is None:
                 pending_bar(ax, x, width * 0.9, log, top=3.0 if log else 1.0)
                 ax.text(x, 0.012 if log else 0.03, "pending", rotation=90, ha="center", va="bottom", fontsize=6.5,
@@ -1019,7 +1025,7 @@ def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
     strip_artists = [ax.axvspan(xmax, xend, color=LIGHT, zorder=0, lw=0),
                      ax.text(strip, 1.0, "latency\npending", ha="center", va="bottom", fontsize=7, color=GREY,
                              transform=ax.get_xaxis_transform())]
-    pts, front_pts, pending = [], [], []
+    pts, front_pts, pending, obstacles = [], [], [], []
     exclude = set(cfg["pareto_exclude"])
     # cloud services: one label per service (at its best strategy), the legend names the rest
     cloud_label = {}
@@ -1038,6 +1044,8 @@ def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
         if kind == "dynamic":
             ax.axhline(y, color=GREY, ls="--", lw=0.8, zorder=1)
             ax.text(xmin * 1.15, y + 0.004, f"{m['short']} {short(y)}", fontsize=7, color=GREY, va="bottom")
+            if m["lat"] is not None:
+                ax.scatter(m["lat"], y, s=36, marker=marker, color=color, zorder=3, edgecolors="white", linewidths=0.5)
             continue
         if m["lat"] is None:
             pending.append(m["short"])
@@ -1049,11 +1057,13 @@ def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
             ax.plot([x, x], m["macro_f1_ci"], color=color, lw=0.8, zorder=2)
         ax.scatter(x, y, s=130 if hero else 36, marker="*" if hero else marker, color=color, zorder=4,
                    edgecolors=INK if hero else "white", linewidths=0.6)
+        obstacles.append((x, y, 8 if hero else 5))
         if kind in ("deepseek", "jev"):
             if key in cloud_label:
                 pts.append((x, y, cloud_label[key], color, False))
         else:
-            pts.append((x, y, m["short"], color, kind == "static"))
+            off_scale = " (1 µs, off-scale)" if m["lat"] < xmin else ""
+            pts.append((x, y, m["short"] + off_scale, color, kind == "static"))
         if kind != "static":
             front_pts.append((x, y))
     full, opt = df.get("lora_l4d") or {}, df.get("lora_l4d_opt") or {}
@@ -1078,7 +1088,7 @@ def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
         ax.set_xlim(xmin, xmax)
     ax.set_xticks([0.01, 0.1, 1, 10], ["0.01", "0.1", "1", "10"])
     ax.set_ylim(0.3, 1.04)
-    label_points(ax, pts)
+    label_points(ax, pts, obstacles)
     ax.set_xlabel("median latency per DeadFree unit at concurrency 1 (s, log)")
     ax.set_ylabel("DeadFree macro-F1 (95% CI)")
     present = {df_kind(m) for k, m in df.items() if k not in exclude and m.get("role") == "primary"}
@@ -1211,7 +1221,10 @@ def write_df_strategy_table(df: dict, cfg: dict) -> None:
                 cells.append("--")
                 continue
             f1 = "\\textit{pending}" if not m or m["macro_f1"] is None else f3(m["macro_f1"])
-            lat = "\\textit{pending}" if not m or m["lat"] is None else fmt_s(m["lat"]).replace(" ", "\\,")
+            if key in cfg.get("latency_not_measured", []) and (not m or m["lat"] is None):
+                lat = "n/m"
+            else:
+                lat = "\\textit{pending}" if not m or m["lat"] is None else fmt_s(m["lat"]).replace(" ", "\\,")
             cells.append(f"{f1} / {{\\scriptsize {lat}}}")
         lines.append(tex_escape(name) + " & " + " & ".join(cells) + " \\\\")
     lines += ["\\bottomrule", "\\end{tabular}"]

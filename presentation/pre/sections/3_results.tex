@@ -54,15 +54,15 @@
 
 % ------------------------------------------------------------------------------
 % src: figures/df_strategies.pdf <- juliet_full/analysis/deadfree/deadfree_quality.json (strategy_x_ft) and
-%   latency_deadfree.csv (median_s); grey = pending
+%   latency_deadfree.csv (role=primary, median_s); readout_l4d has no latency row (methods.json latency_not_measured)
 \begin{frame}{The strategy does most of the work: L4-D lifts an untuned decision model}
   \centering
-  \includegraphics[width=\linewidth,height=0.60\textheight,keepaspectratio]{figures/df_strategies.pdf}\\[2pt]
+  \includegraphics[width=\linewidth,height=0.58\textheight,keepaspectratio]{figures/df_strategies.pdf}\\[2pt]
   {\small Untuned Intern-Decision: best prompt (L3) \res{df-intern_L3}{macro} $\to$ L4-D \alert{\res{df-intern_l4d}{macro}}.
   Untuned Qwen read-out L4-D \res{df-readout_l4d}{macro} $\approx$ Qwen L3 \res{df-qwen_L3}{macro}.
   Fine-tuned L4-D: \res{df-lora_l4d_opt}{macro}.\par}
   \vfill
-  {\scriptsize DeadFree eval, 2,656 units; same model across strategies. Latency: median per unit, concurrency 1, one RTX 3090.\par}
+  {\scriptsize DeadFree eval, 2,656 units; same model across strategies. Latency: median per unit, concurrency 1, one RTX 3090. Read-out latency: not measured.\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -75,7 +75,7 @@
   L3 \res{df-qwen_L3}{macro} / \res{df-intern_L3}{macro} $\to$ \alert{\res{df-lora_L3}{macro}} \quad
   L4-D \res{df-readout_l4d}{macro} / \res{df-intern_l4d}{macro} $\to$ \textbf{\res{df-lora_l4d_opt}{macro}}\\
   FT L1 leak recall \res{df-lora_L1}{r}: it learned ``a \code{free} means no leak''.
-  Fact FT vs Intern L4-D: \res{df-x}{pd_lora_l4d_opt__intern_l4d} \res{df-x}{pd_lora_l4d_opt__intern_l4d_ci}.\par}
+  FT vs Intern L4-D: \res{df-x}{pd_lora_l4d_opt__intern_l4d} \res{df-x}{pd_lora_l4d_opt__intern_l4d_ci}.\par}
   \vfill
   {\scriptsize Before: untuned Qwen3.5-4B (LLM baseline), Intern-Decision-4B (decision baseline, $\tau=0.5$), Qwen read-out (L4-D). After: our LoRA per strategy. Paired family-cluster bootstrap.\par}
 \end{frame}

@@ -6,9 +6,9 @@ Results (ends with the live demo) → Discussion. Section divider pages take no 
 
 All numbers on the slides come from `figures/numbers.tex`, written by `make figures` from the result files
 (DeadFree quality: `juliet_full/analysis/deadfree/deadfree_quality.json`; DeadFree latency:
-`juliet_full/analysis/deadfree/latency_deadfree.csv`). Values not yet measured print as *pending* and fill in on the
-next `make`. **Read numbers off the slide, not off these notes**: the values quoted below are the build of
-2026-11-24 ~09:45 PST (Intern L4-D final; some latencies still being measured). From the dataset slide on, every model
+`juliet_full/analysis/deadfree/latency_deadfree.csv`, primary rows). **Read numbers off the slide, not off these
+notes**: the values quoted below are the build of 2026-11-24 ~10:30 PST (quality and latency final; the Qwen
+read-out L4-D latency was not measured and shows as "not measured"). From the dataset slide on, every model
 comparison is on **DeadFree** (eval set, 2,656 units, 39 flow variants never used for prompts, τ or checkpoints).
 
 Main line in one sentence: **the strategy does most of the work — an untuned local decision model answering
@@ -55,8 +55,9 @@ the cloud — for us one RTX 3090 with 24 GB."
 ## 1. Leak checks must fit a developer's time budget (0:45)
 - Three budgets: IDE under 0.1 s, pre-commit under 1 s, CI under 10 s.
 - Local models skip the network round-trip; cloud APIs pay it on every unit.
-- Bars are median latency per DeadFree unit at concurrency 1, same client. Grey = still being measured; the
-  slide fills in on `make`. Current values: FT L4-D (opt.) 445 ms; cloud rows pending.
+- Bars are median latency per DeadFree unit at concurrency 1, same client: DeepSeek L1 895 ms, Jev L1 912 ms,
+  Qwen L1 347 ms, Intern L1 135 ms, FT L4-D (opt.) 472 ms. All local rows fit the pre-commit budget; none of the
+  model-based methods fits the IDE budget.
 
 ## 2. On DeadFree, cloud models are far ahead of local ones (0:45)
 - Dots are the strategies L1–L4 per model. Cloud: DeepSeek .863–.900, Jev .942–.949.
@@ -153,6 +154,8 @@ the cloud — for us one RTX 3090 with 24 GB."
   + Datalog. Be precise: for untuned Qwen the L4-D read-out (.752) is only on par with Qwen's own L3 (.760), so
   "facts beat every prompt" holds for the decision models, not for every model.
 - Fine-tuned L4-D is the best local result, .826.
+- Right panel: L4-D costs more time than a single prompt because it asks several questions (Intern L4-D 658 ms,
+  FT L4-D opt. 472 ms vs 120–360 ms for L1–L3). Qwen L4 (LLM facts) is the slowest bar in this panel, 1.18 s.
 
 ## 18. Before vs after fine-tuning — key slide (1:00)
 - L1: untuned .533 / .584 → fine-tuned .372. L3: .760 / .664 → .639. Fine-tuning on unit labels makes it
@@ -166,15 +169,21 @@ the cloud — for us one RTX 3090 with 24 GB."
 ## 19. Pareto (0:50)
 - x = median latency at concurrency 1 (log), y = DeadFree macro-F1 with CI. Budget bands as on slide 1. Static
   tools grey; dynamic analysis dashed as an upper reference (it runs the code with chosen inputs).
-- FT L4-D is the most accurate local point (.826 at ≈0.47 s); cloud points are higher at ≈0.9 s. Untuned
-  Qwen is faster (≈0.35 s) but much worse. Read latencies off the slide.
+- FT L4-D is the most accurate local model (.826 at 472 ms) and it dominates untuned Intern L4-D (.799 at
+  658 ms). Cloud points are higher at 0.81–1.01 s. The model-based front runs FT L1 → Intern L1 → FT L3 →
+  Intern L3 → Qwen L3 → FT L4-D → DeepSeek → Jev: cheaper local points are faster but much worse.
+- The arrow: asking all questions (1.006 s) vs only those the rules read (472 ms), same verdicts.
+- Grey squares: Clang SA (.855, 18 ms) is above every local model and faster; Infer .815 at 256 ms; CodeQL
+  .766 at 7.4 s. grep sits at the left edge (1 µs, off-scale). Dynamic analysis: ASan/LSan .948 at 135 ms and
+  Dynamic-enhanced 1.0 at 1.17 s, but they need to build and run the code with inputs.
 
 ## 20. Gap and criterion (0:35)
 - Gap measured from untuned Qwen L1 (.533) to the cloud model. Untuned Intern L4-D: −.064 vs DeepSeek L1, 81 %
   of the gap. FT L4-D: −.037 [−.055, −.017], 89 %; vs DeepSeek L4 −.074, 80 %.
 - Pre-registered criterion (before L4-D ran): near if ≥ reference − 0.02. **Not met.** Jev (.949) is well ahead.
-- Speed-up vs DeepSeek L1 is on the slide (≈1.9× at the 09:45 build): local is faster, but not by an order of
-  magnitude at concurrency 1.
+- Latency: FT L4-D 472 ms, Intern L4-D 658 ms, DeepSeek L1 895 ms — FT L4-D is 1.9× faster (DeadFree
+  numbers; the ≈7× of the Debiased backup was single-prompt LoRA L1 vs DeepSeek and does not apply here).
+  Local is faster, but not by an order of magnitude at concurrency 1.
 
 ## 21. Live demo (2:00)
 - Unit `CWE401_Memory_Leak__strdup_char_01`: bad, good twin, and the DeadFree bad version with `if(sym_61 > 4)
@@ -190,7 +199,7 @@ the cloud — for us one RTX 3090 with 24 GB."
 6. The remaining gap is path feasibility.
 
 ## 23. Limitations (0:30)
-- Clang SA is as good (.855) and faster, without a GPU: path-sensitive analysis still matters.
+- Clang SA is as good (.855) and faster (18 ms vs 472 ms), without a GPU: path-sensitive analysis still matters.
 - Synthetic data; post-hoc pruning; τ and checkpoints chosen on a near-saturated dev set; one local device.
 - Intern L4-D threshold: τ = 0.5 (as for Intern L1–L3) was set as primary after seeing eval; it favours the
   baseline (the frozen dev τ 0.18 gives .373). Say this out loud.

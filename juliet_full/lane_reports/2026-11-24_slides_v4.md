@@ -1,5 +1,27 @@
 # REPORT v4: slides "Near-Cloud Quality on a Local Device?"
 
+## v4.2 final pass (2026-11-24 ~10:30 PST, latency csv final, commit aa001d0 of the latency lane)
+- Rebuilt from the final `latency_deadfree.csv` (primary rows). `make && make check && make pngs`: clean, 57 pages; no
+  undefined `\res`; no "pending" in any figure or slide text (only the provenance page explains the mechanism).
+- Numbers per slide (DeadFree, concurrency-1 median): slide 1 DeepSeek L1 895 ms, Jev L1 912 ms, Qwen L1 347 ms,
+  Intern L1 135 ms, FT L4-D (opt.) 472 ms; slide 17 latency panel Qwen 347/382/360 ms/1.18 s, Intern 135/267/167/658 ms,
+  LoRA L1 120 ms, L3 143 ms, L4-D 472 ms; slide 19 adds DeepSeek 0.81–1.01 s, Jev 0.91–0.96 s, VulnLLM-R 8.05 s,
+  Clang SA 18 ms, Cppcheck 9 ms, Infer 256 ms, CodeQL 7.41 s, grep 1 µs (drawn off-scale at the left edge, labelled so),
+  ASan/LSan 135 ms and Dynamic-enhanced 1.17 s (markers on their reference lines); slide 20 FT L4-D 472 ms, Intern L4-D
+  658 ms, DeepSeek L1 895 ms, 1.9× (DeadFree values); slide 23 Clang SA 0.855 at 18 ms.
+- Claims checked against the points: FT L4-D (.826, 472 ms) dominates untuned Intern L4-D (.799, 658 ms) and is the
+  most accurate local model; the model-based front is FT L1 → Intern L1 → FT L3 → Intern L3 → Qwen L3 → FT L4-D →
+  DeepSeek L3 → Jev L1 → Jev L3. Clang SA (.855, 18 ms) is above and left of every local model (limitations slide).
+- Qwen read-out L4-D has no latency row: new `methods.json` key `deadfree.latency_not_measured: ["readout_l4d"]`;
+  it is excluded from the Pareto plot, the slide 17 panel shows "not measured", the backup table "n/m".
+- Pareto labels: `label_points(..., obstacles)` now avoids unlabelled markers (cloud points, the star), which fixes the
+  FT L4-D / Infer overlap.
+- Slide 18: "Fact FT vs Intern L4-D" → "FT vs Intern L4-D" (line no longer wraps).
+- The only remaining "×faster" outside slide 20 is the Debiased backup (LoRA L1 0.105 s vs DeepSeek 0.715 s, ≈7×),
+  explicitly labelled Debiased.
+- notes.md: all latency numbers updated to the final values (slides 1, 17, 19, 20, 23).
+- Open: the demo slide still cites `demo/recordings/stage_final.json`; the parent rebuilds it after `stage_final_v2.json`.
+
 ## v4.1 update (2026-11-24 ~09:45 PST, English fixes only; the Chinese version was cancelled by the user)
 - Intern-Decision L4-D is final (`intern_l4d`, τ 0.5): .799 [.770, .823], gap closed 81 % vs DeepSeek L1. Its dev-τ
   variant (`intern_l4d_devtau`, τ 0.18) .373, recall .037 appears in backup only. A new backup frame, "Intern-Decision
