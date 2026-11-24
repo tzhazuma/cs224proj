@@ -1,8 +1,7 @@
 # L4-D LoRA decision model — stage 1 report (lane l4d-train)
 
-Status 2026-11-24 08:40 PST. All accuracy results are final. Latency rows are **partly pending**: the detached GPU-0
-chain `kernel/gpu0_chain.sh` is still running (log `raw_logs/gpu0_chain.log`); see §8 for the commands that collect
-the missing numbers.
+Status 2026-11-24 09:20 PST. All accuracy and latency results are final (latency: §6; GPU-0 chain: §8).
+Primary latency everywhere = the prediction configuration (PyTorch causal_conv1d fallback).
 
 ## 1. Verdict (contract §6, PLAN §4.2)
 
@@ -25,7 +24,8 @@ the DeepSeek API" (c1 median 0.715 s).
 - **Speed (DeadFree latency300, c1, end to end from dell; primary = fallback config).**
   - L4-D (opt.): median 0.472 s, p90 1.018 s. This is < 0.715 s, so it is faster than the DeepSeek API.
   - Full L4-D: median 1.006 s, p90 2.257 s. This is slower than DeepSeek.
-  - Neither variant meets the original §6 limit of 0.36 s.
+  - Neither variant meets the original §6 limit of 0.36 s on DeadFree. On Debiased (layer1): opt 0.214 s, full 0.645 s.
+  - Old LoRA L1/L3 on DeadFree latency300: 0.120 / 0.125 s (same prediction config).
 - Overall, per PLAN §4.2: **no strong support**. Strong support needs near-LLM quality on all 4 layers plus speed;
   quality fails everywhere. What L4-D does show is the DeadFree robustness gain over the old LoRA (+0.19 over L3,
   +0.46 over L1), still 5–6 points below DeepSeek.
@@ -134,10 +134,19 @@ questions → derive), not as a server flag. It is inside the timed e2e.
 | layer3 | L4-D full | **fallback (primary)** | **1.006 / 2.257** | 0.945 / 2.181 | 1.6 ms | 13 | done |
 | layer3 | L4-D (opt.) | kernel (secondary) | 0.445 / 0.958 | 0.399 / 0.884 | 1.6 ms | 6 | done |
 | layer3 | L4-D full | kernel (secondary) | 0.933 / 2.097 | 0.879 / 2.023 | 1.4 ms | 13 | done |
-| layer1 | L4-D (opt.) / full | fallback | pending | | | 2 / 9 | `lat300_c1_fallback` |
-| layer3 | old LoRA L1 / L3 (:8003) | fallback | pending | | | 1 | `kernel/dft_lat300.py --tag fallback --layer layer3` |
+| layer1 | L4-D (opt.) | **fallback (primary)** | **0.214 / 0.619** | 0.192 / 0.583 | 1.6 ms | 2 (21 units no model call) | done |
+| layer1 | L4-D full | **fallback (primary)** | **0.645 / 1.479** | 0.599 / 1.420 | 1.4 ms | 9 | done |
+| layer1 | L4-D (opt.) / full | kernel (secondary) | not measured | | | | aborted: kernel not equivalent (rule 08:00) |
+| layer3 | old LoRA L1 (:8003, decision_ft) | fallback (prediction config) | 0.120 / 0.135 | 0.108 / 0.123 | – | 1 | done |
+| layer3 | old LoRA L3 (:8003, decision_ft) | fallback (prediction config) | 0.125 / 0.145 | 0.112 / 0.129 | – | 1 | done |
 
 - Reference points: DeepSeek API c1 0.715 s (DeadFree); old LoRA L1 layer1 0.105 s e2e (decision_ft README).
+- Old LoRA rows: `decision_ft/endpoint_client.py cmd_latency` unchanged (its own e2e definition, 5 warm-ups per fold
+  model, DeadFree units + frozen clang_sa layer3 evidence `full_v1`), outputs `results/kernel/decision_ft/fallback/layer3/latency300_L{1,3}_v1.jsonl` + meta;
+  live scores equal the stored `decision_ft/results/decision_ft/layer3/L{1,3}_cv_v1.jsonl` (max |Δscore| 0.0,
+  0 pred flips; `results/scores/kernel_equiv_decision_ft_layer3_fallback.json`).
+- Debiased (layer1) speed: opt 0.214 s median meets the original 0.36 s limit (post-hoc variant); full 0.645 s does
+  not. Both are below DeepSeek's DeadFree 0.715 s; L4-D is 2–8× slower than the old single-question LoRA.
 - §6 speed criterion, original definition (median ≤ 0.36 s): FAIL for both (opt 0.472, full 1.006).
 - User-revised speed goal (faster than DeepSeek 0.715 s): **opt PASS (post-hoc variant); full FAIL (1.006 s)**.
 - Placebo/original latency were skipped as optional (user decision 07:05).
@@ -158,6 +167,8 @@ questions → derive), not as a server flag. It is inside the timed e2e.
 | full, kernel | 4,206 | 0.985 / 0.0022 | 11 | 3 |
 | opt, fallback | 1,779 | 0.984 / 0.0024 | 6 | 2 |
 | **full, fallback** | 4,206 | **0.0 / 0.0** | **0** | **0** |
+| Debiased (layer1): opt, fallback | 1,010 | 0.196 / 0.0008 | 1 | 0 |
+| Debiased (layer1): **full, fallback** | 3,065 | **0.0 / 0.0** | **0** | **0** |
 
 - Kernel vs fallback live (opt, same batches): max abs Δp 0.501, mean 0.0027, 1 verdict flip.
 - **Findings.**
@@ -179,23 +190,16 @@ questions → derive), not as a server flag. It is inside the timed e2e.
 - Not done, for lack of time/priority: decision_ft :8003 with kernel; Intern-Decision (skipped per parent 07:45 — the
   latency-deadfree lane measures it).
 
-## 8. Pending numbers — how to collect them
+## 8. GPU-0 chain (done)
 
-The detached chain `kernel/gpu0_chain.sh` (started 16:33:08Z, log `raw_logs/gpu0_chain.log`) does the following:
-1. Waits for `kernel/lat_all.sh fallback … opt:layer3 full:layer3 opt:layer1 full:layer1` (log `raw_logs/lat_fallback.log`).
-2. `serve_l4d.sh stop` on GPU0.
-3. `serve.sh start` (:8003), then waits for /health.
-4. `flock … python3 kernel/dft_lat300.py --tag fallback --layer layer3`.
-5. `touch ~/disk4/cs224/GPU0_L4D_DONE`.
-
-Once `GPU0_L4D_DONE` exists, run:
-
-```
-cd juliet_full/l4d_ft
-for f in results/lora_l4d*/layer{1,3}/lat300_c1_fallback.meta.json; do python3 -c "import json;m=json.load(open('$f'));print('$f',{k:m[k] for k in ('e2e_s','server_forward_s','parse_s','questions_per_unit')})"; done
-cat results/scores/kernel_equiv_lora_l4d*_lat300_c1_fallback.json results/scores/kernel_equiv_decision_ft_layer3_fallback.json
-curl -s --noproxy '*' http://10.15.89.184:8003/health
-```
+The detached chain `kernel/gpu0_chain.sh` ran from 16:33:08Z to 17:05:56Z (log `raw_logs/gpu0_chain.log`):
+1. `kernel/lat_all.sh fallback … opt:layer3 full:layer3 opt:layer1 full:layer1` (log `raw_logs/lat_fallback.log`;
+   all done 16:55:39Z).
+2. `serve_l4d.sh stop` on GPU0 (GPU0 then 38 MiB).
+3. `bash ~/disk4/cs224/decision_ft/server/serve.sh start` (:8003, prediction config, no kernel PYTHONPATH) at
+   16:56:21Z; /health ok at 16:56:44Z.
+4. `flock /tmp/cs224_latency.lock python3 kernel/dft_lat300.py --tag fallback --layer layer3` (exit 0, 17:05:55Z).
+5. `touch ~/disk4/cs224/GPU0_L4D_DONE` at 17:05:56Z; :8003 left running (GPU0 16.3 GB).
 
 ## 9. Demo interface — :8004 (`server/serve_l4d.sh`, also at `184-toast:~/disk4/cs224/l4d_ft/server/serve_l4d.sh`)
 
@@ -233,7 +237,11 @@ else:
 - GPU1 was handed over at 14:26:47Z (`GPU1_FREE_FOR_VULNLLMR`). :8001/:8002 are restored by the VulnLLM-R /
   latency-deadfree lanes on GPU1, not by this lane (revised plan); at 16:13Z Qwen vLLM and decide_server were running
   on GPU1.
-- :8003 restore on GPU0: by the chain, see §8. Health check: pending.
+- :8003 restored on GPU0 by the chain (§8), prediction config. Health 2026-11-24 ~17:15Z (dell,
+  `curl http://10.15.89.184:8003/health`): `{"ok":true,"models":[L1-fold0..2, L3-fold0..2],...}`; also ok at
+  16:56:44Z and 17:05:55Z. `GPU0_L4D_DONE` touched 17:05:56Z.
+- :8001 and :8002 (GPU1, owned by the latency-deadfree lane) both answered /health HTTP 200 at the same time;
+  not touched by this lane.
 - `SERVE_L4D_READY` touched at 16:14:10Z.
 
 ## 11. Deviations and risks
