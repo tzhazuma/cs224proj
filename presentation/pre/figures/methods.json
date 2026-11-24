@@ -490,6 +490,27 @@
    "strategy": "L3"
   },
   {
+   "key": "lora_l4d_opt",
+   "label": "L4-D decision model (opt.)",
+   "family": "Decision",
+   "model": "LoRA L4-D",
+   "strategy": "L4D",
+   "runs": {
+    "layer1": [
+     "l4d_ft/results/lora_l4d_opt/layer1/eval_r1_units.jsonl"
+    ],
+    "layer3": [
+     "l4d_ft/results/lora_l4d_opt/layer3/eval_r1_units.jsonl"
+    ],
+    "placebo": [
+     "l4d_ft/results/lora_l4d_opt/placebo/eval_r1_units.jsonl"
+    ],
+    "original": [
+     "l4d_ft/results/lora_l4d_opt/original/eval_r1_units.jsonl"
+    ]
+   }
+  },
+  {
    "key": "readout_L1",
    "label": "No-LoRA read-out L1",
    "family": "Ablation",
@@ -623,5 +644,148 @@
     "llm/results/qwen3_5_4b/layer1/rep_L3_r3.jsonl"
    ]
   }
- ]
+ ],
+ "deadfree": {
+  "_doc": "v4 main deck (DeadFree only). Quality: <quality> (lane latency-deadfree, family-cluster bootstrap B=2000 seed 20261123); concurrency-1 latency: <latency> (median_s by quality_key). A value missing from either file is drawn grey and printed as pending. short = figure labels; the lists say which method keys each figure shows.",
+  "quality": "analysis/deadfree/deadfree_quality.json",
+  "latency": "analysis/deadfree/latency_deadfree.csv",
+  "short": {
+   "deepseek_L1": "DeepSeek L1",
+   "deepseek_L2": "DeepSeek L2",
+   "deepseek_L3": "DeepSeek L3",
+   "deepseek_L4": "DeepSeek L4",
+   "jev_L1": "Jev L1",
+   "jev_L2": "Jev L2",
+   "jev_L3": "Jev L3",
+   "qwen_L1": "Qwen L1",
+   "qwen_L2": "Qwen L2",
+   "qwen_L3": "Qwen L3",
+   "qwen_L4": "Qwen L4",
+   "intern_L1": "Intern L1",
+   "intern_L2": "Intern L2",
+   "intern_L3": "Intern L3",
+   "intern_l4d": "Intern L4-D",
+   "readout_l4d": "read-out L4-D",
+   "lora_L1": "FT L1",
+   "lora_L3": "FT L3",
+   "lora_l4d": "FT L4-D (all questions)",
+   "lora_l4d_opt": "FT L4-D (opt.)",
+   "vulnllmr": "VulnLLM-R-7B",
+   "clang_sa": "Clang SA",
+   "codeql": "CodeQL",
+   "infer": "Infer",
+   "cppcheck": "Cppcheck",
+   "grep_v0": "grep",
+   "asan_lsan": "ASan/LSan",
+   "dynamic_enhanced": "Dynamic-enhanced"
+  },
+  "intro_time": [
+   "deepseek_L1",
+   "jev_L1",
+   "qwen_L1",
+   "intern_L1",
+   "lora_l4d_opt"
+  ],
+  "intro_quality": [
+   [
+    "DeepSeek V4.1 Flash",
+    "cloud",
+    [
+     "deepseek_L1",
+     "deepseek_L2",
+     "deepseek_L3",
+     "deepseek_L4"
+    ]
+   ],
+   [
+    "Jev (TypeSafe)",
+    "cloud",
+    [
+     "jev_L1",
+     "jev_L2",
+     "jev_L3"
+    ]
+   ],
+   [
+    "Qwen3.5-4B",
+    "local",
+    [
+     "qwen_L1",
+     "qwen_L2",
+     "qwen_L3",
+     "qwen_L4"
+    ]
+   ],
+   [
+    "Intern-Decision-4B",
+    "local",
+    [
+     "intern_L1",
+     "intern_L2",
+     "intern_L3"
+    ]
+   ],
+   [
+    "VulnLLM-R-7B",
+    "local",
+    [
+     "vulnllmr"
+    ]
+   ]
+  ],
+  "strategy_columns": [
+   "L1",
+   "L2",
+   "L3",
+   "L4 / L4-D"
+  ],
+  "strategy_rows": [
+   [
+    "Qwen3.5-4B (gen.)",
+    [
+     "qwen_L1",
+     "qwen_L2",
+     "qwen_L3",
+     "qwen_L4"
+    ]
+   ],
+   [
+    "Intern-Decision-4B",
+    [
+     "intern_L1",
+     "intern_L2",
+     "intern_L3",
+     "intern_l4d"
+    ]
+   ],
+   [
+    "Qwen read-out (no FT)",
+    [
+     null,
+     null,
+     null,
+     "readout_l4d"
+    ]
+   ],
+   [
+    "ours: Qwen3.5-4B + LoRA",
+    [
+     "lora_L1",
+     null,
+     "lora_L3",
+     "lora_l4d_opt"
+    ]
+   ]
+  ],
+  "pareto_exclude": [
+   "lora_l4d",
+   "intern_l4d_tau05",
+   "intern_th2_L1",
+   "intern_th2_L2",
+   "intern_th2_L3",
+   "readout_L1",
+   "readout_L3",
+   "linevul"
+  ]
+ }
 }

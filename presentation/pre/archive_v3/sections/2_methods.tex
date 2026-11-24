@@ -1,0 +1,123 @@
+\section{Methods}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Debiased: good units now look like bad units}
+  \centering
+  \begin{tikzpicture}[node distance=4mm and 10mm,
+      codebox/.style={box, align=left, font=\ttfamily\scriptsize, inner sep=3pt}]
+    \node[codebox, draw=WarnDraw, fill=WarnFill] (orig) {%
+      \textcolor{OIvermil}{\textbf{static void}} G2B()\ \{ ALLOCA \}\\
+      \textcolor{OIvermil}{\textbf{static void}} B2G()\ \{ malloc \dots\ free \}\\
+      void good()\ \{ G2B(); B2G(); \}};
+    \node[lbl, above=1mm of orig] {Original good unit};
+    \node[codebox, draw=DataDraw, fill=DataFill, right=10mm of orig, yshift=7mm] (g2b) {%
+      {\sffamily\bfseries G2B:}\ void sym\_0()\ \{ ALLOCA \dots\ \}};
+    \node[codebox, draw=DataDraw, fill=DataFill, below=4mm of g2b.south west, anchor=north west] (b2g) {%
+      {\sffamily\bfseries B2G:}\ void sym\_0()\ \{ malloc \dots\ free \}};
+    \node[lbl] at ($(g2b.north)+(0,3mm)$) {Debiased: one good unit per group};
+    \draw[arr] (orig.east) -- (g2b.west);
+    \draw[arr] (orig.east) -- (b2g.west);
+  \end{tikzpicture}
+  \vspace{6pt}
+  \begin{itemize}
+    \item Keep one helper, drop the wrapper, strip \code{static}
+    \item Bad units unchanged; same shape and length
+    \item G2B good has no \code{free}: the grep rule breaks
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}[fragile]{DeadFree adds a \code{free} that never runs}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{bad} + dead free $\Rightarrow$ still \alert{leak}
+\begin{lstlisting}[style=unit]
+static const int sym_7 = 5;
+data = (char *)malloc(100);
+(*\hlc{if (sym\_7 != 5) \{ free(data); \}}*)
+\end{lstlisting}
+      \textbf{good}: real free, always-true guard
+\begin{lstlisting}[style=unit]
+(*\hlc{if (sym\_7 == 5) \{ free(data); \}}*)
+\end{lstlisting}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Placebo}: same guard, no free
+\begin{lstlisting}[style=unit]
+if (sym_7 != 5) { printLine("..."); }
+\end{lstlisting}
+      \vspace{4pt}
+      \begin{itemize}
+        \item Labels do not change
+        \item ``has a \code{free}'' says nothing
+        \item Placebo isolates the dead free
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vfill
+  {\scriptsize All 3,316 units compile (gcc, clang); labels re-checked with ASan/LSan.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{We test on unseen flow variants, with paired statistics}
+  \centering
+  \begin{tikzpicture}[x=0.071mm, y=1mm]
+    % widths proportional to groups: dev 330, fold0 472, fold1 424, fold2 432 (total 1,658)
+    \foreach \x/\w/\c/\name/\sub in {0/330/NeutFill/dev/9 variants, 330/472/HeroFill/fold 0/15 variants,
+        802/424/HeroFill/fold 1/12 variants, 1226/432/HeroFill/fold 2/12 variants}{
+      \fill[\c, draw=NeutDraw, line width=0.5pt] (\x,0) rectangle ++(\w,9);
+      \node[font=\small] at (\x+\w/2,5.6) {\textbf{\name}};
+      \node[font=\scriptsize, text=NeutDraw] at (\x+\w/2,2.6) {\sub};
+    }
+    \draw[decorate, decoration={brace, amplitude=4pt, mirror}, NeutDraw] (0,-1) -- (330,-1)
+      node[midway, below=4pt, lbl] {prompts, thresholds};
+    \draw[decorate, decoration={brace, amplitude=4pt, mirror}, HeroDraw] (330,-1) -- (1658,-1)
+      node[midway, below=4pt, lbl, text=HeroDraw] {eval: 39 unseen variants, 2,656 units};
+  \end{tikzpicture}
+  \vspace{8pt}
+  \begin{itemize}
+    \item LoRA: train on two folds, predict the third
+    \item Quality: macro-F1 (leak = positive class)
+    \item Speed: median latency per unit, one at a time
+    \item Paired tests: family-cluster bootstrap, McNemar + Holm
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Main axis: generative LLMs vs decision models}
+  \centering
+  \begin{tikzpicture}[node distance=4mm and 4mm,
+      cell/.style={box, minimum width=50mm, minimum height=19mm, align=center, text width=48mm}]
+    \node[cell, warn] (gen) {\textbf{Generative LLM}\\[2pt]{\small DeepSeek (V4.1 Flash, API)\\Qwen3.5-4B (local)}};
+    \node[cell, data, right=of gen] (dec) {\textbf{Decision model}\\[2pt]{\small Jev (API) $\cdot$ Intern-Decision\\
+      \textbf{LoRA decision model} (ours)}};
+    \node[cell, below=of gen] (sta) {\textbf{Baselines}\\[2pt]{\small Clang SA $\cdot$ CodeQL $\cdot$ Infer\\
+      Cppcheck $\cdot$ grep $\cdot$ LineVul}};
+    \node[cell, below=of dec, draw=NeutDraw, fill=NeutFill] (dyn) {\textbf{Reference (runs code)}\\[2pt]
+      {\small ASan/LSan $\cdot$ Valgrind\\Dynamic-enhanced}};
+  \end{tikzpicture}
+  \vspace{6pt}
+
+  {\small Secondary: L1 direct $\cdot$ L2 few-shot $\cdot$ L3 + Clang SA evidence $\cdot$ L4 facts + Datalog}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{Our decision model: Qwen3.5-4B + LoRA, one score per unit}
+  \centering
+  \begin{tikzpicture}[node distance=4mm and 15mm]
+    \node[box, align=center] (code) {unit code\\{\scriptsize (+ Clang SA for L3)}};
+    \node[hero, right=of code, align=center] (m) {Qwen3.5-4B\\+ LoRA};
+    \node[data, right=of m, align=center] (s) {score\\$s=\ell_{\text{Yes}}-\ell_{\text{No}}$};
+    \node[warn, right=of s, align=center] (out) {leak /\\no leak};
+    \draw[arr] (code) -- (m);
+    \draw[arr] (m) -- node[lbl, above] {1 pass} (s);
+    \draw[arr] (s) -- node[lbl, above] {threshold} (out);
+  \end{tikzpicture}
+  \vspace{8pt}
+  \begin{itemize}
+    \item No text generation: one forward pass
+    \item LoRA r16: 0.70\% of weights trained
+    \item Balanced cross-entropy + bad\,$>$\,good ranking loss
+    \item Runs on one local GPU, no API
+  \end{itemize}
+\end{frame}

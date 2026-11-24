@@ -1,6 +1,6 @@
 # Pre slides: CS224 course project (Beamer, metropolis, 16:9)
 
-"Near-LLM Quality at Decision-Model Speed? Comparing LLM-based approaches for C/C++ memory-leak detection on a debiased Juliet". The talk is on Nov 26, 2026, and runs 17 min plus Q&A. The speaker script is in `notes.md`.
+"Near-Cloud Quality on a Local Device? Program-Analysis-Guided Decision Models for C/C++ Memory-Leak Detection" (v4; v3 sources are in `archive_v3/`, v2 in `archive_v2/`). The talk is on Nov 26, 2026, and runs 17 min plus Q&A. The speaker script is in `notes.md`; build report in `REPORT_v4.md`.
 
 ## Build
 
@@ -40,16 +40,16 @@ oblique face. matplotlib registers the same Fira Sans files directly.
 | Path | What |
 |------|------|
 | `main.tex` | preamble (theme, palette, listings/TikZ styles, `\res`, `\cmark`/`\xmark`) and the section list |
-| `sections/01_motivation.tex` | hook table on ORIGINAL Juliet (`figures/original.tex`), where the shortcut comes from, task + RQs |
-| `sections/02_benchmark.tex` | layer ① transformation (TikZ), probes, layer ③ stress + placebo (TikZ + code), flow-variant split |
-| `sections/03_methods.tex` | method matrix, strategy ladder L1–L4 with the L4 pipeline (TikZ), one 4B model three uses |
-| `sections/04_results.tex` | layer ① P/R/F1, latency Pareto, robustness (key slide), LoRA shortcut, L4 + `leak.dl` |
-| `sections/05_demo_plan.tex` | live demo (stage unit + dry-run table), limitations, take-aways/next steps, Thank you |
-| `sections/99_appendix.tex` | backup: full P/R/F1 and robustness, flow-category heatmap, mechanisms, repeats + merged/unmerged, CodeQL batching, cost, latency table, label checks, dynamic reference, demo replay, SecVulEval, result files |
+| `sections/1_intro.tex` | time budgets (DeadFree latency), cloud vs local quality on DeadFree, Original-Juliet hook, question |
+| `sections/2_methods.tex` | Debiased, DeadFree + Placebo, split, L1–L3, L4/L4-D pipeline, rules v1, course ideas (lecture-cited), pruning, oracle/attribution, fine-tuning |
+| `sections/3_results.tex` | shortcut table, models, strategy × local model, before/after FT, Pareto, gap + criterion, live demo |
+| `sections/4_discussion.tex` | take-aways, limitations, take-home |
+| `sections/9_backup.tex` | backup frames (Debiased, Placebo, paired tests, attribution, oracle, folds, flow category, VulnLLM-R, prompts, rules, cost, labels, dynamic, demo, files) |
 | `figures/make_figures.py` | figure + number pipeline (read-only on `juliet_full/` and `presentation/demo/`) |
 | `figures/methods.json` | method registry: label, family, ranked, per-layer result-file globs, subset, repeats |
 | `figures/latency_c1.csv` | concurrency-1 latency per method with its source (the Pareto x axis) |
-| `figures/*.pdf` | generated: `probes`, `prf1` (main, no L2/Valgrind), `prf1_full`, `pareto`, `robustness` (main), `robustness_full`, `lora`, `heatmap`, `mechanism` |
+| `figures/df_*.pdf`, `figures/df_*.tex` | generated v4 DeadFree figures/tables: `df_intro_time`, `df_intro_quality`, `df_strategies`, `df_before_after`, `df_pareto`, `df_attribution`, `df_strategies.tex`, `df_by_flow.tex` |
+| `figures/*.pdf` | generated (v3, partly used in backup): `probes`, `prf1` (main, no L2/Valgrind), `prf1_full`, `pareto`, `robustness` (main), `robustness_full`, `lora`, `heatmap`, `mechanism` |
 | `figures/numbers.tex` | generated `\res{<key>-<layer>}{p\|r\|f1\|macro\|spec\|ci\|n\|tp\|fp\|tn\|fn\|base\|d\|lost\|gained\|flips\|r_<mech>}` and `\res{x}{…}` extras; "pending" when no run |
 | `figures/{original,demo,repeat,cost,latency}.tex` | generated tables (hook, demo dry run, repeat agreement, API ledger, latency) |
 | `figures/provenance.tex` | generated backup frames: run file + sha256 prefix for every scored method × layer, then the pending list |
@@ -59,11 +59,15 @@ oblique face. matplotlib registers the same Fira Sans files directly.
 | `notes.md` | speaker script (17:00) and Q&A prep |
 | `.gitignore` | ignores `build/` |
 
-The deck has 41 pages: title, 5 section dividers, 18 numbered content frames, Thank you, and 16 backup frames
-(4 of them are the generated result-file list; the count grows if more files land).
+The deck has 56 pages: title, 4 section dividers, 23 numbered frames and 29 backup pages (incl. the generated result-file list). See `REPORT_v4.md` for the frame list.
 
 ## How the numbers are made
 
+- **v4 DeadFree numbers** (main slides): quality from `juliet_full/analysis/deadfree/deadfree_quality.json`
+  (macro-F1, CI, P/R, Δ and gap closed vs DeepSeek L1/L4), latency from
+  `juliet_full/analysis/deadfree/latency_deadfree.csv` (first row per `quality_key`; "pending" rows stay grey).
+  Both paths are in `figures/methods.json` → `deadfree`; macros `\res{df-<key>}{macro|ci|p|r|d1|gap1|lat|…}` and
+  `\res{df-x}{…}` (pruning counts, attribution, folds, probes). Missing values print *pending* and fill in on `make`.
 - `make_figures.py` reads `figures/methods.json`. Each method has `runs: {layer: [globs]}` relative to
   `juliet_full/`; layers are `layer1`, `layer3` (dynamic: dir `stress`), `placebo`, `original`.
   Files whose names start with `dev_`, `rep_`, `det50_`, `lat300`, `latency`, `unmerged_`, … are excluded
@@ -95,9 +99,6 @@ cd presentation/pre && make && make check && make pngs
   name methods, so check that the wording still matches the figure.
 - If a lane writes to a new path, edit only that method's `runs` globs in `figures/methods.json`.
 
-## Pending (as of the last `make`, 2026-11-23 ~15:45 PST)
+## Pending
 
-See the last result-file backup frame or `figures/results_summary.json` → `pending_by_figure`. At the last build:
-- Qwen3.5-4B: L1 placebo, L1 original, L3 placebo (layer ③ L1–L4 are in).
-- Intern-Decision-4B: L3 layer ③, L1 placebo, L1 original.
-- Qwen repeat runs (`rep_*`) for the repeat-agreement table.
+See `REPORT_v4.md` → "Pending placeholders".

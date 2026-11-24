@@ -1,130 +1,127 @@
 \section{Results}
 
 % ------------------------------------------------------------------------------
-\begin{frame}{Debiasing removes the template shortcuts}
-  \begin{columns}[c]
-    \begin{column}{0.56\textwidth}
-      \includegraphics[width=\linewidth]{figures/probes.pdf}
-    \end{column}
-    \begin{column}{0.42\textwidth}
-      \begin{itemize}
-        \item Format cues fall to chance
-        \item \code{static void}: \res{x}{probe_static_void_original} $\to$ \res{x}{probe_static_void_layer1}
-        \item grep: \res{grep-original}{macro} $\to$ \res{grep-layer1}{macro}
-        \item Bag-of-words: task words only
-      \end{itemize}
-    \end{column}
-  \end{columns}
-  \vfill
-  {\scriptsize Probes fitted on dev, scored on eval. Bag-of-words cues: \code{free}, \code{delete}, \code{ALLOCA}.\par}
-\end{frame}
-
-% ------------------------------------------------------------------------------
-\begin{frame}{The three best detectors on Debiased are LLM-based}
-  \centering
-  \includegraphics[width=0.86\linewidth,height=0.74\textheight,keepaspectratio]{figures/quality.pdf}\\[2pt]
-  Best static analyzer: CodeQL \res{codeql-layer1}{macro}; best LLM: DeepSeek L1 \res{deepseek_L1-layer1}{macro}
-\end{frame}
-
-% ------------------------------------------------------------------------------
-% src (paired bootstrap): parent analysis juliet_full/analysis/near_llm_bootstrap.py, seed 20261123, B=2000 family-cluster resamples,
-%   n=2,656 Debiased eval units, macro-F1 difference; LoRA L1 - DeepSeek L1 = -0.0113 [-0.0143, -0.0084]
-%   (12 vs 42 units only-right); LoRA L1 - Jev L1 = +0.0132 [0.0029, 0.0282].
-% Margin 0.02: pre-registered near-LLM criterion, PLAN.md section 4.2.
-\begin{frame}{Our decision model is 1.1 points below DeepSeek, above Jev}
-  \centering
-  \includegraphics[width=0.92\linewidth]{figures/nearllm.pdf}
-  \vspace{4pt}
-  \begin{itemize}
-    \item vs DeepSeek: $\Delta = -0.011$, 95\% CI $[-0.014, -0.008]$
-    \item Inside our pre-registered 0.02 margin
-    \item vs Jev: $\Delta = +0.013$, 95\% CI $[+0.003, +0.028]$
-  \end{itemize}
-\end{frame}
-
-% ------------------------------------------------------------------------------
-\begin{frame}{About 7$\times$ faster than DeepSeek, at the IDE budget edge}
-  \centering
-  \includegraphics[width=\linewidth,height=0.72\textheight,keepaspectratio]{figures/pareto.pdf}\\[2pt]
-  LoRA decision model 0.105\,s vs DeepSeek 0.715\,s per unit; no API cost
-\end{frame}
-
-% ------------------------------------------------------------------------------
-\begin{frame}{DeadFree breaks learned models in two opposite ways}
-  \centering
-  \includegraphics[width=0.88\linewidth,height=0.66\textheight,keepaspectratio]{figures/deadfree.pdf}\\[2pt]
-  {\small\textcolor{OIvermil}{\textbf{Misses}}: any \code{free} means freed \quad
-  \textcolor{OIorange}{\textbf{False alarms}}: guarded real \code{free} doubted\par}
-  {\scriptsize Placebo barely moves: the drop comes from the dead free.\par}
-\end{frame}
-
-% ------------------------------------------------------------------------------
-\begin{frame}{Fine-tuning learned the free-shortcut}
-  \begin{columns}[c]
-    \begin{column}{0.52\textwidth}
-      \includegraphics[width=\linewidth]{figures/lora.pdf}
-    \end{column}
-    \begin{column}{0.46\textwidth}
-      \begin{itemize}
-        \item L1: \res{lora_L1-layer1}{macro} $\to$ \alert{\res{lora_L1-layer3}{macro}} on DeadFree
-        \item Leak recall: \alert{\res{lora_L1-layer3}{r}}
-        \item No LoRA: \res{readout_L1-layer1}{macro} $\to$ \res{readout_L1-layer3}{macro}
-        \item Placebo \res{lora_L1-placebo}{macro}: cue is \code{free}
-      \end{itemize}
-    \end{column}
-  \end{columns}
-  \vfill
-  {\small Training sharpened ``\code{free} present $\Rightarrow$ safe''.\par}
-\end{frame}
-
-% ------------------------------------------------------------------------------
-\begin{frame}{Clang SA evidence (L3) helps weak models most}
-  \centering
-  \renewcommand{\arraystretch}{1.15}
-  \begin{tabular}{@{}lcccc@{}}
-    \toprule
-    & \multicolumn{2}{c}{Debiased} & \multicolumn{2}{c}{DeadFree} \\
-    \cmidrule(lr){2-3}\cmidrule(l){4-5}
-    Model & L1 & L3 & L1 & L3 \\
-    \midrule
-    Qwen3.5-4B & \res{qwen_L1-layer1}{macro} & \textbf{\res{qwen_L3-layer1}{macro}} & \res{qwen_L1-layer3}{macro} & \textbf{\res{qwen_L3-layer3}{macro}} \\
-    Intern-Decision & \res{intern_L1-layer1}{macro} & \textbf{\res{intern_L3-layer1}{macro}} & \res{intern_L1-layer3}{macro} & \textbf{\res{intern_L3-layer3}{macro}} \\
-    LoRA decision model & \res{lora_L1-layer1}{macro} & \res{lora_L3-layer1}{macro} & \res{lora_L1-layer3}{macro} & \textbf{\res{lora_L3-layer3}{macro}} \\
-    DeepSeek & \res{deepseek_L1-layer1}{macro} & \res{deepseek_L3-layer1}{macro} & \res{deepseek_L1-layer3}{macro}$^\dagger$ & \res{deepseek_L3-layer3}{macro}$^\dagger$ \\
-    \bottomrule
-  \end{tabular}
-  \vspace{8pt}
-
-  No gain at the top; +0.05 to +0.27 below it\\[2pt]
-  {\scriptsize Macro-F1. $^\dagger$\,DeepSeek DeadFree: nested25 subset (664 units).\par}
-\end{frame}
-
-% ------------------------------------------------------------------------------
-\begin{frame}{Path-sensitive analyzers ignore dead frees}
+% src: juliet_full/data/build/probes_layer3.json (eval split, macro-F1; BoW AUROC) via \res{df-x}{probe_*};
+%   Clang SA from the registry runs (\res{clang_sa-<layer>}, \res{df-clang_sa}); G2B cue (ALLOCA / new):
+%   juliet_full/lane_reports/2026-11-23_data_stage3.md:52
+\begin{frame}{DeadFree removes the label shortcuts; one cue is left in G2B goods}
   \centering
   \renewcommand{\arraystretch}{1.15}
   \begin{tabular}{@{}lccc@{}}
     \toprule
-    Tool & Debiased & DeadFree & flips \\
+    Shortcut probe (macro-F1) & Original & Debiased & DeadFree \\
     \midrule
-    Clang SA & \res{clang_sa-layer1}{macro} & \res{clang_sa-layer3}{macro} & \res{clang_sa-layer3}{flips} \\
-    Infer & \res{infer-layer1}{macro} & \res{infer-layer3}{macro} & \res{infer-layer3}{flips} \\
-    Cppcheck & \res{cppcheck-layer1}{macro} & \res{cppcheck-layer3}{macro} & \res{cppcheck-layer3}{flips} \\
-    Dynamic-enhanced & \res{dynamic_enhanced-layer1}{macro} & \res{dynamic_enhanced-layer3}{macro} & \res{dynamic_enhanced-layer3}{flips} \\
+    grep: no \code{free}/\code{delete} $\Rightarrow$ leak & \alert{\res{df-x}{probe_grep_v0_original}} & \res{df-x}{probe_grep_v0_layer1} & \res{df-x}{probe_grep_v0_layer3} \\
+    \code{static void} $\Rightarrow$ good & \alert{\res{df-x}{probe_static_void_original}} & \res{df-x}{probe_static_void_layer1} & \res{df-x}{probe_static_void_layer3} \\
+    bag-of-words logistic regression & \alert{\res{df-x}{probe_bow_lr_original}} & \res{df-x}{probe_bow_lr_layer1} & \res{df-x}{probe_bow_lr_layer3} \\
+    \quad AUROC, B2G goods & \res{df-x}{probe_bow_auroc_B2G_original} & \res{df-x}{probe_bow_auroc_B2G_layer1} & \res{df-x}{probe_bow_auroc_B2G_layer3} \\
+    \quad AUROC, G2B goods & \res{df-x}{probe_bow_auroc_G2B_original} & \res{df-x}{probe_bow_auroc_G2B_layer1} & \textcolor{OIvermil}{\res{df-x}{probe_bow_auroc_G2B_layer3}} \\
+    \midrule
+    \textcolor{NeutDraw}{Clang SA (reference)} & \textcolor{NeutDraw}{\res{clang_sa-original}{macro}} & \textcolor{NeutDraw}{\res{clang_sa-layer1}{macro}} & \textcolor{NeutDraw}{\res{df-clang_sa}{macro}} \\
     \bottomrule
   \end{tabular}
   \vspace{8pt}
   \begin{itemize}
-    \item They prune the infeasible branch
-    \item Robust, but Clang SA recall is only \res{clang_sa-layer1}{r}
+    \item Residual: G2B goods still use \code{ALLOCA} or \code{new} instead of \code{malloc}
+    \item \textbf{From here on, every model is compared on DeadFree only}
   \end{itemize}
 \end{frame}
 
 % ------------------------------------------------------------------------------
-\begin{frame}[fragile]{Live: one dead free fools grep and our model}
+\begin{frame}{Two cloud services, three local models, one fine-tuned model}
+  \centering
+  \footnotesize
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Model & Where & Kind & Role \\
+    \midrule
+    DeepSeek V4.1 Flash & cloud API & generative & cloud reference (L1--L4) \\
+    Jev (TypeSafe) & cloud API & decision & cloud reference (L1--L3) \\
+    \midrule
+    Qwen3.5-4B & RTX 3090 & generative & LLM baseline; L4-D read-out \\
+    Intern-Decision-4B & RTX 3090 & decision & untuned decision baseline \\
+    VulnLLM-R-7B & RTX 3090 & generative & vulnerability-tuned, published \\
+    \textbf{ours}: Qwen3.5-4B + LoRA & RTX 3090 & decision & fine-tuned per strategy \\
+    \midrule
+    \textcolor{NeutDraw}{Clang SA, Infer, CodeQL, \dots} & \textcolor{NeutDraw}{CPU} & \textcolor{NeutDraw}{static} & \textcolor{NeutDraw}{tool reference} \\
+    \textcolor{NeutDraw}{ASan/LSan, coverage + trace} & \textcolor{NeutDraw}{CPU} & \textcolor{NeutDraw}{dynamic} & \textcolor{NeutDraw}{runs the code} \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  {\scriptsize Read-out: untuned Qwen3.5-4B answering the L4-D questions with the same Yes/No head.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+% src: figures/df_strategies.pdf <- juliet_full/analysis/deadfree/deadfree_quality.json (strategy_x_ft) and
+%   latency_deadfree.csv (median_s); grey = pending
+\begin{frame}{For local models, fact questions beat every prompt strategy}
+  \centering
+  \includegraphics[width=\linewidth,height=0.60\textheight,keepaspectratio]{figures/df_strategies.pdf}\\[2pt]
+  {\small Few-shot (L2) barely helps; Clang evidence (L3) helps both untuned models;
+  fine-tuned L4-D: \alert{\res{df-lora_l4d_opt}{macro}}, the best local result.\par}
+  \vfill
+  {\scriptsize DeadFree eval, 2,656 units; same model across strategies. Latency: median per unit, concurrency 1, one RTX 3090.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+% src: figures/df_before_after.pdf <- deadfree_quality.json strategy_x_ft (pre-FT: Qwen gen., Intern-Decision,
+%   Qwen read-out; post-FT: lora_L1, lora_L3, lora_l4d_opt)
+\begin{frame}{Fine-tuning on unit labels hurts; fine-tuning on facts helps}
+  \centering
+  \includegraphics[width=\linewidth,height=0.51\textheight,keepaspectratio]{figures/df_before_after.pdf}\\[2pt]
+  {\footnotesize L1 \res{df-qwen_L1}{macro} / \res{df-intern_L1}{macro} $\to$ \alert{\res{df-lora_L1}{macro}} \quad
+  L3 \res{df-qwen_L3}{macro} / \res{df-intern_L3}{macro} $\to$ \alert{\res{df-lora_L3}{macro}} \quad
+  L4-D read-out \res{df-readout_l4d}{macro}, Intern \res{df-intern_l4d}{macro} $\to$ \textbf{\res{df-lora_l4d_opt}{macro}}\\
+  FT L1 leak recall \res{df-lora_L1}{r}: it learned ``a \code{free} means no leak''.\par}
+  \vfill
+  {\scriptsize Before: untuned Qwen3.5-4B (LLM baseline), Intern-Decision-4B (decision baseline), Qwen read-out (L4-D). After: our LoRA per strategy.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+% src: figures/df_pareto.pdf <- deadfree_quality.json (macro_f1) x latency_deadfree.csv (median_s, log axis);
+%   front over model-based methods; static tools grey; dynamic analysis dashed reference
+\begin{frame}{FT L4-D is the best local point, still below the cloud}
+  \centering
+  \includegraphics[width=\linewidth,height=0.70\textheight,keepaspectratio]{figures/df_pareto.pdf}
+  \vfill
+  {\scriptsize x: median latency per DeadFree unit, concurrency 1 (log); y: macro-F1 with 95\,\% CI.
+  Grey squares: static tools; dashed: dynamic analysis (reference).\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+% src: deadfree_quality.json lora_l4d_opt / clang_sa: delta_vs_ds_l1(_ci), gap_closed_ds_l1(_ci), delta_vs_ds_l4(_ci),
+%   gap_closed_ds_l4(_ci); family-cluster bootstrap. Criterion pre-registered PLAN.md:224-226 (2026-11-23 22:30 PST,
+%   before L4-D ran): near if macro-F1 point estimate >= reference - 0.02; reported as not met PLAN.md:34.
+\begin{frame}{We close most of the gap, but not near-cloud by our own criterion}
+  \centering
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    FT L4-D (opt.) vs & $\Delta$ macro-F1 [95\,\% CI] & gap closed & speed-up \\
+    \midrule
+    DeepSeek L1 (\res{df-deepseek_L1}{macro}) & \res{df-lora_l4d_opt}{d1} \res{df-lora_l4d_opt}{d1ci} & \res{df-lora_l4d_opt}{gap1} & \res{df-x}{speedup_ds_l1} \\
+    DeepSeek L4 (\res{df-deepseek_L4}{macro}) & \res{df-lora_l4d_opt}{d4} \res{df-lora_l4d_opt}{d4ci} & \res{df-lora_l4d_opt}{gap4} & \\
+    \bottomrule
+  \end{tabular}
+  \vspace{10pt}
+  \begin{itemize}
+    \item Gap measured from untuned Qwen L1 (\res{df-qwen_L1}{macro}) to the cloud model
+    \item Criterion: $\geq$ reference $- 0.02$. \alert{Not met}: \res{df-lora_l4d_opt}{d1} vs DeepSeek L1
+    \item Jev (\res{df-jev_L3}{macro}) stays well ahead
+    \item Median latency: FT L4-D \res{df-lora_l4d_opt}{lat}, DeepSeek L1 \res{df-deepseek_L1}{lat}, Jev L1 \res{df-jev_L1}{lat}
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+% src: figures/demo.tex <- presentation/demo/recordings/<newest stage_final*.json>; L4-D row from the frozen eval run
+%   (juliet_full/l4d_ft/results/lora_l4d_opt/{layer1,layer3}/eval_r1_units.jsonl) until stage_final_v2 exists;
+%   exec_all(free at line 20) p_yes 1.8e-07: juliet_full/l4d_ft/results/lora_l4d/layer3/eval_r1.jsonl
+%   qid layer3/CWE401_Memory_Leak__strdup_char_01__bad/exec_all/s02
+\begin{frame}[fragile]{Live: one dead free fools grep and the old LoRA, not L4-D}
   \begin{columns}[T]
-    \begin{column}{0.54\textwidth}
-      {\small Bad unit \texttt{strdup\_char\_01}, plus:\par}
+    \begin{column}{0.50\textwidth}
+      {\small Bad unit \texttt{strdup\_char\_01}, DeadFree version:\par}
 \begin{lstlisting}[style=unit]
 static const int sym_61 = 4;
 ...
@@ -134,18 +131,16 @@ printLine(data);
 \end{lstlisting}
       {\small The free never runs: still a leak.\par}
     \end{column}
-    \begin{column}{0.44\textwidth}
-      \textcolor{OIvermil}{\textbf{Flips to ``safe''}}
-      \begin{itemize}
-        \item grep, LoRA decision model
-      \end{itemize}
-      \vspace{4pt}
-      \textcolor{OIblue}{\textbf{Still ``leak''}}
-      \begin{itemize}
-        \item Clang SA, DeepSeek, Jev
-      \end{itemize}
+    \begin{column}{0.48\textwidth}
+      \textcolor{OIvermil}{\textbf{Flips to ``no leak''}}\\
+      {\small \res{x}{demo_flipped}\par}
+      \vspace{6pt}
+      \textcolor{OIblue}{\textbf{Still ``leak''}}\\
+      {\small \res{x}{demo_held}\par}
+      \vspace{6pt}
+      {\small L4-D: \code{exec\_all(free)} = no $\Rightarrow$ not freed $\Rightarrow$ leak\par}
     \end{column}
   \end{columns}
   \vfill
-  {\scriptsize Backup: \texttt{demo/recordings/stage\_final.mp4}; \texttt{demo.py --replay recordings/stage\_final.json}.\par}
+  {\scriptsize Full table in backup. Recording: \texttt{demo/recordings/\res{x}{demo_file}}; L4-D row: \res{x}{demo_has_l4d}.\par}
 \end{frame}

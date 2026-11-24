@@ -1,212 +1,243 @@
-# Speaker notes (v3, IMRaD): "Near-LLM Quality at Decision-Model Speed?"
+# Speaker notes (v4): "Near-Cloud Quality on a Local Device?"
 
+Subtitle: Program-Analysis-Guided Decision Models for C/C++ Memory-Leak Detection.
 Talk: 17:00 for slides and live demo, then Q&A (course slot 15–20 min). Structure: Introduction → Methods →
-Results (ends with the live demo) → Discussion (ends with the take-home). Section divider pages take no time.
-Result numbers on the slides come from `figures/numbers.tex` (written by `make figures` from the result files);
-the paired-bootstrap numbers come from the parent analysis `juliet_full/analysis/near_llm_bootstrap.py` (seed 20261123) and are typed into the
-slides with a `% src:` comment. All scores are macro-F1 on the eval set (2,656 units, 39 flow variants never used
-for prompts or thresholds) unless a slide says otherwise.
+Results (ends with the live demo) → Discussion. Section divider pages take no time.
 
-Main line, in one sentence: **a small decision model reaches near-LLM quality at about 7× the speed in
-distribution, but not (yet) under DeadFree.**
+All numbers on the slides come from `figures/numbers.tex`, written by `make figures` from the result files
+(DeadFree quality: `juliet_full/analysis/deadfree/deadfree_quality.json`; DeadFree latency:
+`juliet_full/analysis/deadfree/latency_deadfree.csv`). Values not yet measured print as *pending* and fill in on the
+next `make`. **Read numbers off the slide, not off these notes**: the values quoted below are the build of
+2026-11-24 ~08:10 PST and may move when the latency lane finishes. From the dataset slide on, every model
+comparison is on **DeadFree** (eval set, 2,656 units, 39 flow variants never used for prompts, τ or checkpoints).
+
+Main line in one sentence: **fine-tuning a local 4B model on program-analysis facts (L4-D) closes most of the gap
+to the cloud on DeadFree — fine-tuning on unit labels makes it worse — but it is not near-cloud by our own
+pre-registered criterion.**
 
 | # | Section | Slide (assertion title) | Time | Running |
 |---|---------|-------------------------|------|---------|
 | 0 | — | Title | 0:20 | 0:20 |
-| 1 | Intro | Can a decision model give LLM quality at IDE speed? | 1:00 | 1:20 |
-| 2 | Intro | On original Juliet, a one-line rule beats every static analyzer | 1:00 | 2:20 |
-| 3 | Methods | Debiased: good units now look like bad units | 0:45 | 3:05 |
-| 4 | Methods | DeadFree adds a free that never runs | 0:50 | 3:55 |
-| 5 | Methods | We test on unseen flow variants, with paired statistics | 0:35 | 4:30 |
-| 6 | Methods | Main axis: generative LLMs vs decision models | 0:40 | 5:10 |
-| 7 | Methods | Our decision model: Qwen3.5-4B + LoRA, one score per unit | 0:40 | 5:50 |
-| 8 | Results | Debiasing removes the template shortcuts | 0:35 | 6:25 |
-| 9 | Results | The three best detectors on Debiased are LLM-based | 0:45 | 7:10 |
-| 10 | Results | Our decision model is 1.1 points below DeepSeek, above Jev | 0:50 | 8:00 |
-| 11 | Results | About 7× faster than DeepSeek, at the IDE budget edge | 0:40 | 8:40 |
-| 12 | Results | **DeadFree breaks learned models in two opposite ways** (key slide) | 1:10 | 9:50 |
-| 13 | Results | Fine-tuning learned the free-shortcut | 0:50 | 10:40 |
-| 14 | Results | Clang SA evidence (L3) helps weak models most | 0:35 | 11:15 |
-| 15 | Results | Path-sensitive analyzers ignore dead frees | 0:30 | 11:45 |
-| 16 | Results | Live: one dead free fools grep and our model | 2:30 | 14:15 |
-| 17 | Discussion | In distribution, a decision model reaches near-LLM quality | 0:40 | 14:55 |
-| 18 | Discussion | Under DeadFree it does not, yet: robust ≠ sound | 0:40 | 15:35 |
-| 19 | Discussion | In progress: L4-D lets the decision model answer facts, not verdicts | 0:45 | 16:20 |
-| 20 | Discussion | Four caveats limit these claims | 0:25 | 16:45 |
-| 21 | Discussion | Take-home: yes in distribution, not yet under DeadFree (+ Questions) | 0:15 | 17:00 |
+| 1 | Intro | Leak checks must fit a developer's time budget | 0:45 | 1:05 |
+| 2 | Intro | On DeadFree, cloud models are far ahead of local ones | 0:45 | 1:50 |
+| 3 | Intro | Original Juliet can be gamed: a one-line rule beats Clang SA | 0:50 | 2:40 |
+| 4 | Intro | Question: near-cloud quality on a local device? | 0:30 | 3:10 |
+| 5 | Methods | Debiased: good units now look like bad units | 0:35 | 3:45 |
+| 6 | Methods | DeadFree adds a free that never runs | 0:45 | 4:30 |
+| 7 | Methods | We test on unseen flow variants | 0:25 | 4:55 |
+| 8 | Methods | L1–L3: ask for the verdict, with more or less help | 0:30 | 5:25 |
+| 9 | Methods | L4 and L4-D: the model supplies facts, Datalog decides | 0:50 | 6:15 |
+| 10 | Methods | Three rules turn the answers into a verdict | 0:40 | 6:55 |
+| 11 | Methods | The design follows the course's program-analysis ideas | 0:45 | 7:40 |
+| 12 | Methods | Asking only what the rules read halves the questions | 0:40 | 8:20 |
+| 13 | Methods | With correct facts the rules are near-perfect; exec_all is the bottleneck | 0:40 | 9:00 |
+| 14 | Methods | Fine-tuning: one recipe, different labels per strategy | 0:40 | 9:40 |
+| 15 | Results | DeadFree removes the label shortcuts; one cue is left in G2B goods | 0:35 | 10:15 |
+| 16 | Results | Two cloud services, three local models, one fine-tuned model | 0:20 | 10:35 |
+| 17 | Results | For local models, fact questions beat every prompt strategy | 0:45 | 11:20 |
+| 18 | Results | **Fine-tuning on unit labels hurts; fine-tuning on facts helps** (key slide) | 1:00 | 12:20 |
+| 19 | Results | FT L4-D is the best local point, still below the cloud (Pareto) | 0:50 | 13:10 |
+| 20 | Results | We close most of the gap, but not near-cloud by our own criterion | 0:35 | 13:45 |
+| 21 | Results | Live: one dead free fools grep and the old LoRA, not L4-D | 2:00 | 15:45 |
+| 22 | Discussion | Take-aways: what to fine-tune matters more than whether | 0:35 | 16:20 |
+| 23 | Discussion | Limitations | 0:30 | 16:50 |
+| 24 | Discussion | Near-cloud quality on a local device? (+ Questions) | 0:10 | 17:00 |
 
-If time runs short: shorten slide 5 and slide 14 to one sentence each; never cut slides 12 or 16.
+If time runs short: cut slide 7 and slide 16 to one sentence each, and slide 11 to the first two rows. Never cut
+slides 18, 19, 20 or the demo (21). If the demo fails, show the backup slide "demo, all detectors on the stage unit".
 
 ## 0. Title (0:20)
-We compare LLM-based ways to find C/C++ memory leaks. The title asks a question; by the end we answer: yes in
-distribution, not yet under a hard but label-preserving edit.
+"We ask whether a model on one consumer GPU can match cloud quality for C/C++ memory-leak detection. Cloud here
+means two APIs: DeepSeek V4.1 Flash, a generative LLM, and Jev, a decision-model API. Local means anything not in
+the cloud — for us one RTX 3090 with 24 GB."
 
-## 1. Can a decision model give LLM quality at IDE speed? (1:00)
-Leak checks run in three places: the IDE, where we have about a tenth of a second; pre-commit, about one second;
-and CI, about ten seconds. Large generative LLMs are accurate, but they write text, so they are slow and every
-call costs money. A decision model reads the same code but only outputs one score, with no text generation. Our
-question: can such a model reach near-LLM quality? The task is memory leaks (CWE-401) in Juliet test units.
+## 1. Leak checks must fit a developer's time budget (0:45)
+- Three budgets: IDE under 0.1 s, pre-commit under 1 s, CI under 10 s.
+- Local models skip the network round-trip; cloud APIs pay it on every unit.
+- Bars are median latency per DeadFree unit at concurrency 1, same client. Grey = still being measured; the
+  slide fills in on `make`. Current values: FT L4-D (opt.) 445 ms; cloud rows pending.
 
-## 2. On original Juliet, a one-line rule beats every static analyzer (1:00)
-Before comparing models we checked the benchmark. On the original Juliet, the rule "`static void` means good" is
-perfect, 1.000, because good units are written as static helper functions. The rule "no free or delete means
-leak" scores 0.935, better than Clang SA (0.822), CodeQL (0.785) and Infer (0.770). So a high Juliet score may
-mean the model reads templates, not memory. We had to rebuild the benchmark first.
+## 2. On DeadFree, cloud models are far ahead of local ones (0:45)
+- Dots are the strategies L1–L4 per model. Cloud: DeepSeek .863–.900, Jev .942–.949.
+- Local, untuned: Qwen3.5-4B .533–.760, Intern-Decision-4B .500–.664; VulnLLM-R-7B, a published
+  vulnerability-tuned model, .471.
+- "So locally we are fast but bad. Before we try to fix that, we have to make sure the benchmark measures leaks."
 
-## 3. Debiased: good units now look like bad units (0:45)
-An original good unit has two static helpers and a wrapper. We keep one helper per group, drop the wrapper and
-strip `static`, so good and bad units have the same shape and length. Bad units are unchanged. Half of the good
-units are G2B, which use stack memory and have no free at all, so the grep rule is now wrong on them.
+## 3. Original Juliet can be gamed (0:50)
+- On the original Juliet CWE-401 units, grep "no free/delete ⇒ leak" reaches .935 and the rule "has static void ⇒
+  good" reaches 1.000 — both beat Clang SA (.822).
+- Reason: in Juliet the good functions are `static void` helpers; the label is in the template.
+- Any learned model can pick this up. So a high score on Original Juliet says nothing.
 
-## 4. DeadFree adds a free that never runs (0:50)
-DeadFree is our stress test. In a bad unit we add a `free` under a guard that is always false, so it is still a
-leak. In a good unit the real `free` moves under an always-true guard, so it is still safe. Labels do not change,
-and both classes now contain a `free`, so "has a free" says nothing. Placebo is the control: the same guard, but
-with a print instead of a free. If a model drops on DeadFree but not on Placebo, the dead free is the cause. All
-3,316 units compile with gcc and clang, and we re-checked labels with ASan/LSan.
+## 4. The question (0:30)
+- Three sub-questions: which strategy helps a local model most, does fine-tuning help and on which labels, how
+  close to the cloud do we get and how fast. Task is one unit → leak / no leak, judged on DeadFree.
 
-## 5. We test on unseen flow variants, with paired statistics (0:35)
-We split by flow variant, not by family, because families differ mostly by data type. Dev is only for prompts
-and thresholds. Eval is 39 unseen flow variants, 2,656 units. Our LoRA model trains on two folds and predicts the
-third. We report macro-F1, median latency per unit at concurrency one, and paired tests: family-cluster bootstrap
-and McNemar with Holm correction.
+## 5. Debiased (0:35)
+- One entry function per unit, wrapper and `static` removed. Each good unit is either G2B (no heap) or B2G
+  (malloc + free). Bad units unchanged. Shape and length no longer reveal the label.
 
-## 6. Main axis: generative LLMs vs decision models (0:40)
-The main comparison is generative LLMs, DeepSeek over its API and Qwen3.5-4B locally, against decision models:
-Jev over its API, Intern-Decision, and our LoRA decision model. Static analyzers are baselines. Dynamic tools run
-the code, so we show them as a reference, not a competitor. Prompt strategies are secondary: L1 direct, L2
-few-shot, L3 adds Clang SA warnings, L4 lets the LLM list facts and a Datalog program decides.
+## 6. DeadFree (0:45)
+- Every unit gets an unreachable `free` under a constant guard, in both labels. The good unit's real free is moved
+  under an always-true guard. Labels do not change; both labels now contain a free; only path feasibility decides.
+- Placebo is the control: the same guard with a print instead of a free. If a model drops on DeadFree but not on
+  Placebo, the dead free — not the extra branch — fooled it.
+- All 3,316 units per layer compile with gcc and clang and the labels were re-checked by running them (backup).
 
-## 7. Our decision model: Qwen3.5-4B + LoRA, one score per unit (0:40)
-Our model is Qwen3.5-4B with a LoRA adapter. The score is the logit of "Yes" minus the logit of "No", from a
-single forward pass; a threshold chosen on dev turns it into a verdict. We train only 0.70% of the weights, with
-balanced cross-entropy plus a ranking loss that puts each bad unit above its good twin. It runs on one local GPU.
+## 7. Split (0:25)
+- Split by flow variant, not by unit: 9 dev variants (prompts, τ, checkpoints frozen there), 39 eval variants in
+  three folds. Fine-tuned models train on two folds and predict the third.
 
-## 8. Debiasing removes the template shortcuts (0:35)
-After the rebuild, format probes fall to chance: `static void` drops from 1.000 to 0.333, and grep from 0.935 to
-0.701. Bag-of-words still scores high, but its cues are task words such as `free`, `delete` and `ALLOCA`, which a
-real detector should use. So Debiased measures the task, not the template.
+## 8. L1–L3 (0:30)
+- L1 direct, L2 few-shot, L3 adds Clang SA warnings as evidence. Generative models write the label; decision
+  models do one forward pass and compare P(Yes) and P(No). Brief — the interesting strategy is next.
 
-## 9. The three best detectors on Debiased are LLM-based (0:45)
-On Debiased, DeepSeek L1 leads with 0.995, then our LoRA decision model at 0.984 and Jev at 0.971. The best static
-analyzer is CodeQL at 0.882. Qwen3.5-4B used as a generator is weak, 0.754. The grey line is ASan/LSan, which runs
-the code, at 0.945.
+## 9. L4 and L4-D (0:50)
+- L4: the LLM extracts facts as JSON, Soufflé Datalog decides.
+- L4-D: the decision model never sees the whole verdict. A parser finds the sites; we ask typed yes/no questions:
+  is this call a heap allocation, can this statement run on some run, does it run on every run, does this release
+  free that block, is the old block safe if realloc fails. The statement under test is masked so the model has to
+  reason about the control flow around it.
 
-## 10. Our decision model is 1.1 points below DeepSeek, above Jev (0:50)
-This is the in-distribution answer. Our model is 0.011 below DeepSeek, with a paired 95% interval from −0.014 to
-−0.008. So DeepSeek is significantly better, but the gap is inside the 0.02 margin we fixed before running eval.
-Our model is also 0.013 above the Jev API. Precision is 0.999 and recall 0.969. On the right: 0.105 s per unit,
-against 0.715 s for DeepSeek.
+## 10. Three rules (0:40)
+- `freed(a) :- rel(f,a), exec_all(f).` A block is freed only if a matching release runs on every run.
+- `leak(a) :- heap(a), exec_any(a), !freed(a).` A leak is a heap block that may be allocated and is not
+  must-freed. The realloc rule is the same idea for a failing realloc.
+- The dead free fails `exec_all`, so the leak survives.
 
-## 11. About 7× faster than DeepSeek, at the IDE budget edge (0:40)
-On the accuracy–latency plot, our model sits at the edge of the IDE band, about seven times faster than DeepSeek,
-which is in the pre-commit band. Clang SA is faster still, 18 ms, but at 0.855. DeepSeek also costs about ¥0.40
-per thousand units; our model has no API cost. Latency is the median at concurrency one.
+## 11. Course ideas (0:45)
+- Allocation-site abstraction: one fact set per allocation site (Lecture 10, Pointer Analysis).
+- exec_any is a may analysis, exec_all a must analysis — like reaching definitions vs available expressions
+  (Lectures 3–4, Data Flow Analysis). Leak = may-allocated and not must-freed: the safe approximation direction.
+- Facts plus rules with negation: Datalog-based program analysis (Lecture 17).
+- Ask only what the query needs: demand-driven analysis (Lecture 10).
+- Caveat: model facts can be wrong, so there is no soundness guarantee — but most real analyzers are "soundy"
+  anyway (Lectures 1 and 18).
 
-## 12. DeadFree breaks learned models in two opposite ways — key slide (1:10)
-Each row goes from Debiased (open circle) to DeadFree (filled). Clang SA and Infer do not move: zero flips. Jev
-drops a little. Then two failure modes. Red: misses. grep, CodeQL and our LoRA model treat any `free` as "freed",
-so the dead free hides the leak; our model loses 1,234 detections. Orange: false alarms. Qwen3.5-4B and
-Intern-Decision doubt a real free inside a guard and flag safe code. DeepSeek also mostly over-flags: 0.998 to
-0.881 on the 664-unit subset. The grey diamonds are Placebo: they stay close to Debiased, so the drop is caused by
-the dead free, not by an unfamiliar edit.
+## 12. Pruning (0:40)
+- Walk the rule dependency graph backwards from `leak`; a fact no rule reads is never asked (e.g. exec_any on a
+  release, exec_all on an allocation, exec_* on plain statements).
+- Median questions per DeadFree unit 13 → 6, verdicts identical on all four layers (0 differences).
+- Say clearly: this is an inference optimization decided post-hoc and approved on 2026-11-24; same trained models,
+  same τ. "L4-D (opt.)" on the following slides.
 
-## 13. Fine-tuning learned the free-shortcut (0:50)
-Our LoRA model goes from 0.984 to 0.372 on DeadFree; leak recall falls to 0.041. The same base model without
-LoRA drops much less, 0.703 to 0.619. On Placebo it stays at 0.976. So training sharpened one cue: "free present
-means safe". High accuracy on Debiased was not evidence of program understanding.
+## 13. Oracle and attribution (0:40)
+- With gold facts (from dynamic analysis) the frozen rules score .991; all errors are 24 false positives on
+  flow-variant-12 goods (frees in both random branches, the rules cannot express "some free on every path").
+- So the remaining errors come from wrong facts. Substituting only the gold exec_all facts lifts DeadFree .826 →
+  .957: path feasibility is the bottleneck.
 
-## 14. Clang SA evidence (L3) helps weak models most (0:35)
-Adding Clang SA warnings to the input (L3) does nothing for DeepSeek or for our model on Debiased. It helps the
-weaker models: Qwen3.5-4B from 0.754 to 0.858. Under DeadFree it helps most: our model recovers from 0.372 to
-0.639. Evidence helps, but it does not fix the shortcut.
+## 14. Fine-tuning (0:40)
+- One recipe: Qwen3.5-4B + LoRA r16 α32 on all language-model linear layers (32.5 M, 0.70 %), head from the tied
+  Yes/No rows, score = logit_Yes − logit_No.
+- What changes is the label: L1/L3 train on the unit label (balanced CE + bad > good ranking loss). L4-D trains on
+  fact labels from dynamic analysis (gcov coverage, alloc/free trace, realloc failure injection), class-balanced
+  per question type and label; rules frozen. 3-fold CV, dev picks checkpoint and τ; ≈68 min per fold on two
+  RTX 3090s. L2 is not trained.
 
-## 15. Path-sensitive analyzers ignore dead frees (0:30)
-Clang SA, Infer, Cppcheck and the enhanced dynamic run have zero flips: they prune the infeasible branch, so the
-dead free never runs for them. But robust is not complete: Clang SA still finds only 77% of the leaks.
+## 15. Shortcut table (0:35)
+- grep .935 → .701 → .333, static-void 1.000 → .333, bag-of-words logistic regression 1.000 → .979 → .752.
+- Honest residual: on DeadFree, G2B goods are still separable (AUROC .986) because they use ALLOCA or new instead
+  of malloc. B2G goods are not (.609).
+- Clang SA is the reference row. **From here on, everything is on DeadFree only.**
 
-## 16. Live demo (2:30)
-Stage unit `CWE401_Memory_Leak__strdup_char_01`, a bad unit. First run: everyone says leak. Then add
-`static const int sym_61 = 4;` and `if(sym_61 > 4) { free(data); }`. The free never runs, so it is still a leak.
-Run again: grep and our LoRA model flip to "safe"; Clang SA, DeepSeek and Jev still say leak. Command:
-`./demo.py --allow-eval --allow-peak` (with `--ft-l3 --jev`). If the network or GPU fails, play
-`../demo/recordings/stage_final.mp4` or run `./demo.py --replay recordings/stage_final.json`. The backup slide
-"demo dry run" shows the expected table.
+## 16. Models (0:20)
+- Two cloud references, three local models (Qwen3.5-4B generative, Intern-Decision-4B decision, VulnLLM-R-7B),
+  and ours. Static and dynamic tools are references, not competitors. Read-out = untuned Qwen answering the L4-D
+  questions.
 
-## 17. In distribution, a decision model reaches near-LLM quality (0:40)
-What holds: 0.984 vs 0.995, a gap of 0.011, inside our margin, at about seven times the speed, on a local 4B model
-that also beats the Jev API. So on in-distribution code, the answer to the title is yes.
+## 17. Strategies × local models (0:45)
+- Left quality, right latency (fills in). Few-shot barely helps; Clang evidence helps both untuned models
+  (Qwen .533 → .760). The fine-tuned L4-D model is the best local result, .826.
 
-## 18. Under DeadFree it does not, yet: robust ≠ sound (0:40)
-What does not hold: one dead free drops our model to 0.372. The most robust LLM-based detectors are Jev, 0.946,
-and DeepSeek, 0.881 on the subset. Clang SA is robust but misses 23% of leaks, so robust is not the same as sound.
-Lesson: test with edits that keep the label.
+## 18. Before vs after fine-tuning — key slide (1:00)
+- L1: untuned .533 / .584 → fine-tuned .372. L3: .760 / .664 → .639. Fine-tuning on unit labels makes it
+  **worse** than untuned on DeadFree.
+- Why: the L1 model's leak recall is .041 — it learned "a free() means no leak". On Debiased that shortcut was
+  almost always right (.984), so the training loss could not see it.
+- L4-D: read-out .752 → fine-tuned .826 (+.074 over the best untuned). Intern L4-D is still pending.
+- "What you fine-tune on matters more than whether you fine-tune."
 
-## 19. In progress: L4-D lets the decision model answer facts, not verdicts (0:45)
-Our next step keeps decision-model speed but moves reasoning into rules. A lexical parser finds candidate sites;
-the decision model answers short fact questions, such as "does this branch always, never or sometimes run?";
-Datalog rules derive the verdict. Fact labels come from dynamic analysis. With gold facts, the rules reach 0.991 on
-Debiased, DeadFree and Placebo, and 0.985 on Original: that is the ceiling, not a result. Training is running; we
-have no L4-D results yet.
+## 19. Pareto (0:50)
+- x = median latency at concurrency 1 (log), y = DeadFree macro-F1 with CI. Budget bands as on slide 1. Static
+  tools grey; dynamic analysis dashed as an upper reference (it runs the code with chosen inputs).
+- FT L4-D is the best local point; cloud points are higher. Points in the grey strip still wait for latency.
 
-## 20. Four caveats limit these claims (0:25)
-Juliet is synthetic and public, so contamination is possible. DeepSeek on DeadFree and Placebo uses a 664-unit
-subset because of the API budget. We have one LoRA run, and dev was saturated, so checkpoint choice is weak.
-LineVul is zero-shot.
+## 20. Gap and criterion (0:35)
+- vs DeepSeek L1: −.037 [−.055, −.017], 89 % of the gap closed (from untuned Qwen L1 .533). vs DeepSeek L4:
+  −.074, 80 %.
+- Pre-registered criterion (before L4-D ran): near if ≥ reference − 0.02. **Not met.** Jev (.949) is well ahead.
+- Speed-up vs DeepSeek: read from the slide once measured.
 
-## 21. Take-home (0:15)
-Near-LLM quality at decision-model speed: yes in distribution, not yet under DeadFree. And check the benchmark
-before ranking models. Thank you — questions?
+## 21. Live demo (2:00)
+- Unit `CWE401_Memory_Leak__strdup_char_01`: bad, good twin, and the DeadFree bad version with `if(sym_61 > 4)
+  { free(data); }` — the free never runs.
+- grep and the old unit-label LoRA (L1 and L3) flip to "no leak". Clang SA, DeepSeek, Jev and FT L4-D stay
+  correct. L4-D answers exec_all(free) = no, so the block is not freed, so leak.
+- If the L4-D row is marked *, it comes from the frozen eval run, not the live recording — say so.
+- Fallback: `demo.py --replay recordings/<file>` or the mp4.
+
+## 22. Take-aways (0:35)
+1. Check the benchmark first. 2. Unit labels teach shortcuts. 3. Fact labels transfer. 4. Ask only what the
+rules read. 5. The remaining gap is path feasibility.
+
+## 23. Limitations (0:30)
+- Clang SA is as good (.855) and faster, without a GPU: path-sensitive analysis still matters.
+- Synthetic data; post-hoc pruning; τ and checkpoints chosen on a near-saturated dev set; one local device;
+  pending numbers fill in automatically.
+
+## 24. Take-home (0:10)
+"Close — about 89 % of the gap — but not yet near-cloud. Fine-tune on program-analysis facts, not on verdicts."
 
 ## Q&A prep
 
-**Q: Juliet is public. Are the LLM scores just memorization (contamination)?**
-Possibly on Original; that is why we never rank on Debiased alone. DeadFree units did not exist before this
-project, the edit keeps the label, and the drops are measured on the same units (paired). Placebo shows that the
-drop is caused by the `free`, not by "unfamiliar code".
+**Why not just use Clang SA?**
+On DeadFree Clang SA scores .855, slightly above FT L4-D (.826), and it runs on a CPU in milliseconds. We say this on
+the limitations slide. Our question is different: how far can a *local learned* model get, and what to train it on.
+Clang's recall is limited (.771 on DeadFree) and it needs a buildable unit; L4-D needs only source text. The fact
+attribution says the same thing from the other side: the missing piece is path feasibility, which is exactly what
+a path-sensitive analyzer does. A natural next step is to feed Clang's path facts into L4-D (L3-style evidence for
+`exec_all`).
 
-**Q: Why are ASan/LSan and Valgrind not ranked? They look best.**
-They need a build, a run and the right input, so they answer "did this execution leak", not "does this code
-leak". Plain ASan/LSan misses all realloc-failure leaks (0/84 eval), memory reachable from a global at exit
-(variants 45/68), and untaken random branches (variant 12). Dynamic-enhanced reaches 1.000 only because we know
-which seed, option (`use_globals=0`) and fault to inject. We run LSan with `use_stacks=0`; with default options 175
-more bad units are missed.
+**Is L4-D really near-cloud?**
+No, and we say so. Δ vs DeepSeek L1 is −.037 [−.055, −.017]; the pre-registered threshold was −.02 on the point
+estimate. It closes ≈89 % of the gap to DeepSeek L1 and ≈80 % to DeepSeek L4. Jev is far ahead (.949). The positive
+result is relative: L4-D is the only fine-tuning that helps on DeadFree.
 
-**Q: Why does DeepSeek run on a subset for DeadFree?**
-The DeepSeek cap is ¥10 (total spent ¥8.21; Jev $1.90). Debiased: full eval set. DeadFree, Placebo and Original:
-the fixed nested25 subset (664 units); every comparison is paired on those units. On that subset DeepSeek L1's
-Debiased score is 0.998, so its DeadFree drop is 0.998 → 0.881.
+**Is DeadFree fair?**
+Labels do not change and are re-checked by compiling and running every unit. Dead frees appear in both labels, so
+"has a free" carries no information. The Placebo control (same guard, no free) shows the extra branch alone does
+not hurt (e.g. FT L1 .984 → .976 Placebo, but .372 DeadFree). Residual: G2B goods are still separable by
+ALLOCA/new (BoW AUROC .986); B2G goods are not (.609). Constant guards are one kind of edit; real code has more.
+It is adversarial to the "free ⇒ safe" shortcut on purpose — that is the shortcut we found.
 
-**Q: Is the 0.02 margin post hoc?**
-No. PLAN §4.2 fixed "near-LLM" as macro-F1 ≥ DeepSeek L1 − 0.02 (lower CI bound ≥ −0.02 for equivalence) and the
-speed target c1 ≤ 0.36 s before eval. Both hold: CI lower bound −0.014, latency 0.105 s.
+**Why is fine-tuned L1 worse than untuned?**
+On Debiased, "contains a free ⇒ no leak" is almost always right, so the unit-label loss rewards it (.984 Debiased).
+DeadFree breaks exactly that cue; recall falls to .041.
 
-**Q: How did you choose the LoRA checkpoint? Could another one be robust?**
-By dev AUROC, then dev loss. Dev AUROC is 1.0 at almost every evaluation, so the choice rests on tiny dev-loss
-differences. A more robust checkpoint may exist, but picking it by DeadFree would be test-set tuning. That is the
-point: on this benchmark, dev data cannot tell a robust model from a shortcut model.
+**Is the post-hoc pruning cheating?**
+It changes no model and no threshold; it skips questions whose answers no rule reads. Verdicts are identical on all
+four layers (0 differences, checked on stored answers). It only changes latency. Approved by the user on
+2026-11-24 and labelled "post-hoc" on the slide.
 
-**Q: Why is LineVul not fine-tuned?**
-We replaced "fine-tune LineVul" with the Qwen3.5-4B LoRA, so one 4B model can be compared as generator, read-out
-and fine-tuned decision model. LineVul stays zero-shot (0.501). Our LoRA result suggests fine-tuning any classifier
-on Debiased would mostly teach it the `free` cue.
+**Do the fact labels leak test information?**
+Fact labels come from dynamic analysis on the training folds only; eval-fold gold facts are used only for the
+oracle and the attribution analysis, never for training or τ.
 
-**Q: Merged vs unmerged adapters?**
-We report merged weights. Unmerged give the same held-out predictions (0 flips of 2,656 for L1 and L3).
+**Why is Jev so much better?**
+Jev is a production decision-model API; we do not know its size or training data. It shows that a decision
+model can be strong on DeadFree; our 4B model is not there yet.
 
-**Q: Why does CodeQL drop on DeadFree if it does dataflow?**
-Its leak query does not rule out the never-taken guard, so the dead `free` counts: it loses 309 detections.
-Separately, batching 50 units per database adds 4 false positives on `_08` units (shared helper names); frozen,
-documented in backup.
+**Contamination?**
+Juliet is public, so cloud models may have seen it. DeadFree edits are new, which is one reason to judge on it.
 
-**Q: What about L4 (LLM facts + Datalog) with DeepSeek?**
-Backup slide. DeepSeek L4 is lower on Debiased (0.976) but has the smallest DeadFree drop of L1–L4 (−0.078), and
-its errors turn into misses instead of false alarms. L4 never sees Clang's output.
+**How long does training take / what does it cost?**
+≈68 min per fold on two RTX 3090s (≈2.3 GPU-h); inference is free locally. API totals are on the cost backup.
 
-**Q: Are the thresholds tuned?**
-Jev uses the pre-registered 0.5; our LoRA model uses the threshold chosen on dev macro-F1. Budget bands on the
-Pareto plot are descriptive.
+**Does this generalize beyond CWE-401?**
+Not tested. The fact questions are leak-specific; the recipe (typed facts + frozen rules + fact labels from
+dynamic analysis) is general.
 
-**Q: Is L4-D just the old L4 with a smaller model?**
-No: in L4 the LLM writes all facts freely; in L4-D the candidate sites come from a parser and the decision model
-only answers typed yes/no or multiple-choice questions, trained on labels from dynamic analysis. No results yet.
+**Soundness?**
+None: facts come from a model. Real analyzers are mostly "soundy" too (Lecture 18), but ours can also be wrong on
+the facts it is asked; the oracle shows the rules themselves are near-perfect on this data.

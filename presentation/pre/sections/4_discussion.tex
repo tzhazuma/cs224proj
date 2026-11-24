@@ -1,77 +1,35 @@
 \section{Discussion}
 
 % ------------------------------------------------------------------------------
-% src: paired bootstrap from juliet_full/analysis/near_llm_bootstrap.py (seed 20261123), see the near-LLM results frame; latency figures/latency_c1.csv
-\begin{frame}{In distribution, a decision model reaches near-LLM quality}
-  \begin{itemize}
-    \item Macro-F1 \res{lora_L1-layer1}{macro} vs DeepSeek \res{deepseek_L1-layer1}{macro}
-    \item Gap $-0.011$, inside the 0.02 margin
-    \item 0.105\,s vs 0.715\,s per unit: about 7$\times$ faster
-    \item Local 4B model; beats the Jev API
-  \end{itemize}
-  \vspace{10pt}
-  \centering
-  \begin{tikzpicture}
-    \node[data, minimum width=70mm, minimum height=10mm] {\textbf{Near-LLM quality at decision-model speed: yes}};
-  \end{tikzpicture}
+% src: deadfree_quality.json (macro_f1; lora_l4d_opt delta/gap); fact attribution
+%   juliet_full/analysis/l4d_peek/fact_error_attribution.out.txt
+\begin{frame}{Take-aways: what to fine-tune matters more than whether}
+  \begin{enumerate}
+    \item \textbf{Check the benchmark first.} On Original Juliet, grep scores \res{df-x}{probe_grep_v0_original}; on DeadFree \res{df-x}{probe_grep_v0_layer3}.
+    \item \textbf{Unit labels teach shortcuts.} FT L1 drops to \res{df-lora_L1}{macro}, below both untuned baselines.
+    \item \textbf{Fact labels transfer.} FT L4-D reaches \res{df-lora_l4d_opt}{macro}, the best local result.
+    \item \textbf{Ask only what the rules read.} \res{df-x}{q_full_layer3} $\to$ \res{df-x}{q_pruned_layer3} questions, same verdicts.
+    \item \textbf{Remaining gap = path feasibility.} Correct \code{exec\_all} alone gives \res{df-x}{attr_layer3_exec_all}.
+  \end{enumerate}
 \end{frame}
 
 % ------------------------------------------------------------------------------
-\begin{frame}{Under DeadFree it does not, yet: robust $\neq$ sound}
+% src: Clang SA DeadFree quality deadfree_quality.json clang_sa (macro, delta_vs_ds_l1); latency latency_deadfree.csv
+\begin{frame}{Limitations}
   \begin{itemize}
-    \item LoRA decision model: \res{lora_L1-layer1}{macro} $\to$ \alert{\res{lora_L1-layer3}{macro}}
-    \item Best LLM-based: Jev \res{jev_L1-layer3}{macro}, DeepSeek \res{deepseek_L1-layer3}{macro}$^\dagger$
-    \item Clang SA: 0 flips, but recall \res{clang_sa-layer1}{r}
-    \item High Debiased score $\neq$ program understanding
-  \end{itemize}
-  \vspace{10pt}
-  \centering
-  \begin{tikzpicture}
-    \node[warn, minimum width=70mm, minimum height=10mm] {\textbf{Test with label-preserving edits}};
-  \end{tikzpicture}
-  \vfill
-  {\scriptsize $^\dagger$\,nested25 subset (664 units).\par}
-\end{frame}
-
-% ------------------------------------------------------------------------------
-% src: juliet_full/STATUS.md (L4-D design, l4d-train running); oracle ceiling with gold facts
-%   juliet_full/l4d/REPORT_stage1.md:94-97,165 (0.991 Debiased/DeadFree/Placebo eval, 0.985 Original).
-\begin{frame}{In progress: L4-D lets the decision model answer facts, not verdicts}
-  \centering
-  \begin{tikzpicture}[node distance=4mm and 6mm]
-    \node[box, align=center] (code) {unit\\code};
-    \node[box, right=of code, align=center] (lex) {candidate\\sites};
-    \node[data, right=of lex, align=center] (q) {decision model\\{\scriptsize answers fact questions}};
-    \node[hero, right=of q, align=center] (dl) {Datalog\\rules};
-    \node[warn, right=of dl, align=center] (out) {leak /\\no leak};
-    \draw[arr] (code) -- (lex);
-    \draw[arr] (lex) -- (q);
-    \draw[arr] (q) -- (dl);
-    \draw[arr] (dl) -- (out);
-  \end{tikzpicture}
-  \vspace{8pt}
-  \begin{itemize}
-    \item ``Does this branch always, never or sometimes run?''
-    \item Fact labels come from dynamic analysis
-    \item Gold-fact ceiling: 0.991 (Debiased, DeadFree, Placebo)
-    \item \alert{Training running: no results yet}
-  \end{itemize}
-\end{frame}
-
-% ------------------------------------------------------------------------------
-\begin{frame}{Four caveats limit these claims}
-  \begin{itemize}
-    \item Juliet is synthetic and public: contamination possible
-    \item DeepSeek DeadFree/Placebo: 664-unit subset (budget)
-    \item One LoRA run; checkpoint choice saturated on dev
-    \item LineVul zero-shot, not fine-tuned
+    \item \textbf{Clang SA is as good and faster}: \res{df-clang_sa}{macro} at \res{df-clang_sa}{lat}, no GPU. Path-sensitive analysis still matters
+    \item \textbf{Synthetic data}: Juliet is public and templated; constant-guard dead frees are one kind of edit
+    \item \textbf{Post-hoc pruning}: chosen after the full run; verdicts identical, approved 2026-11-24
+    \item \textbf{$\tau$ and checkpoints}: dev is near-saturated, so selection is weakly informed
+    \item \textbf{One local device}: one RTX 3090; other hardware will shift latency
+    \item \textbf{Pending}: Intern-Decision L4-D; all DeadFree latencies fill in automatically
   \end{itemize}
 \end{frame}
 
 % ------------------------------------------------------------------------------
 \begin{frame}[standout]
-  Near-LLM quality at decision-model speed?\\[6pt]
-  \textbf{Yes in distribution, not yet under DeadFree.}\\[14pt]
-  {\normalsize Check the benchmark before ranking models.}\\[18pt]
+  Near-cloud quality on a local device?\\[6pt]
+  \textbf{Close (\res{df-lora_l4d_opt}{gap1} of the gap), not yet near-cloud.}\\[14pt]
+  {\normalsize Fine-tune on program-analysis facts, not on verdicts.}\\[18pt]
   Questions?
 \end{frame}

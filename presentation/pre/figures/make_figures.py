@@ -19,6 +19,7 @@ latency.tex, provenance.tex and results_summary.json.
 """
 from __future__ import annotations
 
+import ast
 import csv
 import datetime as dt
 import hashlib
@@ -41,7 +42,8 @@ UNITS_PATH = JULIET_FULL / "data" / "build" / "layer1.jsonl"
 SUBSETS_PATH = JULIET_FULL / "data" / "build" / "subsets.json"
 PROBES_PATH = JULIET_FULL / "data" / "build" / "probes.json"
 LEDGER_PATH = JULIET_FULL / "llm" / "ledger.jsonl"
-DEMO_PATH = HERE.parents[1] / "demo" / "recordings" / "stage_dryrun.json"
+# newest stage recording first: stage_final_v2 (with the L4-D row, demo stage 3), stage_final, stage_dryrun
+DEMO_PATHS = [HERE.parents[1] / "demo" / "recordings" / f"{n}.json" for n in ("stage_final_v2", "stage_final", "stage_dryrun")]
 REGISTRY_PATH = HERE / "methods.json"
 LATENCY_PATH = HERE / "latency_c1.csv"
 EVAL_SET = "eval"
@@ -768,6 +770,451 @@ def plot_mechanism(results: list[dict]) -> None:
 
 
 # ---------------------------------------------------------------------------
+# DeadFree figures for the v4 main deck.  Every model comparison is on DeadFree only.  Quality comes from
+# juliet_full/analysis/deadfree/deadfree_quality.json, concurrency-1 latency from latency_deadfree.csv (both written
+# by lane latency-deadfree).  A value missing from either file is drawn grey and printed as "pending".
+# ---------------------------------------------------------------------------
+FACT_ATTRIBUTION_PATH = JULIET_FULL / "analysis" / "l4d_peek" / "fact_error_attribution.out.txt"
+PRUNE_TEST_PATH = JULIET_FULL / "l4d_ft" / "results" / "scores" / "prune_test.json"
+L4D_SCORES_DIR = JULIET_FULL / "l4d_ft" / "results" / "scores"
+PROBES_ALL_PATH = JULIET_FULL / "data" / "build" / "probes_layer3.json"
+# cloud = warm colours, local = cool colours, analyzers grey; our fine-tuned models green
+DF_STYLE = {"deepseek": (VERMIL, "o"), "jev": (PURPLE, "D"), "qwen": (ORANGE, "^"), "intern": (SKY, "v"),
+            "readout": (BLUE, "o"), "lora": (GREEN, "P"), "vulnllmr": (INK, "h"), "static": (GREY, "s"),
+            "dynamic": (GREY, "X")}
+DF_GROUP_LABELS = [("deepseek", "DeepSeek V4.1 Flash (cloud)"), ("jev", "Jev decision API (cloud)"),
+                   ("qwen", "Qwen3.5-4B generative (local)"), ("intern", "Intern-Decision-4B (local)"),
+                   ("readout", "Qwen read-out, no FT (local)"), ("lora", "ours: Qwen3.5-4B + LoRA (local)"),
+                   ("vulnllmr", "VulnLLM-R-7B (local)"), ("static", "static analyzer"),
+                   ("dynamic", "dynamic analysis (reference)")]
+BUDGETS = [(0.1, "IDE < 0.1 s"), (1.0, "pre-commit < 1 s"), (10.0, "CI < 10 s")]
+
+
+def df_kind(m: dict) -> str:
+    if m["group"] == "static":
+        return "static"
+    if m["group"] == "dynamic-reference":
+        return "dynamic"
+    return next(k for k in ("deepseek", "jev", "qwen", "intern", "readout", "lora", "vulnllmr")
+                if m["key"].startswith(k))
+
+
+def load_deadfree(registry: dict) -> dict[str, dict]:
+    """{key: quality row + lat / lat_p90 / lat_hw (None when pending)}; empty dict until the quality file exists."""
+    cfg = registry["deadfree"]
+    qpath, lpath = JULIET_FULL / cfg["quality"], JULIET_FULL / cfg["latency"]
+    methods = {m["key"]: dict(m) for m in json.loads(qpath.read_text())["methods"]} if qpath.exists() else {}
+    latency: dict[str, dict] = {}
+    if lpath.exists():
+        with lpath.open() as fh:
+            for row in csv.DictReader(fh):
+                # first row per quality_key is the primary measurement; later rows (e.g. "(fallback kernel)")
+                # are secondary checks and must not override it
+                if row.get("quality_key"):
+                    latency.setdefault(row["quality_key"], row)
+
+    def num(row, field):
+        v = (row or {}).get(field)
+        return None if v in (None, "", "pending") else float(v)
+
+    for key, m in methods.items():
+        m["short"] = cfg["short"].get(key, m["label"])
+        m["lat"], m["lat_p90"] = num(latency.get(key), "median_s"), num(latency.get(key), "p90_s")
+        m["lat_hw"] = (latency.get(key) or {}).get("hardware") or ""
+        if m["status"] != "ok":
+            m["macro_f1"] = None
+    return methods
+
+
+def df_f1(df: dict, key: str | None) -> float | None:
+    return (df.get(key) or {}).get("macro_f1") if key else None
+
+
+def df_lat(df: dict, key: str | None) -> float | None:
+    return (df.get(key) or {}).get("lat") if key else None
+
+
+def fmt_s(v: float | None) -> str:
+    if v is None:
+        return "pending"
+    return f"{v * 1000:.0f} ms" if v < 1 else f"{v:.2f} s" if v < 10 else f"{v:.0f} s"
+
+
+def shade_budgets(ax, xmin: float, y: float | None = None) -> None:
+    lo = xmin
+    for (hi, name), shade in zip(BUDGETS, ("#EAF1F8", "#F7F0E1", "#EAF1F8")):
+        ax.axvspan(lo, hi, color=shade, zorder=0, lw=0)
+        if y is not None:
+            ax.text((lo * hi) ** 0.5, y, name, ha="center", va="bottom", fontsize=7.5, color=GREY,
+                    transform=ax.get_xaxis_transform())
+        lo = hi
+
+
+def pending_bar(ax, x, width, log: bool, horizontal: bool = False, top: float = 1.0) -> None:
+    style = dict(color=LIGHT, edgecolor=GREY, hatch="///", lw=0.4)
+    lo = 0.01 if log else 0.0
+    if horizontal:
+        ax.barh(x, top - lo, width, left=lo, **style)
+    else:
+        ax.bar(x, top - lo, width, bottom=lo, **style)
+
+
+def plot_df_intro_time(df: dict, cfg: dict) -> list[str]:
+    """Intro (a): concurrency-1 latency per DeadFree unit, cloud vs local, against the deployment budgets."""
+    keys = cfg["intro_time"]
+    fig, ax = plt.subplots(figsize=(5.4, 2.1), layout="constrained")
+    xmin, xmax = 0.01, 30.0
+    shade_budgets(ax, xmin, y=1.0)
+    pending = []
+    ys = list(range(len(keys)))
+    for y, key in zip(ys, keys):
+        m = df.get(key)
+        lat = (m or {}).get("lat")
+        if lat is None:
+            pending.append((m or {}).get("short", key))
+            pending_bar(ax, y, 0.6, log=True, horizontal=True, top=xmax)
+            ax.text(0.013, y, "latency pending", va="center", fontsize=8, color=GREY)
+            continue
+        color = DF_STYLE[df_kind(m)][0]
+        ax.barh(y, lat - xmin, 0.6, left=xmin, color=color, alpha=0.9)
+        ax.text(lat * 1.12, y, fmt_s(lat), va="center", fontsize=8.5, color=color, fontweight="semibold")
+    where = ["cloud" if (df.get(k) or {}).get("group", "").startswith("cloud") else "local" for k in keys]
+    ax.set_yticks(ys, [f"{(df.get(k) or {}).get('short', k)} ({w})" for k, w in zip(keys, where)], fontsize=9)
+    ax.set_ylim(len(keys) - 0.5, -0.5)
+    ax.set_xscale("log")
+    ax.set_xlim(xmin, xmax)
+    ax.set_xlabel("median latency per DeadFree unit, one request at a time (s, log)", fontsize=8.5)
+    ax.spines["left"].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+    save(fig, "df_intro_time.pdf")
+    return pending
+
+
+def plot_df_intro_quality(df: dict, cfg: dict) -> None:
+    """Intro (b): DeadFree macro-F1 of every strategy, one row per model; cloud on top."""
+    rows = cfg["intro_quality"]
+    fig, ax = plt.subplots(figsize=(5.2, 2.2), layout="constrained")
+    ys = list(range(len(rows)))
+    for y, (name, where, keys) in zip(ys, rows):
+        got = [v for v in (df_f1(df, k) for k in keys) if v is not None]
+        color = DF_STYLE[df_kind(df[keys[0]])][0] if keys[0] in df else GREY
+        if not got:
+            ax.text(0.42, y, "pending", va="center", fontsize=8, color=GREY)
+            continue
+        ax.plot([min(got), max(got)], [y, y], color=color, lw=7, alpha=0.25, solid_capstyle="round", zorder=1)
+        ax.scatter(got, [y] * len(got), s=26, color=color, zorder=3, edgecolors="white", linewidths=0.5)
+        span = short(min(got)) if len(got) == 1 else f"{short(min(got))}–{short(max(got))}"
+        ax.text(max(got) + 0.02, y, span, va="center", fontsize=9, color=color, fontweight="semibold")
+    ax.axhline(1.5, color=GREY, lw=0.6, ls=":")
+    ax.set_yticks(ys, [f"{r[0]} ({r[1]})" for r in rows], fontsize=9)
+    ax.set_ylim(len(rows) - 0.5, -0.5)
+    ax.set_xlim(0.4, 1.06)
+    ax.set_xticks([0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], [".4", ".5", ".6", ".7", ".8", ".9", "1"])
+    ax.set_xlabel("DeadFree macro-F1 (eval, 2,656 units); one dot per strategy", fontsize=8.5)
+    ax.spines["left"].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+    save(fig, "df_intro_quality.pdf")
+
+
+def grouped_bars(ax, df: dict, cfg: dict, value, log: bool = False) -> None:
+    cols, rows = cfg["strategy_columns"], cfg["strategy_rows"]
+    width = 0.8 / len(rows)
+    for i, (_, keys) in enumerate(rows):
+        for j, key in enumerate(keys):
+            if key is None:
+                continue
+            x = j + (i - (len(rows) - 1) / 2) * width
+            v = value(df, key)
+            if v is None:
+                pending_bar(ax, x, width * 0.9, log, top=3.0 if log else 1.0)
+                ax.text(x, 0.012 if log else 0.03, "pending", rotation=90, ha="center", va="bottom", fontsize=6.5,
+                        color=GREY, bbox=dict(boxstyle="square,pad=0.1", fc="white", ec="none"))
+                continue
+            kind = df_kind(df[key])
+            lo = 0.01 if log else 0.0
+            ax.bar(x, v - lo, width * 0.9, bottom=lo, color=DF_STYLE[kind][0], alpha=0.95 if kind == "lora" else 0.7,
+                   edgecolor=INK if kind == "lora" else "none", lw=0.6)
+            ax.text(x, v * 1.12 if log else v + 0.015, fmt_s(v).replace(" ", "") if log else short(v),
+                    ha="center", va="bottom", fontsize=6.5, color=INK, rotation=90 if log else 0)
+    ax.set_xticks(range(len(cols)), cols)
+    ax.set_xlim(-0.5, len(cols) - 0.5)
+
+
+def plot_df_strategies(df: dict, cfg: dict) -> None:
+    """Results (b): local models x strategies on DeadFree, quality (left) and concurrency-1 latency (right)."""
+    fig, (top, bot) = plt.subplots(1, 2, figsize=(6.4, 2.3), layout="constrained",
+                                   gridspec_kw={"width_ratios": [1.25, 1]})
+    grouped_bars(top, df, cfg, df_f1)
+    top.set_ylim(0, 1.38)
+    top.set_yticks([0, 0.25, 0.5, 0.75, 1.0], ["0", ".25", ".5", ".75", "1"])
+    top.set_ylabel("macro-F1", fontsize=9)
+    grouped_bars(bot, df, cfg, df_lat, log=True)
+    bot.set_yscale("log")
+    bot.set_ylim(0.01, 60)
+    bot.set_yticks([0.01, 0.1, 1, 10], ["0.01", "0.1", "1", "10"])
+    bot.set_ylabel("latency (s)", fontsize=9)
+    handles = [Patch(color=DF_STYLE[k][0], alpha=0.95 if k == "lora" else 0.7, label=lab) for k, lab in
+               (("qwen", "Qwen3.5-4B generative"), ("intern", "Intern-Decision-4B"), ("readout", "Qwen read-out"),
+                ("lora", "ours (LoRA)"))]
+    top.legend(handles=handles, loc="upper left", ncol=2, frameon=False, fontsize=7, borderaxespad=0.2)
+    top.set_title("quality", fontsize=8.5, loc="left")
+    bot.set_title("speed (log)", fontsize=8.5, loc="left")
+    save(fig, "df_strategies.pdf")
+
+
+def before_after_rows(df: dict, meta: dict) -> list[tuple[str, list[tuple[str, str]], str]]:
+    """[(strategy, [(baseline name, key)], fine-tuned key)] from strategy_x_ft; backup-role baselines dropped."""
+    out = []
+    for strategy, cells in (meta.get("strategy_x_ft") or {}).items():
+        base = [(name, key) for name, key in cells.items()
+                if name != "our FT" and (df.get(key) or {}).get("role", "primary") == "primary"]
+        out.append((strategy.replace("L4 / L4-D", "L4-D"), base, cells["our FT"]))
+    return out
+
+
+def plot_df_before_after(df: dict, meta: dict) -> None:
+    """Results (c): DeadFree macro-F1 before vs after fine-tuning, per strategy."""
+    rows = before_after_rows(df, meta)
+    fig, ax = plt.subplots(figsize=(6.4, 2.2), layout="constrained")
+    kinds = {"Qwen gen.": "qwen", "Intern-Decision": "intern", "read-out": "readout"}
+    width = 0.2
+    for j, (strategy, base, ft) in enumerate(rows):
+        bars = [(kinds[n], k) for n, k in base] + [("lora", ft)]
+        xs = [j + (i - (len(bars) - 1) / 2) * width for i in range(len(bars))]
+        for x, (kind, key) in zip(xs, bars):
+            v = df_f1(df, key)
+            if v is None:
+                pending_bar(ax, x, width * 0.9, log=False)
+                ax.text(x, 0.03, "pending", rotation=90, ha="center", va="bottom", fontsize=7, color=GREY,
+                        bbox=dict(boxstyle="square,pad=0.1", fc="white", ec="none"))
+                continue
+            ax.bar(x, v, width * 0.9, color=DF_STYLE[kind][0], alpha=0.95 if kind == "lora" else 0.7,
+                   edgecolor=INK if kind == "lora" else "none", lw=0.7)
+            ax.text(x, v + 0.015, short(v), ha="center", va="bottom", fontsize=7.5, color=INK)
+        pre = [df_f1(df, k) for _, k in base if df_f1(df, k) is not None]
+        post = df_f1(df, ft)
+        if pre and post is not None:
+            d = post - max(pre)
+            ax.text(j, 1.03, "FT vs best untuned\n" + signed(d).replace("0.", "."), ha="center", va="bottom",
+                    fontsize=8.5, color=GREEN if d > 0 else VERMIL, fontweight="semibold", linespacing=1.1)
+    ax.set_xticks(range(len(rows)), [f"{s}\n" + ("fact labels" if s == "L4-D" else "unit labels") for s, *_ in rows],
+                  fontsize=9)
+    ax.set_ylim(0, 1.22)
+    ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0], ["0", ".25", ".5", ".75", "1"])
+    ax.set_ylabel("DeadFree macro-F1", fontsize=9)
+    handles = [Patch(color=DF_STYLE[k][0], alpha=0.95 if k == "lora" else 0.7, label=lab) for k, lab in
+               (("qwen", "Qwen3.5-4B gen. (untuned)"), ("intern", "Intern-Decision-4B (untuned)"),
+                ("readout", "Qwen read-out (untuned)"), ("lora", "after LoRA fine-tuning"))]
+    ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, 1.0), frameon=False, fontsize=8)
+    save(fig, "df_before_after.pdf")
+
+
+def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
+    """Results (d): DeadFree macro-F1 vs concurrency-1 latency (log).  Front over the model-based methods; static
+    analyzers grey; dynamic analysis as a reference line.  Methods whose latency is still pending sit in a grey strip
+    at the right edge at their (known) macro-F1."""
+    fig, ax = plt.subplots(figsize=(6.7, 3.1), layout="constrained")
+    xmin, xmax, xend, strip = 0.005, 30.0, 200.0, 80.0
+    shade_budgets(ax, xmin, y=1.0)
+    ax.axvspan(xmax, xend, color=LIGHT, zorder=0, lw=0)
+    ax.text(strip, 1.0, "latency\npending", ha="center", va="bottom", fontsize=7, color=GREY,
+            transform=ax.get_xaxis_transform())
+    pts, front_pts, pending = [], [], []
+    exclude = set(cfg["pareto_exclude"])
+    for key, m in df.items():
+        if key in exclude or m["macro_f1"] is None or m.get("role") != "primary":
+            continue
+        kind = df_kind(m)
+        color, marker = DF_STYLE[kind]
+        y = m["macro_f1"]
+        if kind == "dynamic":
+            ax.axhline(y, color=GREY, ls="--", lw=0.8, zorder=1)
+            ax.text(xmin * 1.15, y + 0.004, f"{m['short']} {short(y)}", fontsize=7, color=GREY, va="bottom")
+            continue
+        if m["lat"] is None:
+            pending.append(m["short"])
+            ax.scatter(strip, y, s=24, marker=marker, facecolors="white", edgecolors=color, linewidths=1.0, zorder=3)
+            continue
+        x = max(m["lat"], xmin * 1.2)
+        hero = key == "lora_l4d_opt"
+        if m.get("macro_f1_ci") and kind != "static":
+            ax.plot([x, x], m["macro_f1_ci"], color=color, lw=0.8, zorder=2)
+        ax.scatter(x, y, s=130 if hero else 36, marker="*" if hero else marker, color=color, zorder=4,
+                   edgecolors=INK if hero else "white", linewidths=0.6)
+        pts.append((x, y, m["short"], color, kind == "static"))
+        if kind != "static":
+            front_pts.append((x, y))
+    full, opt = df.get("lora_l4d") or {}, df.get("lora_l4d_opt") or {}
+    if full.get("lat") and opt.get("lat"):  # speed-up from asking only the facts the rules read
+        ax.scatter(full["lat"], full["macro_f1"], s=30, marker="P", facecolors="white", edgecolors=GREEN, zorder=3)
+        ax.annotate("", (opt["lat"], opt["macro_f1"]), (full["lat"], full["macro_f1"]),
+                    arrowprops=dict(arrowstyle="-|>", color=GREEN, lw=0.8))
+    front, best = [], -1.0
+    for x, y in sorted(front_pts):
+        if y > best:
+            front.append((x, y))
+            best = y
+    if len(front) > 1:
+        ax.step([p[0] for p in front], [p[1] for p in front], where="post", color=INK, lw=0.9, alpha=0.55, zorder=1)
+    ax.set_xscale("log")
+    ax.set_xlim(xmin, xend)
+    ax.set_xticks([0.01, 0.1, 1, 10], ["0.01", "0.1", "1", "10"])
+    ax.set_ylim(0.3, 1.04)
+    label_points(ax, pts)
+    ax.set_xlabel("median latency per DeadFree unit at concurrency 1 (s, log)")
+    ax.set_ylabel("DeadFree macro-F1 (95% CI)")
+    present = {df_kind(m) for k, m in df.items() if k not in exclude and m.get("role") == "primary"}
+    handles = [Line2D([], [], marker=DF_STYLE[k][1], color=DF_STYLE[k][0], ls="--" if k == "dynamic" else "",
+                      label=lab) for k, lab in DF_GROUP_LABELS if k in present]
+    handles += [Line2D([], [], marker="*", color=GREEN, markeredgecolor=INK, ms=10, ls="", label="FT L4-D (opt.)"),
+                Line2D([], [], color=INK, alpha=0.55, lw=0.9, label="front, model-based methods")]
+    ax.legend(handles=handles, loc="center left", bbox_to_anchor=(1.01, 0.5), frameon=False, fontsize=7.2)
+    save(fig, "df_pareto.pdf")
+    return pending
+
+
+def read_fact_attribution() -> dict[str, dict[str, tuple[float, int, int]]]:
+    """{layer: {substituted fact type: (macro-F1, FP, FN)}} from the parent's gold-fact substitution run."""
+    out: dict[str, dict] = {}
+    layer = None
+    lines = FACT_ATTRIBUTION_PATH.read_text().splitlines() if FACT_ATTRIBUTION_PATH.exists() else []
+    for line in lines:
+        if line.startswith("== "):
+            layer = line[3:].strip()
+            out[layer] = {}
+        elif "macro-F1" in line and layer:
+            name, rest = line.split("macro-F1")
+            f1, _, fp, _, fn = rest.split()[:5]
+            out[layer][name.strip().removeprefix("gold").strip()] = (float(f1), int(fp), int(fn))
+    return out
+
+
+def plot_df_attribution(attr: dict) -> None:
+    """Methods: replace one fact type by its gold (dynamic-analysis) value; DeadFree eval macro-F1, rules frozen."""
+    rows = attr.get("layer3")
+    fig, ax = plt.subplots(figsize=(4.6, 2.05), layout="constrained")
+    if not rows:
+        ax.text(0.5, 0.5, "fact attribution pending", ha="center", color=GREY, transform=ax.transAxes)
+        save(fig, "df_attribution.pdf")
+        return
+    order = [("none", "model facts (FT L4-D)"), ("heap", "+ gold heap"), ("exec_any", "+ gold exec_any"),
+             ("realloc_safe", "+ gold realloc_safe"), ("rel", "+ gold rel"), ("exec_all", "+ gold exec_all"),
+             ("all", "all facts gold (oracle)")]
+    order = [(k, lab) for k, lab in order if k in rows]
+    ys = list(range(len(order)))
+    vals = [rows[k][0] for k, _ in order]
+    colors = [GREEN if k == "none" else VERMIL if k == "exec_all" else GREY if k == "all" else SKY for k, _ in order]
+    ax.barh(ys, [v - 0.7 for v in vals], 0.62, left=0.7, color=colors, alpha=0.88)
+    bar_labels(ax, ys, vals, [INK] * len(vals), fontsize=8.5, dx=0.006)
+    ax.set_yticks(ys, [lab for _, lab in order], fontsize=8.5)
+    ax.set_ylim(len(order) - 0.5, -0.5)
+    ax.set_xlim(0.7, 1.04)
+    ax.set_xticks([0.7, 0.8, 0.9, 1.0], [".7", ".8", ".9", "1"])
+    ax.set_xlabel("DeadFree macro-F1 (eval), rules unchanged", fontsize=8.5)
+    ax.spines["left"].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+    save(fig, "df_attribution.pdf")
+
+
+def deadfree_numbers(df: dict, attr: dict) -> dict[str, dict[str, str]]:
+    """\\res{df-<key>}{<metric>}: macro ci p r f1 tp fp tn fn lat p90 d1 d1ci gap1 gap1ci d4 d4ci gap4 gap4ci;
+    \\res{df-x}{...}: speed-up, pruning, fact attribution, per-layer / per-fold L4-D scores, shortcut probes."""
+    out: dict[str, dict[str, str]] = {}
+    for key, m in df.items():
+        cells = {}
+        if m["macro_f1"] is not None:
+            ci = m.get("macro_f1_ci")
+            cells.update(macro=f3(m["macro_f1"]), p=f3(m["precision_leak"]), r=f3(m["recall_leak"]),
+                         f1=f3(m["f1_leak"]), **{k: f"{m[k]:,}" for k in ("tp", "fp", "tn", "fn")})
+            if ci:
+                cells["ci"] = f"[{ci[0]:.3f}, {ci[1]:.3f}]"
+            for tag, field in (("d1", "delta_vs_ds_l1"), ("d4", "delta_vs_ds_l4")):
+                if m.get(field) is not None:
+                    cells[tag] = signed(m[field])
+                    cells[tag + "ci"] = "[" + ", ".join(signed(v) for v in m[field + "_ci"]) + "]"
+            for tag, field in (("gap1", "gap_closed_ds_l1"), ("gap4", "gap_closed_ds_l4")):
+                if m.get(field) is not None:
+                    cells[tag] = f"{100 * m[field]:.0f}\\,\\%"
+                    cells[tag + "ci"] = "[" + ", ".join(f"{100 * v:.0f}" for v in m[field + "_ci"]) + "]\\,\\%"
+        if m["lat"] is not None:
+            cells["lat"] = fmt_s(m["lat"]).replace(" ", "\\,")
+        if m["lat_p90"] is not None:
+            cells["p90"] = fmt_s(m["lat_p90"]).replace(" ", "\\,")
+        out[f"df-{key}"] = cells
+    x: dict[str, str] = {}
+    ds, ours = df.get("deepseek_L1") or {}, df.get("lora_l4d_opt") or {}
+    if ds.get("lat") and ours.get("lat"):
+        x["speedup_ds_l1"] = f"{ds['lat'] / ours['lat']:.1f}"
+    if PRUNE_TEST_PATH.exists():
+        total = 0
+        for layer, info in json.loads(PRUNE_TEST_PATH.read_text())["layers"].items():
+            q = info["questions_per_unit_eval"]
+            x[f"q_full_{layer}"], x[f"q_pruned_{layer}"] = f"{q['full']['median']:.0f}", f"{q['pruned']['median']:.0f}"
+            diffs = sum(v["pred_diffs"] for run in ("gold", "stored_lora_l4d") for v in info.get(run, {}).values())
+            x[f"prune_diffs_{layer}"] = f"{diffs:,}"
+            total += diffs
+        x["prune_diffs_total"] = f"{total:,}"
+    for layer, rows in attr.items():
+        for name, (f1, fp, fn) in rows.items():
+            tag = name.replace("+", "_")
+            x[f"attr_{layer}_{tag}"], x[f"attr_{layer}_{tag}_fp"], x[f"attr_{layer}_{tag}_fn"] = f3(f1), str(fp), str(fn)
+    for path in sorted(L4D_SCORES_DIR.glob("lora_l4d_opt_*_eval_r1.json")):
+        layer = path.name.removeprefix("lora_l4d_opt_").removesuffix("_eval_r1.json")
+        s = json.loads(path.read_text())
+        x[f"l4d_{layer}"] = f3(s["all_eval"]["macro_f1"])
+        for fold, v in s.get("per_fold", {}).items():
+            x[f"l4d_{layer}_fold{fold}"] = f3(v["macro_f1"])
+    if PROBES_ALL_PATH.exists():
+        for layer, rows in json.loads(PROBES_ALL_PATH.read_text()).items():
+            for probe in ("static_void", "grep_v0", "bow_lr"):
+                x[f"probe_{probe}_{layer}"] = f3(rows[probe]["macro_f1"]["all"])
+            for sub in ("all", "B2G", "G2B"):
+                x[f"probe_bow_auroc_{sub}_{layer}"] = f3(rows["bow_lr"]["auroc"][sub])
+    out["df-x"] = x
+    return out
+
+
+def write_df_strategy_table(df: dict, cfg: dict) -> None:
+    """Backup: the strategy grid as a table, macro-F1 / concurrency-1 latency."""
+    cols = cfg["strategy_columns"]
+    lines = ["% generated by figures/make_figures.py from juliet_full/analysis/deadfree (quality + latency)",
+             "\\begin{tabular}{@{}l" + "c" * len(cols) + "@{}}", "\\toprule",
+             "Local model & " + " & ".join(cols) + " \\\\", "\\midrule"]
+    for name, keys in cfg["strategy_rows"]:
+        cells = []
+        for key in keys:
+            m = df.get(key) if key else None
+            if key is None:
+                cells.append("--")
+                continue
+            f1 = "\\textit{pending}" if not m or m["macro_f1"] is None else f3(m["macro_f1"])
+            lat = "\\textit{pending}" if not m or m["lat"] is None else fmt_s(m["lat"]).replace(" ", "\\,")
+            cells.append(f"{f1} / {{\\scriptsize {lat}}}")
+        lines.append(tex_escape(name) + " & " + " & ".join(cells) + " \\\\")
+    lines += ["\\bottomrule", "\\end{tabular}"]
+    (HERE / "df_strategies.tex").write_text("\n".join(lines) + "\n")
+    print("wrote figures/df_strategies.tex")
+
+
+def write_df_by_flow(df: dict) -> None:
+    """Backup: DeadFree macro-F1 per flow category for the main methods."""
+    keys = ["deepseek_L1", "deepseek_L4", "jev_L3", "qwen_L3", "intern_L3", "lora_L1", "lora_l4d_opt", "clang_sa"]
+    lines = ["% generated by figures/make_figures.py from juliet_full/analysis/deadfree/deadfree_quality.json",
+             "\\begin{tabular}{@{}l" + "c" * len(FLOW_CATEGORIES) + "@{}}", "\\toprule",
+             "Method & " + " & ".join(FLOW_LABELS[c] for c in FLOW_CATEGORIES) + " \\\\", "\\midrule"]
+    for key in keys:
+        m = df.get(key)
+        if not m or m["macro_f1"] is None:
+            lines.append(tex_escape(key) + " & " + " & ".join(["\\textit{pending}"] * len(FLOW_CATEGORIES)) + " \\\\")
+            continue
+        cells = [f3(m["by_flow"][c]["macro_f1"]) if c in m["by_flow"] else "--" for c in FLOW_CATEGORIES]
+        lines.append(tex_escape(m["short"]) + " & " + " & ".join(cells) + " \\\\")
+    lines += ["\\bottomrule", "\\end{tabular}"]
+    (HERE / "df_by_flow.tex").write_text("\n".join(lines) + "\n")
+    print("wrote figures/df_by_flow.tex")
+
+
+# ---------------------------------------------------------------------------
 # TeX side files
 # ---------------------------------------------------------------------------
 def f3(v) -> str:
@@ -782,10 +1229,11 @@ def tex_escape(s: str) -> str:
     return s.replace("_", "\\_").replace("%", "\\%").replace("&", "\\&").replace("#", "\\#")
 
 
-def write_numbers(results: list[dict], extra: dict[str, str]) -> None:
+def write_numbers(results: list[dict], extra: dict[str, str], deadfree: dict[str, dict[str, str]]) -> None:
     lines = ["% generated by figures/make_figures.py -- do not edit",
              "% \\res{<method key>-<layer>}{<metric>}: p r f1 macro spec ci n tp fp tn fn; paired vs layer1: base d",
-             "% lost gained flips; unknown or pending -> \\textit{pending}",
+             "% lost gained flips; \\res{df-<key>}{<metric>}: DeadFree quality + latency (see deadfree_numbers);",
+             "% unknown or pending -> \\textit{pending}",
              "\\providecommand{\\res}[2]{\\ifcsname res-#1-#2\\endcsname\\csname res-#1-#2\\endcsname"
              "\\else\\textit{pending}\\fi}"]
 
@@ -812,6 +1260,9 @@ def write_numbers(results: list[dict], extra: dict[str, str]) -> None:
                     put(name, f"r_{mech}", f3(v))
     for k, v in extra.items():
         put("x", k, v)
+    for name, cells in deadfree.items():
+        for metric, v in cells.items():
+            put(name, metric, v)
     (HERE / "numbers.tex").write_text("\n".join(lines) + "\n")
     print("wrote figures/numbers.tex")
 
@@ -847,18 +1298,21 @@ def write_original_table(results: list[dict]) -> None:
 
 
 def write_demo_table() -> dict[str, str]:
-    """Verdict table of the recorded stage dry run (presentation/demo/recordings/stage_dryrun.json)."""
-    if not DEMO_PATH.exists():
+    """Verdict table of the newest stage recording (DEMO_PATHS); \\res{x}{demo_flipped|demo_held}: detectors whose
+    verdict on the dead-free bad unit flips to no-leak vs stays leak.  A recording without the L4-D row gets a
+    pending row."""
+    path = next((p for p in DEMO_PATHS if p.exists()), None)
+    if path is None:
         (HERE / "demo.tex").write_text("\\textit{demo recording pending}\n")
         return {}
-    rec = json.loads(DEMO_PATH.read_text())
-    names = {"grep": "grep", "clang": "Clang SA", "ft": "LoRA decision model L1", "ft_l3": "LoRA decision model L3",
-             "ds_l1": "DeepSeek L1",
-             "ds_l3": "DeepSeek L3", "jev": "Jev L1"}
+    rec = json.loads(path.read_text())
+    names = {"grep": "grep", "clang": "Clang SA", "ft": "old LoRA L1 (unit labels)", "ft_l3": "old LoRA L3 (unit labels)",
+             "l4d": "FT L4-D (opt.)", "ds_l1": "DeepSeek L1", "ds_l3": "DeepSeek L3", "jev": "Jev L1"}
     truth = {c["key"]: c["truth"] for c in rec["cases"]}
-    lines = ["% generated by figures/make_figures.py from presentation/demo/recordings/stage_dryrun.json",
+    lines = [f"% generated by figures/make_figures.py from presentation/demo/recordings/{path.name}",
              "\\begin{tabular}{@{}lccc r@{}}", "\\toprule",
              "Detector & bad & good twin & bad + dead free & ms \\\\", "\\midrule"]
+    flipped, held = [], []
     for m in rec["methods"]:
         cells = [names.get(m, m)]
         for case in ("bad", "good", "attacked"):
@@ -867,13 +1321,58 @@ def write_demo_table() -> dict[str, str]:
             mark = "\\cmark" if res["pred"] == truth[case] else "\\xmark"
             flip = (case == "attacked" and res["pred"] != rec["results"]["bad"][m]["pred"])
             cells.append(f"{mark}\\,{verdict}" + ("\\,\\textcolor{OIvermil}{\\small flipped}" if flip else ""))
+        attacked = rec["results"]["attacked"][m]["pred"]
+        (held if attacked == truth["attacked"] else flipped).append(names.get(m, m))
         cells.append(f"{rec['results']['bad'][m]['latency_ms']:.0f}")
         lines.append(" & ".join(cells) + " \\\\")
+    l4d_eval = None if "l4d" in rec["methods"] else demo_l4d_eval_row(rec)
+    if l4d_eval is not None:
+        cells = [names["l4d"] + "$^*$"]
+        for case in ("bad", "good", "attacked"):
+            pred = l4d_eval[case]
+            mark = "\\cmark" if pred == truth[case] else "\\xmark"
+            flip = case == "attacked" and pred != l4d_eval["bad"]
+            cells.append(f"{mark}\\,{ {1: 'leak', 0: 'no leak'}[pred]}"
+                         + ("\\,\\textcolor{OIvermil}{\\small flipped}" if flip else ""))
+        cells.append("--")
+        lines.append(" & ".join(cells) + " \\\\")
+        (held if l4d_eval["attacked"] == truth["attacked"] else flipped).append(names["l4d"])
+    elif "l4d" not in rec["methods"]:
+        lines.append(names["l4d"] + " & \\multicolumn{4}{c}{\\textit{pending: recording without the L4-D row}} \\\\")
     lines += ["\\bottomrule", "\\end{tabular}"]
+    if l4d_eval is not None:
+        lines.append("\n\\par\\vspace{2pt}{\\scriptsize $^*$ from the frozen eval run (\\code{lora\\_l4d\\_opt}, same units), "
+                     "not the live recording\\par}")
     (HERE / "demo.tex").write_text("\n".join(lines) + "\n")
-    print("wrote figures/demo.tex")
-    return {"demo_run": tex_escape(rec["run_id"]), "demo_cny": f"{rec['spent']['deepseek']:.4f}",
-            "demo_usd": f"{rec['spent']['jev']:.5f}"}
+    print(f"wrote figures/demo.tex from {path.name}")
+    return {"demo_run": tex_escape(rec["run_id"]), "demo_file": tex_escape(path.name),
+            "demo_cny": f"{rec['spent']['deepseek']:.4f}", "demo_usd": f"{rec['spent']['jev']:.5f}",
+            "demo_flipped": ", ".join(flipped) or "none", "demo_held": ", ".join(held) or "none",
+            "demo_has_l4d": "yes" if "l4d" in rec["methods"] else ("eval run" if l4d_eval else "no")}
+
+
+DEMO_CASE_LAYERS = {"bad": "layer1", "good": "layer1", "attacked": "layer3"}
+
+
+def demo_l4d_eval_row(rec: dict) -> dict[str, int] | None:
+    """FT L4-D (opt.) predictions on the demo's three cases taken from the frozen eval runs, used until a recording
+    with the L4-D row exists.  The stage cases are the layer1 bad/good units and the layer3 (DeadFree) bad unit; the
+    attacked case must be the unchanged layer3 unit (attack.matches_layer3), otherwise no row is produced."""
+    if not rec.get("attack", {}).get("matches_layer3"):
+        return None
+    out = {}
+    for c in rec["cases"]:
+        unit = c["unit"] if isinstance(c["unit"], dict) else ast.literal_eval(c["unit"])
+        uid = unit["unit_id"].removesuffix("__stress")
+        path = JULIET_FULL / "l4d_ft" / "results" / "lora_l4d_opt" / DEMO_CASE_LAYERS[c["key"]] / "eval_r1_units.jsonl"
+        if not path.exists():
+            return None
+        pred = next((json.loads(line)["pred"] for line in path.open() if f'"{uid}"' in line
+                     and json.loads(line)["unit_id"] == uid), None)
+        if pred not in (0, 1):
+            return None
+        out[c["key"]] = pred
+    return out
 
 
 def write_repeat_table(registry: dict) -> None:
@@ -1003,8 +1502,19 @@ def main() -> None:
     plot_probes()
     plot_heatmap(results)
     plot_mechanism(results)
+    df, cfg = load_deadfree(registry), registry["deadfree"]
+    df_meta = json.loads((JULIET_FULL / cfg["quality"]).read_text()) if (JULIET_FULL / cfg["quality"]).exists() else {}
+    attr = read_fact_attribution()
+    pending["df_intro_time"] = plot_df_intro_time(df, cfg)
+    pending["df_pareto"] = plot_df_pareto(df, cfg)
+    plot_df_intro_quality(df, cfg)
+    plot_df_strategies(df, cfg)
+    plot_df_before_after(df, df_meta)
+    plot_df_attribution(attr)
+    write_df_strategy_table(df, cfg)
+    write_df_by_flow(df)
     extra = {**write_demo_table(), **write_cost_table(), **unmerged_flips(results), **probe_numbers()}
-    write_numbers(results, extra)
+    write_numbers(results, extra, deadfree_numbers(df, attr))
     write_original_table(results)
     write_repeat_table(registry)
     write_latency_table(latency, results)
