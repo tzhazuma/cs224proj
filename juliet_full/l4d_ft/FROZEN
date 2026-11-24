@@ -1,0 +1,114 @@
+{
+ "folds": {
+  "0": {
+   "fold": 0,
+   "method": "lora_l4d",
+   "model": "qwen3.5-4b-lora-l4d-fold0",
+   "checkpoint": "step219",
+   "checkpoint_dir": "runs/fold0/ckpt/step219",
+   "adapter_sha256": "77f9f88b4c561ee1bf80837dde9ce9dcab14fbadcdb10ef34ff21485e3f1a7a1",
+   "adapter_config_sha256": "2d712e91e040f75a225e429128cdccc398ab459e12c5b47870f922f5f60dbf14",
+   "head_sha256": "ff0c2de16846eed9d4cd640b3da193e5343db9fbb44bd1cb4677eb402db9132d",
+   "tau": 0.817574,
+   "tau_rule": "dev unit macro-F1 on merged dev answers of the selected checkpoint",
+   "dev_macro_f1_merged": 0.9893927461996413,
+   "dev_question_auroc_merged": 0.999107406530432,
+   "tau_unmerged_at_selection": 0.817574,
+   "dev_macro_f1_unmerged": 0.9909083395321927,
+   "dev_answers_merged_sha256": "2190b8c2177004cd37e8b2c9e80cbd9966993052c3d6cd9589a7977b536eccb0",
+   "train_file": "data/train_fold0.jsonl",
+   "train_file_sha256": "ad73249e23ef8140a9875e02e9f032b788280cd7423186125c50ea9dc8c5fdae",
+   "frozen_utc": "2026-11-24T08:07:18Z"
+  },
+  "2": {
+   "fold": 2,
+   "method": "lora_l4d",
+   "model": "qwen3.5-4b-lora-l4d-fold2",
+   "checkpoint": "step219",
+   "checkpoint_dir": "runs/fold2/ckpt/step219",
+   "adapter_sha256": "0d994bede1ca9357943d49440105a0724757f8c4e63d81ddc1b3f191dc4ccfd7",
+   "adapter_config_sha256": "2d712e91e040f75a225e429128cdccc398ab459e12c5b47870f922f5f60dbf14",
+   "head_sha256": "c9be7de9a1e6cbdb43c89a38a8ddc4aebb6d8d05376032b961d8fd2b882b6b5a",
+   "tau": 0.5,
+   "tau_rule": "dev unit macro-F1 on merged dev answers of the selected checkpoint",
+   "dev_macro_f1_merged": 1.0,
+   "dev_question_auroc_merged": 1.0,
+   "tau_unmerged_at_selection": 0.5,
+   "dev_macro_f1_unmerged": 1.0,
+   "dev_answers_merged_sha256": "f6d5d330a24792f722fe2efddc0c68a7d1b29bfcfabbc3b80eefd0d268fc190f",
+   "train_file": "data/train_fold2.jsonl",
+   "train_file_sha256": "bd6c4414274d9d6c3afab23a2bb55d87dacd7ccf28660e75584a2529196743a0",
+   "frozen_utc": "2026-11-24T11:02:13Z"
+  },
+  "1": {
+   "fold": 1,
+   "method": "lora_l4d",
+   "model": "qwen3.5-4b-lora-l4d-fold1",
+   "checkpoint": "step219",
+   "checkpoint_dir": "runs/fold1/ckpt/step219",
+   "adapter_sha256": "6b50c79fe2aa20fce6f65ae2424892287b3308d9f4aef927007b2e4ea620e1e0",
+   "adapter_config_sha256": "2d712e91e040f75a225e429128cdccc398ab459e12c5b47870f922f5f60dbf14",
+   "head_sha256": "41c0b71e86e64e59478e07e888a4061540d90914ba8f5cdb29f5950c47be7b86",
+   "tau": 0.5,
+   "tau_rule": "dev unit macro-F1 on merged dev answers of the selected checkpoint",
+   "dev_macro_f1_merged": 1.0,
+   "dev_question_auroc_merged": 1.0,
+   "tau_unmerged_at_selection": 0.5,
+   "dev_macro_f1_unmerged": 1.0,
+   "dev_answers_merged_sha256": "67eda2b25975f9ff6f36b5f78299efef5ba5524baa2c136f1d83c0be7825fd57",
+   "train_file": "data/train_fold1.jsonl",
+   "train_file_sha256": "cfd54c616edab631b441d694e9586e0229c7e00ca9f69b2d64a228e432e649ac",
+   "frozen_utc": "2026-11-24T12:01:17Z"
+  }
+ },
+ "readout": {
+  "method": "qwen_readout_l4d",
+  "model": "qwen3.5-4b-readout",
+  "tau": 0.268941,
+  "dev_macro_f1": 0.8681742524249555,
+  "dev_question_auroc": 0.6039670746967266,
+  "dev_answers_sha256": "7423520d93e83f59149fbfa0b860839d1eb85ad08cbc04a75c49d49efb808b82",
+  "frozen_utc": "2026-11-24T08:07:18Z"
+ },
+ "history": [
+  {
+   "utc": "2026-11-24T08:07:18Z",
+   "entry": "fold0"
+  },
+  {
+   "utc": "2026-11-24T08:07:18Z",
+   "entry": "readout"
+  },
+  {
+   "utc": "2026-11-24T08:07:45Z",
+   "entry": "questions_other"
+  },
+  {
+   "utc": "2026-11-24T11:02:13Z",
+   "entry": "fold2"
+  },
+  {
+   "utc": "2026-11-24T12:01:17Z",
+   "entry": "fold1"
+  }
+ ],
+ "common": {
+  "l4d_templates_sha256": "316429b266c0258383724c8c9129e2ea17946a9013d72cb61b267261ef827516",
+  "l4d_templates_py_sha256": "678d7c743c63b3e8d96005def26f10a2c0b3f9fef48dccc09189635ae76a56f1",
+  "prompt_template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+  "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+  "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+  "rules_l4d_dl_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+  "questions_layer1": "l4d/build/questions_layer1.jsonl",
+  "questions_layer1_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+  "rendered_q_layer1_sha256": "06193a97bac8cb72cced60025bc994396926f6e65a3056d73403e9f6db1106bf"
+ },
+ "questions_other": {
+  "sha256": {
+   "layer3": "0264524d9a6d9898f351a2bc4c6f323b4f89f87636db9c1b3a0ddea17e5ae8f6",
+   "placebo": "b0e816e5ef206b42bb5fae0647871c84a370e1836fc497de6b87c14d87721d89",
+   "original": "cdb4bdbe2309525c63f3e70c52684d5d75b64980805bf1dc25693eab29d2df98"
+  },
+  "recorded_utc": "2026-11-24T08:07:45Z"
+ }
+}

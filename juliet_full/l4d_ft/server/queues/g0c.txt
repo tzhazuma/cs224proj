@@ -1,0 +1,5 @@
+predict --fold 1 --ckpt step219 --input data/q_layer1.jsonl --set eval --unit-fold 1 --out results/lora_l4d/layer1/eval_r1_fold1.jsonl
+predict --fold 1 --ckpt step219 --input data/q_layer3.jsonl --set eval --unit-fold 1 --out results/lora_l4d/layer3/eval_r1_fold1.jsonl
+predict --fold 1 --ckpt step219 --input data/q_placebo.jsonl --set eval --unit-fold 1 --out results/lora_l4d/placebo/eval_r1_fold1.jsonl
+predict --fold 1 --ckpt step219 --input data/q_original.jsonl --set eval --unit-fold 1 --out results/lora_l4d/original/eval_r1_fold1.jsonl
+readout --input data/q_placebo.jsonl --set eval --out results/qwen_readout_l4d/placebo/eval_r1.jsonl
