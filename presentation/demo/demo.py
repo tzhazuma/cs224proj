@@ -53,7 +53,7 @@ SUPPORT_DIR = dm.PROJECT_ROOT / "juliet" / "raw" / "testcasesupport"
 RECORDINGS = DEMO_DIR / "recordings"
 DEFAULT_GROUP = "CWE401_Memory_Leak__strdup_char_01"  # eval fold 0, C, flow 01, good twin = B2G
 WARM_UNIT = "CWE401_Memory_Leak__char_malloc_18__bad"  # dev unit, Clang SA reports its leak
-DEFAULT_METHODS = ["grep", "clang", "ft", "ds_l1", "ds_l3"]
+DEFAULT_METHODS = ["grep", "clang", "ft", "l4d", "ds_l1", "ds_l3"]
 RECORD_FORMAT = "cs224-demo-run/1"
 
 
@@ -186,7 +186,7 @@ def show_codes(console: Console, cases: list[dict[str, Any]], theme: str) -> Non
 
 def diff_panel(original: dict[str, Any], attacked: dict[str, Any]) -> Panel:
     diff = difflib.unified_diff(original["unit"]["model_text"].split("\n"), attacked["unit"]["model_text"].split("\n"),
-                                lineterm="", n=1)
+                                lineterm="", n=0)  # no context lines: the screen must fit 40 rows
     body = "\n".join(line for line in diff if not line.startswith(("---", "+++")))
     info = attacked["unit"].get("transform") or {}
     if info.get("guards"):  # data lane (stress.py): one constant per guard, several guard forms
@@ -242,9 +242,11 @@ def verdict_cell(r: dm.Result | None, truth: int | None, before: dm.Result | Non
     if r is None:
         return Spinner("dots", text=Text("running", style="yellow"))
     if r.status != "ok" or r.pred is None:
-        style = "dim" if r.status in ("offline", "skipped") else "yellow"
+        style = "dim" if r.status in ("offline", "skipped", "n/a") else "yellow"
         return Text.assemble((r.status, f"bold {style}"), "\n", ((r.detail or "")[:30], "dim"))
     verdict = "LEAK" if r.pred == 1 else "no leak"
+    if r.score_kind == "l4d" and r.extra.get("leak_site"):  # L4-D names the leaked allocation
+        verdict += f" {r.extra['leak_site']}"
     if truth is None:
         top = Text(verdict, style="bold")
     elif r.pred == truth:
@@ -256,6 +258,11 @@ def verdict_cell(r: dm.Result | None, truth: int | None, before: dm.Result | Non
     if r.score_kind == "logit":  # decision model: score vs threshold, then end-to-end and server-side time
         timing = " · ".join(x for x in (latency_text(r.latency_ms), server_ms_text(r)) if x)
         return Text.assemble(top, "\n", (score_text(r), "dim"), "\n", (timing, "dim"))
+    if r.score_kind == "l4d":  # L4-D: the derived reason, then how many questions the rules needed
+        asked = f"asked {r.extra.get('n_asked')} of {r.extra.get('n_questions')}"
+        timing = latency_text(r.latency_ms) or ("stored" if r.backend and r.backend.startswith("stored") else "")
+        return Text.assemble(top, "\n", ((r.detail or "")[:34], "dim"), "\n",
+                             (" · ".join(x for x in (asked, timing) if x), "dim"))
     bottom = " · ".join(x for x in (score_text(r), latency_text(r.latency_ms)) if x)
     return Text.assemble(top, "\n", (bottom, "dim"))
 
@@ -263,9 +270,9 @@ def verdict_cell(r: dm.Result | None, truth: int | None, before: dm.Result | Non
 def method_cell(method: str, results: dict[str, dict[str, dm.Result | None]]) -> Text:
     name = dm.METHODS[method][0]
     note = dm.METHOD_NOTES.get(method, "")
-    if method in ("ft", "ft_l3"):
+    if method in ("ft", "ft_l3", "l4d"):
         backends = [r.backend for per in results.values() if (r := per.get(method)) is not None and r.backend]
-        note = backends[0] if backends else "fine-tuned Qwen3.5-4B LoRA"
+        note = backends[0] if backends else note or "fine-tuned Qwen3.5-4B LoRA"
     return Text.assemble((name, "bold"), "\n", (note[:34], "dim"))
 
 
@@ -354,6 +361,7 @@ def run_cases(ctx: dm.DemoContext, cases: list[dict[str, Any]], methods: list[st
                 "clang": lambda clang=clang: clang.result()[0],
                 "ft": lambda unit=unit: dm.run_decision(ctx, unit),
                 "ft_l3": lambda wrap=with_evidence: wrap(lambda u, ev: dm.run_decision(ctx, u, "L3", ev)),
+                "l4d": lambda unit=unit: dm.run_l4d(ctx, unit),
                 "ds_l1": lambda unit=unit: dm.run_deepseek(ctx, unit, "L1"),
                 "ds_l3": lambda wrap=with_evidence: wrap(lambda u, ev: dm.run_deepseek(ctx, u, "L3", ev)),
                 "jev": lambda unit=unit: dm.run_jev(ctx, unit),
@@ -437,6 +445,7 @@ def summary_panel(lines: list[str], spent: dict[str, float]) -> Panel:
 def endpoint_rows(ctx: dm.DemoContext) -> list[tuple[str, str, str]]:
     rows = []
     for name, url, method in (("decision FT :8003", f"{ctx.ft_url}/health", "GET"),
+                              ("L4-D :8004", f"{ctx.l4d_url}/health", "GET"),
                               ("Intern-Decision :8002", f"{ctx.intern_url}/health", "GET"),
                               ("Qwen vLLM :8001", f"{ctx.qwen_url}/models", "GET")):
         t0 = time.perf_counter()
@@ -445,6 +454,9 @@ def endpoint_rows(ctx: dm.DemoContext) -> list[tuple[str, str, str]]:
             ok = status == 200
             if ok and isinstance(payload, dict) and isinstance(payload.get("models"), list):  # the FT endpoint
                 detail = f"{len(payload['models'])} adapters, active {payload.get('active')}"
+            elif ok and isinstance(payload, dict) and isinstance(payload.get("folds"), list):  # the L4-D endpoint
+                tau = ", ".join(f"{k}:{v:.3f}" for k, v in sorted((payload.get("tau") or {}).items()))
+                detail = f"folds {payload['folds']}, active {payload.get('active')}, tau {tau}"
             else:
                 detail = json.dumps(payload)[:70] if ok else f"HTTP {status}"
         except Exception as exc:  # noqa: BLE001
@@ -499,6 +511,36 @@ def warm_decision(ctx: dm.DemoContext) -> tuple[str, str, str]:
     return ("decision FT warm-up", "ok" if not failed else "FAIL", detail + (f"; failed {failed}" if failed else ""))
 
 
+def warm_l4d(ctx: dm.DemoContext) -> tuple[str, str, str]:
+    """One /l4d request per fold adapter with the dev warm-up unit's pruned questions; the stage fold goes last."""
+    kind, info = ctx.l4d_backend()
+    if kind != "l4d":
+        return ("L4-D warm-up", "SKIP", f"L4-D endpoint not up ({info})")
+    if dm.L4D_BUILDER_ERROR is not None:
+        return ("L4-D warm-up", "FAIL", f"question builder: {dm.L4D_BUILDER_ERROR}")
+    units = load_units()
+    unit = next(u for u in units if u["unit_id"] == WARM_UNIT)
+    stage_fold = next(u["fold"] for u in units if u["group_id"] == DEFAULT_GROUP)
+    kept = dm.l4d_prune.prune(dm.l4d_questions.make_questions(unit, "layer1"))
+    body = [{k: q[k] for k in ("qid", "state", "question")} for q in kept]
+    server, failed = [], []
+    for fold in sorted(info["folds"], key=lambda k: k == stage_fold):
+        try:
+            status, payload = dm.lan_json("POST", f"{ctx.l4d_url}/l4d", {"fold": fold, "questions": body},
+                                          dm.REMOTE_TIMEOUT_S)
+            ok = status == 200 and isinstance(payload, dict) and len(payload.get("answers") or []) == len(body)
+        except Exception:  # noqa: BLE001
+            ok, payload = False, None
+        if ok:
+            server.append(float(payload["latency_ms_server"]))
+        else:
+            failed.append(fold)
+    detail = f"{len(server)}/{len(info['folds'])} folds answered {len(body)} questions"
+    if server:
+        detail += f", server {min(server):.0f}-{max(server):.0f} ms"
+    return ("L4-D warm-up", "ok" if not failed else "FAIL", detail + (f"; failed folds {failed}" if failed else ""))
+
+
 def doctor(ctx: dm.DemoContext, console: Console, full: bool) -> int:
     table = Table(title="demo doctor" if full else "pre-warm", box=box.SIMPLE)
     for col in ("check", "state", "detail"):
@@ -527,11 +569,15 @@ def doctor(ctx: dm.DemoContext, console: Console, full: bool) -> int:
         inserter, _ = dead_free.transformer("auto")
         add(("dead-free inserter", "info", f"{inserter} (data/stress.py "
                                            f"{'present' if (dead_free.DATA_DIR / 'stress.py').exists() else 'absent'})"))
+        add(("L4-D question builder", "ok" if dm.L4D_BUILDER_ERROR is None else "FAIL",
+             "l4d/parse_sites.py + questions.py (tree-sitter)" if dm.L4D_BUILDER_ERROR is None
+             else f"{dm.L4D_BUILDER_ERROR}; stored questions only, --file n/a"))
     add(warm_clang())
     for row in endpoint_rows(ctx):
         add(row)
     if not full:
         add(warm_decision(ctx))
+        add(warm_l4d(ctx))
     if full:
         balance = dm.clients.deepseek_balance()
         if balance:
@@ -595,7 +641,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     run.add_argument("--ft-url", default=dm.FT_URL)
     run.add_argument("--intern-url", default=dm.INTERN_URL)
     run.add_argument("--qwen-url", default=dm.QWEN_URL)
-    run.add_argument("--ft-fold", type=int, default=0, help="adapter fold for dev/custom units (eval: unit fold)")
+    run.add_argument("--l4d-url", default=dm.L4D_URL)
+    run.add_argument("--ft-fold", type=int, default=0,
+                     help="FT and L4-D adapter fold for dev/custom units (eval: unit fold)")
     run.add_argument("--inserter", default="auto", choices=("auto", "local", "stress"))
     run.add_argument("--attack-kind", default="stress", choices=("stress", "placebo"))
     run.add_argument("--attack-seed", type=int, default=None,
@@ -656,6 +704,14 @@ def attack_case(args: argparse.Namespace, original: dict[str, Any]) -> dict[str,
     return case(key, title, unit, original["truth"], lines)
 
 
+def l4d_prefetch(ctx: dm.DemoContext, cases: list[dict[str, Any]]) -> None:
+    ctx.l4d_backend()
+    for c in cases:
+        dm.l4d_prefetch(c["unit"])
+    if cases[0]["key"] == "bad":  # the dead-free version of a Juliet bad unit is its stored layer-3 unit
+        dm.l4d_stored("layer3", cases[0]["unit"]["unit_id"])
+
+
 def save_record(path: Path, payload: dict[str, Any]) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=1, ensure_ascii=False) + "\n")
@@ -668,7 +724,8 @@ def main(argv: list[str] | None = None) -> int:
     run_id = "demo_" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     ctx = dm.DemoContext(run_id, allow_peak=args.allow_peak, allow_eval=args.allow_eval,
                          max_cost_cny=args.max_cost_cny, max_cost_usd=args.max_cost_usd, ft_url=args.ft_url,
-                         intern_url=args.intern_url, qwen_url=args.qwen_url, ft_fold=args.ft_fold)
+                         intern_url=args.intern_url, qwen_url=args.qwen_url, l4d_url=args.l4d_url,
+                         ft_fold=args.ft_fold)
     if args.check or args.warm:
         return doctor(ctx, console, full=args.check)
 
@@ -688,6 +745,8 @@ def main(argv: list[str] | None = None) -> int:
         replay_note = None
         if {"ft", "ft_l3"} & set(methods):  # probe the decision-model endpoints while the code is on screen
             concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(ctx.decision_backend)
+        if "l4d" in methods:  # probe :8004 and read the stored L4-D records (layer 1 + the attacked layer 3)
+            concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(l4d_prefetch, ctx, cases)
 
     show = Show(console, args, replay_note)
     results: dict[str, dict[str, dm.Result | None]] = {}

@@ -7,12 +7,17 @@ set -u
 cd "$(dirname "$0")"
 UV="${UV:-$HOME/.local/bin/uv}"
 
+# tree-sitter: the L4-D question builder (juliet_full/l4d/parse_sites.py), same pins as the l4d lane's venv
+TS_PINS="tree-sitter==0.27.0 tree-sitter-c==0.24.2 tree-sitter-cpp==0.23.4"
 if [ ! -x .venv/bin/python ]; then
-  echo "creating .venv (uv, python 3.12, rich + pytest)"
-  "$UV" venv --quiet --python 3.12 .venv && "$UV" pip install --quiet --python .venv/bin/python rich pytest || {
+  echo "creating .venv (uv, python 3.12, rich + pytest + tree-sitter)"
+  "$UV" venv --quiet --python 3.12 .venv && "$UV" pip install --quiet --python .venv/bin/python rich pytest $TS_PINS || {
     echo "FAIL: could not create .venv"; exit 1; }
 fi
 .venv/bin/python -c "import rich" 2>/dev/null || { echo "FAIL: rich missing in .venv"; exit 1; }
+.venv/bin/python -c "import tree_sitter_c, tree_sitter_cpp" 2>/dev/null || {
+  echo "installing tree-sitter into .venv (L4-D question builder)"
+  "$UV" pip install --quiet --python .venv/bin/python $TS_PINS || echo "WARN: tree-sitter missing: L4-D uses stored questions, --file n/a"; }
 
 if [ "${1:-}" = "--warm" ]; then
   exec .venv/bin/python demo.py --warm

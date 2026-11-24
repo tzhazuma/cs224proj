@@ -3,7 +3,9 @@
 The lane modules are imported read-only:
 - juliet_full/static/run_static.py: grep_v0_pred, run_unit (Clang SA, same flags and leak mapping), evidence_row;
 - juliet_full/llm/llmlane: prompts (PromptSet), clients, parse_verdict, ledger (Ledger, Budget), pricing (PeakGate);
-- juliet_full/gpu/bench/bench_decide.py: QUESTION / OPTIONS of the Intern-Decision read-out.
+- juliet_full/gpu/bench/bench_decide.py: QUESTION / OPTIONS of the Intern-Decision read-out;
+- juliet_full/l4d: parse_sites.parse_unit + questions.make_questions (L4-D questions; need tree-sitter), and
+  juliet_full/l4d_ft/prune.py: prune (only the questions the v1 rules read) and verdict (l4d/derive.py rules).
 
 Paid calls (DeepSeek, Jev) go through this module's own thin caller, because the off-peak gate and the budget
 are enforced by llm/run_llm.py, not by the clients: the caller checks `pricing.PeakGate().check_start()` unless
@@ -14,6 +16,7 @@ under juliet_full/*/results/.
 
 from __future__ import annotations
 
+import functools
 import json
 import shutil
 import sys
@@ -29,7 +32,9 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 JULIET_FULL = PROJECT_ROOT / "juliet_full"
-for _path in (JULIET_FULL / "llm", JULIET_FULL / "static", JULIET_FULL / "gpu" / "bench"):
+L4D_DIR = JULIET_FULL / "l4d"
+L4D_FT_DIR = JULIET_FULL / "l4d_ft"
+for _path in (JULIET_FULL / "llm", JULIET_FULL / "static", JULIET_FULL / "gpu" / "bench", L4D_FT_DIR):
     if str(_path) not in sys.path:
         sys.path.insert(0, str(_path))
 
@@ -38,12 +43,21 @@ from llmlane import clients, pricing  # noqa: E402
 from llmlane.ledger import GLOBAL_CAPS, Budget, BudgetExceeded, Ledger  # noqa: E402
 from llmlane.parse import parse_verdict  # noqa: E402
 from llmlane.prompts import PromptAuditError, PromptSet  # noqa: E402
+import prune as l4d_prune  # noqa: E402  (l4d_ft/prune.py; puts juliet_full/l4d on sys.path, imports derive)
+
+try:  # the l4d-data question builder (tree-sitter parser); without it only stored questions can be used
+    import parse_sites as l4d_sites  # noqa: E402
+    import questions as l4d_questions  # noqa: E402
+    L4D_BUILDER_ERROR: str | None = None
+except ImportError as _exc:
+    L4D_BUILDER_ERROR = f"{type(_exc).__name__}: {_exc}"
 
 FT_URL = "http://10.15.89.184:8003"
 INTERN_URL = "http://10.15.89.184:8002"
 QWEN_URL = "http://10.15.89.184:8001/v1"
+L4D_URL = "http://10.15.89.184:8004"
 REMOTE_TIMEOUT_S = 10.0
-HEALTH_TIMEOUT_S = 3.0
+HEALTH_TIMEOUT_S = 1.0  # a stopped fallback endpoint must not hold up the demo
 CHAT_MAX_TOKENS = 64
 CLANG_TIMEOUT_S = 30.0
 WORK_ROOT = Path(tempfile.gettempdir()) / "cs224_demo" / "clang_work"
@@ -52,8 +66,9 @@ WORK_ROOT = Path(tempfile.gettempdir()) / "cs224_demo" / "clang_work"
 METHODS = {
     "grep": ("grep v0", "grep"),
     "clang": ("Clang SA 23", "Clang SA"),
-    "ft": ("Decision model L1", "decision model L1"),
-    "ft_l3": ("Decision model L3", "decision model L3"),
+    "ft": ("FT 4B, unit labels (L1)", "FT 4B unit labels"),
+    "ft_l3": ("FT 4B, unit labels (L3)", "FT 4B unit labels L3"),
+    "l4d": ("L4-D (ours, FT 4B)", "L4-D"),
     "ds_l1": ("DeepSeek L1", "DeepSeek L1"),
     "ds_l3": ("DeepSeek L3", "DeepSeek L3"),
     "jev": ("Jev L1", "Jev"),
@@ -61,6 +76,7 @@ METHODS = {
 METHOD_NOTES = {
     "grep": "no free/delete in code → leak",
     "clang": "unix.Malloc · NewDeleteLeaks",
+    "l4d": "Yes/No facts → Datalog rules",
     "ds_l1": "deepseek-flash · code only",
     "ds_l3": "deepseek-flash · + Clang warnings",
     "jev": "jev-latest · code only",
@@ -73,10 +89,10 @@ _NO_PROXY = urllib.request.build_opener(urllib.request.ProxyHandler({}))  # LAN 
 @dataclass
 class Result:
     method: str
-    status: str  # ok | invalid | error | timeout | offline | skipped | compile_error
+    status: str  # ok | invalid | error | timeout | offline | skipped | compile_error | n/a
     pred: int | None = None
     score: float | None = None
-    score_kind: str | None = None  # "p" (probability of leak) or "logit" (FT score, compare to threshold)
+    score_kind: str | None = None  # "p" (probability of leak), "logit" (FT score vs threshold), "l4d" (soft score)
     threshold: float | None = None
     latency_ms: float | None = None
     backend: str | None = None  # what actually answered (model / fallback)
@@ -117,19 +133,22 @@ class DemoContext:
 
     def __init__(self, run_id: str, allow_peak: bool = False, allow_eval: bool = False,
                  max_cost_cny: float = 0.02, max_cost_usd: float = 0.002, ft_url: str = FT_URL,
-                 intern_url: str = INTERN_URL, qwen_url: str = QWEN_URL, ft_fold: int = 0,
+                 intern_url: str = INTERN_URL, qwen_url: str = QWEN_URL, l4d_url: str = L4D_URL, ft_fold: int = 0,
                  ledger: Ledger | None = None) -> None:
         self.run_id = run_id
         self.allow_peak = allow_peak
         self.allow_eval = allow_eval
         self.caps = {"deepseek": max_cost_cny, "jev": max_cost_usd}
         self.ft_url, self.intern_url, self.qwen_url = ft_url.rstrip("/"), intern_url.rstrip("/"), qwen_url.rstrip("/")
+        self.l4d_url = l4d_url.rstrip("/")
         self.ft_fold = ft_fold
         self.ledger = ledger or Ledger()
         self._lock = threading.Lock()
         self.ft_lock = threading.Lock()  # serialises /score requests of this run (see run_decision)
+        self.l4d_lock = threading.Lock()  # same for /l4d (see run_l4d)
         self._budgets: dict[str, Budget] = {}
         self._decision: tuple[str, Any] | None = None
+        self._l4d: tuple[str, Any] | None = None
         self.spent = {"deepseek": 0.0, "jev": 0.0}
 
     # ---------------------------------------------------------------- budgets / ledger
@@ -159,6 +178,13 @@ class DemoContext:
                 self._decision = probe_decision_backend(self.ft_url, self.intern_url, self.qwen_url)
             return self._decision
 
+    def l4d_backend(self) -> tuple[str, Any]:
+        """("l4d", /health payload) | ("offline", reason); probed once per run."""
+        with self._lock:
+            if self._l4d is None:
+                self._l4d = probe_l4d_backend(self.l4d_url)
+            return self._l4d
+
 
 def probe_decision_backend(ft_url: str, intern_url: str, qwen_url: str) -> tuple[str, Any]:
     reasons = []
@@ -175,6 +201,16 @@ def probe_decision_backend(ft_url: str, intern_url: str, qwen_url: str) -> tuple
             return name, (payload.get("models") if name == "ft" else payload)
         reasons.append(f"{name}: HTTP {status}")
     return "offline", reasons
+
+
+def probe_l4d_backend(l4d_url: str) -> tuple[str, Any]:
+    try:
+        status, payload = lan_json("GET", f"{l4d_url}/health", None, HEALTH_TIMEOUT_S)
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        return "offline", f"L4-D :8004 {type(exc).__name__}"
+    if status == 200 and isinstance(payload, dict) and payload.get("ok") and payload.get("folds"):
+        return "l4d", payload
+    return "offline", f"L4-D :8004 HTTP {status}"
 
 
 def ms_since(t0: float) -> float:
@@ -293,6 +329,174 @@ def run_decision(ctx: DemoContext, unit: dict[str, Any], strategy: str = "L1",
         return Result(method, status, latency_ms=ms_since(t0), backend=kind, detail=type(exc).__name__)
     except (KeyError, TypeError, ValueError, PromptAuditError, clients.FatalApiError) as exc:
         return Result(method, "error", latency_ms=ms_since(t0), backend=kind, detail=f"{exc}"[:100])
+
+
+# -------------------------------------------------------------------- L4-D (LAN :8004, stored fallback)
+L4D_BUILD = L4D_DIR / "build"
+L4D_ANSWERS = L4D_FT_DIR / "results" / "lora_l4d"  # stored per-question answers (full question set)
+L4D_UNITS = L4D_FT_DIR / "results" / "lora_l4d_opt"  # stored unit verdicts of the pruned ("opt") inference
+
+
+@functools.lru_cache(maxsize=64)
+def _stored_rows(path: Path, unit_id: str) -> tuple[dict[str, Any], ...]:
+    """Rows of one unit in a big jsonl (substring scan, ~0.1 s for 68 MB; cached)."""
+    if not path.exists():
+        return ()
+    needle = f'"unit_id": "{unit_id}"'
+    with path.open() as handle:
+        return tuple(json.loads(line) for line in handle if needle in line)
+
+
+def l4d_stored_source(unit: dict[str, Any]) -> tuple[str, str] | None:
+    """(layer, unit_id) of the stored L4-D record of this exact code: layer1 for a Juliet unit, layer3 for the
+    dead-free version that equals the stored layer-3 unit; None for --file input and other transforms."""
+    transform = unit.get("transform")
+    if transform is None:
+        return ("layer1", unit["unit_id"]) if unit.get("set") in ("dev", "eval", "train") else None
+    if transform.get("kind") == "stress" and transform.get("matches_layer3"):
+        return "layer3", transform["source_unit_id"]
+    return None
+
+
+def l4d_stored(layer: str, unit_id: str) -> dict[str, Any]:
+    """Stored questions (gold fields dropped), sites, per-qid answers and the lora_l4d_opt unit row."""
+    questions = [{k: v for k, v in q.items() if k not in ("gold", "gold_source")}
+                 for q in _stored_rows(L4D_BUILD / f"questions_{layer}.jsonl", unit_id)]
+    sites = next(iter(_stored_rows(L4D_BUILD / f"sites_{layer}.jsonl", unit_id)), {}).get("sites", [])
+    answers = {a["qid"]: a for a in _stored_rows(L4D_ANSWERS / layer / "eval_r1.jsonl", unit_id)}
+    unit_row = next(iter(_stored_rows(L4D_UNITS / layer / "eval_r1_units.jsonl", unit_id)), None)
+    return {"questions": questions, "sites": sites, "answers": answers, "unit_row": unit_row}
+
+
+def l4d_prefetch(unit: dict[str, Any]) -> None:
+    """Read the stored L4-D records of a unit ahead of time (keeps the file scan out of the live run)."""
+    source = l4d_stored_source(unit)
+    if source is not None:
+        l4d_stored(*source)
+
+
+@functools.lru_cache(maxsize=1)
+def l4d_frozen_tau() -> dict[int, float]:
+    frozen = json.loads((L4D_FT_DIR / "FROZEN").read_text())
+    return {int(k): float(v["tau"]) for k, v in frozen["folds"].items()}
+
+
+def l4d_site_label(site_id: str, sites: list[dict[str, Any]]) -> str:
+    site = next((s for s in sites if s["site_id"] == site_id), None)
+    return site_id if site is None else f"{site.get('callee') or site['kind']} L{site['line']}"
+
+
+def l4d_reason(verdict: dict[str, Any], kept: list[dict[str, Any]], p_of: dict[str, float], tau: float,
+               sites: list[dict[str, Any]]) -> str:
+    """One short line: why the first leaked allocation leaks, or why none does (read off the derived facts)."""
+    def fact(qtype: str, *ids: str) -> bool:
+        q = next((q for q in kept if q["qtype"] == qtype and tuple(q["site_ids"]) == ids), None)
+        return q is not None and p_of[q["qid"]] >= tau
+
+    def releases(a: str) -> list[str]:
+        return [q["site_ids"][0] for q in kept
+                if q["qtype"] == "rel" and q["site_ids"][1] == a and p_of[q["qid"]] >= tau]
+
+    label = functools.partial(l4d_site_label, sites=sites)
+    if verdict["leaks"]:
+        a, why = verdict["leaks"][0]
+        if why == "realloc_fail":
+            return "lost if realloc fails"
+        paired = releases(a)
+        return "runs, never freed" if not paired else f"{label(paired[0])} may not run"
+    allocs = l4d_prune.derive.unit_inputs(kept)["alloc"]
+    if not allocs:
+        return "no allocation site"
+    a = allocs[0]
+    if not fact("heap", a):
+        return f"{label(a)}: not heap"
+    if not fact("exec_any", a):
+        return f"{label(a)} never runs"
+    freed_by = [f for f in releases(a) if fact("exec_all", f)]
+    return f"{label(freed_by[0])} always runs" if freed_by else f"{label(a)}: no leak derived"
+
+
+def run_l4d(ctx: DemoContext, unit: dict[str, Any]) -> Result:
+    """L4-D: build the unit's Yes/No questions, keep the ones the v1 rules read (prune.py), ask :8004 /l4d with the
+    held-out fold's adapter, threshold p_yes at the fold's tau, derive the verdict (l4d/derive.py).
+
+    Latency = question build + prune + HTTP round trip + derive. If :8004 is down, the stored answers of the same
+    questions are used (Juliet units whose code equals a stored layer-1/layer-3 unit only; latency not measured)."""
+    source = l4d_stored_source(unit)
+    stored = l4d_stored(*source) if source is not None else None  # untimed (prefetched by demo.py)
+    fold = unit.get("fold") if unit.get("fold") is not None else ctx.ft_fold
+    t0 = time.perf_counter()
+    if L4D_BUILDER_ERROR is None:
+        layer, unit_id = source or ("custom", unit["unit_id"])
+        parsed = l4d_sites.parse_unit(unit["model_text"], unit["language"])
+        questions = l4d_questions.make_questions(
+            {**unit, "unit_id": unit_id, "set": unit.get("set") or "custom", "fold": unit.get("fold")}, layer,
+            parsed)
+        sites = parsed["sites"]
+    elif stored is not None and stored["questions"]:
+        questions, sites = stored["questions"], stored["sites"]
+    else:
+        detail = "n/a for --file" if unit.get("set") == "custom" else "no question builder"
+        return Result("l4d", "n/a", backend=f"L4-D: {L4D_BUILDER_ERROR}", detail=detail)
+    kept = l4d_prune.prune(questions)
+    build_ms = ms_since(t0)
+    question_source = "built live"
+    if stored is not None and stored["questions"]:
+        if questions != stored["questions"]:  # keep the evaluated question set
+            questions, sites, question_source = stored["questions"], stored["sites"], "stored (live build differs)"
+            kept = l4d_prune.prune(questions)
+        elif L4D_BUILDER_ERROR is None:
+            question_source = "built live = stored"
+    extra: dict[str, Any] = {"n_questions": len(questions), "n_asked": len(kept), "fold": fold,
+                             "question_source": question_source, "build_ms": build_ms,
+                             "stored": None if source is None else f"{source[0]}/{source[1]}"}
+    if stored is not None and stored["unit_row"] is not None:
+        extra["stored_pred"] = stored["unit_row"]["pred"]
+    if not kept:  # no heap block: the rules answer without a model call
+        extra.update(tau=None, leaks=[])
+        return Result("l4d", "ok", pred=0, score=0.0, score_kind="l4d", latency_ms=build_ms,
+                      backend="rules only (no question to ask)", detail="no allocation site", extra=extra)
+    kind, info = ctx.l4d_backend()
+    try:
+        if kind == "l4d":
+            with ctx.l4d_lock:  # one request at a time on the server: time ours, not the queue
+                t1 = time.perf_counter()
+                status, payload = lan_json("POST", f"{ctx.l4d_url}/l4d", {
+                    "fold": fold, "questions": [{k: q[k] for k in ("qid", "state", "question")} for q in kept]},
+                    REMOTE_TIMEOUT_S)
+                http_ms = ms_since(t1)
+            if status != 200 or not isinstance(payload, dict):
+                detail = payload.get("detail") if isinstance(payload, dict) else payload
+                return Result("l4d", "error", latency_ms=build_ms + http_ms, backend="L4-D :8004",
+                              detail=f"HTTP {status}" + (f": {detail}"[:80] if detail else ""), extra=extra)
+            p_of = {a["qid"]: float(a["p_yes"]) for a in payload["answers"]}
+            tau = float(payload["tau"])
+            extra.update({key: payload.get(key) for key in ("latency_ms_server", "forward_ms", "switch_ms",
+                                                              "n_tokens", "checkpoint")})
+            backend = f"qwen3.5-4b-lora-l4d-fold{fold}"
+        elif stored is not None and all(q["qid"] in stored["answers"] for q in kept):
+            http_ms, tau = None, l4d_frozen_tau()[fold]
+            p_of = {q["qid"]: float(stored["answers"][q["qid"]]["p_yes"]) for q in kept}
+            backend = "stored (:8004 offline)"
+            extra["offline_reason"] = info
+        else:
+            return Result("l4d", "offline", backend="L4-D: offline", detail=str(info), extra=extra)
+        t2 = time.perf_counter()
+        verdict = l4d_prune.verdict(kept, p_of, tau)
+        derive_ms = ms_since(t2)
+    except (urllib.error.URLError, OSError) as exc:
+        status = "timeout" if "timed out" in str(exc).lower() else "error"
+        return Result("l4d", status, latency_ms=ms_since(t0), backend="L4-D :8004", detail=type(exc).__name__,
+                      extra=extra)
+    except (KeyError, TypeError, ValueError) as exc:
+        return Result("l4d", "error", latency_ms=ms_since(t0), backend="L4-D", detail=f"{exc}"[:100], extra=extra)
+    extra.update(tau=tau, leaks=verdict["leaks"], derive_ms=derive_ms,
+                 leak_site=l4d_site_label(verdict["leaks"][0][0], sites) if verdict["leaks"] else None,
+                 answers={q["qid"].split("/", 2)[2]: round(p_of[q["qid"]], 6) for q in kept})
+    latency = None if http_ms is None else build_ms + http_ms + derive_ms
+    return Result("l4d", "ok", pred=int(verdict["pred"]), score=float(verdict["score"]), score_kind="l4d",
+                  threshold=tau, latency_ms=latency, backend=backend,
+                  detail=l4d_reason(verdict, kept, p_of, tau, sites), extra=extra)
 
 
 # -------------------------------------------------------------------- paid APIs (thin caller)

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Rank eval groups for the stage demo from the stored predictions (read-only; prints, writes nothing).
 
-A candidate group: on layer 1 Clang SA, DeepSeek L1/L3 and the fine-tuned decision model (L1 and L3, held-out
-fold) are correct on the bad unit and its good twin; on layer 3 (the same dead-free transform the demo inserts)
-the bad unit is still flagged by Clang SA while grep v0 and the decision model L1 say "no leak". DeepSeek has
+A candidate group: on layer 1 Clang SA, DeepSeek L1/L3, the fine-tuned decision model (L1 and L3, held-out
+fold) and L4-D (lora_l4d_opt, held-out fold) are correct on the bad unit and its good twin; on layer 3 (the same
+dead-free transform the demo inserts) the bad unit is still flagged by Clang SA and L4-D while grep v0 and the
+decision model L1 say "no leak". DeepSeek has
 layer-3 predictions only on the API subsets (api_rest332 + nested25), so a candidate must be in them. Ranked
 by: grep v0 also correct on the good twin (B2G twins, so grep is right before the attack), Jev also correct on
 layer 1, DeepSeek L1/L3 correct on layer 3, then by short model_text.
@@ -20,6 +21,7 @@ from pathlib import Path
 JULIET_FULL = Path(__file__).resolve().parents[2] / "juliet_full"
 STATIC = JULIET_FULL / "static" / "results"
 FT = JULIET_FULL / "decision_ft" / "results" / "decision_ft"
+L4D = JULIET_FULL / "l4d_ft" / "results" / "lora_l4d_opt"
 LLM = JULIET_FULL / "llm" / "results"
 
 # method -> {layer: [files]} (several files = union of disjoint subsets)
@@ -28,6 +30,7 @@ SOURCES = {
     "clang": {"layer1": [STATIC / "clang_sa/layer1/full_v2.jsonl"], "layer3": [STATIC / "clang_sa/layer3/full_v1.jsonl"]},
     "ft_l1": {"layer1": [FT / "layer1/L1_cv_v1.jsonl"], "layer3": [FT / "layer3/L1_cv_v1.jsonl"]},
     "ft_l3": {"layer1": [FT / "layer1/L3_cv_v1.jsonl"], "layer3": [FT / "layer3/L3_cv_v1.jsonl"]},
+    "l4d": {"layer1": [L4D / "layer1/eval_r1_units.jsonl"], "layer3": [L4D / "layer3/eval_r1_units.jsonl"]},
     "ds_l1": {"layer1": [LLM / "deepseek_flash/layer1/eval_L1_r1.jsonl"],
               "layer3": [LLM / "deepseek_flash/layer3/l3_apirest_L1_r1.jsonl",
                          LLM / "deepseek_flash/layer3/l3_n25_L1_r1.jsonl"]},
@@ -36,7 +39,7 @@ SOURCES = {
                          LLM / "deepseek_flash/layer3/l3_n25_L3_r1.jsonl"]},
     "jev": {"layer1": [LLM / "jev/layer1/eval_L1_r1.jsonl"], "layer3": [LLM / "jev/layer3/l3_eval_L1_r1.jsonl"]},
 }
-LAYER1_CORRECT = ("clang", "ds_l1", "ds_l3", "ft_l1", "ft_l3")
+LAYER1_CORRECT = ("clang", "ds_l1", "ds_l3", "ft_l1", "ft_l3", "l4d")
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -68,6 +71,8 @@ def pred_text(preds: dict, method: str, layer: str, unit_id: str) -> str:
     s = row.get("score")
     if not isinstance(s, (int, float)) or method in ("grep", "clang"):
         return str(row["pred"])
+    if method == "l4d":  # derive.py soft score; questions asked after pruning
+        return f"{row['pred']} ({s:.2f}, {row['extra']['n_questions_kept']}q)"
     return f"{row['pred']} ({s:+.2f})" if method.startswith("ft") else f"{row['pred']} ({s:.2f})"
 
 
@@ -84,8 +89,8 @@ def candidates(units: list[dict], preds: dict) -> list[tuple[tuple, dict, dict]]
         b, g = bad["unit_id"], good["unit_id"]
         if not all(pred(preds, m, "layer1", b) == 1 and pred(preds, m, "layer1", g) == 0 for m in LAYER1_CORRECT):
             continue
-        if (pred(preds, "clang", "layer3", b) != 1 or pred(preds, "grep", "layer3", b) != 0
-                or pred(preds, "ft_l1", "layer3", b) != 0):
+        if (pred(preds, "clang", "layer3", b) != 1 or pred(preds, "l4d", "layer3", b) != 1
+                or pred(preds, "grep", "layer3", b) != 0 or pred(preds, "ft_l1", "layer3", b) != 0):
             continue
         if pred(preds, "ds_l1", "layer3", b) is None or pred(preds, "ds_l3", "layer3", b) is None:
             continue
