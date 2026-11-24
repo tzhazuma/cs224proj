@@ -1,0 +1,48 @@
+{
+ "segments": [
+  {
+   "start_utc": "2026-11-24T16:00:10Z",
+   "end_utc": "2026-11-24T16:03:18Z",
+   "asked": 1916
+  }
+ ],
+ "method": "intern_l4d",
+ "model": "intern-decision-4b",
+ "layer": "layer1",
+ "set": "dev",
+ "run_id": "dev_r1",
+ "n_questions": 1916,
+ "pruning": "l4d_ft/prune.py prune() (rules-read questions only)",
+ "request_template": {
+  "state": "{state}",
+  "question": "{question}",
+  "options": [
+   "Yes",
+   "No"
+  ]
+ },
+ "p_yes": "calibrated probs['Yes'] of /decide (server temperature in server_health)",
+ "endpoint": "http://10.15.89.184:8002",
+ "server_health": {
+  "status": "ok",
+  "model": "Intern-Decision-4B",
+  "gpu_mem_allocated_gb": 8.57
+ },
+ "server_kernel": "causal_conv1d reference fallback (transformers), as all stored Intern-Decision predictions",
+ "hashes": {
+  "l4d_templates_sha256": "316429b266c0258383724c8c9129e2ea17946a9013d72cb61b267261ef827516",
+  "l4d_templates_py_sha256": "678d7c743c63b3e8d96005def26f10a2c0b3f9fef48dccc09189635ae76a56f1",
+  "l4d_questions_py_sha256": "f6a826f8cb2ff5e1d7646ac6c7c80ac6b516dbab025f8796a2143037b835005a",
+  "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+  "rules_l4d_dl_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+  "prune_py_sha256": "79a12d540ff5e417017f5b5f5fd637e5566c2ea10bcb8e5521358ec6e6a22c6b",
+  "script_sha256": "c49ea77faa02afa34d40f02be9273794af74024ff272c93cea6903689b6ac30a",
+  "decide_server_py_sha256": "4ef30ec7a4f32f44cf6d49970a5f1b49ed9be5894a0617610ec5c95625a24ef1",
+  "questions_layer1_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+  "questions_layer3_sha256": "0264524d9a6d9898f351a2bc4c6f323b4f89f87636db9c1b3a0ddea17e5ae8f6"
+ },
+ "frozen_sha256": null,
+ "host": "barton-OptiPlex-5000",
+ "concurrency": 2,
+ "latency_note": "latency_s = dell wall time per request (bulk, concurrency > 1: includes queueing); use the lat300_c1 run for latency"
+}

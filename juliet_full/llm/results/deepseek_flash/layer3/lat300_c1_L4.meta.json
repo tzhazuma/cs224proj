@@ -1,0 +1,160 @@
+{
+  "run_id": "lat300_c1_L4",
+  "method": "deepseek_flash",
+  "strategy": "L4",
+  "layer": "layer3",
+  "set": "eval",
+  "subset": "latency300",
+  "n_units": 300,
+  "status_counts": {
+    "ok": 300
+  },
+  "aborted": null,
+  "model_requested": "deepseek-flash",
+  "models_returned": {
+    "deepseek-flash": 300
+  },
+  "models_listing": null,
+  "client": {
+    "provider": "deepseek",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "extra_body": {
+      "thinking": {
+        "type": "disabled"
+      }
+    },
+    "response_format": null,
+    "retry": {
+      "max_attempts": 5,
+      "base_seconds": 2.0,
+      "cap_seconds": 60.0,
+      "timeout_seconds": 180.0
+    }
+  },
+  "max_tokens": 512,
+  "prompt_hash": "00a81aa6fe372e612d3ea9430b11a7087b6c569a2ed8b0ecacf89958045365e6",
+  "prompt_files": {
+    "l4_system.txt": "a36fe149d2833dd956d1c20af318332fb613ca953c85e0d9ec157c2221fac50d",
+    "l4_user.txt": "9229415871e105b7280cf2f774b88e1a448e32084bfbe7b2b39af515b96f787b"
+  },
+  "l2_examples_excluded": [
+    "CWE401_Memory_Leak__int_malloc_73__bad",
+    "CWE401_Memory_Leak__int_malloc_73__good",
+    "CWE401_Memory_Leak__new_int_41__bad",
+    "CWE401_Memory_Leak__new_int_41__good",
+    "CWE401_Memory_Leak__new_int_65__bad",
+    "CWE401_Memory_Leak__new_int_65__good",
+    "CWE401_Memory_Leak__strdup_char_18__bad",
+    "CWE401_Memory_Leak__strdup_char_18__good"
+  ],
+  "l2_examples_json_sha256": "59a9b069308b682a0dd51d859d686ddf13f97bf558cc1c2a2ac7b785f16b9d10",
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+  "units_sha256": "033945a8799a51e5881c9cb4a209d0348b857d8bbf0b869b1f112c043bc65111",
+  "selection": {
+    "limit": null,
+    "unit_ids_file": null
+  },
+  "evidence_file": null,
+  "evidence_sha256": null,
+  "evidence_frozen": null,
+  "start_utc": "2026-11-24T16:22:47Z",
+  "end_utc": "2026-11-24T16:28:10Z",
+  "wall_s": 322.78,
+  "host": "barton-OptiPlex-5000",
+  "concurrency": 1,
+  "warmup_wait_s": 5.0,
+  "loadavg_start": [
+    0.73681640625,
+    0.98828125,
+    1.03125
+  ],
+  "loadavg_end": [
+    0.57763671875,
+    0.77099609375,
+    0.92578125
+  ],
+  "git_head": "9122267d327110772ab96a01011d72cd711021e7",
+  "usage_totals": {
+    "calls": 300,
+    "prompt_tokens": 368134,
+    "cache_hit_tokens": 312283,
+    "cache_miss_tokens": 55851,
+    "completion_tokens": 24222,
+    "input_tokens": 0,
+    "peak_calls": 0
+  },
+  "cost_total": 0.15898466,
+  "cost_currency": "CNY",
+  "cost_per_call": 0.00052995,
+  "prices": {
+    "offpeak_cny_per_m": {
+      "input_cache_miss": 1.0,
+      "input_cache_hit": 0.02,
+      "output": 4.0
+    },
+    "peak_multiplier": 2.0
+  },
+  "peak_pause_s": 0.0,
+  "balance_before": {
+    "is_available": true,
+    "balance_infos": [
+      {
+        "currency": "CNY",
+        "total_balance": "2.41",
+        "granted_balance": "0.00",
+        "topped_up_balance": "2.41"
+      }
+    ]
+  },
+  "balance_after": {
+    "is_available": true,
+    "balance_infos": [
+      {
+        "currency": "CNY",
+        "total_balance": "2.35",
+        "granted_balance": "0.00",
+        "topped_up_balance": "2.35"
+      }
+    ]
+  },
+  "ledger_total_after": 11.57047642,
+  "souffle": "2.5",
+  "raw_log": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/llm/raw_logs/deepseek_flash/layer3/lat300_c1_L4.jsonl",
+  "latency_lock": {
+    "lock": "/tmp/cs224_latency.lock",
+    "lock_wait_s": 168.5,
+    "quiet": true,
+    "quiet_wait_s": 60.0,
+    "load1_samples": [
+      1.03,
+      1.03,
+      1.03,
+      0.94,
+      1.03,
+      0.95,
+      0.87,
+      0.8,
+      0.73,
+      0.76,
+      0.78,
+      0.71
+    ],
+    "load_before": [
+      0.73681640625,
+      0.98828125,
+      1.03125
+    ],
+    "start_utc": "2026-11-24T16:22:47Z",
+    "job": "ds_L4",
+    "driver": "analysis/deadfree/run_latency.py",
+    "load_after": [
+      0.57763671875,
+      0.77099609375,
+      0.92578125
+    ],
+    "end_utc": "2026-11-24T16:28:10Z",
+    "rc": 0
+  }
+}

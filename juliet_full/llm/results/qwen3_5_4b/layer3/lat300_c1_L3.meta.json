@@ -1,0 +1,168 @@
+{
+  "run_id": "lat300_c1_L3",
+  "method": "qwen3_5_4b",
+  "strategy": "L3",
+  "layer": "layer3",
+  "set": "eval",
+  "subset": "latency300",
+  "n_units": 300,
+  "status_counts": {
+    "ok": 300
+  },
+  "aborted": null,
+  "model_requested": "qwen3.5-4b",
+  "models_returned": {
+    "qwen3.5-4b": 300
+  },
+  "models_listing": {
+    "object": "list",
+    "data": [
+      {
+        "id": "qwen3.5-4b",
+        "object": "model",
+        "created": 1795540015,
+        "owned_by": "vllm",
+        "root": "/home/zhangzx/disk4/cs224/models/Qwen3.5-4B",
+        "parent": null,
+        "max_model_len": 8192,
+        "permission": [
+          {
+            "id": "modelperm-94174851a0786b60",
+            "object": "model_permission",
+            "created": 1795540015,
+            "allow_create_engine": false,
+            "allow_sampling": true,
+            "allow_logprobs": true,
+            "allow_search_indices": false,
+            "allow_view": true,
+            "allow_fine_tuning": false,
+            "organization": "*",
+            "group": null,
+            "is_blocking": false
+          }
+        ]
+      }
+    ]
+  },
+  "client": {
+    "provider": "qwen",
+    "base_url": "http://10.15.89.184:8001/v1",
+    "model": "qwen3.5-4b",
+    "temperature": 0,
+    "extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      }
+    },
+    "response_format": "json_object",
+    "retry": {
+      "max_attempts": 5,
+      "base_seconds": 2.0,
+      "cap_seconds": 60.0,
+      "timeout_seconds": 180.0
+    }
+  },
+  "max_tokens": 64,
+  "prompt_hash": "1b4e5f65088efea1cfff841ca49470f717920fa26aed65d51050baa1d1ee32ae",
+  "prompt_files": {
+    "task.txt": "aa12d68878ff890f78e3c1a9341846f83c15a164369279f84831e691d5fe86a2",
+    "answer_format.txt": "efdbf90803248c4503d3bfef6d9b2ca79334e7d9160b42f1e9e1ee220d24e036",
+    "user_suffix.txt": "cbd700ce46a511e8d234222fe9ca27d4009bd392eb1a6cc1698b39d42f8c3615",
+    "user_L3.txt": "06aab5226705ccc05e7e0fdc42af2097b6d94d9edd904b006fe82ca6f02363db"
+  },
+  "l2_examples_excluded": [
+    "CWE401_Memory_Leak__int_malloc_73__bad",
+    "CWE401_Memory_Leak__int_malloc_73__good",
+    "CWE401_Memory_Leak__new_int_41__bad",
+    "CWE401_Memory_Leak__new_int_41__good",
+    "CWE401_Memory_Leak__new_int_65__bad",
+    "CWE401_Memory_Leak__new_int_65__good",
+    "CWE401_Memory_Leak__strdup_char_18__bad",
+    "CWE401_Memory_Leak__strdup_char_18__good"
+  ],
+  "l2_examples_json_sha256": "59a9b069308b682a0dd51d859d686ddf13f97bf558cc1c2a2ac7b785f16b9d10",
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+  "units_sha256": "033945a8799a51e5881c9cb4a209d0348b857d8bbf0b869b1f112c043bc65111",
+  "selection": {
+    "limit": null,
+    "unit_ids_file": null
+  },
+  "evidence_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/clang_sa/layer3/full_v1.evidence.jsonl",
+  "evidence_sha256": "5362698a63948c8bbf59fa3ee827c6f113d2d130efa2e5d41bb185c57eccd9aa",
+  "evidence_frozen": {
+    "marker": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/clang_sa/layer3/EVIDENCE_FROZEN",
+    "run_id": "full_v1",
+    "sha256": "5362698a63948c8bbf59fa3ee827c6f113d2d130efa2e5d41bb185c57eccd9aa"
+  },
+  "start_utc": "2026-11-24T17:06:56Z",
+  "end_utc": "2026-11-24T17:08:43Z",
+  "wall_s": 107.34,
+  "host": "barton-OptiPlex-5000",
+  "concurrency": 1,
+  "warmup_wait_s": 5.0,
+  "loadavg_start": [
+    0.48828125,
+    0.6923828125,
+    0.80078125
+  ],
+  "loadavg_end": [
+    0.7890625,
+    0.744140625,
+    0.81298828125
+  ],
+  "git_head": "dda8c641ae90695ad78c62e5c6073de3541809cb",
+  "usage_totals": {
+    "calls": 300,
+    "prompt_tokens": 191560,
+    "cache_hit_tokens": 0,
+    "cache_miss_tokens": 0,
+    "completion_tokens": 5210,
+    "input_tokens": 0,
+    "peak_calls": 0
+  },
+  "cost_total": 0.0,
+  "cost_currency": null,
+  "cost_per_call": 0.0,
+  "prices": null,
+  "peak_pause_s": null,
+  "balance_before": null,
+  "balance_after": null,
+  "ledger_total_after": null,
+  "souffle": null,
+  "raw_log": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/llm/raw_logs/qwen3_5_4b/layer3/lat300_c1_L3.jsonl",
+  "latency_lock": {
+    "lock": "/tmp/cs224_latency.lock",
+    "lock_wait_s": 437.9,
+    "quiet": true,
+    "quiet_wait_s": 60.0,
+    "load1_samples": [
+      0.6,
+      0.55,
+      0.5,
+      0.46,
+      0.51,
+      0.55,
+      0.58,
+      0.54,
+      0.49,
+      0.45,
+      0.58,
+      0.53
+    ],
+    "load_before": [
+      0.48828125,
+      0.6923828125,
+      0.80078125
+    ],
+    "start_utc": "2026-11-24T17:06:55Z",
+    "job": "qwen_L3",
+    "driver": "analysis/deadfree/run_latency.py",
+    "load_after": [
+      0.7890625,
+      0.744140625,
+      0.81298828125
+    ],
+    "end_utc": "2026-11-24T17:08:43Z",
+    "rc": 0
+  }
+}

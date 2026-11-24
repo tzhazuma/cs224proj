@@ -1,0 +1,40 @@
+{
+ "method": "intern_l4d",
+ "model": "intern-decision-4b",
+ "tau": 0.182426,
+ "tau_secondary": 0.5,
+ "dev_macro_f1": 0.9635882158225753,
+ "dev_macro_f1_tau05": 0.7845140760224775,
+ "dev_n_units": 660,
+ "tau_rule": "max layer1-dev unit macro-F1 over TAU_GRID (derive.evaluate_unit on the pruned questions); ties -> tau closest to 0.5 (= select_fold.py readout rule)",
+ "dev_answers": "l4d_ft/results/intern_l4d/layer1/dev_r1.jsonl",
+ "dev_answers_sha256": "73fe9106fd66fdcd2ae998ce85be84049ee3ed525fb62a71142a1ac8d81b2aa6",
+ "select_tau_sha256": "b0f815e49099f76c4f455126b5e3df42d3ffbff5c4e347e40af55d0dbd1e1b7a",
+ "server_health": {
+  "status": "ok",
+  "model": "Intern-Decision-4B",
+  "gpu_mem_allocated_gb": 8.57
+ },
+ "server_kernel": "causal_conv1d reference fallback (transformers), as all stored Intern-Decision predictions",
+ "request_template": {
+  "state": "{state}",
+  "question": "{question}",
+  "options": [
+   "Yes",
+   "No"
+  ]
+ },
+ "hashes": {
+  "l4d_templates_sha256": "316429b266c0258383724c8c9129e2ea17946a9013d72cb61b267261ef827516",
+  "l4d_templates_py_sha256": "678d7c743c63b3e8d96005def26f10a2c0b3f9fef48dccc09189635ae76a56f1",
+  "l4d_questions_py_sha256": "f6a826f8cb2ff5e1d7646ac6c7c80ac6b516dbab025f8796a2143037b835005a",
+  "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+  "rules_l4d_dl_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+  "prune_py_sha256": "79a12d540ff5e417017f5b5f5fd637e5566c2ea10bcb8e5521358ec6e6a22c6b",
+  "script_sha256": "c49ea77faa02afa34d40f02be9273794af74024ff272c93cea6903689b6ac30a",
+  "decide_server_py_sha256": "4ef30ec7a4f32f44cf6d49970a5f1b49ed9be5894a0617610ec5c95625a24ef1",
+  "questions_layer1_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+  "questions_layer3_sha256": "0264524d9a6d9898f351a2bc4c6f323b4f89f87636db9c1b3a0ddea17e5ae8f6"
+ },
+ "frozen_utc": "2026-11-24T16:03:34Z"
+}

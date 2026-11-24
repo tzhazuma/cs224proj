@@ -1,0 +1,115 @@
+{
+  "run_id": "lat300_c1_L2",
+  "method": "intern_decision",
+  "model": "Intern-Decision-4B",
+  "strategy": "L2",
+  "layer": "layer3",
+  "set": "eval",
+  "subset": "latency300",
+  "n_units": 300,
+  "status_counts": {
+    "ok": 300
+  },
+  "endpoint": "http://10.15.89.184:8002",
+  "server_health": {
+    "status": "ok",
+    "model": "Intern-Decision-4B",
+    "gpu_mem_allocated_gb": 8.57
+  },
+  "server_file_sha256": "4ef30ec7a4f32f44cf6d49970a5f1b49ed9be5894a0617610ec5c95625a24ef1",
+  "server_calibration_temperature": [
+    1.99241824
+  ],
+  "prompt_target": "jev",
+  "prompt_hash": "b623ac7f8d24e75bce174b17d17678a15f7dde22b38da06b4cf15ff25ef69477",
+  "prompt_files": {
+    "task.txt": "aa12d68878ff890f78e3c1a9341846f83c15a164369279f84831e691d5fe86a2",
+    "jev_question.json": "fa7e85d64067d244e5be1f2b9dca5b9e008670c53363172c46afb27b37147b4c",
+    "user_L1.txt": "50f50397398879b1894169c534186af7d049c10ebfb349a4e8d9b69f2ebcb00a",
+    "l2_examples.txt": "dbde147e0946acc81b5045531cd0113a2a292ce8926e778e3da4246d9273789c"
+  },
+  "template_sha256": "290659e2b5944c22a7efb850ed1b443237f4b265847767b448c1675396680b82",
+  "request_template": {
+    "state": "{state}",
+    "question": "Does the executed code unit leak heap memory, so that the verdict is \"vulnerable\"?",
+    "type": "noul",
+    "options": {
+      "true": "Some heap memory obtained on an executed path is never released before the program ends (including memory lost when a reallocation fails or still held by a global or static pointer at exit).",
+      "false": "Every heap allocation on every executed path is released before the program ends."
+    },
+    "name": "leak"
+  },
+  "threshold_primary": 0.5,
+  "threshold_secondary": 0.6728965073545166,
+  "frozen_file_sha256": "73055e2c0e90d1fb2482b41707f17223b194b1e15aa8ec21c195a73932346831",
+  "l2_examples_excluded": [
+    "CWE401_Memory_Leak__int_malloc_73__bad",
+    "CWE401_Memory_Leak__int_malloc_73__good",
+    "CWE401_Memory_Leak__new_int_41__bad",
+    "CWE401_Memory_Leak__new_int_41__good",
+    "CWE401_Memory_Leak__new_int_65__bad",
+    "CWE401_Memory_Leak__new_int_65__good",
+    "CWE401_Memory_Leak__strdup_char_18__bad",
+    "CWE401_Memory_Leak__strdup_char_18__good"
+  ],
+  "l2_examples_json_sha256": "59a9b069308b682a0dd51d859d686ddf13f97bf558cc1c2a2ac7b785f16b9d10",
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+  "units_sha256": "033945a8799a51e5881c9cb4a209d0348b857d8bbf0b869b1f112c043bc65111",
+  "selection": {
+    "limit": null,
+    "unit_ids_file": null
+  },
+  "evidence_file": null,
+  "evidence_frozen": null,
+  "start_utc": "2026-11-24T17:23:04Z",
+  "end_utc": "2026-11-24T17:24:25Z",
+  "wall_s": 80.36,
+  "host": "barton-OptiPlex-5000",
+  "concurrency": 1,
+  "loadavg_start": [
+    0.32666015625,
+    0.560546875,
+    0.6796875
+  ],
+  "loadavg_end": [
+    0.765625,
+    0.63671875,
+    0.69677734375
+  ],
+  "latency_note": "latency_s = dell wall time per request incl. queueing behind the other worker (server serialises forwards); use the concurrency-1 latency300 run for latency",
+  "latency_lock": {
+    "lock": "/tmp/cs224_latency.lock",
+    "lock_wait_s": 60.2,
+    "quiet": true,
+    "quiet_wait_s": 60.0,
+    "load1_samples": [
+      0.5,
+      0.46,
+      0.42,
+      0.47,
+      0.43,
+      0.4,
+      0.37,
+      0.5,
+      0.46,
+      0.42,
+      0.39,
+      0.36
+    ],
+    "load_before": [
+      0.32666015625,
+      0.560546875,
+      0.6796875
+    ],
+    "start_utc": "2026-11-24T17:23:04Z",
+    "job": "intern_L2",
+    "driver": "analysis/deadfree/run_latency.py",
+    "load_after": [
+      0.765625,
+      0.63671875,
+      0.69677734375
+    ],
+    "end_utc": "2026-11-24T17:24:25Z",
+    "rc": 0
+  }
+}

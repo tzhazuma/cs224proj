@@ -1,0 +1,103 @@
+{
+  "method": "grep_v0",
+  "layer": "layer3",
+  "run_id": "lat300_c1",
+  "versions": {
+    "python": "3.12.3"
+  },
+  "command_template": "pred = 1 iff 'free(' not in model_text and 'delete' not in model_text",
+  "argv": [
+    "/usr/bin/python3",
+    "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/run_static.py",
+    "--tool",
+    "grep_v0",
+    "--units",
+    "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+    "--set",
+    "eval",
+    "--subset",
+    "latency300",
+    "--layer",
+    "layer3",
+    "--no-evidence",
+    "--run-id",
+    "lat300_c1"
+  ],
+  "script_sha256": "0b277037ef304999c9572896d1cf2a40759b41a62e04ba0bce1d4be0859a6aae",
+  "git_head": "c55c677f1f542587d3b5bc48c59163b08482577a",
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+  "units_sha256": "033945a8799a51e5881c9cb4a209d0348b857d8bbf0b869b1f112c043bc65111",
+  "set": "eval",
+  "subset": "latency300",
+  "n_units": 300,
+  "timeout_s_per_unit": 60.0,
+  "tu_mode": "wrapper",
+  "compat_defines": [
+    "_GNU_SOURCE"
+  ],
+  "compat_compiler_args": [
+    "-include",
+    "alloca.h"
+  ],
+  "leak_mapping": "pred 1 iff model_text contains neither 'free(' nor 'delete'",
+  "concurrency": 1,
+  "timing_mode": "per_unit_inprocess",
+  "batch_size": null,
+  "latency_note": "latency_s = wall time of the per-unit step (TU preparation + tool run + parsing)",
+  "host": "barton-OptiPlex-5000",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.39",
+  "cpu_count": 12,
+  "loadavg_start": [
+    0.50244140625,
+    0.6328125,
+    0.70947265625
+  ],
+  "start_utc": "2026-11-24T17:22:04+00:00",
+  "end_utc": "2026-11-24T17:22:04+00:00",
+  "loadavg_end": [
+    0.50244140625,
+    0.6328125,
+    0.70947265625
+  ],
+  "wall_total_s": 0.001,
+  "status_counts": {
+    "ok": 300
+  },
+  "predictions": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/grep_v0/layer3/lat300_c1.jsonl",
+  "raw_logs": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/grep_v0/layer3/raw_logs/lat300_c1.raw.jsonl.gz",
+  "latency_lock": {
+    "lock": "/tmp/cs224_latency.lock",
+    "lock_wait_s": 102.7,
+    "quiet": true,
+    "quiet_wait_s": 60.0,
+    "load1_samples": [
+      0.75,
+      0.77,
+      0.71,
+      0.65,
+      0.6,
+      0.55,
+      0.51,
+      0.55,
+      0.5,
+      0.54,
+      0.5,
+      0.46
+    ],
+    "load_before": [
+      0.50244140625,
+      0.6328125,
+      0.70947265625
+    ],
+    "start_utc": "2026-11-24T17:22:04Z",
+    "job": "grep_v0",
+    "driver": "analysis/deadfree/run_latency.py",
+    "load_after": [
+      0.50244140625,
+      0.6328125,
+      0.70947265625
+    ],
+    "end_utc": "2026-11-24T17:22:04Z",
+    "rc": 0
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "method": "intern_l4d",
+  "model": "intern-decision-4b",
+  "strategy": "L4D",
+  "layer": "layer3",
+  "subset": "latency300",
+  "run_id": "lat300_c1",
+  "n_units": 300,
+  "concurrency": 1,
+  "tau": 0.182426,
+  "n_units_without_model_call": 0,
+  "client_host": "barton-OptiPlex-5000",
+  "endpoint": "http://10.15.89.184:8002",
+  "server_health": {
+    "status": "ok",
+    "model": "Intern-Decision-4B",
+    "gpu_mem_allocated_gb": 8.57
+  },
+  "kernel_note": "causal_conv1d reference fallback (transformers), = stored predictions",
+  "start_utc": "2026-11-24T17:44:32Z",
+  "end_utc": "2026-11-24T17:48:10Z",
+  "loadavg_start": [
+    1.71337890625,
+    3.2431640625,
+    2.71484375
+  ],
+  "loadavg_end": [
+    0.61474609375,
+    1.96630859375,
+    2.3115234375
+  ],
+  "e2e_s": {
+    "median": 0.6583319964993279,
+    "p90": 1.3428318751975894,
+    "mean": 0.7280858722867075,
+    "max": 5.213844883997808
+  },
+  "e2e_no_parse_s": {
+    "median": 0.6570657839984051,
+    "p90": 1.3396896406979066,
+    "mean": 0.7260613438102397,
+    "max": 5.209078569998383
+  },
+  "parse_prune_s": {
+    "median": 0.001999952000915073,
+    "p90": 0.0033290250110439975,
+    "mean": 0.0020245284764678216,
+    "max": 0.00476631399942562
+  },
+  "http_s": {
+    "median": 0.6570271919990773,
+    "p90": 1.339653852506308,
+    "mean": 0.7260092453696416,
+    "max": 5.20895502899657
+  },
+  "derive_s": {
+    "median": 5.572300142375752e-05,
+    "p90": 7.801879837643356e-05,
+    "mean": 5.20984405981532e-05,
+    "max": 0.0003669889993034303
+  },
+  "server_latency_s": {
+    "median": 0.6427149999999999,
+    "p90": 1.3080950000000002,
+    "mean": 0.7112562666666666,
+    "max": 5.12728
+  },
+  "server_forward_s": {
+    "median": 0.631935,
+    "p90": 1.2862930000000001,
+    "mean": 0.6997812,
+    "max": 5.05039
+  },
+  "questions_per_unit": {
+    "median": 6.0,
+    "p90": 10.0,
+    "mean": 5.93,
+    "max": 31
+  },
+  "max_abs_dp_vs_eval_r1": 0.0,
+  "accuracy_vs_truth": 0.5066666666666667,
+  "hashes": {
+    "l4d_templates_sha256": "316429b266c0258383724c8c9129e2ea17946a9013d72cb61b267261ef827516",
+    "l4d_templates_py_sha256": "678d7c743c63b3e8d96005def26f10a2c0b3f9fef48dccc09189635ae76a56f1",
+    "l4d_questions_py_sha256": "f6a826f8cb2ff5e1d7646ac6c7c80ac6b516dbab025f8796a2143037b835005a",
+    "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+    "rules_l4d_dl_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+    "prune_py_sha256": "79a12d540ff5e417017f5b5f5fd637e5566c2ea10bcb8e5521358ec6e6a22c6b",
+    "script_sha256": "c49ea77faa02afa34d40f02be9273794af74024ff272c93cea6903689b6ac30a",
+    "decide_server_py_sha256": "4ef30ec7a4f32f44cf6d49970a5f1b49ed9be5894a0617610ec5c95625a24ef1",
+    "questions_layer1_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+    "questions_layer3_sha256": "0264524d9a6d9898f351a2bc4c6f323b4f89f87636db9c1b3a0ddea17e5ae8f6"
+  },
+  "frozen_sha256": "2abe4da8bc604517184a687141596b5757268d31b3d52628f9943192f5cec52a",
+  "note": "e2e = live sites+questions (tree-sitter, dell) + prune + one POST /decide per kept question, sequential (Intern-Decision-4B, one RTX 3090) + derive (dell); warm-up request excluded",
+  "latency_lock": {
+    "lock": "/tmp/cs224_latency.lock",
+    "lock_wait_s": 818.1,
+    "quiet": true,
+    "quiet_wait_s": 120.0,
+    "load1_samples": [
+      2.02,
+      1.85,
+      1.71,
+      1.65,
+      1.6,
+      1.55,
+      1.91,
+      2.07,
+      1.99,
+      1.91,
+      1.83,
+      1.69
+    ],
+    "load_before": [
+      1.71337890625,
+      3.2431640625,
+      2.71484375
+    ],
+    "start_utc": "2026-11-24T17:44:31Z",
+    "job": "intern_l4d",
+    "driver": "analysis/deadfree/run_latency.py",
+    "load_after": [
+      0.61474609375,
+      1.96630859375,
+      2.3115234375
+    ],
+    "end_utc": "2026-11-24T17:48:10Z",
+    "rc": 0
+  }
+}
