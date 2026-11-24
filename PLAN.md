@@ -350,7 +350,7 @@ decision model 先判断；置信度低于阈值的单元交给 DeepSeek L3 或 
 | 11-24 | grep 基线在全集上运行 | grep 的 P/R/F1 |
 | 11-25 | 尽量安装 Cppcheck、Clang SA，在第 ① 层（全量或分层抽样）上运行 | 静态基线的初步结果 |
 | 11-25 | prompt 先在本地 Qwen3.5-4B 上调，DeepSeek 在 dev 上终检后冻结。DeepSeek 在嵌套 25% 的约 300 个单元上试跑 L1 和 L3（约 ¥0.3；prompt 之后不改的话，结果直接计入正式结果）。Qwen3.5-4B 和 Jev 的 L1 也试跑 | LLM、SLM 和 decision model 的初步点 |
-| 11-25 至 26 | 做 pre 的幻灯片【已定：Beamer，英文，没有指定模板，用 metropolis 主题 16:9，作者信息同 proposal】；**现场演示**【已定，用户要求】，另录一段备用录像 | 15–20 分钟 |
+| 11-25 至 26 | 做 pre 的幻灯片【已定：Beamer，英文，没有指定模板，用 metropolis 主题 16:9，作者信息同 proposal】；另出**中文版**【已定，2026-11-24 09:32 用户要求：之后的 slides 同时产生中文版】（`presentation/pre/main_zh.pdf` + `notes_zh.md`，内容与英文版逐页对应，数字同源；术语/方法名保留英文；图表中文标签；每次改 slides 两版同步）；**现场演示**【已定，用户要求】，另录一段备用录像 | 15–20 分钟 |
 
 pre 的内容结构：
 1. 动机：Juliet 的捷径（`static void` 100%、grep 0.94）；
