@@ -1,0 +1,378 @@
+{
+ "n_units": 2656,
+ "n_families": 42,
+ "layers": [
+  "base",
+  "stress"
+ ],
+ "methods": {
+  "base": [
+   "qwen3_5_4b"
+  ],
+  "stress": [
+   "qwen3_5_4b"
+  ]
+ },
+ "invalid": {
+  "base": 0,
+  "stress": 0
+ },
+ "stats": {
+  "base.f1_leak": 0.827469553450609,
+  "base.macro_f1": 0.8055004813093453,
+  "base.precision_leak": 0.7512285012285013,
+  "base.recall_leak": 0.920933734939759,
+  "base.specificity": 0.6950301204819277,
+  "base.accuracy": 0.8079819277108434,
+  "base.mcc": 0.6323092659384816,
+  "stress.f1_leak": 0.7359017308766053,
+  "stress.macro_f1": 0.5945404608140251,
+  "stress.precision_leak": 0.5847382431233363,
+  "stress.recall_leak": 0.9924698795180723,
+  "stress.specificity": 0.29518072289156627,
+  "stress.accuracy": 0.6438253012048193,
+  "stress.mcc": 0.4013039001358585,
+  "delta_stress.f1_leak": -0.09156782257400375,
+  "delta_stress.macro_f1": -0.21096002049532014,
+  "delta_stress.precision_leak": -0.16649025810516493,
+  "delta_stress.recall_leak": 0.07153614457831325,
+  "delta_stress.specificity": -0.3998493975903614,
+  "delta_stress.accuracy": -0.16415662650602414,
+  "delta_stress.mcc": -0.2310053658026231,
+  "stress.bad.flip_rate": 0.08659638554216867,
+  "stress.bad.right_to_wrong": 0.007530120481927711,
+  "stress.bad.wrong_to_right": 0.07906626506024096,
+  "stress.good.flip_rate": 0.41792168674698793,
+  "stress.good.right_to_wrong": 0.4088855421686747,
+  "stress.good.wrong_to_right": 0.009036144578313253
+ },
+ "transitions": {
+  "stress.bad": {
+   "n": 1328,
+   "changed": 115,
+   "right_to_wrong": 10,
+   "wrong_to_right": 105
+  },
+  "stress.good": {
+   "n": 1328,
+   "changed": 555,
+   "right_to_wrong": 543,
+   "wrong_to_right": 12
+  }
+ },
+ "bootstrap": {
+  "iterations": 1000,
+  "seed": 20261126,
+  "clusters": "family",
+  "ci95": {
+   "base.f1_leak": [
+    0.8099489544315839,
+    0.8450435193402007
+   ],
+   "base.macro_f1": [
+    0.7862255910262822,
+    0.8247990712118637
+   ],
+   "base.precision_leak": [
+    0.7323845440215728,
+    0.7725180301287378
+   ],
+   "base.recall_leak": [
+    0.8827906794442157,
+    0.9500405062914817
+   ],
+   "base.specificity": [
+    0.6610198961955214,
+    0.7338249801407696
+   ],
+   "base.accuracy": [
+    0.788979317159602,
+    0.8271764441852792
+   ],
+   "base.mcc": [
+    0.5927058438734445,
+    0.6725606038552694
+   ],
+   "stress.f1_leak": [
+    0.7268237795605111,
+    0.7457174612699982
+   ],
+   "stress.macro_f1": [
+    0.5701737954728096,
+    0.6194038784225583
+   ],
+   "stress.precision_leak": [
+    0.5737570410066314,
+    0.5969130339926607
+   ],
+   "stress.recall_leak": [
+    0.9872799886263752,
+    0.9969629667978187
+   ],
+   "stress.specificity": [
+    0.26222905795701,
+    0.32977233159233965
+   ],
+   "stress.accuracy": [
+    0.6275467237260707,
+    0.6613278584168238
+   ],
+   "stress.mcc": [
+    0.3709532566769324,
+    0.43197366110998586
+   ],
+   "delta_stress.f1_leak": [
+    -0.10419525755234739,
+    -0.07882951446483694
+   ],
+   "delta_stress.macro_f1": [
+    -0.22748308265293818,
+    -0.19299127109207423
+   ],
+   "delta_stress.precision_leak": [
+    -0.18409904545873368,
+    -0.15058970733515858
+   ],
+   "delta_stress.recall_leak": [
+    0.0412218602014007,
+    0.11031202225891266
+   ],
+   "delta_stress.specificity": [
+    -0.4390464156987205,
+    -0.3657826011990956
+   ],
+   "delta_stress.accuracy": [
+    -0.1773038822583394,
+    -0.15036874668161168
+   ],
+   "delta_stress.mcc": [
+    -0.26007948929603225,
+    -0.2002150571248003
+   ],
+   "stress.bad.flip_rate": [
+    0.05675211895102869,
+    0.12430359548968158
+   ],
+   "stress.bad.right_to_wrong": [
+    0.0030370332021812663,
+    0.012720011373624699
+   ],
+   "stress.bad.wrong_to_right": [
+    0.04995949370851822,
+    0.11720932055578417
+   ],
+   "stress.good.flip_rate": [
+    0.3841798441128073,
+    0.45717049268382365
+   ],
+   "stress.good.right_to_wrong": [
+    0.3759241355747187,
+    0.4474148903789926
+   ],
+   "stress.good.wrong_to_right": [
+    0.003819201761942688,
+    0.01534249281719218
+   ]
+  }
+ },
+ "breakdowns": {
+  "mechanism": {
+   "c_alloc": {
+    "n": 1560,
+    "delta_stress.f1_leak": -0.09044767252096786,
+    "delta_stress.macro_f1": -0.2112781250045126,
+    "delta_stress.precision_leak": -0.14677973934879607,
+    "delta_stress.recall_leak": 0.04615384615384621,
+    "delta_stress.specificity": -0.3679487179487179,
+    "delta_stress.accuracy": -0.16089743589743588,
+    "delta_stress.mcc": -0.23765768322129427,
+    "stress.bad.flip_rate": 0.06923076923076923,
+    "stress.bad.right_to_wrong": 0.011538461538461539,
+    "stress.bad.wrong_to_right": 0.057692307692307696,
+    "stress.good.flip_rate": 0.39871794871794874,
+    "stress.good.right_to_wrong": 0.38333333333333336,
+    "stress.good.wrong_to_right": 0.015384615384615385
+   },
+   "cpp_new": {
+    "n": 924,
+    "delta_stress.f1_leak": -0.11815909929624446,
+    "delta_stress.macro_f1": -0.20384659638979707,
+    "delta_stress.precision_leak": -0.18091395282208012,
+    "delta_stress.recall_leak": 0.012987012987012991,
+    "delta_stress.specificity": -0.3636363636363636,
+    "delta_stress.accuracy": -0.17532467532467533,
+    "delta_stress.mcc": -0.27097621328455995,
+    "stress.bad.flip_rate": 0.017316017316017316,
+    "stress.bad.right_to_wrong": 0.0021645021645021645,
+    "stress.bad.wrong_to_right": 0.015151515151515152,
+    "stress.good.flip_rate": 0.36363636363636365,
+    "stress.good.right_to_wrong": 0.36363636363636365,
+    "stress.good.wrong_to_right": 0.0
+   },
+   "destructor": {
+    "n": 4,
+    "delta_stress.f1_leak": 0.0,
+    "delta_stress.macro_f1": -0.4000000000000001,
+    "delta_stress.precision_leak": -0.5,
+    "delta_stress.recall_leak": 0.5,
+    "delta_stress.specificity": -1.0,
+    "delta_stress.accuracy": -0.25,
+    "delta_stress.mcc": -0.5773502691896258,
+    "stress.bad.flip_rate": 0.5,
+    "stress.bad.right_to_wrong": 0.0,
+    "stress.bad.wrong_to_right": 0.5,
+    "stress.good.flip_rate": 1.0,
+    "stress.good.right_to_wrong": 1.0,
+    "stress.good.wrong_to_right": 0.0
+   },
+   "realloc_fail": {
+    "n": 168,
+    "delta_stress.f1_leak": 0.15873015873015872,
+    "delta_stress.macro_f1": -0.273015873015873,
+    "delta_stress.precision_leak": -0.26190476190476186,
+    "delta_stress.recall_leak": 0.6190476190476191,
+    "delta_stress.specificity": -0.8809523809523809,
+    "delta_stress.accuracy": -0.13095238095238093,
+    "delta_stress.mcc": -0.30242156957551825,
+    "stress.bad.flip_rate": 0.6190476190476191,
+    "stress.bad.right_to_wrong": 0.0,
+    "stress.bad.wrong_to_right": 0.6190476190476191,
+    "stress.good.flip_rate": 0.8809523809523809,
+    "stress.good.right_to_wrong": 0.8809523809523809,
+    "stress.good.wrong_to_right": 0.0
+   }
+  },
+  "good_kind": {
+   "B2G": {
+    "n": 621,
+    "delta_stress.f1_leak": null,
+    "delta_stress.macro_f1": null,
+    "delta_stress.precision_leak": 0.0,
+    "delta_stress.recall_leak": null,
+    "delta_stress.specificity": -0.4702093397745572,
+    "delta_stress.accuracy": -0.4702093397745572,
+    "delta_stress.mcc": 0.0,
+    "stress.bad.flip_rate": null,
+    "stress.bad.right_to_wrong": null,
+    "stress.bad.wrong_to_right": null,
+    "stress.good.flip_rate": 0.47665056360708535,
+    "stress.good.right_to_wrong": 0.47342995169082125,
+    "stress.good.wrong_to_right": 0.00322061191626409
+   },
+   "G2B": {
+    "n": 621,
+    "delta_stress.f1_leak": null,
+    "delta_stress.macro_f1": null,
+    "delta_stress.precision_leak": 0.0,
+    "delta_stress.recall_leak": null,
+    "delta_stress.specificity": -0.2624798711755234,
+    "delta_stress.accuracy": -0.2624798711755234,
+    "delta_stress.mcc": 0.0,
+    "stress.bad.flip_rate": null,
+    "stress.bad.right_to_wrong": null,
+    "stress.bad.wrong_to_right": null,
+    "stress.good.flip_rate": 0.2946859903381642,
+    "stress.good.right_to_wrong": 0.2785829307568438,
+    "stress.good.wrong_to_right": 0.01610305958132045
+   },
+   "other": {
+    "n": 86,
+    "delta_stress.f1_leak": null,
+    "delta_stress.macro_f1": null,
+    "delta_stress.precision_leak": 0.0,
+    "delta_stress.recall_leak": null,
+    "delta_stress.specificity": -0.8837209302325582,
+    "delta_stress.accuracy": -0.8837209302325582,
+    "delta_stress.mcc": 0.0,
+    "stress.bad.flip_rate": null,
+    "stress.bad.right_to_wrong": null,
+    "stress.bad.wrong_to_right": null,
+    "stress.good.flip_rate": 0.8837209302325582,
+    "stress.good.right_to_wrong": 0.8837209302325582,
+    "stress.good.wrong_to_right": 0.0
+   }
+  },
+  "flow_category": {
+   "01": {
+    "n": 84,
+    "delta_stress.f1_leak": -0.17222222222222228,
+    "delta_stress.macro_f1": -0.2633838383838384,
+    "delta_stress.precision_leak": -0.36363636363636365,
+    "delta_stress.recall_leak": 0.09523809523809523,
+    "delta_stress.specificity": -0.5714285714285714,
+    "delta_stress.accuracy": -0.23809523809523803,
+    "delta_stress.mcc": -0.38666029127929225,
+    "stress.bad.flip_rate": 0.09523809523809523,
+    "stress.bad.right_to_wrong": 0.0,
+    "stress.bad.wrong_to_right": 0.09523809523809523,
+    "stress.good.flip_rate": 0.5714285714285714,
+    "stress.good.right_to_wrong": 0.5714285714285714,
+    "stress.good.wrong_to_right": 0.0
+   },
+   "02-22": {
+    "n": 1176,
+    "delta_stress.f1_leak": -0.05006200156994811,
+    "delta_stress.macro_f1": -0.14608964511094502,
+    "delta_stress.precision_leak": -0.11238435660218671,
+    "delta_stress.recall_leak": 0.08843537414965996,
+    "delta_stress.specificity": -0.3027210884353741,
+    "delta_stress.accuracy": -0.1071428571428571,
+    "delta_stress.mcc": -0.1251893459098536,
+    "stress.bad.flip_rate": 0.09863945578231292,
+    "stress.bad.right_to_wrong": 0.00510204081632653,
+    "stress.bad.wrong_to_right": 0.0935374149659864,
+    "stress.good.flip_rate": 0.30952380952380953,
+    "stress.good.right_to_wrong": 0.30612244897959184,
+    "stress.good.wrong_to_right": 0.003401360544217687
+   },
+   "31-45": {
+    "n": 420,
+    "delta_stress.f1_leak": -0.09275298154348477,
+    "delta_stress.macro_f1": -0.1913471678643317,
+    "delta_stress.precision_leak": -0.12133555053156697,
+    "delta_stress.recall_leak": -0.00952380952380949,
+    "delta_stress.specificity": -0.29047619047619044,
+    "delta_stress.accuracy": -0.15000000000000002,
+    "delta_stress.mcc": -0.24684083898341058,
+    "stress.bad.flip_rate": 0.009523809523809525,
+    "stress.bad.right_to_wrong": 0.009523809523809525,
+    "stress.bad.wrong_to_right": 0.0,
+    "stress.good.flip_rate": 0.3761904761904762,
+    "stress.good.right_to_wrong": 0.3333333333333333,
+    "stress.good.wrong_to_right": 0.04285714285714286
+   },
+   "51-68": {
+    "n": 624,
+    "delta_stress.f1_leak": -0.16093484637949684,
+    "delta_stress.macro_f1": -0.2694023818025211,
+    "delta_stress.precision_leak": -0.28870583321047727,
+    "delta_stress.recall_leak": 0.054487179487179405,
+    "delta_stress.specificity": -0.5256410256410257,
+    "delta_stress.accuracy": -0.23557692307692302,
+    "delta_stress.mcc": -0.3769428397082735,
+    "stress.bad.flip_rate": 0.08653846153846154,
+    "stress.bad.right_to_wrong": 0.016025641025641024,
+    "stress.bad.wrong_to_right": 0.07051282051282051,
+    "stress.good.flip_rate": 0.532051282051282,
+    "stress.good.right_to_wrong": 0.5288461538461539,
+    "stress.good.wrong_to_right": 0.003205128205128205
+   },
+   "71-84": {
+    "n": 352,
+    "delta_stress.f1_leak": -0.09995049995049987,
+    "delta_stress.macro_f1": -0.35926913395579924,
+    "delta_stress.precision_leak": -0.19566049079084002,
+    "delta_stress.recall_leak": 0.13636363636363635,
+    "delta_stress.specificity": -0.5909090909090909,
+    "delta_stress.accuracy": -0.2272727272727273,
+    "delta_stress.mcc": -0.35271989422887373,
+    "stress.bad.flip_rate": 0.13636363636363635,
+    "stress.bad.right_to_wrong": 0.0,
+    "stress.bad.wrong_to_right": 0.13636363636363635,
+    "stress.good.flip_rate": 0.5909090909090909,
+    "stress.good.right_to_wrong": 0.5909090909090909,
+    "stress.good.wrong_to_right": 0.0
+   }
+  }
+ }
+}

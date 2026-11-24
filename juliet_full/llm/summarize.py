@@ -37,6 +37,7 @@ RESULTS = LLM_DIR / "results"
 UNITS = JF / "data" / "build" / "layer1.jsonl"
 SUBSETS_FILE = JF / "data" / "build" / "subsets.json"
 LAYER_ORDER = {"layer1": 0, "layer3": 1, "placebo": 2, "original": 3}
+FULL_EVAL_METHODS = ("jev", "qwen3_5_4b")  # their layer3/placebo/original runs cover all eval units
 THRESHOLDS = RESULTS / "jev_thresholds.json"
 ROBUSTNESS_BOOTSTRAP = 1000
 FLOWS = ["02-22", "31-45", "51-68", "71-84"]
@@ -167,6 +168,17 @@ def robustness_comparisons(by_key: dict, thresholds: dict) -> list[dict]:
         if base and orig:
             comps.append({"method": ds, "strategy": s, "comparison": "original→layer1", "subset": "nested25",
                           "base": orig, "stress": base, "placebo": None})
+    qwen = "qwen3_5_4b"
+    for s in ("L1", "L2", "L3", "L4"):
+        base, stress = rows(qwen, "layer1", f"eval_{s}_r1"), rows(qwen, "layer3", f"l3_eval_{s}_r1")
+        placebo, orig = rows(qwen, "placebo", f"pl_eval_{s}_r1"), rows(qwen, "original", f"orig_eval_{s}_r1")
+        for subset in (None, "nested25", "api_subset"):
+            if base and stress:
+                comps.append({"method": qwen, "strategy": s, "comparison": "layer1→layer3", "subset": subset,
+                              "base": base, "stress": stress, "placebo": placebo, "flips": subset is None})
+            if base and orig:
+                comps.append({"method": qwen, "strategy": s, "comparison": "original→layer1", "subset": subset,
+                              "base": orig, "stress": base, "placebo": None})
     for s in ("L1", "L2", "L3"):
         base, stress = rows("jev", "layer1", f"eval_{s}_r1"), rows("jev", "layer3", f"l3_eval_{s}_r1")
         placebo, orig = rows("jev", "placebo", f"pl_eval_{s}_r1"), rows("jev", "original", f"orig_eval_{s}_r1")
@@ -230,7 +242,7 @@ def layer_rows(by_key: dict, method: str, layer: str, strategy: str, subset: str
         run = by_key.get((method, layer, run_id))
         return run["rows"] if run else None
 
-    if method == "jev":
+    if method in FULL_EVAL_METHODS:
         prefix = {"layer1": "eval", "layer3": "l3_eval", "placebo": "pl_eval", "original": "orig_eval"}[layer]
         return rows(f"{prefix}_{strategy}_r1")
     if layer == "layer1":
@@ -244,10 +256,11 @@ def layer_rows(by_key: dict, method: str, layer: str, strategy: str, subset: str
 
 
 def paired_table(by_key: dict, units_all: list[dict], truth: dict[str, int], thresholds: dict) -> list[str]:
-    out = ["", "## DeepSeek vs Jev on the same units (eval ∩ nested25 / eval ∩ api_subset)", "",
-           "macro-F1 (FP/FN); Jev from its full-eval runs restricted to the subset, at 0.5 and at the frozen dev "
-           "threshold. DeepSeek layer3 api_subset = l3_n25 + l3_apirest runs.", "",
-           "| layer | strategy | subset | units | DeepSeek | Jev @0.5 | Jev @thr |", "|---|---|---|---|---|---|---|"]
+    out = ["", "## DeepSeek vs Qwen vs Jev on the same units (eval ∩ nested25 / eval ∩ api_subset)", "",
+           "macro-F1 (FP/FN); Qwen and Jev from their full-eval runs restricted to the subset, Jev at 0.5 and at "
+           "the frozen dev threshold. DeepSeek layer3 api_subset = l3_n25 + l3_apirest runs.", "",
+           "| layer | strategy | subset | units | DeepSeek | Qwen3.5-4B | Jev @0.5 | Jev @thr |",
+           "|---|---|---|---|---|---|---|---|"]
 
     def fmt(m: dict | None) -> str:
         return "–" if m is None else f"{m['macro_f1']:.3f} ({m['fp']}/{m['fn']})"
@@ -257,14 +270,16 @@ def paired_table(by_key: dict, units_all: list[dict], truth: dict[str, int], thr
             for subset in ("nested25", "api_subset"):
                 ids = [u["unit_id"] for u in select_units(units_all, "eval", subset, SUBSETS_FILE)]
                 ds = metrics_on(layer_rows(by_key, "deepseek_flash", layer, strategy, subset), ids, truth)
+                qw = metrics_on(layer_rows(by_key, "qwen3_5_4b", layer, strategy, subset), ids, truth)
                 jev_rows = layer_rows(by_key, "jev", layer, strategy, subset) if strategy != "L4" else None
                 jev = metrics_on(jev_rows, ids, truth)
                 jev_thr = None
                 if jev_rows is not None and strategy in thresholds:
                     jev_thr = metrics_on(thresholded(jev_rows, thresholds[strategy]["threshold"]), ids, truth)
-                if ds is None and jev is None:
+                if ds is None and qw is None and jev is None:
                     continue
-                out.append(f"| {layer} | {strategy} | {subset} | {len(ids)} | {fmt(ds)} | {fmt(jev)} | {fmt(jev_thr)} |")
+                out.append(f"| {layer} | {strategy} | {subset} | {len(ids)} | {fmt(ds)} | {fmt(qw)} | {fmt(jev)} | "
+                           f"{fmt(jev_thr)} |")
     return out
 
 
@@ -289,7 +304,8 @@ def stress_error_split(by_key: dict, truth: dict[str, int]) -> list[str]:
            "inserted under always-false guards; for B2G and realloc ('other') goods the real free is wrapped in "
            "an always-true guard.", "",
            "| method | strategy | subset | " + " | ".join(cats) + " |", "|---|---|---|" + "---|" * len(cats)]
-    for method, strategies in (("deepseek_flash", ("L1", "L2", "L3", "L4")), ("jev", ("L1", "L2", "L3"))):
+    for method, strategies in (("deepseek_flash", ("L1", "L2", "L3", "L4")), ("qwen3_5_4b", ("L1", "L2", "L3", "L4")),
+                               ("jev", ("L1", "L2", "L3"))):
         for strategy in strategies:
             for subset in ("nested25", "api_subset"):
                 stress = layer_rows(by_key, method, "layer3", strategy, subset)
@@ -317,6 +333,7 @@ def original_fp_analysis(by_key: dict, truth: dict[str, int]) -> list[str]:
            "number of `static void` good functions in the unit; layer1 FPs on the same unit_ids in brackets.", ""]
     ids = {u["unit_id"] for u in select_units(list(orig.values()), "eval", "nested25", SUBSETS_FILE)}
     for method, run_id, base_id in (("deepseek_flash", "orig_n25_L1_r1", "eval_L1_r1"),
+                                    ("qwen3_5_4b", "orig_eval_L1_r1", "eval_L1_r1"),
                                     ("jev", "orig_eval_L1_r1", "eval_L1_r1")):
         run, base = by_key.get((method, "original", run_id)), by_key.get((method, "layer1", base_id))
         if not run or not base:
@@ -395,15 +412,16 @@ def main() -> int:
         out += ["", "## L4 fact quality (per unit `extra` of run_llm.py)", "",
                 "strict parse = every non-empty answer line is a schema fact; grounded = facts kept by the line "
                 "check / (kept + dropped); invalid = no parseable fact and no `none`; error = Souffle failure.", "",
-                "| run | layer | n | strict parse | grounded facts | answered none | invalid | error | facts/unit |",
-                "|---|---|---|---|---|---|---|---|---|"]
+                "| method | run | layer | n | strict parse | grounded facts | answered none | invalid | error | "
+                "facts/unit |",
+                "|---|---|---|---|---|---|---|---|---|---|"]
         for run in l4_runs:
             rows = run["rows"]
             ex = [r.get("extra") or {} for r in rows]
             kept = sum(x.get("n_facts", 0) for x in ex)
             dropped = sum(x.get("n_ungrounded", 0) for x in ex)
             n = len(rows)
-            out.append(f"| {run['run_id']} | {run['layer']} | {n} | "
+            out.append(f"| {run['method']} | {run['run_id']} | {run['layer']} | {n} | "
                        f"{sum(bool(x.get('facts_strict_ok')) for x in ex) / n:.4f} | "
                        f"{kept / (kept + dropped) if kept + dropped else 0:.4f} ({kept}/{kept + dropped}) | "
                        f"{sum(bool(x.get('facts_none')) for x in ex)} | "
@@ -426,6 +444,21 @@ def main() -> int:
             out.append(f"| {run['run_id']} | {run['layer']} | {s} | eval/{run['subset'] or 'all'} | "
                        f"{at05['macro_f1']:.3f} | {at['macro_f1']:.3f} | {f3(at['precision'])}/{f3(at['recall'])} | "
                        f"{at['fp']}/{at['fn']} |")
+
+    lat_runs = [r for r in runs if r["run_id"].startswith("lat300_c1_")]
+    if lat_runs:
+        out += ["", "## Concurrency-1 latency (latency300, L1)", "",
+                "Per-call client latency. load1 = dell 1-min load average at run start; `_quiet` runs (and the Qwen "
+                "stage-2d run) waited for the latency lock /tmp/cs224_latency.lock and load1 < 2.5 over 2 min.", "",
+                "| method | run | median s | p90 s | load1 at start | condition |", "|---|---|---|---|---|---|"]
+        for run in lat_runs:
+            m, lat = run["meta"], run["rep"].get("latency") or {}
+            lock = m.get("latency_lock") or {}
+            cond = "quiet (lock + load1 < 2.5 for 2 min)" if lock.get("quiet", bool(lock)) else "loaded"
+            if m.get("gpu_state"):
+                cond += "; " + m["gpu_state"].split(":")[0]
+            out.append(f"| {run['method']} | {run['run_id']} | {lat.get('median_s', 0):.3f} | "
+                       f"{lat.get('p90_s', 0):.3f} | {(m.get('loadavg_start') or [0])[0]:.2f} | {cond} |")
 
     groups: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for run in runs:
@@ -488,7 +521,7 @@ def main() -> int:
                        f"{st['stress.bad.right_to_wrong']:.3f} | {st['stress.bad.wrong_to_right']:.3f} | "
                        f"{st['stress.good.right_to_wrong']:.3f} | {st['stress.good.wrong_to_right']:.3f} | "
                        + " | ".join(pl_cells) + " |")
-        out += ["", "### Strongest layer1→layer3 flips (right→wrong; DeepSeek on nested25, Jev @0.5 on all eval)", ""]
+        out += ["", "### Strongest layer1→layer3 flips (right→wrong; DeepSeek on nested25, Qwen and Jev @0.5 on all eval)", ""]
         out += strongest_flips(comps, units)
     out += paired_table(by_key, units_all, truth, thresholds)
     out += stress_error_split(by_key, truth)

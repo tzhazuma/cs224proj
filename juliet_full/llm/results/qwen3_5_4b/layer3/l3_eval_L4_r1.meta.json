@@ -1,0 +1,127 @@
+{
+  "run_id": "l3_eval_L4_r1",
+  "method": "qwen3_5_4b",
+  "strategy": "L4",
+  "layer": "layer3",
+  "set": "eval",
+  "subset": null,
+  "n_units": 2656,
+  "status_counts": {
+    "ok": 2656
+  },
+  "aborted": null,
+  "model_requested": "qwen3.5-4b",
+  "models_returned": {
+    "qwen3.5-4b": 2656
+  },
+  "models_listing": {
+    "object": "list",
+    "data": [
+      {
+        "id": "qwen3.5-4b",
+        "object": "model",
+        "created": 1795475403,
+        "owned_by": "vllm",
+        "root": "/home/zhangzx/disk4/cs224/models/Qwen3.5-4B",
+        "parent": null,
+        "max_model_len": 8192,
+        "permission": [
+          {
+            "id": "modelperm-83789487aa29510d",
+            "object": "model_permission",
+            "created": 1795475403,
+            "allow_create_engine": false,
+            "allow_sampling": true,
+            "allow_logprobs": true,
+            "allow_search_indices": false,
+            "allow_view": true,
+            "allow_fine_tuning": false,
+            "organization": "*",
+            "group": null,
+            "is_blocking": false
+          }
+        ]
+      }
+    ]
+  },
+  "client": {
+    "provider": "qwen",
+    "base_url": "http://10.15.89.184:8001/v1",
+    "model": "qwen3.5-4b",
+    "temperature": 0,
+    "extra_body": {
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      }
+    },
+    "response_format": null,
+    "retry": {
+      "max_attempts": 5,
+      "base_seconds": 2.0,
+      "cap_seconds": 60.0,
+      "timeout_seconds": 180.0
+    }
+  },
+  "max_tokens": 512,
+  "prompt_hash": "00a81aa6fe372e612d3ea9430b11a7087b6c569a2ed8b0ecacf89958045365e6",
+  "prompt_files": {
+    "l4_system.txt": "a36fe149d2833dd956d1c20af318332fb613ca953c85e0d9ec157c2221fac50d",
+    "l4_user.txt": "9229415871e105b7280cf2f774b88e1a448e32084bfbe7b2b39af515b96f787b"
+  },
+  "l2_examples_excluded": [
+    "CWE401_Memory_Leak__int_malloc_73__bad",
+    "CWE401_Memory_Leak__int_malloc_73__good",
+    "CWE401_Memory_Leak__new_int_41__bad",
+    "CWE401_Memory_Leak__new_int_41__good",
+    "CWE401_Memory_Leak__new_int_65__bad",
+    "CWE401_Memory_Leak__new_int_65__good",
+    "CWE401_Memory_Leak__strdup_char_18__bad",
+    "CWE401_Memory_Leak__strdup_char_18__good"
+  ],
+  "l2_examples_json_sha256": "59a9b069308b682a0dd51d859d686ddf13f97bf558cc1c2a2ac7b785f16b9d10",
+  "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+  "units_sha256": "033945a8799a51e5881c9cb4a209d0348b857d8bbf0b869b1f112c043bc65111",
+  "selection": {
+    "limit": null,
+    "unit_ids_file": null
+  },
+  "evidence_file": null,
+  "evidence_sha256": null,
+  "evidence_frozen": null,
+  "start_utc": "2026-11-23T23:10:02Z",
+  "end_utc": "2026-11-23T23:34:21Z",
+  "wall_s": 1458.25,
+  "host": "barton-OptiPlex-5000",
+  "concurrency": 16,
+  "warmup_wait_s": 5.0,
+  "loadavg_start": [
+    1.84423828125,
+    1.9052734375,
+    1.837890625
+  ],
+  "loadavg_end": [
+    1.55517578125,
+    1.60595703125,
+    1.7197265625
+  ],
+  "git_head": "1b1ab87f0c20a948f8b594146b0174f9f9655d9c",
+  "usage_totals": {
+    "calls": 2656,
+    "prompt_tokens": 3581636,
+    "cache_hit_tokens": 0,
+    "cache_miss_tokens": 0,
+    "completion_tokens": 281706,
+    "input_tokens": 0,
+    "peak_calls": 0
+  },
+  "cost_total": 0.0,
+  "cost_currency": null,
+  "cost_per_call": 0.0,
+  "prices": null,
+  "peak_pause_s": null,
+  "balance_before": null,
+  "balance_after": null,
+  "ledger_total_after": null,
+  "souffle": "2.5",
+  "raw_log": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/llm/raw_logs/qwen3_5_4b/layer3/l3_eval_L4_r1.jsonl"
+}
