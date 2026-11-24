@@ -1,0 +1,536 @@
+{
+ "layer": "placebo",
+ "sets": {
+  "dev": {
+   "f1_1": 1.0,
+   "f1_0": 1.0,
+   "macro_f1": 1.0,
+   "n": 660,
+   "errors": 0
+  },
+  "eval": {
+   "f1_1": 0.9910447761194029,
+   "f1_0": 0.9908814589665653,
+   "macro_f1": 0.990963117542984,
+   "n": 2656,
+   "errors": 24
+  }
+ },
+ "failures": [
+  {
+   "unit_id": "CWE401_Memory_Leak__char_malloc_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "c_alloc",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s04",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__int64_t_calloc_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "c_alloc",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__int64_t_malloc_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "c_alloc",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__int64_t_realloc_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "c_alloc",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__int_malloc_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "c_alloc",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__malloc_realloc_char_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "realloc_fail",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s10",
+     "never_freed"
+    ],
+    [
+     "s04",
+     "never_freed"
+    ],
+    [
+     "s14",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__malloc_realloc_int64_t_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "realloc_fail",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s09",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ],
+    [
+     "s12",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__malloc_realloc_int_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "realloc_fail",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s08",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ],
+    [
+     "s11",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "realloc_fail",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s08",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ],
+    [
+     "s11",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "realloc_fail",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s08",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ],
+    [
+     "s11",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__malloc_realloc_wchar_t_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "realloc_fail",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s11",
+     "never_freed"
+    ],
+    [
+     "s04",
+     "never_freed"
+    ],
+    [
+     "s15",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__new_array_char_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "cpp_new",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__new_array_int64_t_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "cpp_new",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s02",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__new_array_int_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "cpp_new",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s02",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__new_array_twointsStruct_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "cpp_new",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s02",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__new_char_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "cpp_new",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s02",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__new_int64_t_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "cpp_new",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s02",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__new_int_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "cpp_new",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s02",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__new_struct_twoIntsStruct_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "cpp_new",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s02",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__new_wchar_t_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "cpp_new",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s02",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__strdup_char_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "c_alloc",
+   "leaks": [
+    [
+     "s01",
+     "never_freed"
+    ],
+    [
+     "s04",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__strdup_wchar_t_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "c_alloc",
+   "leaks": [
+    [
+     "s01",
+     "never_freed"
+    ],
+    [
+     "s04",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__struct_twoIntsStruct_malloc_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "c_alloc",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ]
+   ]
+  },
+  {
+   "unit_id": "CWE401_Memory_Leak__twoIntsStruct_calloc_12__good",
+   "set": "eval",
+   "label": 0,
+   "pred": 1,
+   "variant": "12",
+   "flow_category": "02-22",
+   "mechanism": "c_alloc",
+   "leaks": [
+    [
+     "s00",
+     "never_freed"
+    ],
+    [
+     "s03",
+     "never_freed"
+    ]
+   ]
+  }
+ ],
+ "parser_recall": {
+  "trace_alloc_lines": 2910,
+  "missed": 0,
+  "recall": 1.0,
+  "missed_units": []
+ },
+ "failure_summary": {
+  "eval/label0/v12/c_alloc": 9,
+  "eval/label0/v12/realloc_fail": 6,
+  "eval/label0/v12/cpp_new": 9
+ }
+}

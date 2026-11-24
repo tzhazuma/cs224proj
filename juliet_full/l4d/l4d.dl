@@ -1,0 +1,36 @@
+// L4-D rules v1 (contract l4d/README.md section 3). Facts come from the Yes/No answers (p_yes >= tau);
+// alloc / realloc site lists come from the lexical parser. Every relation carries the unit id, so one Souffle run
+// can derive many units.
+//   freed(a)  :- rel(f, a), exec_all(f).
+//   leak(a)   :- heap(a), exec_any(a), !freed(a).
+//   leak(a)   :- realloc(a), exec_any(a), !realloc_safe(a).
+//   unit_leak :- leak(_).
+// A realloc result is a heap block (heap(r) :- realloc(r)); the heap question is asked only for alloc sites.
+
+.type Unit <: symbol
+.type Site <: symbol
+
+.decl unit(u: Unit)
+.decl alloc(u: Unit, a: Site)
+.decl realloc(u: Unit, r: Site)
+.decl heap(u: Unit, a: Site)
+.decl exec_any(u: Unit, s: Site)
+.decl exec_all(u: Unit, s: Site)
+.decl rel(u: Unit, f: Site, a: Site)
+.decl realloc_safe(u: Unit, r: Site)
+.input unit, alloc, realloc, heap, exec_any, exec_all, rel, realloc_safe
+
+.decl heap_block(u: Unit, a: Site)
+heap_block(u, a) :- alloc(u, a), heap(u, a).
+heap_block(u, r) :- realloc(u, r).
+
+.decl freed(u: Unit, a: Site)
+freed(u, a) :- rel(u, f, a), exec_all(u, f).
+
+.decl leak(u: Unit, a: Site, reason: symbol)
+leak(u, a, "never_freed") :- heap_block(u, a), exec_any(u, a), !freed(u, a).
+leak(u, r, "realloc_fail") :- realloc(u, r), exec_any(u, r), !realloc_safe(u, r).
+
+.decl unit_leak(u: Unit)
+unit_leak(u) :- leak(u, _, _).
+.output leak, unit_leak
