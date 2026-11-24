@@ -1,0 +1,161 @@
+{
+ "method": "qwen_readout_l4d",
+ "layer": "placebo",
+ "answers": "l4d_ft/results/qwen_readout_l4d/placebo/eval_r1.jsonl",
+ "score_facts": {
+  "tau": 0.5,
+  "answers": [
+   "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/l4d_ft/results/qwen_readout_l4d/placebo/eval_r1.jsonl"
+  ],
+  "questions": [
+   "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/l4d/build/questions_placebo.jsonl"
+  ],
+  "n_answers_unknown_qid": 0,
+  "rows": [
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "placebo",
+    "set": "eval",
+    "qtype": "all",
+    "n": 33838,
+    "n_yes": 22349,
+    "n_gold_null": 20,
+    "n_unanswered": 0,
+    "accuracy": 0.5632720609965128,
+    "auroc": 0.8120839680040548,
+    "majority_baseline": 0.6604704769785449
+   },
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "placebo",
+    "set": "eval",
+    "qtype": "exec_all",
+    "n": 14703,
+    "n_yes": 9180,
+    "n_gold_null": 0,
+    "n_unanswered": 0,
+    "accuracy": 0.46344283479561993,
+    "auroc": 0.859843950254373,
+    "majority_baseline": 0.624362375025505
+   },
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "placebo",
+    "set": "eval",
+    "qtype": "exec_any",
+    "n": 14703,
+    "n_yes": 9704,
+    "n_gold_null": 0,
+    "n_unanswered": 0,
+    "accuracy": 0.6103516289192682,
+    "auroc": 0.7884661330452405,
+    "majority_baseline": 0.6600013602666123
+   },
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "placebo",
+    "set": "eval",
+    "qtype": "heap",
+    "n": 2267,
+    "n_yes": 1845,
+    "n_gold_null": 0,
+    "n_unanswered": 0,
+    "accuracy": 0.9995588883987648,
+    "auroc": 1.0,
+    "majority_baseline": 0.8138509042787825
+   },
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "placebo",
+    "set": "eval",
+    "qtype": "realloc_safe",
+    "n": 523,
+    "n_yes": 439,
+    "n_gold_null": 1,
+    "n_unanswered": 0,
+    "accuracy": 0.17590822179732313,
+    "auroc": 0.9603536175290162,
+    "majority_baseline": 0.8393881453154876
+   },
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "placebo",
+    "set": "eval",
+    "qtype": "rel",
+    "n": 1642,
+    "n_yes": 1181,
+    "n_gold_null": 19,
+    "n_unanswered": 0,
+    "accuracy": 0.5566382460414129,
+    "auroc": 0.6874243490111877,
+    "majority_baseline": 0.7192448233861145
+   }
+  ]
+ },
+ "score_facts_table": "model                    layer     set  qtype             n    yes    acc  auroc    maj  unans\nqwen3.5-4b-readout       placebo   eval all           33838  22349  0.563  0.812  0.660      0\nqwen3.5-4b-readout       placebo   eval exec_all      14703   9180  0.463  0.860  0.624      0\nqwen3.5-4b-readout       placebo   eval exec_any      14703   9704  0.610  0.788  0.660      0\nqwen3.5-4b-readout       placebo   eval heap           2267   1845  1.000  1.000  0.814      0\nqwen3.5-4b-readout       placebo   eval realloc_safe    523    439  0.176  0.960  0.839      0\nqwen3.5-4b-readout       placebo   eval rel            1642   1181  0.557  0.687  0.719      0\n",
+ "pooled_tau_0.5": {
+  "all": {
+   "n": 33838,
+   "n_yes": 22349,
+   "accuracy": 0.5632720609965128,
+   "auroc": 0.8120839680040548
+  },
+  "exec_all": {
+   "n": 14703,
+   "n_yes": 9180,
+   "accuracy": 0.46344283479561993,
+   "auroc": 0.859843950254373
+  },
+  "exec_any": {
+   "n": 14703,
+   "n_yes": 9704,
+   "accuracy": 0.6103516289192682,
+   "auroc": 0.7884661330452405
+  },
+  "heap": {
+   "n": 2267,
+   "n_yes": 1845,
+   "accuracy": 0.9995588883987648,
+   "auroc": 1.0
+  },
+  "realloc_safe": {
+   "n": 523,
+   "n_yes": 439,
+   "accuracy": 0.17590822179732313,
+   "auroc": 0.9603536175290162
+  },
+  "rel": {
+   "n": 1642,
+   "n_yes": 1181,
+   "accuracy": 0.5566382460414129,
+   "auroc": 0.6874243490111877
+  }
+ },
+ "splits_tau_0.5": {
+  "exec_any/null_check_target": {
+   "n": 1243,
+   "n_yes": 0,
+   "accuracy": 0.831858407079646,
+   "auroc": null
+  },
+  "exec_any/other": {
+   "n": 13460,
+   "n_yes": 9704,
+   "accuracy": 0.5898959881129272,
+   "auroc": 0.8253346445632028
+  },
+  "rel/cross_function": {
+   "n": 431,
+   "n_yes": 344,
+   "accuracy": 0.8213457076566125,
+   "auroc": 0.9744052392408447
+  },
+  "rel/same_function": {
+   "n": 1211,
+   "n_yes": 837,
+   "accuracy": 0.4624277456647399,
+   "auroc": 0.5922635590567279
+  }
+ },
+ "utc": "2026-11-24T15:19:57Z"
+}

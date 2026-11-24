@@ -1,0 +1,124 @@
+{
+ "method": "qwen_readout_l4d",
+ "strategy": "L4D",
+ "layer": "placebo",
+ "run_id": "eval_r1",
+ "n_units": 2656,
+ "n_questions": 33858,
+ "questions": "l4d/build/questions_placebo.jsonl",
+ "questions_sha256": "b0e816e5ef206b42bb5fae0647871c84a370e1836fc497de6b87c14d87721d89",
+ "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+ "rules_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+ "frozen_sha256": "8019da174a526de2632da72fbf0e552c2ec86c81bc04f1ac3a1184e5bf8edd1b",
+ "frozen_common": {
+  "l4d_templates_sha256": "316429b266c0258383724c8c9129e2ea17946a9013d72cb61b267261ef827516",
+  "l4d_templates_py_sha256": "678d7c743c63b3e8d96005def26f10a2c0b3f9fef48dccc09189635ae76a56f1",
+  "prompt_template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+  "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+  "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+  "rules_l4d_dl_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+  "questions_layer1": "l4d/build/questions_layer1.jsonl",
+  "questions_layer1_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+  "rendered_q_layer1_sha256": "06193a97bac8cb72cced60025bc994396926f6e65a3056d73403e9f6db1106bf"
+ },
+ "tau": {
+  "None": 0.268941
+ },
+ "start_utc": "2026-11-24T14:30:10Z",
+ "end_utc": "2026-11-24T15:16:58Z",
+ "concurrency": 1,
+ "batching": "all questions of one unit in one forward batch, units sequential",
+ "latency_note": "latency_s = unit_forward_s (server-side model time, one RTX 3090) + derive_s; end-to-end client latency is in the latency run",
+ "question_files": [
+  {
+   "fold": null,
+   "file": "eval_r1.jsonl",
+   "sha256": "6aa248dc3d00ccff9d114ba49435ccc95cb860fec6f66caedca134ed49e2dd74",
+   "model": "qwen3.5-4b-readout",
+   "checkpoint": null,
+   "merged": null,
+   "freeze_guard": "readout",
+   "frozen_utc": "2026-11-24T08:07:18Z",
+   "start_utc": "2026-11-24T14:30:10Z",
+   "end_utc": "2026-11-24T15:16:58Z",
+   "host": "Toast-184",
+   "cuda_visible_devices": "0",
+   "loadavg_start": [
+    4.16357421875,
+    2.611328125,
+    2.2275390625
+   ],
+   "loadavg_end": [
+    1.42041015625,
+    1.43603515625,
+    1.42919921875
+   ],
+   "unit_forward_s_median": 0.892814711201936,
+   "unit_forward_s_p90": 1.8352252873592079,
+   "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+   },
+   "template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+   "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+   "question_metrics": {
+    "all": {
+     "n": 33838,
+     "n_yes": 22349,
+     "auroc": 0.8120839680040548,
+     "acc_at_0": 0.5632720609965128
+    },
+    "heap": {
+     "n": 2267,
+     "n_yes": 1845,
+     "auroc": 1.0,
+     "acc_at_0": 0.9995588883987648
+    },
+    "exec_any": {
+     "n": 14703,
+     "n_yes": 9704,
+     "auroc": 0.7884661330452405,
+     "acc_at_0": 0.6103516289192682
+    },
+    "exec_all": {
+     "n": 14703,
+     "n_yes": 9180,
+     "auroc": 0.859843950254373,
+     "acc_at_0": 0.46344283479561993
+    },
+    "rel": {
+     "n": 1642,
+     "n_yes": 1181,
+     "auroc": 0.6874243490111877,
+     "acc_at_0": 0.5566382460414129
+    },
+    "realloc_safe": {
+     "n": 523,
+     "n_yes": 439,
+     "auroc": 0.9603536175290162,
+     "acc_at_0": 0.17590822179732313
+    }
+   }
+  }
+ ],
+ "derive": [
+  {
+   "fold": null,
+   "tau": 0.268941,
+   "stderr": "souffle: 2656 units in 0.04s, 0 differ from the Python evaluator []\n2656 units -> /tmp/l4dft_agg_jpr7hl_6/u.jsonl; derive median 0.009 ms, max 22.229 ms"
+  }
+ ],
+ "aggregated_utc": "2026-11-24T15:19:55Z",
+ "answers_sha256": "6aa248dc3d00ccff9d114ba49435ccc95cb860fec6f66caedca134ed49e2dd74",
+ "units_sha256": "d84ca9562839c82c8b07d10ef41dbc7ea1a8d035490c78f79e9f96588ad1ca5f"
+}

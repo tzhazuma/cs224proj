@@ -1,0 +1,530 @@
+{
+ "method": "lora_l4d_opt",
+ "layer": "layer3",
+ "run_id": "eval_r1",
+ "pred_file": "l4d_ft/results/lora_l4d_opt/layer3/eval_r1_units.jsonl",
+ "pred_sha256": "3409d5cc8103f69f864adb480857b00a31e0b6a50aed62306d269b291c9ca9ea",
+ "all_eval": {
+  "n": 2656,
+  "macro_f1": 0.826428729894227,
+  "ci95_macro_f1": [
+   0.8108311676801839,
+   0.8425516447900777
+  ],
+  "precision_leak": 0.8286580742987112,
+  "recall_leak": 0.8230421686746988,
+  "specificity": 0.8298192771084337,
+  "invalid": 0,
+  "missing": 0,
+  "latency_median_s": null,
+  "latency_p90_s": null
+ },
+ "ref_units": {
+  "n": 664,
+  "which": "nested25 eval",
+  "macro_f1": 0.8313115274690379,
+  "ci95_macro_f1": [
+   0.7980864663850382,
+   0.8623393819006339
+  ],
+  "precision_leak": 0.8254437869822485,
+  "recall_leak": 0.8403614457831325,
+  "specificity": 0.822289156626506,
+  "invalid": 0,
+  "missing": 0,
+  "latency_median_s": null,
+  "latency_p90_s": null
+ },
+ "per_fold": {
+  "0": {
+   "n": 944,
+   "macro_f1": 0.8155587495508444
+  },
+  "1": {
+   "n": 848,
+   "macro_f1": 0.7925907387077875
+  },
+  "2": {
+   "n": 864,
+   "macro_f1": 0.865337935913543
+  }
+ },
+ "deepseek": {
+  "L1": {
+   "file": "llm/results/deepseek_flash/layer3/l3_n25_L1_r1.jsonl",
+   "n": 664,
+   "macro_f1": 0.880796718591994,
+   "ci95_macro_f1": [
+    0.8519514495745916,
+    0.9057404710462483
+   ],
+   "precision_leak": 0.850415512465374,
+   "recall_leak": 0.9246987951807228,
+   "specificity": 0.8373493975903614,
+   "invalid": 0,
+   "missing": 0,
+   "latency_median_s": 0.7058,
+   "latency_p90_s": 1.04916,
+   "paired_delta_model_minus_ref": {
+    "delta_macro_f1": -0.04948519112295613,
+    "ci95": [
+     -0.08517261019978505,
+     -0.01630937544651373
+    ],
+    "iterations": 2000,
+    "valid_iterations": 2000,
+    "seed": 20261123,
+    "clusters": "family",
+    "n_clusters": 40,
+    "n_units": 664
+   }
+  },
+  "L2": {
+   "file": "llm/results/deepseek_flash/layer3/l3_n25_L2_r1.jsonl",
+   "n": 664,
+   "macro_f1": 0.886696380427141,
+   "ci95_macro_f1": [
+    0.8573540744786865,
+    0.9115240377031875
+   ],
+   "precision_leak": 0.8482384823848238,
+   "recall_leak": 0.9427710843373494,
+   "specificity": 0.8313253012048193,
+   "invalid": 0,
+   "missing": 0,
+   "latency_median_s": 0.7008,
+   "latency_p90_s": 1.08965,
+   "paired_delta_model_minus_ref": {
+    "delta_macro_f1": -0.05538485295810314,
+    "ci95": [
+     -0.09055744308172112,
+     -0.0202321403599695
+    ],
+    "iterations": 2000,
+    "valid_iterations": 2000,
+    "seed": 20261123,
+    "clusters": "family",
+    "n_clusters": 40,
+    "n_units": 664
+   }
+  },
+  "L3": {
+   "file": "llm/results/deepseek_flash/layer3/l3_n25_L3_r1.jsonl",
+   "n": 664,
+   "macro_f1": 0.8895972412976287,
+   "ci95_macro_f1": [
+    0.8633308293318223,
+    0.9146327731304655
+   ],
+   "precision_leak": 0.8453333333333334,
+   "recall_leak": 0.9548192771084337,
+   "specificity": 0.8253012048192772,
+   "invalid": 0,
+   "missing": 0,
+   "latency_median_s": 0.70555,
+   "latency_p90_s": 1.0607200000000003,
+   "paired_delta_model_minus_ref": {
+    "delta_macro_f1": -0.058285713828590824,
+    "ci95": [
+     -0.09290505018757353,
+     -0.02436012790933577
+    ],
+    "iterations": 2000,
+    "valid_iterations": 2000,
+    "seed": 20261123,
+    "clusters": "family",
+    "n_clusters": 40,
+    "n_units": 664
+   }
+  },
+  "L4": {
+   "file": "llm/results/deepseek_flash/layer3/l3_n25_L4_r1.jsonl",
+   "n": 664,
+   "macro_f1": 0.8945543970453452,
+   "ci95_macro_f1": [
+    0.8647630600970794,
+    0.9239748742212217
+   ],
+   "precision_leak": 0.906832298136646,
+   "recall_leak": 0.8795180722891566,
+   "specificity": 0.9096385542168675,
+   "invalid": 0,
+   "missing": 0,
+   "latency_median_s": 0.9744999999999999,
+   "latency_p90_s": 1.3455400000000002,
+   "paired_delta_model_minus_ref": {
+    "delta_macro_f1": -0.06324286957630731,
+    "ci95": [
+     -0.10530785627058684,
+     -0.022980687180360837
+    ],
+    "iterations": 2000,
+    "valid_iterations": 2000,
+    "seed": 20261123,
+    "clusters": "family",
+    "n_clusters": 40,
+    "n_units": 664
+   }
+  }
+ },
+ "deepseek_best_strategy": "L4",
+ "criteria": {
+  "near_llm": {
+   "rule": "macro-F1 >= ref L1 - 0.02 (same units)",
+   "value": 0.8313115274690379,
+   "threshold": 0.860796718591994,
+   "pass": false
+  },
+  "equivalent_within_2pt": {
+   "rule": "lower 95% family-cluster paired bootstrap bound of delta >= -0.02",
+   "value": -0.08517261019978505,
+   "pass": false
+  },
+  "speed": {
+   "rule": "e2e c1 median <= 0.36 s on layer1 latency300 (latency run; not decided here)"
+  }
+ },
+ "score_py_all_eval": {
+  "methods": [
+   "lora_l4d_opt"
+  ],
+  "n_units": 2656,
+  "n_pred_lines": 2656,
+  "duplicate_pred_lines": 0,
+  "missing": 0,
+  "extra_pred_lines": 0,
+  "status_counts": {
+   "ok": 2656
+  },
+  "end_to_end": {
+   "n": 2656,
+   "tp": 1093,
+   "fp": 226,
+   "tn": 1102,
+   "fn": 235,
+   "invalid": 0,
+   "coverage": 1.0,
+   "precision_leak": 0.8286580742987112,
+   "recall_leak": 0.8230421686746988,
+   "f1_leak": 0.825840574234983,
+   "specificity": 0.8298192771084337,
+   "f1_noleak": 0.8270168855534709,
+   "macro_f1": 0.826428729894227,
+   "mcc": 0.6528764390011452,
+   "accuracy": 0.8264307228915663
+  },
+  "valid_only": {
+   "n": 2656,
+   "tp": 1093,
+   "fp": 226,
+   "tn": 1102,
+   "fn": 235,
+   "invalid": 0,
+   "coverage": 1.0,
+   "precision_leak": 0.8286580742987112,
+   "recall_leak": 0.8230421686746988,
+   "f1_leak": 0.825840574234983,
+   "specificity": 0.8298192771084337,
+   "f1_noleak": 0.8270168855534709,
+   "macro_f1": 0.826428729894227,
+   "mcc": 0.6528764390011452,
+   "accuracy": 0.8264307228915663
+  },
+  "latency": {
+   "n": 0,
+   "median_s": null,
+   "p90_s": null,
+   "mean_s": null,
+   "total_s": null
+  },
+  "by_flow_category": {
+   "01": {
+    "n": 84,
+    "tp": 39,
+    "fp": 8,
+    "tn": 34,
+    "fn": 3,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.8297872340425532,
+    "recall_leak": 0.9285714285714286,
+    "f1_leak": 0.8764044943820225,
+    "specificity": 0.8095238095238095,
+    "f1_noleak": 0.860759493670886,
+    "macro_f1": 0.8685819940264543,
+    "mcc": 0.7433817634523109,
+    "accuracy": 0.8690476190476191
+   },
+   "02-22": {
+    "n": 1176,
+    "tp": 486,
+    "fp": 106,
+    "tn": 482,
+    "fn": 102,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.8209459459459459,
+    "recall_leak": 0.826530612244898,
+    "f1_leak": 0.823728813559322,
+    "specificity": 0.8197278911564626,
+    "f1_noleak": 0.8225255972696245,
+    "macro_f1": 0.8231272054144733,
+    "mcc": 0.6462734573773532,
+    "accuracy": 0.8231292517006803
+   },
+   "31-45": {
+    "n": 420,
+    "tp": 171,
+    "fp": 27,
+    "tn": 183,
+    "fn": 39,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.8636363636363636,
+    "recall_leak": 0.8142857142857143,
+    "f1_leak": 0.8382352941176471,
+    "specificity": 0.8714285714285714,
+    "f1_noleak": 0.8472222222222222,
+    "macro_f1": 0.8427287581699346,
+    "mcc": 0.686836568438571,
+    "accuracy": 0.8428571428571429
+   },
+   "51-68": {
+    "n": 624,
+    "tp": 262,
+    "fp": 45,
+    "tn": 267,
+    "fn": 50,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.8534201954397395,
+    "recall_leak": 0.8397435897435898,
+    "f1_leak": 0.8465266558966075,
+    "specificity": 0.8557692307692307,
+    "f1_noleak": 0.848966613672496,
+    "macro_f1": 0.8477466347845517,
+    "mcc": 0.6956021489275153,
+    "accuracy": 0.8477564102564102
+   },
+   "71-84": {
+    "n": 352,
+    "tp": 135,
+    "fp": 40,
+    "tn": 136,
+    "fn": 41,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.7714285714285715,
+    "recall_leak": 0.7670454545454546,
+    "f1_leak": 0.7692307692307693,
+    "specificity": 0.7727272727272727,
+    "f1_noleak": 0.7705382436260623,
+    "macro_f1": 0.7698845064284158,
+    "mcc": 0.5397814402407793,
+    "accuracy": 0.7698863636363636
+   }
+  },
+  "by_mechanism": {
+   "c_alloc": {
+    "n": 1560,
+    "tp": 631,
+    "fp": 135,
+    "tn": 645,
+    "fn": 149,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.8237597911227154,
+    "recall_leak": 0.808974358974359,
+    "f1_leak": 0.816300129366106,
+    "specificity": 0.8269230769230769,
+    "f1_noleak": 0.8195679796696315,
+    "macro_f1": 0.8179340545178687,
+    "mcc": 0.6359998898912876,
+    "accuracy": 0.8179487179487179
+   },
+   "cpp_new": {
+    "n": 924,
+    "tp": 382,
+    "fp": 53,
+    "tn": 409,
+    "fn": 80,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.8781609195402299,
+    "recall_leak": 0.8268398268398268,
+    "f1_leak": 0.8517279821627648,
+    "specificity": 0.8852813852813853,
+    "f1_noleak": 0.8601472134595163,
+    "macro_f1": 0.8559375978111405,
+    "mcc": 0.7133404311194449,
+    "accuracy": 0.8560606060606061
+   },
+   "destructor": {
+    "n": 4,
+    "tp": 1,
+    "fp": 2,
+    "tn": 0,
+    "fn": 1,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.3333333333333333,
+    "recall_leak": 0.5,
+    "f1_leak": 0.4,
+    "specificity": 0.0,
+    "f1_noleak": 0.0,
+    "macro_f1": 0.2,
+    "mcc": -0.5773502691896258,
+    "accuracy": 0.25
+   },
+   "realloc_fail": {
+    "n": 168,
+    "tp": 79,
+    "fp": 36,
+    "tn": 48,
+    "fn": 5,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.6869565217391305,
+    "recall_leak": 0.9404761904761905,
+    "f1_leak": 0.7939698492462313,
+    "specificity": 0.5714285714285714,
+    "f1_noleak": 0.7007299270072993,
+    "macro_f1": 0.7473498881267653,
+    "mcc": 0.5507843612824406,
+    "accuracy": 0.7559523809523809
+   }
+  },
+  "by_good_kind": {
+   "B2G": {
+    "n": 621,
+    "tp": 0,
+    "fp": 177,
+    "tn": 444,
+    "fn": 0,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.0,
+    "recall_leak": null,
+    "f1_leak": null,
+    "specificity": 0.714975845410628,
+    "f1_noleak": 0.8338028169014083,
+    "macro_f1": null,
+    "mcc": 0.0,
+    "accuracy": 0.714975845410628
+   },
+   "G2B": {
+    "n": 621,
+    "tp": 0,
+    "fp": 11,
+    "tn": 610,
+    "fn": 0,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.0,
+    "recall_leak": null,
+    "f1_leak": null,
+    "specificity": 0.9822866344605475,
+    "f1_noleak": 0.9910641754671,
+    "macro_f1": null,
+    "mcc": 0.0,
+    "accuracy": 0.9822866344605475
+   },
+   "other": {
+    "n": 86,
+    "tp": 0,
+    "fp": 38,
+    "tn": 48,
+    "fn": 0,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.0,
+    "recall_leak": null,
+    "f1_leak": null,
+    "specificity": 0.5581395348837209,
+    "f1_noleak": 0.7164179104477612,
+    "macro_f1": null,
+    "mcc": 0.0,
+    "accuracy": 0.5581395348837209
+   }
+  },
+  "by_label": {
+   "bad": {
+    "n": 1328,
+    "tp": 1093,
+    "fp": 0,
+    "tn": 0,
+    "fn": 235,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 1.0,
+    "recall_leak": 0.8230421686746988,
+    "f1_leak": 0.9029326724494011,
+    "specificity": null,
+    "f1_noleak": null,
+    "macro_f1": null,
+    "mcc": 0.0,
+    "accuracy": 0.8230421686746988
+   },
+   "good": {
+    "n": 1328,
+    "tp": 0,
+    "fp": 226,
+    "tn": 1102,
+    "fn": 0,
+    "invalid": 0,
+    "coverage": 1.0,
+    "precision_leak": 0.0,
+    "recall_leak": null,
+    "f1_leak": null,
+    "specificity": 0.8298192771084337,
+    "f1_noleak": 0.9069958847736626,
+    "macro_f1": null,
+    "mcc": 0.0,
+    "accuracy": 0.8298192771084337
+   }
+  },
+  "bootstrap": {
+   "iterations": 2000,
+   "seed": 20261126,
+   "clusters": "family",
+   "n_clusters": 42,
+   "ci95": {
+    "macro_f1": [
+     0.8108311676801839,
+     0.8425516447900777
+    ],
+    "f1_leak": [
+     0.8103854788092772,
+     0.8421456012634363
+    ],
+    "precision_leak": [
+     0.8086795531772296,
+     0.8486480046425826
+    ],
+    "recall_leak": [
+     0.8033076234144474,
+     0.8430018335668361
+    ],
+    "specificity": [
+     0.8048352459873477,
+     0.8528681808654561
+    ],
+    "mcc": [
+     0.6217394602647772,
+     0.6852068885019779
+    ],
+    "accuracy": [
+     0.8108567688105965,
+     0.8425596073183542
+    ]
+   }
+  },
+  "inputs": {
+   "pred": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/l4d_ft/results/lora_l4d_opt/layer3/eval_r1_units.jsonl",
+   "units": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+   "set": "eval",
+   "subset": null
+  }
+ },
+ "scored_utc": "2026-11-24T13:48:27Z"
+}

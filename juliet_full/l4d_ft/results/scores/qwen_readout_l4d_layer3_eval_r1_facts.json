@@ -1,0 +1,161 @@
+{
+ "method": "qwen_readout_l4d",
+ "layer": "layer3",
+ "answers": "l4d_ft/results/qwen_readout_l4d/layer3/eval_r1.jsonl",
+ "score_facts": {
+  "tau": 0.5,
+  "answers": [
+   "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/l4d_ft/results/qwen_readout_l4d/layer3/eval_r1.jsonl"
+  ],
+  "questions": [
+   "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/l4d/build/questions_layer3.jsonl"
+  ],
+  "n_answers_unknown_qid": 0,
+  "rows": [
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "layer3",
+    "set": "eval",
+    "qtype": "all",
+    "n": 33838,
+    "n_yes": 22349,
+    "n_gold_null": 3538,
+    "n_unanswered": 0,
+    "accuracy": 0.5665819492877829,
+    "auroc": 0.8199413282033208,
+    "majority_baseline": 0.6604704769785449
+   },
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "layer3",
+    "set": "eval",
+    "qtype": "exec_all",
+    "n": 14703,
+    "n_yes": 9180,
+    "n_gold_null": 0,
+    "n_unanswered": 0,
+    "accuracy": 0.48418690063252395,
+    "auroc": 0.8402327541353114,
+    "majority_baseline": 0.624362375025505
+   },
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "layer3",
+    "set": "eval",
+    "qtype": "exec_any",
+    "n": 14703,
+    "n_yes": 9704,
+    "n_gold_null": 0,
+    "n_unanswered": 0,
+    "accuracy": 0.603278242535537,
+    "auroc": 0.8036228535896792,
+    "majority_baseline": 0.6600013602666123
+   },
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "layer3",
+    "set": "eval",
+    "qtype": "heap",
+    "n": 2267,
+    "n_yes": 1845,
+    "n_gold_null": 0,
+    "n_unanswered": 0,
+    "accuracy": 0.9995588883987648,
+    "auroc": 1.0,
+    "majority_baseline": 0.8138509042787825
+   },
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "layer3",
+    "set": "eval",
+    "qtype": "realloc_safe",
+    "n": 523,
+    "n_yes": 439,
+    "n_gold_null": 1,
+    "n_unanswered": 0,
+    "accuracy": 0.1835564053537285,
+    "auroc": 0.8607224210868858,
+    "majority_baseline": 0.8393881453154876
+   },
+   {
+    "model": "qwen3.5-4b-readout",
+    "layer": "layer3",
+    "set": "eval",
+    "qtype": "rel",
+    "n": 1642,
+    "n_yes": 1181,
+    "n_gold_null": 3537,
+    "n_unanswered": 0,
+    "accuracy": 0.5,
+    "auroc": 0.7759683785754563,
+    "majority_baseline": 0.7192448233861145
+   }
+  ]
+ },
+ "score_facts_table": "model                    layer     set  qtype             n    yes    acc  auroc    maj  unans\nqwen3.5-4b-readout       layer3    eval all           33838  22349  0.567  0.820  0.660      0\nqwen3.5-4b-readout       layer3    eval exec_all      14703   9180  0.484  0.840  0.624      0\nqwen3.5-4b-readout       layer3    eval exec_any      14703   9704  0.603  0.804  0.660      0\nqwen3.5-4b-readout       layer3    eval heap           2267   1845  1.000  1.000  0.814      0\nqwen3.5-4b-readout       layer3    eval realloc_safe    523    439  0.184  0.861  0.839      0\nqwen3.5-4b-readout       layer3    eval rel            1642   1181  0.500  0.776  0.719      0\n",
+ "pooled_tau_0.5": {
+  "all": {
+   "n": 33838,
+   "n_yes": 22349,
+   "accuracy": 0.5665819492877829,
+   "auroc": 0.8199413282033208
+  },
+  "exec_all": {
+   "n": 14703,
+   "n_yes": 9180,
+   "accuracy": 0.48418690063252395,
+   "auroc": 0.8402327541353114
+  },
+  "exec_any": {
+   "n": 14703,
+   "n_yes": 9704,
+   "accuracy": 0.603278242535537,
+   "auroc": 0.8036228535896792
+  },
+  "heap": {
+   "n": 2267,
+   "n_yes": 1845,
+   "accuracy": 0.9995588883987648,
+   "auroc": 1.0
+  },
+  "realloc_safe": {
+   "n": 523,
+   "n_yes": 439,
+   "accuracy": 0.1835564053537285,
+   "auroc": 0.8607224210868858
+  },
+  "rel": {
+   "n": 1642,
+   "n_yes": 1181,
+   "accuracy": 0.5,
+   "auroc": 0.7759683785754563
+  }
+ },
+ "splits_tau_0.5": {
+  "exec_any/null_check_target": {
+   "n": 1243,
+   "n_yes": 0,
+   "accuracy": 0.831053901850362,
+   "auroc": null
+  },
+  "exec_any/other": {
+   "n": 13460,
+   "n_yes": 9704,
+   "accuracy": 0.5822436849925706,
+   "auroc": 0.8466116209118996
+  },
+  "rel/cross_function": {
+   "n": 431,
+   "n_yes": 344,
+   "accuracy": 0.6635730858468677,
+   "auroc": 0.9786153434910452
+  },
+  "rel/same_function": {
+   "n": 1211,
+   "n_yes": 837,
+   "accuracy": 0.44178364987613544,
+   "auroc": 0.6999373877931753
+  }
+ },
+ "utc": "2026-11-24T15:19:54Z"
+}

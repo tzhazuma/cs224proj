@@ -6,13 +6,13 @@
       tau of each fold (readout: the frozen readout tau), results/<method>/<L>/<run>_units.jsonl + .meta.json.
       latency_s = model time of the unit (unit_forward_s: one forward batch of all its questions, server side)
                   + derive time; the end-to-end client latency is measured separately (latency.py).
-  aggregate.py score --method M --layer L [--run-id eval_r1]
+  aggregate.py score --method M --layer L [--run-id eval_r1]   (M also lora_l4d_opt: units from prune.py units)
       score.py report (set eval, family-cluster bootstrap) on all eval units and on the reference units, DeepSeek
       L1 reference + best DeepSeek strategy on the same units, paired family-cluster bootstrap of delta macro-F1
-      (2,000 resamples, seed 20261123), contract section 6 criteria -> build/scores/<M>_<L>_<run>.json
+      (2,000 resamples, seed 20261123), contract section 6 criteria -> results/scores/<M>_<L>_<run>.json
   aggregate.py facts --method M --layer L [--run-id eval_r1]
       score_facts.py table + exec_any without the masked NULL-check line + rel same- vs cross-function
-      -> build/scores/<M>_<L>_<run>_facts.json
+      -> results/scores/<M>_<L>_<run>_facts.json
 """
 
 from __future__ import annotations
@@ -212,6 +212,11 @@ def cmd_score(args) -> None:
         rep = score_mod.score(ref_units, read_jsonl(path), 2000, score_mod.BOOTSTRAP_SEED)
         refs[strat] = {"file": str(path.relative_to(JULIET_FULL)), **short(rep),
                        "paired_delta_model_minus_ref": paired_bootstrap(ref_units, mine, preds_of(path))}
+    eval_all = [u for u in all_units if u["set"] == "eval"]
+    per_fold = {}
+    for k in sorted({u["fold"] for u in eval_all}):
+        fu = [u for u in eval_all if u["fold"] == k]
+        per_fold[str(k)] = {"n": len(fu), "macro_f1": macro_from([(int(u["truth"]), mine.get(u["unit_id"])) for u in fu])}
     best = max(refs, key=lambda s: refs[s]["macro_f1"])
     ref = refs["L1"]
     lo = ref["paired_delta_model_minus_ref"]["ci95"][0]
@@ -227,9 +232,9 @@ def cmd_score(args) -> None:
            "pred_sha256": file_sha256(pred_file), "all_eval": short(full_report),
            "ref_units": {"n": len(ref_units), "which": "full eval" if args.layer == "layer1" else "nested25 eval",
                          **short(model_on_ref)},
-           "deepseek": refs, "deepseek_best_strategy": best, "criteria": criteria,
+           "per_fold": per_fold, "deepseek": refs, "deepseek_best_strategy": best, "criteria": criteria,
            "score_py_all_eval": full_report, "scored_utc": utc_now()}
-    dest = HERE / "build" / "scores" / f"{args.method}_{args.layer}_{args.run_id}.json"
+    dest = HERE / "results" / "scores" / f"{args.method}_{args.layer}_{args.run_id}.json"
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(json.dumps(out, indent=1) + "\n")
     print(json.dumps({k: out[k] for k in ("all_eval", "ref_units")}, indent=None))
@@ -251,19 +256,21 @@ def fact_rows(pairs: list[tuple[float, int]], tau: float) -> dict:
 def cmd_facts(args) -> None:
     ans_file = HERE / "results" / args.method / args.layer / f"{args.run_id}.jsonl"
     qfile = questions_path(args.layer)
-    dest = HERE / "build" / "scores" / f"{args.method}_{args.layer}_{args.run_id}_facts.json"
+    dest = HERE / "results" / "scores" / f"{args.method}_{args.layer}_{args.run_id}_facts.json"
     dest.parent.mkdir(parents=True, exist_ok=True)
-    table = HERE / "build" / "scores" / f"{args.method}_{args.layer}_{args.run_id}_score_facts.json"
+    table = HERE / "results" / "scores" / f"{args.method}_{args.layer}_{args.run_id}_score_facts.json"
     res = subprocess.run([str(L4D_PY), str(L4D_DIR / "score_facts.py"), "--answers", str(ans_file), "--questions",
                           str(qfile), "--tau", "0.5", "--out", str(table)], capture_output=True, text=True, check=True)
     p = {r["qid"]: r["p_yes"] for r in read_jsonl(ans_file)}
     funcs = {r["unit_id"]: {s["site_id"]: s["func"] for s in r["sites"]}
              for r in read_jsonl(L4D_DIR / "build" / f"sites_{args.layer}.jsonl")}
-    splits = defaultdict(list)
+    splits, pooled = defaultdict(list), defaultdict(list)  # pooled: all fold models together, per qtype
     for q in read_jsonl(qfile):
         if q["qid"] not in p or q["gold"] not in (0, 1):
             continue
         pair = (p[q["qid"]], q["gold"])
+        pooled["all"].append(pair)
+        pooled[q["qtype"]].append(pair)
         if q["qtype"] == "exec_any":
             target = q["state"].split("\n")[q["lines"][0] - 1]
             splits["exec_any/null_check_target" if NULL_CHECK_TARGET.search(target) else "exec_any/other"].append(pair)
@@ -273,6 +280,7 @@ def cmd_facts(args) -> None:
             splits["rel/same_function" if same else "rel/cross_function"].append(pair)
     out = {"method": args.method, "layer": args.layer, "answers": rel(ans_file),
            "score_facts": json.loads(table.read_text()), "score_facts_table": res.stdout,
+           "pooled_tau_0.5": {k: fact_rows(v, 0.5) for k, v in sorted(pooled.items())},
            "splits_tau_0.5": {k: fact_rows(v, 0.5) for k, v in sorted(splits.items())}, "utc": utc_now()}
     dest.write_text(json.dumps(out, indent=1) + "\n")
     print(res.stdout)
@@ -284,7 +292,8 @@ def main() -> None:
     sub = ap.add_subparsers(dest="cmd", required=True)
     for name in ("units", "score", "facts"):
         p = sub.add_parser(name)
-        p.add_argument("--method", choices=("lora_l4d", "qwen_readout_l4d"), required=True)
+        p.add_argument("--method", choices=("lora_l4d", "qwen_readout_l4d") if name != "score"
+                       else ("lora_l4d", "qwen_readout_l4d", "lora_l4d_opt"), required=True)
         p.add_argument("--layer", choices=("layer1", "layer3", "placebo", "original"), required=True)
         p.add_argument("--run-id", default="eval_r1")
     args = ap.parse_args()

@@ -1,0 +1,121 @@
+{
+ "method": "lora_l4d",
+ "strategy": "L4D",
+ "layer": "layer3",
+ "subset": "latency300",
+ "n_units": 300,
+ "pruned": false,
+ "n_units_without_model_call": 0,
+ "concurrency": 1,
+ "client_host": "barton-OptiPlex-5000",
+ "url": "http://10.15.89.184:8004",
+ "server_health": {
+  "ok": true,
+  "folds": [
+   0,
+   1,
+   2
+  ],
+  "active": 2,
+  "tau": {
+   "0": 0.817574,
+   "2": 0.5,
+   "1": 0.5
+  },
+  "started_utc": "2026-11-24T16:13:22Z",
+  "template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "gpu_mem_allocated_gb": 14.98,
+  "kernels": {
+   "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+   "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+  },
+  "pythonpath": "/home/zhangzx/disk4/cs224/venv/lib/python3.12/site-packages/tilelang/3rdparty/tvm/python"
+ },
+ "start_utc": "2026-11-24T16:28:11Z",
+ "end_utc": "2026-11-24T16:34:23Z",
+ "loadavg_start": [
+  0.57763671875,
+  0.77099609375,
+  0.92578125
+ ],
+ "loadavg_end": [
+  0.83154296875,
+  0.79296875,
+  0.8818359375
+ ],
+ "switch_ms_per_fold": {
+  "0": 240.128958132118,
+  "1": 211.7678038775921,
+  "2": 211.86137292534113
+ },
+ "gpu_note": "GPU0: :8004 alone (serve_l4d.sh, L4D_KERNEL=0 = prediction config). GPU1: latency-deadfree lane services (Qwen vLLM + Intern-Decision) may be serving requests",
+ "e2e_s": {
+  "median": 1.006148836495413,
+  "p90": 2.2572561384993604,
+  "mean": 1.2352703699363823,
+  "max": 7.226803567013121
+ },
+ "e2e_no_parse_s": {
+  "median": 1.003993039492343,
+  "p90": 2.25414673070627,
+  "mean": 1.233375515346949,
+  "max": 7.219299977004994
+ },
+ "parse_s": {
+  "median": 0.0019614015036495402,
+  "p90": 0.0030804337933659563,
+  "mean": 0.0018948545894333316,
+  "max": 0.007503590008127503
+ },
+ "http_s": {
+  "median": 1.0039046699967002,
+  "p90": 2.2540493721098755,
+  "mean": 1.233310096343921,
+  "max": 7.219122142996639
+ },
+ "derive_s": {
+  "median": 7.203849963843822e-05,
+  "p90": 9.673870226833971e-05,
+  "mean": 6.541900302787932e-05,
+  "max": 0.00044594799692276865
+ },
+ "server_latency_s": {
+  "median": 0.9590428522787988,
+  "p90": 2.202360716229305,
+  "mean": 1.1910273430030793,
+  "max": 7.157669465057552
+ },
+ "server_forward_s": {
+  "median": 0.9450510032474995,
+  "p90": 2.180653214734048,
+  "mean": 1.1770423193788155,
+  "max": 7.0946799432858825
+ },
+ "server_forward_s_called_units": {
+  "median": 0.9450510032474995,
+  "p90": 2.180653214734048,
+  "mean": 1.1770423193788155,
+  "max": 7.0946799432858825
+ },
+ "questions_per_unit": {
+  "median": 13.0,
+  "p90": 22.0,
+  "mean": 14.02,
+  "max": 52
+ },
+ "questions_per_unit_full": {
+  "median": 13.0,
+  "p90": 22.0,
+  "mean": 14.02,
+  "max": 52
+ },
+ "tokens_per_unit": {
+  "median": 5991.5,
+  "p90": 13566.000000000007,
+  "mean": 7485.766666666666,
+  "max": 45448
+ },
+ "accuracy_vs_truth": 0.8033333333333333,
+ "note": "e2e = live parse (dell) [+ prune] + POST /l4d (the unit's questions, one forward batch on one RTX 3090, merged fold adapter) + derive (dell); adapter switches excluded (warm-up per fold)"
+}

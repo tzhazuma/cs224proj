@@ -115,8 +115,8 @@ class Scorer:
             p.requires_grad_(False)
         self.kernels = {}
         for name in ("torch_chunk_gated_delta_rule", "causal_conv1d_fn"):
-            nonlocals = __import__("inspect").getclosurevars(getattr(qwen_mod, name)).nonlocals
-            impl = nonlocals.get("implementation")
+            fn = getattr(qwen_mod, name)
+            impl = __import__("inspect").getclosurevars(fn).nonlocals.get("implementation", fn) if fn else None
             self.kernels[name] = f"{impl.__module__}.{impl.__qualname__}" if impl is not None else "?"
         self.causal_lm = model
         rows = model.lm_head.weight[[self.yes_id, self.no_id]].detach().float().clone()

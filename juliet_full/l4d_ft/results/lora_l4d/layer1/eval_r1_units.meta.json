@@ -1,0 +1,296 @@
+{
+ "method": "lora_l4d",
+ "strategy": "L4D",
+ "layer": "layer1",
+ "run_id": "eval_r1",
+ "n_units": 2656,
+ "n_questions": 27122,
+ "questions": "l4d/build/questions_layer1.jsonl",
+ "questions_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+ "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+ "rules_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+ "frozen_sha256": "8019da174a526de2632da72fbf0e552c2ec86c81bc04f1ac3a1184e5bf8edd1b",
+ "frozen_common": {
+  "l4d_templates_sha256": "316429b266c0258383724c8c9129e2ea17946a9013d72cb61b267261ef827516",
+  "l4d_templates_py_sha256": "678d7c743c63b3e8d96005def26f10a2c0b3f9fef48dccc09189635ae76a56f1",
+  "prompt_template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+  "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+  "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+  "rules_l4d_dl_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+  "questions_layer1": "l4d/build/questions_layer1.jsonl",
+  "questions_layer1_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+  "rendered_q_layer1_sha256": "06193a97bac8cb72cced60025bc994396926f6e65a3056d73403e9f6db1106bf"
+ },
+ "tau": {
+  "0": 0.817574,
+  "1": 0.5,
+  "2": 0.5
+ },
+ "start_utc": "2026-11-24T10:21:21Z",
+ "end_utc": "2026-11-24T13:14:25Z",
+ "concurrency": 1,
+ "batching": "all questions of one unit in one forward batch, units sequential",
+ "latency_note": "latency_s = unit_forward_s (server-side model time, one RTX 3090) + derive_s; end-to-end client latency is in the latency run",
+ "question_files": [
+  {
+   "fold": 0,
+   "file": "eval_r1_fold0.jsonl",
+   "sha256": "8522bf986776d79fbc7b2682e8229334f13912a3de0719fed6c871cf657db44f",
+   "model": "qwen3.5-4b-lora-l4d-fold0",
+   "checkpoint": "/home/zhangzx/disk4/cs224/l4d_ft/runs/fold0/ckpt/step219",
+   "merged": true,
+   "freeze_guard": "fold 0 frozen",
+   "frozen_utc": "2026-11-24T08:07:18Z",
+   "start_utc": "2026-11-24T10:21:21Z",
+   "end_utc": "2026-11-24T10:32:18Z",
+   "host": "Toast-184",
+   "cuda_visible_devices": "0",
+   "loadavg_start": [
+    1.9130859375,
+    1.99462890625,
+    1.9921875
+   ],
+   "loadavg_end": [
+    2.08056640625,
+    2.037109375,
+    2.0048828125
+   ],
+   "unit_forward_s_median": 0.5998976659029722,
+   "unit_forward_s_p90": 1.0702484538778663,
+   "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+   },
+   "template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+   "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+   "question_metrics": {
+    "all": {
+     "n": 8958,
+     "n_yes": 7533,
+     "auroc": 0.9958098751458495,
+     "acc_at_0": 0.9651707970529136
+    },
+    "heap": {
+     "n": 761,
+     "n_yes": 615,
+     "auroc": 1.0,
+     "acc_at_0": 1.0
+    },
+    "exec_any": {
+     "n": 3792,
+     "n_yes": 3199,
+     "auroc": 0.9972309010984145,
+     "acc_at_0": 0.9936708860759493
+    },
+    "exec_all": {
+     "n": 3792,
+     "n_yes": 3199,
+     "auroc": 0.9944702365357639,
+     "acc_at_0": 0.9332805907172996
+    },
+    "rel": {
+     "n": 418,
+     "n_yes": 355,
+     "auroc": 1.0,
+     "acc_at_0": 0.9712918660287081
+    },
+    "realloc_safe": {
+     "n": 195,
+     "n_yes": 165,
+     "auroc": 1.0,
+     "acc_at_0": 0.882051282051282
+    }
+   }
+  },
+  {
+   "fold": 1,
+   "file": "eval_r1_fold1.jsonl",
+   "sha256": "35a318fd4a0e8ea8968c2190c2b0d5f05cc977f0d660e65634766120b62f6d17",
+   "model": "qwen3.5-4b-lora-l4d-fold1",
+   "checkpoint": "/home/zhangzx/disk4/cs224/l4d_ft/runs/fold1/ckpt/step219",
+   "merged": true,
+   "freeze_guard": "fold 1 frozen",
+   "frozen_utc": "2026-11-24T12:01:17Z",
+   "start_utc": "2026-11-24T12:52:58Z",
+   "end_utc": "2026-11-24T13:05:50Z",
+   "host": "Toast-184",
+   "cuda_visible_devices": "0",
+   "loadavg_start": [
+    1.98974609375,
+    2.0322265625,
+    2.0908203125
+   ],
+   "loadavg_end": [
+    2.02978515625,
+    2.0947265625,
+    2.08740234375
+   ],
+   "unit_forward_s_median": 0.6998269408941269,
+   "unit_forward_s_p90": 1.6327092847786844,
+   "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+   },
+   "template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+   "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+   "question_metrics": {
+    "all": {
+     "n": 9873,
+     "n_yes": 7744,
+     "auroc": 0.9403654436083366,
+     "acc_at_0": 0.9083358654917452
+    },
+    "heap": {
+     "n": 765,
+     "n_yes": 615,
+     "auroc": 1.0,
+     "acc_at_0": 1.0
+    },
+    "exec_any": {
+     "n": 4098,
+     "n_yes": 3516,
+     "auroc": 0.9877545555125513,
+     "acc_at_0": 0.9292337725719864
+    },
+    "exec_all": {
+     "n": 4098,
+     "n_yes": 2992,
+     "auroc": 0.9429553251104815,
+     "acc_at_0": 0.8821376281112738
+    },
+    "rel": {
+     "n": 732,
+     "n_yes": 471,
+     "auroc": 0.9410970381758873,
+     "acc_at_0": 0.8278688524590164
+    },
+    "realloc_safe": {
+     "n": 180,
+     "n_yes": 150,
+     "auroc": 1.0,
+     "acc_at_0": 0.9666666666666667
+    }
+   }
+  },
+  {
+   "fold": 2,
+   "file": "eval_r1_fold2.jsonl",
+   "sha256": "94627a204946be7f9c20a9174a8387a5ba18ae7c923a010599d05126366564fe",
+   "model": "qwen3.5-4b-lora-l4d-fold2",
+   "checkpoint": "/home/zhangzx/disk4/cs224/l4d_ft/runs/fold2/ckpt/step219",
+   "merged": true,
+   "freeze_guard": "fold 2 frozen",
+   "frozen_utc": "2026-11-24T11:02:13Z",
+   "start_utc": "2026-11-24T13:04:45Z",
+   "end_utc": "2026-11-24T13:14:25Z",
+   "host": "Toast-184",
+   "cuda_visible_devices": "1",
+   "loadavg_start": [
+    2.09521484375,
+    2.12109375,
+    2.0966796875
+   ],
+   "loadavg_end": [
+    2.02001953125,
+    2.0341796875,
+    2.060546875
+   ],
+   "unit_forward_s_median": 0.546873461920768,
+   "unit_forward_s_p90": 1.3187789991497993,
+   "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+   },
+   "template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+   "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+   "question_metrics": {
+    "all": {
+     "n": 8271,
+     "n_yes": 7072,
+     "auroc": 0.999999528264504,
+     "acc_at_0": 0.9968564865191634
+    },
+    "heap": {
+     "n": 741,
+     "n_yes": 615,
+     "auroc": 1.0,
+     "acc_at_0": 1.0
+    },
+    "exec_any": {
+     "n": 3445,
+     "n_yes": 2989,
+     "auroc": 1.0,
+     "acc_at_0": 0.9962264150943396
+    },
+    "exec_all": {
+     "n": 3445,
+     "n_yes": 2989,
+     "auroc": 1.0,
+     "acc_at_0": 0.9962264150943396
+    },
+    "rel": {
+     "n": 492,
+     "n_yes": 355,
+     "auroc": 1.0,
+     "acc_at_0": 1.0
+    },
+    "realloc_safe": {
+     "n": 148,
+     "n_yes": 124,
+     "auroc": 1.0,
+     "acc_at_0": 1.0
+    }
+   }
+  }
+ ],
+ "derive": [
+  {
+   "fold": 0,
+   "tau": 0.817574,
+   "stderr": "souffle: 944 units in 0.02s, 0 differ from the Python evaluator []\n944 units -> /tmp/l4dft_agg_o5_jtuim/u.jsonl; derive median 0.006 ms, max 0.598 ms"
+  },
+  {
+   "fold": 1,
+   "tau": 0.5,
+   "stderr": "souffle: 848 units in 0.02s, 0 differ from the Python evaluator []\n848 units -> /tmp/l4dft_agg__ywkvaw3/u.jsonl; derive median 0.007 ms, max 0.381 ms"
+  },
+  {
+   "fold": 2,
+   "tau": 0.5,
+   "stderr": "souffle: 864 units in 0.02s, 0 differ from the Python evaluator []\n864 units -> /tmp/l4dft_agg_ei6s5df5/u.jsonl; derive median 0.005 ms, max 0.446 ms"
+  }
+ ],
+ "aggregated_utc": "2026-11-24T13:20:16Z",
+ "answers_sha256": "1713e9a3eb642a8cf80b3e190712bee2e79e31852eee940478d847471f64df2c",
+ "units_sha256": "37c54d63070bc9dca119c8bd1fff4a9b20e412369b52dda99edfbff8ac41f200"
+}

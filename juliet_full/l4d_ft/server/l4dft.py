@@ -548,7 +548,8 @@ def cmd_serve(args) -> None:
         return {"ok": True, "folds": sorted(models.models), "active": models.active,
                 "tau": {k: v["tau"] for k, v in models.models.items()},
                 "started_utc": started, "template_sha256": TEMPLATE_SHA256, "gpu": torch.cuda.get_device_name(0),
-                "gpu_mem_allocated_gb": round(torch.cuda.memory_allocated() / 2**30, 2)}
+                "gpu_mem_allocated_gb": round(torch.cuda.memory_allocated() / 2**30, 2),
+                "kernels": models.scorer.kernels, "pythonpath": os.environ.get("PYTHONPATH", "")}
 
     @app.post("/l4d")
     async def l4d(req: dict = Body(...)):

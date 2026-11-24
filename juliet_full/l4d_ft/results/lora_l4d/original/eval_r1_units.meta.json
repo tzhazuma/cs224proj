@@ -1,0 +1,296 @@
+{
+ "method": "lora_l4d",
+ "strategy": "L4D",
+ "layer": "original",
+ "run_id": "eval_r1",
+ "n_units": 2656,
+ "n_questions": 58432,
+ "questions": "l4d/build/questions_original.jsonl",
+ "questions_sha256": "cdb4bdbe2309525c63f3e70c52684d5d75b64980805bf1dc25693eab29d2df98",
+ "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+ "rules_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+ "frozen_sha256": "8019da174a526de2632da72fbf0e552c2ec86c81bc04f1ac3a1184e5bf8edd1b",
+ "frozen_common": {
+  "l4d_templates_sha256": "316429b266c0258383724c8c9129e2ea17946a9013d72cb61b267261ef827516",
+  "l4d_templates_py_sha256": "678d7c743c63b3e8d96005def26f10a2c0b3f9fef48dccc09189635ae76a56f1",
+  "prompt_template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+  "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+  "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+  "rules_l4d_dl_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+  "questions_layer1": "l4d/build/questions_layer1.jsonl",
+  "questions_layer1_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+  "rendered_q_layer1_sha256": "06193a97bac8cb72cced60025bc994396926f6e65a3056d73403e9f6db1106bf"
+ },
+ "tau": {
+  "0": 0.817574,
+  "1": 0.5,
+  "2": 0.5
+ },
+ "start_utc": "2026-11-24T11:08:32Z",
+ "end_utc": "2026-11-24T14:29:28Z",
+ "concurrency": 1,
+ "batching": "all questions of one unit in one forward batch, units sequential",
+ "latency_note": "latency_s = unit_forward_s (server-side model time, one RTX 3090) + derive_s; end-to-end client latency is in the latency run",
+ "question_files": [
+  {
+   "fold": 0,
+   "file": "eval_r1_fold0.jsonl",
+   "sha256": "2c9d9be01ed636d198bbfef4f78d266ef27fcac040ce4fcf0792ea8121dd6744",
+   "model": "qwen3.5-4b-lora-l4d-fold0",
+   "checkpoint": "/home/zhangzx/disk4/cs224/l4d_ft/runs/fold0/ckpt/step219",
+   "merged": true,
+   "freeze_guard": "fold 0 frozen",
+   "frozen_utc": "2026-11-24T08:07:18Z",
+   "start_utc": "2026-11-24T11:08:32Z",
+   "end_utc": "2026-11-24T11:50:05Z",
+   "host": "Toast-184",
+   "cuda_visible_devices": "0",
+   "loadavg_start": [
+    2.01513671875,
+    2.0146484375,
+    2.0
+   ],
+   "loadavg_end": [
+    2.0107421875,
+    2.044921875,
+    2.06396484375
+   ],
+   "unit_forward_s_median": 1.409015057142824,
+   "unit_forward_s_p90": 7.795305506326258,
+   "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+   },
+   "template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+   "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+   "question_metrics": {
+    "all": {
+     "n": 19763,
+     "n_yes": 15814,
+     "auroc": 0.9889526072320275,
+     "acc_at_0": 0.9464656175681829
+    },
+    "heap": {
+     "n": 1322,
+     "n_yes": 942,
+     "auroc": 1.0,
+     "acc_at_0": 1.0
+    },
+    "exec_any": {
+     "n": 7979,
+     "n_yes": 6913,
+     "auroc": 0.9992946372619875,
+     "acc_at_0": 0.9869657851861136
+    },
+    "exec_all": {
+     "n": 7979,
+     "n_yes": 6913,
+     "auroc": 0.9893627011023363,
+     "acc_at_0": 0.911267076074696
+    },
+    "rel": {
+     "n": 2189,
+     "n_yes": 782,
+     "auroc": 0.9708345375788213,
+     "acc_at_0": 0.8981269986295112
+    },
+    "realloc_safe": {
+     "n": 294,
+     "n_yes": 264,
+     "auroc": 1.0,
+     "acc_at_0": 0.9217687074829932
+    }
+   }
+  },
+  {
+   "fold": 1,
+   "file": "eval_r1_fold1.jsonl",
+   "sha256": "aebab58f1b9840c711683e8ab5580a45018cee91c7068689cd04eeaa421c4183",
+   "model": "qwen3.5-4b-lora-l4d-fold1",
+   "checkpoint": "/home/zhangzx/disk4/cs224/l4d_ft/runs/fold1/ckpt/step219",
+   "merged": true,
+   "freeze_guard": "fold 1 frozen",
+   "frozen_utc": "2026-11-24T12:01:17Z",
+   "start_utc": "2026-11-24T13:46:41Z",
+   "end_utc": "2026-11-24T14:29:28Z",
+   "host": "Toast-184",
+   "cuda_visible_devices": "0",
+   "loadavg_start": [
+    2.0302734375,
+    2.0419921875,
+    2.029296875
+   ],
+   "loadavg_end": [
+    1.2861328125,
+    1.72509765625,
+    1.92529296875
+   ],
+   "unit_forward_s_median": 1.6438507176935673,
+   "unit_forward_s_p90": 7.2991914274170995,
+   "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+   },
+   "template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+   "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+   "question_metrics": {
+    "all": {
+     "n": 19586,
+     "n_yes": 14888,
+     "auroc": 0.8780324121254794,
+     "acc_at_0": 0.8118554069233126
+    },
+    "heap": {
+     "n": 1246,
+     "n_yes": 906,
+     "auroc": 0.9999415660303856,
+     "acc_at_0": 0.9967897271268058
+    },
+    "exec_any": {
+     "n": 7890,
+     "n_yes": 6790,
+     "auroc": 0.9821182219842014,
+     "acc_at_0": 0.8302915082382764
+    },
+    "exec_all": {
+     "n": 7890,
+     "n_yes": 6092,
+     "auroc": 0.871161790988309,
+     "acc_at_0": 0.8154626108998733
+    },
+    "rel": {
+     "n": 2302,
+     "n_yes": 872,
+     "auroc": 0.8646404054660936,
+     "acc_at_0": 0.6177237185056472
+    },
+    "realloc_safe": {
+     "n": 258,
+     "n_yes": 228,
+     "auroc": 0.9998538011695907,
+     "acc_at_0": 0.9767441860465116
+    }
+   }
+  },
+  {
+   "fold": 2,
+   "file": "eval_r1_fold2.jsonl",
+   "sha256": "a04b3b4213b920a2c4e15373f097186043758b8bdb2e3a59d11d625bdb6ad7ce",
+   "model": "qwen3.5-4b-lora-l4d-fold2",
+   "checkpoint": "/home/zhangzx/disk4/cs224/l4d_ft/runs/fold2/ckpt/step219",
+   "merged": true,
+   "freeze_guard": "fold 2 frozen",
+   "frozen_utc": "2026-11-24T11:02:13Z",
+   "start_utc": "2026-11-24T13:46:28Z",
+   "end_utc": "2026-11-24T14:25:59Z",
+   "host": "Toast-184",
+   "cuda_visible_devices": "1",
+   "loadavg_start": [
+    2.0400390625,
+    2.044921875,
+    2.03076171875
+   ],
+   "loadavg_end": [
+    2.04345703125,
+    2.0732421875,
+    2.0595703125
+   ],
+   "unit_forward_s_median": 1.4125008890405297,
+   "unit_forward_s_p90": 7.3002511179074645,
+   "versions": {
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.22.2",
+    "peft": "0.22.0",
+    "python": "3.12.3",
+    "flash_linear_attention": "0.6.0",
+    "triton": "3.8.0",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "kernels": {
+    "torch_chunk_gated_delta_rule": "fla.ops.gated_delta_rule.chunk.chunk_gated_delta_rule",
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn"
+   },
+   "template_sha256": "28386a4fd48c5eb5731f56ca69ced532963ccacc77378e94a9835b9664995756",
+   "chat_template_sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+   "question_metrics": {
+    "all": {
+     "n": 19066,
+     "n_yes": 15264,
+     "auroc": 0.9970696695549182,
+     "acc_at_0": 0.9831637469841603
+    },
+    "heap": {
+     "n": 1306,
+     "n_yes": 986,
+     "auroc": 1.0,
+     "acc_at_0": 1.0
+    },
+    "exec_any": {
+     "n": 7540,
+     "n_yes": 6616,
+     "auroc": 0.999946018310589,
+     "acc_at_0": 0.9954907161803713
+    },
+    "exec_all": {
+     "n": 7540,
+     "n_yes": 6616,
+     "auroc": 0.9999025057973063,
+     "acc_at_0": 0.9954907161803713
+    },
+    "rel": {
+     "n": 2434,
+     "n_yes": 824,
+     "auroc": 0.9973172827594524,
+     "acc_at_0": 0.8960558751027116
+    },
+    "realloc_safe": {
+     "n": 246,
+     "n_yes": 222,
+     "auroc": 1.0,
+     "acc_at_0": 1.0
+    }
+   }
+  }
+ ],
+ "derive": [
+  {
+   "fold": 0,
+   "tau": 0.817574,
+   "stderr": "souffle: 944 units in 0.02s, 0 differ from the Python evaluator []\n944 units -> /tmp/l4dft_agg_apjwyzx9/u.jsonl; derive median 0.011 ms, max 13.938 ms"
+  },
+  {
+   "fold": 1,
+   "tau": 0.5,
+   "stderr": "souffle: 848 units in 0.02s, 0 differ from the Python evaluator []\n848 units -> /tmp/l4dft_agg_267b0vzc/u.jsonl; derive median 0.011 ms, max 10.635 ms"
+  },
+  {
+   "fold": 2,
+   "tau": 0.5,
+   "stderr": "souffle: 864 units in 0.02s, 0 differ from the Python evaluator []\n864 units -> /tmp/l4dft_agg_x5lgr_t7/u.jsonl; derive median 0.010 ms, max 10.542 ms"
+  }
+ ],
+ "aggregated_utc": "2026-11-24T14:34:19Z",
+ "answers_sha256": "6c82bbdf90fddf2032d1d7cb2bd94710216c4fff75bf257c12fba044c579b43f",
+ "units_sha256": "067283286ff2a8521b7a10737e2193999fa3f78c48ae1b35acce1280e00a682a"
+}

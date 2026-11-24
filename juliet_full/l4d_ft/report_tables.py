@@ -39,7 +39,7 @@ def const_baseline() -> dict:
 
 def main() -> None:
     const = const_baseline()
-    scores = {(m, l): load(HERE / "build/scores" / f"{m}_{l}_eval_r1.json") for m in METHODS for l in LAYERS}
+    scores = {(m, l): load(HERE / "results/scores" / f"{m}_{l}_eval_r1.json") for m in METHODS for l in LAYERS}
     print("## Unit level, all eval units (analysis/score.py --set eval)\n")
     print("| layer | method | n | macro-F1 [95% CI] | P(leak) | R(leak) | specificity | invalid | latency_s median (model+derive) |")
     print("|---|---|---|---|---|---|---|---|---|")
@@ -98,22 +98,51 @@ def main() -> None:
             s = scores[(m, l)]
             cells.append("–" if s is None or l not in const else f"{s['all_eval']['macro_f1'] - const[l]:+.3f}")
         print(f"| {l} | {' | '.join(cells)} |")
-    print("\n## Question level (l4d/score_facts.py, eval questions, threshold p_yes ≥ 0.5)\n")
-    print("| layer | method | qtype | n | n_yes | accuracy | AUROC | majority |")
+    print("\n## Per-fold macro-F1 (all eval units of each fold; lora_l4d = that fold's own model)\n")
+    print("| layer | method | fold 0 | fold 1 | fold 2 |")
+    print("|---|---|---|---|---|")
+    for l in LAYERS:
+        for m in METHODS:
+            s = scores[(m, l)]
+            if s is None:
+                continue
+            pf = s["per_fold"]
+            print(f"| {l} | {m} | " + " | ".join(f"{f3(pf[k]['macro_f1'])} (n={pf[k]['n']})" for k in ("0", "1", "2"))
+                  + " |")
+    print("\n## By flow category (all eval units)\n")
+    print("| layer | method | flow_category | n | macro-F1 | accuracy |")
+    print("|---|---|---|---|---|---|")
+    for l in ("layer1", "layer3"):
+        for m in METHODS:
+            s = scores[(m, l)]
+            if s is None:
+                continue
+            for cat, r in s["score_py_all_eval"]["by_flow_category"].items():
+                print(f"| {l} | {m} | {cat} | {r['n']} | {f3(r.get('macro_f1'))} | {f3(r.get('accuracy'))} |")
+    print("\n## Question level, eval questions, all fold models pooled (threshold p_yes ≥ 0.5; gold null excluded)\n")
+    print("| layer | method | qtype | n | n_yes | accuracy | AUROC |")
+    print("|---|---|---|---|---|---|---|")
+    for l in LAYERS:
+        for m in METHODS:
+            fs = load(HERE / "results/scores" / f"{m}_{l}_eval_r1_facts.json")
+            if fs is None:
+                continue
+            for k, r in {**fs["pooled_tau_0.5"], **fs["splits_tau_0.5"]}.items():
+                if r.get("n"):
+                    print(f"| {l} | {m} | {k} | {r['n']} | {r['n_yes']} | {f3(r['accuracy'])} | {f3(r['auroc'])} |")
+    print("\n## Question level per fold model (l4d/score_facts.py rows, eval questions, p_yes ≥ 0.5)\n")
+    print("| layer | model | qtype | n | n_yes | accuracy | AUROC | majority |")
     print("|---|---|---|---|---|---|---|---|")
     for l in LAYERS:
         for m in METHODS:
-            fs = load(HERE / "build/scores" / f"{m}_{l}_eval_r1_facts.json")
+            fs = load(HERE / "results/scores" / f"{m}_{l}_eval_r1_facts.json")
             if fs is None:
                 continue
             for r in fs["score_facts"]["rows"]:
                 if r.get("set") not in (None, "eval"):
                     continue
-                print(f"| {l} | {m} | {r['qtype']} | {r['n']} | {r['n_yes']} | {f3(r['accuracy'])} | {f3(r['auroc'])} | "
-                      f"{f3(r['majority_baseline'])} |")
-            for k, r in fs["splits_tau_0.5"].items():
-                if r.get("n"):
-                    print(f"| {l} | {m} | {k} | {r['n']} | {r['n_yes']} | {f3(r['accuracy'])} | {f3(r['auroc'])} | |")
+                print(f"| {l} | {r['model']} | {r['qtype']} | {r['n']} | {r['n_yes']} | {f3(r['accuracy'])} | "
+                      f"{f3(r['auroc'])} | {f3(r['majority_baseline'])} |")
 
 
 if __name__ == "__main__":
