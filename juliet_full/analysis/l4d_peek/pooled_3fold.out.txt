@@ -1,0 +1,19 @@
+== layer1: L4-D pooled n=2656 macro-F1 0.959 FP 50 FN 59 invalid 0 per-fold [0.96, 0.931, 0.985]
+   vs DeepSeek L1  [all, n=2656]: L4-D 0.959 vs 0.995  Δ -0.037 [-0.041,-0.032]  NOT near, not equiv
+   vs DeepSeek L2  [all, n=2656]: L4-D 0.959 vs 0.998  Δ -0.039 [-0.043,-0.035]  NOT near, not equiv
+   vs Jev L3       [all, n=2656]: L4-D 0.959 vs 0.980  Δ -0.021 [-0.027,-0.014]  NOT near, not equiv
+   FN by flow {'01': 1, '02-22': 39, '71-84': 19}  FP by good_kind {'B2G': 40, 'other': 8, 'G2B': 2}
+== layer3: L4-D pooled n=2656 macro-F1 0.826 FP 226 FN 235 invalid 0 per-fold [0.816, 0.793, 0.865]
+   vs DeepSeek L1  [n25, n=664]: L4-D 0.831 vs 0.881  Δ -0.049 [-0.085,-0.013]  NOT near, not equiv
+   vs DeepSeek L4  [n25, n=664]: L4-D 0.831 vs 0.895  Δ -0.063 [-0.101,-0.024]  NOT near, not equiv
+   vs DeepSeek L1  [api, n=1328]: L4-D 0.829 vs 0.869  Δ -0.040 [-0.064,-0.015]  NOT near, not equiv
+   vs DeepSeek L3  [api, n=1328]: L4-D 0.829 vs 0.880  Δ -0.051 [-0.073,-0.026]  NOT near, not equiv
+   vs DeepSeek L1  [all, n=2656]: L4-D 0.826 vs 0.863  Δ -0.037 [-0.056,-0.016]  NOT near, not equiv
+   vs DeepSeek L4  [all, n=2656]: L4-D 0.826 vs 0.900  Δ -0.074 [-0.092,-0.056]  NOT near, not equiv
+   vs Jev L3       [all, n=2656]: L4-D 0.826 vs 0.949  Δ -0.122 [-0.148,-0.091]  NOT near, not equiv
+   FN by flow {'01': 3, '02-22': 102, '31-45': 39, '51-68': 50, '71-84': 41}  FP by good_kind {'B2G': 177, 'G2B': 11, 'other': 38}
+== placebo: L4-D pooled n=2656 macro-F1 0.963 FP 40 FN 59 invalid 0 per-fold [0.963, 0.931, 0.993]
+   vs DeepSeek L1  [n25, n=664]: L4-D 0.958 vs 0.995  Δ -0.038 [-0.051,-0.025]  NOT near, not equiv
+   vs DeepSeek L3  [n25, n=664]: L4-D 0.958 vs 0.994  Δ -0.036 [-0.050,-0.023]  NOT near, not equiv
+   vs Jev L3       [all, n=2656]: L4-D 0.963 vs 0.959  Δ +0.004 [-0.014,+0.028]  near, equiv
+   FN by flow {'01': 1, '02-22': 39, '71-84': 19}  FP by good_kind {'B2G': 33, 'other': 5, 'G2B': 2}

@@ -1,0 +1,183 @@
+{
+ "run_id": "l3_eval_L2_r1",
+ "method": "deepseek_flash",
+ "strategy": "L2",
+ "layer": "layer3",
+ "set": "eval",
+ "subset": null,
+ "n_units": 2656,
+ "status_counts": {
+  "ok": 2656
+ },
+ "aborted": null,
+ "model_requested": "deepseek-flash",
+ "models_returned": {
+  "deepseek-flash": 2656
+ },
+ "models_listing": null,
+ "client": {
+  "provider": "deepseek",
+  "base_url": "https://api.deepseek.com",
+  "model": "deepseek-flash",
+  "temperature": 0,
+  "extra_body": {
+   "thinking": {
+    "type": "disabled"
+   }
+  },
+  "response_format": "json_object",
+  "retry": {
+   "max_attempts": 5,
+   "base_seconds": 2.0,
+   "cap_seconds": 60.0,
+   "timeout_seconds": 180.0
+  }
+ },
+ "max_tokens": 64,
+ "prompt_hash": "a932f4394ee0790969095dc9b8a993c20dcf4a7f5a017978781729765308cfc8",
+ "prompt_files": {
+  "task.txt": "aa12d68878ff890f78e3c1a9341846f83c15a164369279f84831e691d5fe86a2",
+  "answer_format.txt": "efdbf90803248c4503d3bfef6d9b2ca79334e7d9160b42f1e9e1ee220d24e036",
+  "user_suffix.txt": "cbd700ce46a511e8d234222fe9ca27d4009bd392eb1a6cc1698b39d42f8c3615",
+  "user_L1.txt": "50f50397398879b1894169c534186af7d049c10ebfb349a4e8d9b69f2ebcb00a",
+  "l2_examples.txt": "dbde147e0946acc81b5045531cd0113a2a292ce8926e778e3da4246d9273789c"
+ },
+ "l2_examples_excluded": [
+  "CWE401_Memory_Leak__int_malloc_73__bad",
+  "CWE401_Memory_Leak__int_malloc_73__good",
+  "CWE401_Memory_Leak__new_int_41__bad",
+  "CWE401_Memory_Leak__new_int_41__good",
+  "CWE401_Memory_Leak__new_int_65__bad",
+  "CWE401_Memory_Leak__new_int_65__good",
+  "CWE401_Memory_Leak__strdup_char_18__bad",
+  "CWE401_Memory_Leak__strdup_char_18__good"
+ ],
+ "l2_examples_json_sha256": "59a9b069308b682a0dd51d859d686ddf13f97bf558cc1c2a2ac7b785f16b9d10",
+ "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+ "units_sha256": "033945a8799a51e5881c9cb4a209d0348b857d8bbf0b869b1f112c043bc65111",
+ "selection": {
+  "merged_from": [
+   "l3_n25_L2_r1",
+   "l3_apirest_L2_r1",
+   "l3_rest_L2_r1"
+  ]
+ },
+ "evidence_file": null,
+ "evidence_sha256": null,
+ "evidence_frozen": null,
+ "start_utc": "2026-11-23T20:17:08Z",
+ "end_utc": "2026-11-23T20:17:48Z",
+ "host": "barton-OptiPlex-5000",
+ "concurrency": 16,
+ "warmup_wait_s": 5.0,
+ "git_head": "216054ae8c675ac3a58dd20192b8e5aed5b1a4e6",
+ "usage_totals": {
+  "calls": 664,
+  "prompt_tokens": 821033,
+  "cache_hit_tokens": 575488,
+  "cache_miss_tokens": 245545,
+  "completion_tokens": 10919,
+  "input_tokens": 0,
+  "peak_calls": 0
+ },
+ "cost_total": 1.13310016,
+ "cost_currency": "CNY",
+ "cost_per_call": 0.00042661903614457826,
+ "prices": {
+  "offpeak_cny_per_m": {
+   "input_cache_miss": 1.0,
+   "input_cache_hit": 0.02,
+   "output": 4.0
+  },
+  "peak_multiplier": 2.0
+ },
+ "ledger_total_after": 6.16335914,
+ "souffle": null,
+ "raw_log": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/llm/raw_logs/deepseek_flash/layer3/l3_n25_L2_r1.jsonl",
+ "merged": true,
+ "components": [
+  {
+   "run_id": "l3_n25_L2_r1",
+   "n": 664,
+   "sha256": "369a2a1f7591e4d38f737676b35fff23165acf0ba9732198caae225905f85b5c",
+   "status_counts": {
+    "ok": 664
+   },
+   "prompt_hash": "a932f4394ee0790969095dc9b8a993c20dcf4a7f5a017978781729765308cfc8",
+   "models_returned": {
+    "deepseek-flash": 664
+   },
+   "cost_total": 0.30073076,
+   "subset": "nested25",
+   "unit_ids_file": null,
+   "evidence_sha256": null,
+   "start_utc": "2026-11-23T20:17:08Z",
+   "usage_totals": {
+    "calls": 664,
+    "prompt_tokens": 821033,
+    "cache_hit_tokens": 575488,
+    "cache_miss_tokens": 245545,
+    "completion_tokens": 10919,
+    "input_tokens": 0,
+    "peak_calls": 0
+   }
+  },
+  {
+   "run_id": "l3_apirest_L2_r1",
+   "n": 664,
+   "sha256": "987c6481d5dd2de328d76c1fb46d10246f66c715b0f15a609d024f5ab94103b1",
+   "status_counts": {
+    "ok": 664
+   },
+   "prompt_hash": "a932f4394ee0790969095dc9b8a993c20dcf4a7f5a017978781729765308cfc8",
+   "models_returned": {
+    "deepseek-flash": 664
+   },
+   "cost_total": 0.28297072,
+   "subset": "api_rest332",
+   "unit_ids_file": null,
+   "evidence_sha256": null,
+   "start_utc": "2026-11-23T20:21:30Z",
+   "usage_totals": {
+    "calls": 664,
+    "prompt_tokens": 817852,
+    "cache_hit_tokens": 590336,
+    "cache_miss_tokens": 227516,
+    "completion_tokens": 10912,
+    "input_tokens": 0,
+    "peak_calls": 0
+   }
+  },
+  {
+   "run_id": "l3_rest_L2_r1",
+   "n": 1328,
+   "sha256": "8ecfb113b12954af2e11ab689af60739907b14a865929ba1fa3f7b80d1552049",
+   "status_counts": {
+    "ok": 1328
+   },
+   "prompt_hash": "a932f4394ee0790969095dc9b8a993c20dcf4a7f5a017978781729765308cfc8",
+   "models_returned": {
+    "deepseek-flash": 1328
+   },
+   "cost_total": 0.54939868,
+   "subset": null,
+   "unit_ids_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/llm/results/deepseek_flash/layer3/fill_unit_ids/rest_api_unit_ids.txt",
+   "evidence_sha256": null,
+   "start_utc": "2026-11-24T14:07:26Z",
+   "usage_totals": {
+    "calls": 1328,
+    "prompt_tokens": 1638443,
+    "cache_hit_tokens": 1200384,
+    "cache_miss_tokens": 438059,
+    "completion_tokens": 21833,
+    "input_tokens": 0,
+    "peak_calls": 0
+   }
+  }
+ ],
+ "n_unique_unit_ids": 2656,
+ "duplicates": 0,
+ "invalid": 0,
+ "error": 0,
+ "note": "stage-2e merge (stage2e_analysis.py) of the component runs; the components are unchanged"
+}

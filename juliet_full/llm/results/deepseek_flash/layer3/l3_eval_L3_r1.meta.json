@@ -1,0 +1,186 @@
+{
+ "run_id": "l3_eval_L3_r1",
+ "method": "deepseek_flash",
+ "strategy": "L3",
+ "layer": "layer3",
+ "set": "eval",
+ "subset": null,
+ "n_units": 2656,
+ "status_counts": {
+  "ok": 2656
+ },
+ "aborted": null,
+ "model_requested": "deepseek-flash",
+ "models_returned": {
+  "deepseek-flash": 2656
+ },
+ "models_listing": null,
+ "client": {
+  "provider": "deepseek",
+  "base_url": "https://api.deepseek.com",
+  "model": "deepseek-flash",
+  "temperature": 0,
+  "extra_body": {
+   "thinking": {
+    "type": "disabled"
+   }
+  },
+  "response_format": "json_object",
+  "retry": {
+   "max_attempts": 5,
+   "base_seconds": 2.0,
+   "cap_seconds": 60.0,
+   "timeout_seconds": 180.0
+  }
+ },
+ "max_tokens": 64,
+ "prompt_hash": "1b4e5f65088efea1cfff841ca49470f717920fa26aed65d51050baa1d1ee32ae",
+ "prompt_files": {
+  "task.txt": "aa12d68878ff890f78e3c1a9341846f83c15a164369279f84831e691d5fe86a2",
+  "answer_format.txt": "efdbf90803248c4503d3bfef6d9b2ca79334e7d9160b42f1e9e1ee220d24e036",
+  "user_suffix.txt": "cbd700ce46a511e8d234222fe9ca27d4009bd392eb1a6cc1698b39d42f8c3615",
+  "user_L3.txt": "06aab5226705ccc05e7e0fdc42af2097b6d94d9edd904b006fe82ca6f02363db"
+ },
+ "l2_examples_excluded": [
+  "CWE401_Memory_Leak__int_malloc_73__bad",
+  "CWE401_Memory_Leak__int_malloc_73__good",
+  "CWE401_Memory_Leak__new_int_41__bad",
+  "CWE401_Memory_Leak__new_int_41__good",
+  "CWE401_Memory_Leak__new_int_65__bad",
+  "CWE401_Memory_Leak__new_int_65__good",
+  "CWE401_Memory_Leak__strdup_char_18__bad",
+  "CWE401_Memory_Leak__strdup_char_18__good"
+ ],
+ "l2_examples_json_sha256": "59a9b069308b682a0dd51d859d686ddf13f97bf558cc1c2a2ac7b785f16b9d10",
+ "units_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/data/build/layer3.jsonl",
+ "units_sha256": "033945a8799a51e5881c9cb4a209d0348b857d8bbf0b869b1f112c043bc65111",
+ "selection": {
+  "merged_from": [
+   "l3_n25_L3_r1",
+   "l3_apirest_L3_r1",
+   "l3_rest_L3_r1"
+  ]
+ },
+ "evidence_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/clang_sa/layer3/full_v1.evidence.jsonl",
+ "evidence_sha256": "5362698a63948c8bbf59fa3ee827c6f113d2d130efa2e5d41bb185c57eccd9aa",
+ "evidence_frozen": {
+  "marker": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/static/results/clang_sa/layer3/EVIDENCE_FROZEN",
+  "run_id": "full_v1",
+  "sha256": "5362698a63948c8bbf59fa3ee827c6f113d2d130efa2e5d41bb185c57eccd9aa"
+ },
+ "start_utc": "2026-11-23T20:16:27Z",
+ "end_utc": "2026-11-23T20:17:06Z",
+ "host": "barton-OptiPlex-5000",
+ "concurrency": 16,
+ "warmup_wait_s": 5.0,
+ "git_head": "216054ae8c675ac3a58dd20192b8e5aed5b1a4e6",
+ "usage_totals": {
+  "calls": 664,
+  "prompt_tokens": 410731,
+  "cache_hit_tokens": 272640,
+  "cache_miss_tokens": 138091,
+  "completion_tokens": 10913,
+  "input_tokens": 0,
+  "peak_calls": 0
+ },
+ "cost_total": 0.74278676,
+ "cost_currency": "CNY",
+ "cost_per_call": 0.00027966368975903617,
+ "prices": {
+  "offpeak_cny_per_m": {
+   "input_cache_miss": 1.0,
+   "input_cache_hit": 0.02,
+   "output": 4.0
+  },
+  "peak_multiplier": 2.0
+ },
+ "ledger_total_after": 5.86262838,
+ "souffle": null,
+ "raw_log": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/llm/raw_logs/deepseek_flash/layer3/l3_n25_L3_r1.jsonl",
+ "merged": true,
+ "components": [
+  {
+   "run_id": "l3_n25_L3_r1",
+   "n": 664,
+   "sha256": "6f396914e9bf6586f219ba8bdc89769a64fa6c0e71d18bbab2ea7b36f4274c49",
+   "status_counts": {
+    "ok": 664
+   },
+   "prompt_hash": "1b4e5f65088efea1cfff841ca49470f717920fa26aed65d51050baa1d1ee32ae",
+   "models_returned": {
+    "deepseek-flash": 664
+   },
+   "cost_total": 0.1871958,
+   "subset": "nested25",
+   "unit_ids_file": null,
+   "evidence_sha256": "5362698a63948c8bbf59fa3ee827c6f113d2d130efa2e5d41bb185c57eccd9aa",
+   "start_utc": "2026-11-23T20:16:27Z",
+   "usage_totals": {
+    "calls": 664,
+    "prompt_tokens": 410731,
+    "cache_hit_tokens": 272640,
+    "cache_miss_tokens": 138091,
+    "completion_tokens": 10913,
+    "input_tokens": 0,
+    "peak_calls": 0
+   }
+  },
+  {
+   "run_id": "l3_apirest_L3_r1",
+   "n": 664,
+   "sha256": "5036919a76c98ee680ab6867bfdf376cbb8fbbf2d637431023e2c22c668dca3a",
+   "status_counts": {
+    "ok": 664
+   },
+   "prompt_hash": "1b4e5f65088efea1cfff841ca49470f717920fa26aed65d51050baa1d1ee32ae",
+   "models_returned": {
+    "deepseek-flash": 664
+   },
+   "cost_total": 0.18469956,
+   "subset": "api_rest332",
+   "unit_ids_file": null,
+   "evidence_sha256": "5362698a63948c8bbf59fa3ee827c6f113d2d130efa2e5d41bb185c57eccd9aa",
+   "start_utc": "2026-11-23T20:33:30Z",
+   "usage_totals": {
+    "calls": 664,
+    "prompt_tokens": 407793,
+    "cache_hit_tokens": 272128,
+    "cache_miss_tokens": 135665,
+    "completion_tokens": 10898,
+    "input_tokens": 0,
+    "peak_calls": 0
+   }
+  },
+  {
+   "run_id": "l3_rest_L3_r1",
+   "n": 1328,
+   "sha256": "4d12edaa7a16aad64bb8ffcd27fdbcfbec901de93d7cdbb7e47fbeb4ff4ec778",
+   "status_counts": {
+    "ok": 1328
+   },
+   "prompt_hash": "1b4e5f65088efea1cfff841ca49470f717920fa26aed65d51050baa1d1ee32ae",
+   "models_returned": {
+    "deepseek-flash": 1328
+   },
+   "cost_total": 0.3708914,
+   "subset": null,
+   "unit_ids_file": "/home/barton/Documents/projects/cs224/cs224proj/juliet_full/llm/results/deepseek_flash/layer3/fill_unit_ids/rest_api_unit_ids.txt",
+   "evidence_sha256": "5362698a63948c8bbf59fa3ee827c6f113d2d130efa2e5d41bb185c57eccd9aa",
+   "start_utc": "2026-11-24T14:06:04Z",
+   "usage_totals": {
+    "calls": 1328,
+    "prompt_tokens": 818697,
+    "cache_hit_tokens": 545920,
+    "cache_miss_tokens": 272777,
+    "completion_tokens": 21799,
+    "input_tokens": 0,
+    "peak_calls": 0
+   }
+  }
+ ],
+ "n_unique_unit_ids": 2656,
+ "duplicates": 0,
+ "invalid": 0,
+ "error": 0,
+ "note": "stage-2e merge (stage2e_analysis.py) of the component runs; the components are unchanged"
+}

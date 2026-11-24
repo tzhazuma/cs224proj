@@ -1,0 +1,179 @@
+{
+ "n_units": 2656,
+ "n_families": 42,
+ "layers": [
+  "base",
+  "stress"
+ ],
+ "methods": {
+  "base": [
+   "deepseek_flash"
+  ],
+  "stress": [
+   "deepseek_flash"
+  ]
+ },
+ "invalid": {
+  "base": 0,
+  "stress": 0
+ },
+ "stats": {
+  "base.f1_leak": 0.976235382874387,
+  "base.macro_f1": 0.9762800364202826,
+  "base.precision_leak": 0.9780801209372638,
+  "base.recall_leak": 0.9743975903614458,
+  "base.specificity": 0.9781626506024096,
+  "base.accuracy": 0.9762801204819277,
+  "base.mcc": 0.9525669926295577,
+  "stress.f1_leak": 0.898584003061615,
+  "stress.macro_f1": 0.9001997451395515,
+  "stress.precision_leak": 0.9136186770428015,
+  "stress.recall_leak": 0.8840361445783133,
+  "stress.specificity": 0.9164156626506024,
+  "stress.accuracy": 0.9002259036144579,
+  "stress.mcc": 0.8008717475884239,
+  "delta_stress.f1_leak": -0.07765137981277204,
+  "delta_stress.macro_f1": -0.07608029128073113,
+  "delta_stress.precision_leak": -0.06446144389446229,
+  "delta_stress.recall_leak": -0.09036144578313254,
+  "delta_stress.specificity": -0.06174698795180722,
+  "delta_stress.accuracy": -0.07605421686746983,
+  "delta_stress.mcc": -0.15169524504113374,
+  "stress.bad.flip_rate": 0.11596385542168675,
+  "stress.bad.right_to_wrong": 0.10316265060240964,
+  "stress.bad.wrong_to_right": 0.012801204819277108,
+  "stress.good.flip_rate": 0.06927710843373494,
+  "stress.good.right_to_wrong": 0.06551204819277108,
+  "stress.good.wrong_to_right": 0.0037650602409638554
+ },
+ "transitions": {
+  "stress.bad": {
+   "n": 1328,
+   "changed": 154,
+   "right_to_wrong": 137,
+   "wrong_to_right": 17
+  },
+  "stress.good": {
+   "n": 1328,
+   "changed": 92,
+   "right_to_wrong": 87,
+   "wrong_to_right": 5
+  }
+ },
+ "bootstrap": {
+  "iterations": 2000,
+  "seed": 20261123,
+  "clusters": "family",
+  "ci95": {
+   "base.f1_leak": [
+    0.9731202707241461,
+    0.9794353896373136
+   ],
+   "base.macro_f1": [
+    0.9731216818733325,
+    0.9795320477536353
+   ],
+   "base.precision_leak": [
+    0.9718744212962963,
+    0.9843289129470021
+   ],
+   "base.recall_leak": [
+    0.9730320699708455,
+    0.976151348475023
+   ],
+   "base.specificity": [
+    0.9717891029176644,
+    0.9844962670556938
+   ],
+   "base.accuracy": [
+    0.9731217142670718,
+    0.9795322224099574
+   ],
+   "base.mcc": [
+    0.946245709389506,
+    0.9590854897084085
+   ],
+   "stress.f1_leak": [
+    0.8842182763794272,
+    0.911525465716205
+   ],
+   "stress.macro_f1": [
+    0.8870540917881798,
+    0.9124548764108075
+   ],
+   "stress.precision_leak": [
+    0.9011583011583012,
+    0.9257239922430698
+   ],
+   "stress.recall_leak": [
+    0.8599121603970742,
+    0.9061418500543887
+   ],
+   "stress.specificity": [
+    0.9027861062515471,
+    0.9291594431761616
+   ],
+   "stress.accuracy": [
+    0.8871071641346441,
+    0.9124631515041329
+   ],
+   "stress.mcc": [
+    0.7747352872622156,
+    0.825095426440533
+   ],
+   "delta_stress.f1_leak": [
+    -0.09107046368537279,
+    -0.06571632930127412
+   ],
+   "delta_stress.macro_f1": [
+    -0.08817098631669508,
+    -0.06509657193619958
+   ],
+   "delta_stress.precision_leak": [
+    -0.07665154397308799,
+    -0.05342740874604803
+   ],
+   "delta_stress.recall_leak": [
+    -0.11442090841433435,
+    -0.06865279372305431
+   ],
+   "delta_stress.specificity": [
+    -0.07536533056984303,
+    -0.049927540518159265
+   ],
+   "delta_stress.accuracy": [
+    -0.08812572221566889,
+    -0.06508635207280808
+   ],
+   "delta_stress.mcc": [
+    -0.17514362382950605,
+    -0.13005030522889505
+   ],
+   "stress.bad.flip_rate": [
+    0.09140091421139704,
+    0.1416865641253447
+   ],
+   "stress.bad.right_to_wrong": [
+    0.08064297493815746,
+    0.1280814949668023
+   ],
+   "stress.bad.wrong_to_right": [
+    0.008554303301861063,
+    0.017075761929178163
+   ],
+   "stress.good.flip_rate": [
+    0.05857684903829327,
+    0.08171006758525498
+   ],
+   "stress.good.right_to_wrong": [
+    0.0546366507613453,
+    0.07851373628105476
+   ],
+   "stress.good.wrong_to_right": [
+    0.0007935880048221821,
+    0.006944444444444444
+   ]
+  }
+ },
+ "breakdowns": {}
+}
