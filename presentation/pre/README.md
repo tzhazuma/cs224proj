@@ -1,7 +1,6 @@
 # Pre slides: CS224 course project (Beamer, metropolis, 16:9)
 
-"Do Memory-Leak Detectors Read Code or Templates? Rebuilding Juliet CWE-401 to compare static analysis, LLMs
-and decision models". The talk is on Nov 26, 2026, and runs 17 min plus Q&A. The speaker script is in `notes.md`.
+"Near-LLM Quality at Decision-Model Speed? Comparing LLM-based approaches for C/C++ memory-leak detection on a debiased Juliet". The talk is on Nov 26, 2026, and runs 17 min plus Q&A. The speaker script is in `notes.md`.
 
 ## Build
 

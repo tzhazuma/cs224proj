@@ -9,6 +9,7 @@ It records progress and is how information passes between the parent and the lan
 Last update: 2026-11-23 11:44 PST (dell clock is America/Los_Angeles; Beijing = PST + 16 h).
 
 ## 1. Decisions log (newest first; source = user message or parent)
+- 2026-11-23 22:36 user: title = "Near-LLM Quality at Decision-Model Speed? Comparing LLM-Based Approaches for C/C++ Memory-Leak Detection on a Debiased Juliet". Applied to the paper, proposal v2 (+ "Revised Project Proposal") and the slides (title + subtitle); all three rebuilt. Intro/RQ/findings rewrite for the main line waits for the L4-D results.
 - 2026-11-23 22:30 user: in the appendix, only VulnLLM-R-7B is run. LLM4SA, LLM4PFA and other alert-adjudication methods are not reproduced; they are only mentioned in Background. Survey notes: `research/llm_assisted_pa_2026.md` (NeuroLog = L4-style, LASAA Juliet memorization, SemBench/DexBench, FPA NDSS 2026). VulnLLM-R needs the GPUs, so it runs after the L4-D training finishes; preparation (download, runner) happens on CPU now.
 - 2026-11-23 22:16 user: no old-LoRA-on-L4-D control. Training must run in parallel to save time. Contract §5 now has a "Parallelism" rule: both GPUs busy; folds 0 and 1 together; DDP or co-location if faster; FROZEN entry per fold. Steered l4d-train at 22:17.
 - 2026-11-23 22:05 user (main line decided + new stage):

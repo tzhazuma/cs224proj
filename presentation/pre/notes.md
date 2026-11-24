@@ -1,4 +1,4 @@
-# Speaker notes: "Do Memory-Leak Detectors Read Code or Templates?"
+# Speaker notes: "Near-LLM Quality at Decision-Model Speed?"
 
 Talk: 17:00 for slides and live demo, then about 3 min of Q&A (course slot 15–20 min).
 Every result number on the slides comes from `figures/numbers.tex` (written by `make figures` from the result

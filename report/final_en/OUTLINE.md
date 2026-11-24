@@ -32,7 +32,7 @@ Course requirement (CS224 guide):
 
 ## 2. Storyline, research questions, page budget (body through Conclusion ≥ 10 pages; refs + appendix after)
 
-Title (fixed in main.tex): *Do Memory-Leak Detectors Read Code or Templates? Rebuilding Juliet CWE-401 to Compare Static Analyzers, LLMs, and Decision Models.*
+Title (fixed in main.tex): *Near-LLM Quality at Decision-Model Speed? Comparing LLM-Based Approaches for C/C++ Memory-Leak Detection on a Debiased Juliet* (changed 2026-11-23 22:36 by user choice; old title: "Do Memory-Leak Detectors Read Code or Templates? ...")
 
 Research questions:
 - **RQ1 benchmark validity:** Can trivial shortcuts solve original Juliet CWE-401, and does our debiasing remove them?
