@@ -6,7 +6,7 @@
 
 DeepSeek: refuses to start in Beijing peak hours and pauses if a peak window opens mid-run;
 every call is appended to ledger.jsonl and checked against the per-run cap (--max-cost, CNY)
-and the global hard stop (CNY 9.5). Jev: --max-cost in USD, global hard stop USD 4.0.
+and the global hard stop (CNY 11.8 since 2026-11-24; was 9.5). Jev: --max-cost in USD, global hard stop USD 4.0.
 Exit codes: 0 finished, 2 refused to start, 3 aborted mid-run (remaining units status error).
 """
 

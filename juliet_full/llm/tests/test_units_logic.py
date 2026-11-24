@@ -109,8 +109,8 @@ class CostAndLedgerTest(unittest.TestCase):
         self.assertAlmostEqual(budget.run_spent, 0.004)
 
     def test_budget_global_hard_stop(self):
-        budget = Budget("deepseek", run_cap=5.0, ledger_spent=9.499)
-        self.assertEqual(budget.global_cap, 9.5)
+        budget = Budget("deepseek", run_cap=5.0, ledger_spent=11.799)
+        self.assertEqual(budget.global_cap, 11.8)  # raised from 9.5 on 2026-11-24
         with self.assertRaises(BudgetExceeded):
             budget.reserve(0.002)
         jev = Budget("jev", run_cap=1.0, ledger_spent=3.9999)

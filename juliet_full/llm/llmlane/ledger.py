@@ -14,7 +14,8 @@ from . import LLM_DIR
 LEDGER_PATH = LLM_DIR / "ledger.jsonl"
 
 # Global hard stops across all runs (README section 7). Currency per provider.
-GLOBAL_CAPS = {"deepseek": ("CNY", 9.5), "jev": ("USD", 4.0)}
+# DeepSeek raised 9.5 -> 11.8 on 2026-11-24 06:05 PST (user: fill DeadFree L1-L4 to the full eval set, ~CNY 3).
+GLOBAL_CAPS = {"deepseek": ("CNY", 11.8), "jev": ("USD", 4.0)}
 
 
 class Ledger:

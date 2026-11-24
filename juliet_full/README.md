@@ -112,7 +112,7 @@ prediction file count as invalid.
 
 ## 7. Budget rules (API)
 
-- DeepSeek `deepseek-flash`: total project cap ¥10 (client hard stop at ¥9.5 cumulative, one shared ledger
+- DeepSeek `deepseek-flash`: total project cap ¥10, raised 2026-11-24 06:05 PST to ≈ ¥12 for the DeadFree full-eval fill (client hard stop ¥11.8 cumulative, was ¥9.5; one shared ledger
   `llm/ledger.jsonl`); thinking must be disabled (`"thinking": {"type": "disabled"}`), abort if `reasoning_tokens`
   appear; run only in off-peak hours (peak = Beijing Mon–Fri 09:00–12:00 and 14:00–18:00). Development tests in
   Phase A: ≤ ¥0.3, dev units only.
