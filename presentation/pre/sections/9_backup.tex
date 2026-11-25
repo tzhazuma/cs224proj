@@ -37,6 +37,7 @@ void sym_0() { sym_1(); sym_2(); }
 
 % ------------------------------------------------------------------------------
 \begin{frame}{Backup: task and data}
+  \slidecite{\bib{sardjuliet13}; \bib{mitrecwe401}}
   \begin{itemize}
     \item One Juliet CWE-401 unit (C or C++) $\to$ leak / no leak
     \item 1,658 bad/good groups, 42 families, 48 flow variants
@@ -48,6 +49,7 @@ void sym_0() { sym_1(); sym_2(); }
 
 % ------------------------------------------------------------------------------
 \begin{frame}{Backup: Original vs Debiased, all detectors}
+  \slidecite{\bib{clangsa}; \bib{inferpulse}; \bib{codeqldocs}; \bib{cppcheck}; \bib{lsan}; \bib{fu2022linevul}}
   \centering
   {\footnotesize\renewcommand{\arraystretch}{0.86}\input{figures/original.tex}}\\[2pt]
   {\scriptsize Macro-F1 on the eval set (2,656 units). $^\dagger$\,DeepSeek: nested25 subset (664 units).\par}
@@ -59,6 +61,7 @@ void sym_0() { sym_1(); sym_2(); }
 %   (Debiased latency300, quiet re-measure); L4-D (opt.) Debiased 0.214 s: juliet_full/l4d_ft/REPORT_stage1.md:137
 %   (fallback kernel = prediction config)
 \begin{frame}{Backup: on Debiased, the unit-label LoRA was near-cloud}
+  \slidecite{\bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{qwen35card}; \bib{zhu2026interndecision}; \bib{clangsa}}
   \begin{columns}[c]
     \begin{column}{0.58\textwidth}
       \includegraphics[width=\linewidth]{figures/nearllm.pdf}
@@ -80,6 +83,7 @@ void sym_0() { sym_1(); sym_2(); }
 % src: Debiased/Placebo from registry runs (\res{<key>-<layer>}); DeadFree from deadfree_quality.json (\res{df-<key>});
 %   DeepSeek Placebo run is the nested25 subset (664 units)
 \begin{frame}{Backup: Placebo control: the guard alone does not hurt}
+  \slidecite{\bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{qwen35card}; \bib{zhu2026interndecision}; \bib{clangsa}}
   \centering
   \small
   \renewcommand{\arraystretch}{1.1}
@@ -106,6 +110,7 @@ void sym_0() { sym_1(); sym_2(); }
 % src: McNemar rows from report/final_en/tables/res_mcnemar.tex (18 pre-registered tests, Holm);
 %   bootstrap rows from juliet_full/analysis/near_llm_bootstrap.py (seed 20261123, B=2000, family-cluster, macro-F1 difference).
 \begin{frame}{Backup: paired tests on Debiased (2,656 units)}
+  \slidecite{\bib{mcnemar1947}; \bib{holm1979}; \bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{qwen35card}; \bib{zhu2026interndecision}; \bib{codeqldocs}}
   \centering
   \small
   \begin{tabular}{@{}llr@{}}
@@ -198,6 +203,7 @@ void sym_0() { sym_1(); sym_2(); }
 % ------------------------------------------------------------------------------
 % src: figures/df_by_flow.tex <- deadfree_quality.json by_flow
 \begin{frame}{Backup: DeadFree by flow category}
+  \slidecite{\bib{sardjuliet13}; \bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{qwen35card}; \bib{zhu2026interndecision}; \bib{clangsa}}
   \centering
   {\small\resizebox{\linewidth}{!}{\input{figures/df_by_flow.tex}}\par}
   \vfill
@@ -207,6 +213,7 @@ void sym_0() { sym_1(); sym_2(); }
 % ------------------------------------------------------------------------------
 % src: figures/df_strategies.tex <- deadfree_quality.json strategy_x_ft + latency_deadfree.csv
 \begin{frame}{Backup: strategy $\times$ local model, macro-F1 / median latency}
+  \slidecite{\bib{qwen35card}; \bib{zhu2026interndecision}; \bib{hu2022lora}}
   \centering
   {\small\resizebox{\linewidth}{!}{\input{figures/df_strategies.tex}}\par}
   \vfill
@@ -217,6 +224,7 @@ void sym_0() { sym_1(); sym_2(); }
 % src: juliet_full/analysis/deadfree/deadfree_quality.json intern_l4d (tau 0.5, primary), intern_l4d_devtau
 %   (dev tau 0.182426, secondary), readout_l4d, paired_deltas; notes[0] (switch after eval), notes[1] (failure)
 \begin{frame}{Backup: Intern-Decision L4-D and its threshold}
+  \slidecite{\bib{zhu2026interndecision}}
   \centering
   \renewcommand{\arraystretch}{1.15}
   \begin{tabular}{@{}lcccc@{}}
@@ -239,6 +247,7 @@ void sym_0() { sym_1(); sym_2(); }
 % src: deadfree_quality.json vulnllmr; configuration juliet_full/STATUS.md 2026-11-23 22:41 (authors' prompt with
 %   policy hint CWE-401/1333/703/404, #judge: yes = leak, unparseable = wrong)
 \begin{frame}{Backup: VulnLLM-R-7B, a vulnerability-reasoning model}
+  \slidecite{\bib{nie2025vulnllmr}}
   \begin{itemize}
     \item Authors' prompt and policy hint (CWE-401, 1333, 703, 404); temperature 0
     \item DeadFree: macro-F1 \res{df-vulnllmr}{macro} \res{df-vulnllmr}{ci}
@@ -253,6 +262,7 @@ void sym_0() { sym_1(); sym_2(); }
 % src: prompts juliet_full/llm/prompts (frozen on dev); L4-D templates juliet_full/l4d/templates.py (TEMPLATE_SHA256,
 %   frozen), abridged only by dropping the code snippet in backticks
 \begin{frame}{Backup: prompts and the five L4-D question templates}
+  \slidecite{\bib{clangsa}; \bib{jordan2016souffle}}
   \footnotesize
   \begin{description}[L4-D]
     \item[L1] unit code $\to$ \code{\{label, confidence\}}; decision models read P(leak)
@@ -278,6 +288,7 @@ void sym_0() { sym_1(); sym_2(); }
 % ------------------------------------------------------------------------------
 % src: juliet_full/l4d/l4d.dl (rules v1, comments dropped)
 \begin{frame}[fragile]{Backup: L4-D rules v1 (Souffl\'e, complete)}
+  \slidecite{\bib{jordan2016souffle}; \bib{url-treesitter}}
 \begin{lstlisting}[style=dl]
 .input unit, alloc, realloc, heap, exec_any, exec_all, rel, realloc_safe
 heap_block(u, a) :- alloc(u, a), heap(u, a).
@@ -298,6 +309,7 @@ unit_leak(u) :- leak(u, _, _).
 % ------------------------------------------------------------------------------
 % src: juliet_full/llm/l4/leak.dl (v3 L4 rules, abridged); numbers from registry runs (DeepSeek DeadFree = nested25)
 \begin{frame}[fragile]{Backup: L4 (LLM facts + Datalog), the v3 rule set}
+  \slidecite{\bib{jordan2016souffle}}
   \begin{columns}[T]
     \begin{column}{0.59\textwidth}
 \begin{lstlisting}[style=dl]
@@ -335,6 +347,7 @@ freed(o) :- free(v, f, l), reach(f), !dead(l),
 
 % ------------------------------------------------------------------------------
 \begin{frame}{Backup: method matrix with versions}
+  \slidecite{\bib{clangsa}; \bib{inferpulse}; \bib{codeqldocs}; \bib{cppcheck}; \bib{lsan}; \bib{nethercote2007valgrind}; \bib{nie2025vulnllmr}; \bib{kwon2023vllm}}
   \footnotesize
   \renewcommand{\arraystretch}{0.9}
   \begin{tabular}{@{}lll@{}}
@@ -366,6 +379,7 @@ freed(o) :- free(v, f, l), reach(f), !dead(l),
 % src: figures/cost.tex <- juliet_full/llm/ledger.jsonl; per-1k cost report/final_en/generated/numbers.tex
 %   (res-x-cost1k_deepseek_L1, res-x-cost1k_jev_L1); FT cost juliet_full/l4d_ft/PROGRESS.md:8
 \begin{frame}{Backup: cost of every API run and of fine-tuning}
+  \slidecite{\bib{deepseekdocs}; \bib{typesafe2026jev}}
   \begin{columns}[T]
     \begin{column}{0.60\textwidth}
       {\scriptsize\resizebox{\linewidth}{!}{\input{figures/cost.tex}}\par}
@@ -383,6 +397,7 @@ freed(o) :- free(v, f, l), reach(f), !dead(l),
 
 % ------------------------------------------------------------------------------
 \begin{frame}{Backup: Debiased latency at concurrency 1 (v3 measurements)}
+  \slidecite{\bib{kwon2023vllm}}
   \centering
   {\tiny\renewcommand{\arraystretch}{0.92}\resizebox{\linewidth}{!}{\input{figures/latency.tex}}\par}
   \vfill
@@ -392,6 +407,7 @@ freed(o) :- free(v, f, l), reach(f), !dead(l),
 
 % ------------------------------------------------------------------------------
 \begin{frame}{Backup: are the labels still right? Compile and run every unit}
+  \slidecite{\bib{serebryany2012asan}; \bib{lsan}}
   \begin{columns}[T]
     \begin{column}{0.46\textwidth}
       \begin{itemize}\small
@@ -420,6 +436,7 @@ freed(o) :- free(v, f, l), reach(f), !dead(l),
 % ------------------------------------------------------------------------------
 % src: deadfree_quality.json asan_lsan / dynamic_enhanced; misses juliet_full/lane_reports data_stage4 (v3 backup)
 \begin{frame}{Backup: dynamic analysis is a reference line, not a competitor}
+  \slidecite{\bib{serebryany2012asan}; \bib{lsan}; \bib{url-gcov}}
   \begin{itemize}
     \item ASan/LSan on DeadFree: precision \res{df-asan_lsan}{p}, macro-F1 \res{df-asan_lsan}{macro}
     \item Misses: \code{realloc} failure; globals at exit; random branch not taken
@@ -430,6 +447,7 @@ freed(o) :- free(v, f, l), reach(f), !dead(l),
 
 % ------------------------------------------------------------------------------
 \begin{frame}{Backup: demo, all detectors on the stage unit}
+  \slidecite{\bib{clangsa}; \bib{deepseekdocs}; \bib{typesafe2026jev}}
   \centering
   {\footnotesize\input{figures/demo.tex}\par}
   \vfill

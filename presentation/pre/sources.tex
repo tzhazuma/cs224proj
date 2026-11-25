@@ -1,0 +1,52 @@
+% Short per-slide source strings for \slidecite{...} (see main.tex). One entry per source; the name is the
+% report/final_en/references.bib key. Entries without a bib entry use the official URL (prefix url-) or the
+% course lecture (prefix cs224-, titles as in /home/barton/Documents/projects/cs224/slides/*.pdf).
+% \bib{<key>} prints the short form; an unknown key prints "??<key>" (grep the PDF text for "??").
+\newcommand{\bib}[1]{\ifcsname bib-#1\endcsname\csname bib-#1\endcsname\else\textbf{??#1}\fi}
+\newcommand{\defbib}[2]{\expandafter\def\csname bib-#1\endcsname{#2}}
+% data sets and weakness definition
+\defbib{sardjuliet13}{Juliet C/C++ 1.3, NIST SARD (samate.nist.gov/SARD/test-suites/112)}
+\defbib{black2018juliet13}{Black, NIST 2018}
+\defbib{boland2012juliet}{Boland \& Black, Computer 2012}
+\defbib{mitrecwe401}{MITRE CWE-401 (cwe.mitre.org)}
+\defbib{germano2025biased}{Germano et al., ICAART 2025}
+\defbib{risse2024limits}{Risse \& B\"ohme, USENIX Security 2024}
+\defbib{risse2025topscore}{Risse et al., ISSTA 2025}
+% static and dynamic tools
+\defbib{clangsa}{Clang SA (clang-analyzer.llvm.org)}
+\defbib{inferpulse}{Infer Pulse (fbinfer.com)}
+\defbib{le2022pulse}{Le et al., OOPSLA 2022}
+\defbib{codeqldocs}{CodeQL (codeql.github.com)}
+\defbib{avgustinov2016ql}{Avgustinov et al., ECOOP 2016}
+\defbib{cppcheck}{Cppcheck 2.22 (cppcheck.sourceforge.io)}
+\defbib{serebryany2012asan}{ASan: Serebryany et al., ATC 2012}
+\defbib{lsan}{LSan (clang.llvm.org/docs/LeakSanitizer.html)}
+\defbib{nethercote2007valgrind}{Valgrind: Nethercote \& Seward, PLDI 2007}
+\defbib{url-gcov}{gcov (gcc.gnu.org/onlinedocs/gcc/Gcov.html)}
+\defbib{jordan2016souffle}{Souffl\'e: Jordan et al., CAV 2016}
+\defbib{url-treesitter}{tree-sitter (tree-sitter.github.io)}
+% models and training
+\defbib{deepseekdocs}{DeepSeek (api-docs.deepseek.com)}
+\defbib{deepseek2026v4}{DeepSeek-AI, arXiv:2606.19348}
+\defbib{typesafe2026jev}{Jev: TypeSafe AI 2026}
+\defbib{qwen35card}{huggingface.co/Qwen/Qwen3.5-4B}
+\defbib{zhu2026interndecision}{Intern-Decision: Zhu et al., arXiv:2610.22131}
+\defbib{nie2025vulnllmr}{VulnLLM-R: Nie et al., arXiv:2512.07533}
+\defbib{fu2022linevul}{LineVul: Fu \& Tantithamthavorn, MSR 2022}
+\defbib{hu2022lora}{LoRA: Hu et al., arXiv:2106.09685}
+\defbib{zhang2026anyjev}{AnyJev: Zhang et al., arXiv:2610.00831}
+\defbib{zhao2026cyberjev}{Cyber-JEV: Zhao et al., arXiv:2611.02957}
+\defbib{kwon2023vllm}{vLLM: Kwon et al., SOSP 2023}
+% related LLM + program-analysis work
+\defbib{wang2026nesa}{NESA: Wang et al., FSE 2026}
+\defbib{wang2024llmdfa}{LLMDFA: Wang et al., NeurIPS 2024}
+% statistics
+\defbib{efron1979}{bootstrap: Efron, Ann.\ Statist.\ 1979}
+\defbib{mcnemar1947}{McNemar, Psychometrika 1947}
+\defbib{holm1979}{Holm, Scand.\ J.\ Statist.\ 1979}
+% course lectures (CS224)
+\defbib{cs224-l1}{CS224 Lecture 1 (Introduction)}
+\defbib{cs224-l3}{CS224 Lecture 3--4 (Data Flow Analysis)}
+\defbib{cs224-l10}{CS224 Lecture 10 (Pointer Analysis)}
+\defbib{cs224-l17}{CS224 Lecture 17 (Datalog-Based Program Analysis)}
+\defbib{cs224-l18}{CS224 Lecture 18 (Soundiness)}

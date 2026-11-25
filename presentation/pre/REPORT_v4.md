@@ -1,5 +1,43 @@
 # REPORT v4: slides "Near-Cloud Quality on a Local Device?"
 
+## v4.3 update (2026-11-24 ~19:30 PST, user review fixes 1–10)
+- Build: `make && make check && make pngs` clean; main.pdf 58 pages (24 numbered main frames + backup); no undefined
+  `\res`, no "??" citation key in the PDF text.
+- Fixes 1–8 (frames by footer number): new slide 5 "Original Juliet CWE-401: synthetic, templated, gameable" (listing,
+  cue table grep / static void, Clang SA reference; counts from `\res{x}{juliet_*}`); slide 8 split + plain macro-F1
+  and family bootstrap CI (`\res{x}{boot_*}`), τ no longer defined there; slide 9 prompt input / output per model kind
+  (τ: dev for our models, 0.5 for Jev and Intern-Decision); slide 10 "Datalog engine (Soufflé, leak.dl)" + site
+  footnote; slide 13 kept/dropped table, "arrow = the rule reads this fact", demo counts 2 of 5 / 4 of 8
+  (`\res{x}{demo_l4d_*}`); slide 14 retitled "Which wrong facts cost the most? Fix one fact type at a time"; slide 17
+  defines Qwen read-out (table row + footnote).
+- Fix 9, two tracks (DeadFree full eval only, all via macros): slide 18 "Two tracks × four strategies (DeadFree)",
+  generated tables `figures/df_track_generative.tex` (Qwen3.5-4B, DeepSeek; L1–L4) and `figures/df_track_decision.tex`
+  (Qwen read-out, Intern-Decision, ours (LoRA), Jev; L1, L2, L3, L4-D) from `methods.json deadfree.tracks`; bold = best
+  cell per row (computed); read-out L1/L3 (.351/.334) moved into the main table; "–†" for no L2 (FT saw ≈1,800
+  labelled units; L2 prompt 2.4× longer; src PLAN.md). Slide 19 "FT: unit labels stay below the baselines, fact labels
+  beat them": same-weights bars read-out → LoRA per strategy with Intern (dashed) and Qwen gen. (dotted) reference
+  lines, Debiased .984 → DeadFree .372, paired Δ FT L4-D − Intern L4-D +.027 [+.003, +.054]. The earlier title "only
+  fact labels transfer" was dropped because FT L3 is +.304 over its read-out. Slide 20 Pareto: shape = track (circle
+  generative, diamond decision), colour = cloud/local, star = ours, static grey, dynamic dashed reference; legend
+  9.5 pt. Slides 17, 21, 23 made consistent (Jev role "L1–L3, L4-D"; "decision-track cloud ceiling: Jev L3, Jev L4-D";
+  take-away 3 with Debiased → DeadFree FT L1).
+- Jev L4-D: `deadfree.expected: ["jev_l4d"]`. Until `juliet_full/analysis/deadfree/JEV_L4D_READY` and the rows exist,
+  the slide 18 cell and slide 21 value print grey "pending" and the Pareto shows "pending: Jev L4-D"; a plain `make`
+  fills them (and the bold cell of the Jev row is recomputed). Wording is neutral ("cloud ceiling of the decision
+  track"). `jev_l4d_devtau` is excluded from the Pareto (backup only). Paired deltas with jev_l4d appear as
+  `\res{df-x}{pd_jev_l4d__<b>}` once the JSON has them; they are not yet referenced on a slide.
+- Fix 10, per-slide sources: `\slidecite{...}` (main.tex) prints a 5.5 pt grey line in the frame footer, left of the
+  page number; short forms in `sources.tex` keyed by `report/final_en/references.bib` keys. Keys used: sardjuliet13,
+  black2018juliet13, mitrecwe401, germano2025biased, risse2024limits, risse2025topscore, clangsa, inferpulse,
+  codeqldocs, cppcheck, serebryany2012asan, lsan, nethercote2007valgrind, jordan2016souffle, deepseekdocs,
+  deepseek2026v4, typesafe2026jev, qwen35card, zhu2026interndecision, nie2025vulnllmr, fu2022linevul, hu2022lora,
+  zhang2026anyjev, zhao2026cyberjev, kwon2023vllm, wang2026nesa, wang2024llmdfa, efron1979, mcnemar1947, holm1979.
+  Without a bib entry: gcov (gcc.gnu.org/onlinedocs/gcc/Gcov.html), tree-sitter (tree-sitter.github.io). Lectures:
+  CS224 Lecture 1 (Introduction), 3–4 (Data Flow Analysis), 10 (Pointer Analysis), 17 (Datalog-Based Program
+  Analysis), 18 (Soundiness).
+- notes.md: timing table rebuilt for 25 rows (still 17:00), new section 5, sections 8–10, 13, 14, 17–21 rewritten for
+  the two tracks; Q&A unchanged.
+
 ## v4.2 final pass (2026-11-24 ~10:30 PST, latency csv final, commit aa001d0 of the latency lane)
 - Rebuilt from the final `latency_deadfree.csv` (primary rows). `make && make check && make pngs`: clean, 57 pages; no
   undefined `\res`; no "pending" in any figure or slide text (only the provenance page explains the mechanism).

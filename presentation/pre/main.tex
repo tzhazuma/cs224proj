@@ -48,7 +48,16 @@
 \newcommand{\cmark}{\textcolor{OIgreen}{\ding{51}}}
 \newcommand{\xmark}{\textcolor{OIvermil}{\ding{55}}}
 \newcommand{\code}[1]{\texttt{\small #1}}
+% Per-slide sources (user 2026-11-24 19:05): \slidecite{...} inside a frame prints a tiny grey line in the frame
+% footer, left of the page number (smashed, so the layout does not move). Entries come only from
+% report/final_en/references.bib or official URLs; reset at every frame.
+\newcommand{\slidecites}{}
+\newcommand{\slidecite}[1]{\gdef\slidecites{#1}}
+\BeforeBeginEnvironment{frame}{\gdef\slidecites{}}
+\setbeamertemplate{frame footer}{\smash{\parbox[t]{0.88\textwidth}{\raggedright\fontsize{5.5}{6.5}\selectfont
+  \textcolor{NeutDraw}{\slidecites}}}}
 \input{figures/numbers.tex} % \res{<key>-<layer>}{metric} (registry), \res{df-<key>}{metric} (DeadFree); "pending" when missing
+\input{sources.tex} % \bib{<references.bib key>} short forms for \slidecite
 
 \lstdefinestyle{unit}{language=C++, basicstyle=\ttfamily\scriptsize, keywordstyle=\color{OIblue}\bfseries,
   commentstyle=\color{NeutDraw}, stringstyle=\color{DataDraw}, columns=fullflexible, keepspaces=true,

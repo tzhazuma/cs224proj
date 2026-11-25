@@ -4,6 +4,7 @@
 % src: figures/df_intro_time.pdf <- juliet_full/analysis/deadfree/latency_deadfree.csv (median_s, latency300 DeadFree
 %   units, concurrency 1, role=primary rows); final as of 2026-11-24 10:12 PST.
 \begin{frame}{Leak checks must fit a developer's time budget}
+  \slidecite{\bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{qwen35card}; \bib{zhu2026interndecision}}
   \centering
   \includegraphics[width=\linewidth,height=0.60\textheight,keepaspectratio]{figures/df_intro_time.pdf}\\[4pt]
   \begin{tabular}{@{}ccc@{}}
@@ -17,6 +18,7 @@
 % ------------------------------------------------------------------------------
 % src: figures/df_intro_quality.pdf <- juliet_full/analysis/deadfree/deadfree_quality.json (macro_f1, eval 2,656 units)
 \begin{frame}{On DeadFree, cloud models are far ahead of local ones}
+  \slidecite{\bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{qwen35card}; \bib{zhu2026interndecision}; \bib{nie2025vulnllmr}}
   \centering
   \includegraphics[width=\linewidth,height=0.60\textheight,keepaspectratio]{figures/df_intro_quality.pdf}\\[4pt]
   {\small Cloud \res{df-deepseek_L1}{macro}--\res{df-jev_L3}{macro};
@@ -28,6 +30,7 @@
 % ------------------------------------------------------------------------------
 % src: figures/hook_original.pdf <- juliet_full/data/build/probes.json (static void) and registry runs on layer "original"
 \begin{frame}{Original Juliet can be gamed: a one-line rule beats Clang SA}
+  \slidecite{\bib{sardjuliet13}; \bib{clangsa}; \bib{germano2025biased}}
   \begin{columns}[c]
     \begin{column}{0.57\textwidth}
       \includegraphics[width=\linewidth]{figures/hook_original.pdf}
