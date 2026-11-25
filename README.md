@@ -17,6 +17,43 @@
 >
 > **2026-11-22 下一轮审计：** [`audit/next_iteration_audit.md`](audit/next_iteration_audit.md)，覆盖本轮五个新目录（`interpretable_baseline`、`pair_diff`、`codeql_triage`、`verifier_conservative`、`dynamic_coverage`）与 `research/next_iteration_rationale.md`；当前为 **Overall `PASS_WITH_WARNINGS`：40 PASS / 0 FAIL / 1 WARN（41 checks）**。当前仅剩 E5 方法学 WARN（预注册时间戳不可从产物验证）；F3/F4 已修复；本 README 已改用 `audit/next_iteration_audit.md` 与 `benchmark/results/NEXT_ITERATION.md`）。发布门禁 FAIL=0，但 WARN 必须与结果一起读；审计重跑后以文件 `Overall:` / `Checks:` 行为准。本轮数字均为**单次运行**；`verifier_conservative` 是 post-hoc/test-seen，`codeql_triage` 只有 MiMo 有结果，不能当作独立确认。
 
+
+## 0. 2026-11 主线：Juliet CWE-401 全集 — *Near-Cloud Quality on a Local Device?*
+
+> 2026-11-23/24 起，课程展示与最终报告的主线是 **Juliet v1.3 CWE-401 全集（1,658 组 / 3,316 单元）上的内存泄漏检测**：
+> 同一任务上比较云端模型（DeepSeek-flash、Jev）、本地模型（Qwen3.5-4B 生成式 / 读出、Intern-Decision-4B、我们微调的 Qwen3.5-4B LoRA）、静态分析器与动态参考线。
+> 下文 §1–§8 是此前 SecVulEval + Juliet test140 的分层评测，仍保留；SecVulEval 只进附录。
+
+| 想看什么 | 位置 |
+| --- | --- |
+| 计划、全部已定决策与理由 | [`PLAN.md`](PLAN.md) |
+| 进度与决策日志（最新在上）、产物哈希、预算 | [`juliet_full/STATUS.md`](juliet_full/STATUS.md) |
+| 数据格式与各子目录分工契约 | [`juliet_full/README.md`](juliet_full/README.md)，各 lane 报告 [`juliet_full/lane_reports/`](juliet_full/lane_reports/) |
+| 切分（dev 9 个流变体 + eval 3 折，按流变体分组） | [`juliet/full_split_v1.json`](juliet/full_split_v1.json)，[`juliet/scripts/split_full.py`](juliet/scripts/split_full.py) |
+| 四层数据：Original / Debiased / DeadFree / Placebo | [`juliet_full/data/`](juliet_full/data/)（`build/{original,layer1,layer3,placebo}.jsonl`，`build/subsets.json`，`build/SHA256SUMS`） |
+| 静态（Clang SA、CodeQL、Infer、Cppcheck、grep）与动态（ASan/LSan、Valgrind、增强动态）结果 | [`juliet_full/static/`](juliet_full/static/)，[`juliet_full/data/results/`](juliet_full/data/results/) |
+| 云端与生成式模型 L1–L4（提示、调用账本、结果） | [`juliet_full/llm/`](juliet_full/llm/) |
+| 本地服务、Intern-Decision、LineVul、VulnLLM-R-7B | [`juliet_full/gpu/`](juliet_full/gpu/)，[`juliet_full/vulnllmr/`](juliet_full/vulnllmr/) |
+| 旧 LoRA（L1/L3，单元标签）与 L4-D LoRA（事实标签 + Datalog） | [`juliet_full/decision_ft/`](juliet_full/decision_ft/)，[`juliet_full/l4d/`](juliet_full/l4d/)（站点、问题、动态金标、`l4d.dl`），[`juliet_full/l4d_ft/`](juliet_full/l4d_ft/) |
+| DeadFree 质量 / c1 延迟 / 成本表 | [`juliet_full/analysis/deadfree/`](juliet_full/analysis/deadfree/)（`deadfree_quality.*`，`latency_deadfree.csv`，`cost_deadfree.*`） |
+| 课程展示（Beamer，英文）与现场演示 | [`presentation/pre/main.pdf`](presentation/pre/main.pdf)（讲稿 `notes.md`），[`presentation/demo/`](presentation/demo/)（录屏 `recordings/stage_final_v2.*`） |
+| 论文（IEEE conference）与新版 proposal | [`report/final_en/`](report/final_en/)，[`proposal/v2/`](proposal/v2/) —— 二者尚未同步到新标题与 DeadFree 主线，以 slides 为准 |
+
+**DeadFree eval（2,656 单元）主要结果**（macro-F1；并发 1 的中位延迟；每 1,000 单元成本）：
+
+| 方法 | macro-F1 | 延迟 | $/1k |
+| --- | --- | --- | --- |
+| DeepSeek-flash L1 / L4（云） | 0.863 / 0.900 | 0.895 s / 1.008 s | 0.065 / 0.110 |
+| Jev L3（云，最佳） | 0.949 | 0.923 s | 0.039 |
+| Qwen3.5-4B 生成式 L1（本地，未调） | 0.533 | 0.347 s | — |
+| Qwen3.5-4B 读出 L4-D（本地，未调） | 0.752 | — | — |
+| **FT L4-D（ours，Qwen3.5-4B + LoRA，单张 RTX 3090）** | **0.826** | **0.472 s** | 0.070（租用）/ 0.006（仅电费） |
+| Clang SA（静态） | 0.855 | 0.019 s | — |
+
+FT L4-D 弥合了本地基线到 DeepSeek L1 差距的 89%，比 DeepSeek L1 快 1.9×，代码不出本机；但按预注册标准（≥ DeepSeek L1 − 0.02）**尚未达到 near-cloud**。
+
+**不在仓库中的内容**（体积大或可再生成）：Juliet 原始压缩包与解压目录（`juliet/scripts/fetch_juliet.py` 下载，SHA-256 `ada9d7e1…f38eb`）、编译后的程序目录 `juliet_full/data/build/programs*/`、L4-D 问题/站点文件 `juliet_full/l4d/build/{questions,sites}_*.jsonl`、训练数据渲染与检查点、各 `.venv/`、`raw_logs/`、`scratch/`；LoRA 适配器（每折约 130 MB）只保存在训练服务器上。API 密钥放在被忽略的 `.env`（`DEEPSEEK_API_KEY`、`TYPESAFE_API_KEY`），不入库。
+
 ---
 
 ## 1. 项目解决什么问题
