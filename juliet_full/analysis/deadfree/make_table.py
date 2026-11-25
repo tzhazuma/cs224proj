@@ -87,7 +87,11 @@ STRATEGY_FT = {
 # expected macro-F1 values given by the parent (cross-check, ±0.0015)
 # extra paired family-cluster bootstrap deltas (a − b), same resamples as all other CIs
 PAIRED_DELTAS = [("lora_l4d_opt", "intern_l4d"), ("intern_l4d", "readout_l4d"),
-                 ("jev_l4d", "jev_L3"), ("jev_l4d", "lora_l4d_opt"), ("jev_l4d", "deepseek_L4"), ("jev_l4d", "jev_L1")]
+                 ("jev_l4d", "jev_L3"), ("jev_l4d", "lora_l4d_opt"), ("jev_l4d", "deepseek_L4"), ("jev_l4d", "jev_L1"),
+                 # vertical comparisons on the same Qwen3.5-4B weights (parent 2026-11-24 21:25, user m04212)
+                 ("readout_l4d", "readout_L1"), ("readout_l4d", "qwen_L1"), ("readout_l4d", "qwen_L4"),
+                 ("lora_L1", "readout_L1"), ("lora_L3", "readout_L3"), ("lora_l4d_opt", "readout_l4d"),
+                 ("lora_l4d_opt", "qwen_L1"), ("lora_l4d_opt", "qwen_L3"), ("lora_l4d_opt", "qwen_L4")]
 NOTES = [
     "intern_l4d: l4d_ft/results/intern_l4d/FROZEN listed the layer1-dev τ 0.182426 as primary; the parent switched "
     "the primary to τ = 0.5 after seeing the eval results, for consistency with Intern-Decision L1–L3 (calibrated "

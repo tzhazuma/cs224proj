@@ -62,6 +62,15 @@ Jev (cloud) = Jev (TypeSafe System One, jev-latest) @0.5, cloud decision-model r
 - Jev L4-D @0.5 − LoRA L4-D (opt.): +0.081 [+0.047, +0.111]
 - Jev L4-D @0.5 − DeepSeek L4: +0.007 [-0.028, +0.039]
 - Jev L4-D @0.5 − Jev L1 @0.5: -0.039 [-0.069, -0.009]
+- Qwen3.5-4B read-out L4-D (pre-FT) − Qwen3.5-4B read-out L1 (pre-FT): +0.401 [+0.380, +0.419]
+- Qwen3.5-4B read-out L4-D (pre-FT) − Qwen3.5-4B L1 (gen.): +0.220 [+0.185, +0.253]
+- Qwen3.5-4B read-out L4-D (pre-FT) − Qwen3.5-4B L4 (gen.): +0.046 [+0.026, +0.066]
+- LoRA L1 (unit-label FT) − Qwen3.5-4B read-out L1 (pre-FT): +0.021 [-0.007, +0.054]
+- LoRA L3 (unit-label FT) − Qwen3.5-4B read-out L3 (pre-FT): +0.304 [+0.280, +0.331]
+- LoRA L4-D (opt.) − Qwen3.5-4B read-out L4-D (pre-FT): +0.074 [+0.053, +0.097]
+- LoRA L4-D (opt.) − Qwen3.5-4B L1 (gen.): +0.294 [+0.262, +0.326]
+- LoRA L4-D (opt.) − Qwen3.5-4B L3 (gen.): +0.067 [+0.039, +0.099]
+- LoRA L4-D (opt.) − Qwen3.5-4B L4 (gen.): +0.121 [+0.102, +0.139]
 
 ## Notes
 
