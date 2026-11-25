@@ -286,7 +286,7 @@ void sym_0() { sym_1(); sym_2(); }
       vs Jev L3 \res{df-x}{pd_jev_l4d__jev_L3} \res{df-x}{pd_jev_l4d__jev_L3_ci};\\ vs FT L4-D \res{df-x}{pd_jev_l4d__lora_l4d_opt} \res{df-x}{pd_jev_l4d__lora_l4d_opt_ci}
     \item \code{exec\_all} fact accuracy 0.975 (FT L4-D 0.831): a strong decision model answers path questions well;
       most of its 238 false leaks contain a wrong \code{realloc\_safe} answer
-    \item Latency \res{df-jev_l4d}{lat}: the questions of a unit are sent concurrently (local L4-D asks them one by one)
+    \item Latency \res{df-jev_l4d}{lat}: the questions of a unit are sent concurrently (FT L4-D batches them in one forward pass; Intern-Decision L4-D asks them one by one)
   \end{itemize}
 \end{frame}
 

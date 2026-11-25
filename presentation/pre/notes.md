@@ -208,8 +208,8 @@ the cloud — for us one RTX 3090 with 24 GB."
   accurate local LM and dominates untuned Intern L4-D (.799 at 658 ms); the cloud is higher at 0.81–1.01 s.
 - Other grey squares: Infer .815 at 256 ms, CodeQL .766 at 7.4 s. Dynamic: ASan/LSan .948 at 135 ms,
   Dynamic-enhanced 1.0 at 1.17 s, both need a build, a run and the right inputs.
-- Jev L4-D (.907 at 967 ms) is the orange diamond just below Jev L1; its questions are sent concurrently, the local
-  L4-D asks them one by one.
+- Jev L4-D (.907 at 967 ms) is the orange diamond just below Jev L1; its questions are sent concurrently; our FT L4-D batches a
+  unit's questions in one forward pass, Intern-Decision L4-D asks them one by one.
 
 ## 21. Gap and criterion (0:35)
 - Gap measured from untuned Qwen L1 (.533) to the cloud model. Untuned Intern L4-D: −.064 vs DeepSeek L1, 81 %
