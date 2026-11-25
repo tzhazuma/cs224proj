@@ -1,0 +1,50 @@
+{
+ "sp_a": {
+  "world": 1,
+  "micro_tokens": 1200,
+  "gc_above": 1200,
+  "steps": 40,
+  "steady_tokens_per_s": 1679.2,
+  "s_per_step": 7.06,
+  "peak_mem_gb": 19.97
+ },
+ "sp_b": {
+  "world": 1,
+  "micro_tokens": 4096,
+  "gc_above": 0,
+  "steps": 30,
+  "steady_tokens_per_s": 1290.4,
+  "s_per_step": 9.19,
+  "peak_mem_gb": 10.58
+ },
+ "sp_ddp": {
+  "world": 2,
+  "micro_tokens": 1200,
+  "gc_above": 1200,
+  "steps": 40,
+  "steady_tokens_per_s": 3358.0,
+  "s_per_step": 3.53,
+  "peak_mem_gb": 20.08
+ },
+ "sp_co1": {
+  "world": 1,
+  "micro_tokens": 4096,
+  "gc_above": 0,
+  "steps": 7,
+  "steady_tokens_per_s": 566.0,
+  "s_per_step": 20.77,
+  "peak_mem_gb": 10.57
+ },
+ "sp_co2": {
+  "world": 1,
+  "micro_tokens": 4096,
+  "gc_above": 0,
+  "steps": 7,
+  "steady_tokens_per_s": 566.2,
+  "s_per_step": 20.76,
+  "peak_mem_gb": 10.57
+ },
+ "ddp_speedup_vs_sp_a": 2.0,
+ "colocated_aggregate_tokens_per_s": 1132.2,
+ "note": "synthetic questions from 200 layer1 dev units (median 348 tokens), 32 questions/step; sp_co1+sp_co2 ran together on GPU 0 (killed after ~8 steps)"
+}
