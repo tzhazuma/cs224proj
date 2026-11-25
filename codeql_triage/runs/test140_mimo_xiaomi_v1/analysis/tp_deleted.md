@@ -1,0 +1,13 @@
+# CodeQL true positives deleted by triage — mimo-v2.6-flash-xiaomi-v1
+
+CodeQL TPs: 68; one-shot deleted: 7 (0.1029); verified deleted: 7 (0.1029); deleted never-only: 0; deleted may-not-be-freed: 7; direct also wrong on: 1.
+
+| unit | variant | queries | alert verdict | leak present | supported | direct | reason |
+| --- | --- | --- | --- | --- | ---: | --- | --- |
+| `CWE401_Memory_Leak__malloc_realloc_int64_t_01__bad` | 01 | may | false_positive | False | 4 | 1 | If realloc succeeds, free(data) releases memory. If realloc fails, original block is leaked, but realloc failure is not a feasible normal path here; analyzer's may-not-be-freed is conservative. On all normal paths memory is freed. |
+| `CWE401_Memory_Leak__malloc_realloc_int64_t_09__bad` | 09 | may | false_positive | False | 5 | 1 | When allocation occurs, realloc succeeds and free(data) releases it. If realloc fails, data is NULL and original block is already freed by realloc semantics. No path leaks. |
+| `CWE401_Memory_Leak__malloc_realloc_int64_t_18__bad` | 18 | may | false_positive | False | 4 | 0 | On the feasible path realloc succeeds and free(data) releases the block. The only unreleased case is realloc returning NULL, which is an allocation-failure edge, not a normal execution path. |
+| `CWE401_Memory_Leak__malloc_realloc_int_01__bad` | 01 | may | false_positive | False | 5 | 1 | If realloc succeeds, free(data) releases memory. If realloc fails, original block is leaked, but realloc failure path is infeasible in practice; analyzer flags exit point conservatively. On normal execution memory is freed. |
+| `CWE401_Memory_Leak__malloc_realloc_int_18__bad` | 18 | may | false_positive | False | 4 | 1 | realloc failure leaves original block, but code checks data != NULL and frees on success; on failure path original block leaks only if realloc failed—however realloc failure means original still valid and not freed. Actually that path leaks. |
+| `CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_01__bad` | 01 | may | false_positive | False | 4 | 1 | If realloc fails, data becomes NULL and original block is leaked; but realloc failure path is not shown feasible here—on success free releases it. Analyzer's may-not-be-freed is conservative; actual code frees on the reachable path. |
+| `CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18__bad` | 18 | may | false_positive | False | 5 | 1 | On realloc success, free(data) releases memory. On realloc failure, old allocation is still owned by data but not freed before exit — however realloc failure path: data becomes NULL, old memory leaked. Wait: realloc failure returns NULL, old memory still valid but data overwritten with NULL, so old pointer lost → leak on that path. But that path is feasible (realloc may fail). Hmm. |

@@ -1,0 +1,72 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_conservative_mimo_cross_20261122",
+  "created_at": "2026-11-22T12:48:32Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1/test",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": 40,
+    "label_counts": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    }
+  },
+  "method": {
+    "method_id": "conservative-three-way-mimo_cross",
+    "family": "hybrid",
+    "name": "Conservative three-way verifier (mimo claim, deepseek verifier)",
+    "strategy": "conservative_three_way",
+    "model": {
+      "model_id": "deepseek-v4.1-flash",
+      "family": "deepseek",
+      "provider": "OpenCode Go",
+      "endpoint": "https://opencode.ai/zen/go/v1",
+      "version": "v4.1-flash",
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "response_format": "json_object",
+        "thinking": "disabled"
+      },
+      "price_snapshot": "OpenCode Go list price 2026-11-22"
+    },
+    "config_sha256": "e9b36063e95deb3307e9acfd1724c177550c3d3d013884cbfd1eee88dec4adf4"
+  },
+  "execution": {
+    "started_at": "2026-11-22T12:48:32Z",
+    "finished_at": "2026-11-22T12:48:32Z",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "0f571170ddd01f3a85b45d132b1c105464705cee233fbd8bd70d7736578be01c",
+    "extension_manifest_sha256": "f0332dbe53b9b022805d5d8c31041b3feb25c45c727c9986abd6477c070e81f5"
+  },
+  "legacy_import": null,
+  "notes": [
+    "conservative verifier arm: mimo_cross",
+    "exploratory post hoc; test already seen by the first pass"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:53.333+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 4.270309175000875,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"da357a73-b4da-4d51-9859-f8754728aaef_2y3lq5g528dh5yot8g_a5f6270768ce443f898f56cb33228fb5\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": true, \\\"final_alert_verdict\\\": \\\"true_positive\\\", \\\"release_gap\\\": \\\"new char in sym_1 stored in local data; function returns and main exits without delete\\\", \\\"reason\\\": \\\"sym_1 allocates char with new, stores in local data, and returns without delete; no other code frees it, so exit leaks the block.\\\", \\\"confidence\\\": 0.97}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344473,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":87,\"prompt_tokens\":633,\"total_tokens\":720,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:49.063+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "69004db5b7adab0211a49035dc06725ea88fb8c769fa610b72cb3de781b44403"
+  },
+  "cache_key": "69004db5b7adab0211a49035dc06725ea88fb8c769fa610b72cb3de781b44403",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": true, \"final_alert_verdict\": \"true_positive\", \"release_gap\": \"new char in sym_1 stored in local data; function returns and main exits without delete\", \"reason\": \"sym_1 allocates char with new, stores in local data, and returns without delete; no other code frees it, so exit leaks the block.\", \"confidence\": 0.97}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 87,
+    "cost_usd": 0.00011298,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 633
+  },
+  "created_at": "2026-11-22T10:47:53.333+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.97,
+    "final_alert_verdict": "true_positive",
+    "final_leak_present": true,
+    "reason": "sym_1 allocates char with new, stores in local data, and returns without delete; no other code frees it, so exit leaks the block.",
+    "release_gap": "new char in sym_1 stored in local data; function returns and main exits without delete"
+  },
+  "prompt_sha256": "38766c637af37a508f24580a22146fb163bb27612d85511fbaccb8d7667a560e",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "f80db69a5eebc5bc463537c660374c1bac08e01f2cfcfa4ff1f47211d6ef5f73",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 0,
+      "cpp/memory-never-freed": 1
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "bad",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__new_char_01__bad",
+    "variant": "01",
+    "y_true": 1
+  },
+  "unit_id": "CWE401_Memory_Leak__new_char_01__bad",
+  "usage": {
+    "completion_tokens": 87,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 633,
+    "prompt_tokens_details": null,
+    "total_tokens": 720
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 4.270370618000015
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_pair_diff_mimo_ctrl_rev_20261122",
+  "created_at": "2026-11-22T13:10:25Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "pair_detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1/test-pairs",
+    "path": "splits/test_pairs_180.json",
+    "sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+    "unit_manifest": null,
+    "unit_count": 360,
+    "group_count": 180,
+    "label_counts": {
+      "vulnerable": 180,
+      "fixed": 180
+    }
+  },
+  "method": {
+    "method_id": "pair-diff-ctrl-mimo",
+    "family": "llm",
+    "name": "Mimo ctrl changes-first pair (rev)",
+    "strategy": "pair_diff_ctrl",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "OpenCode Go",
+      "endpoint": "https://opencode.ai/zen/go/v1",
+      "version": "v2.6-flash",
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_completion_tokens",
+        "reasoning_effort": "none",
+        "response_format": "json_object"
+      },
+      "price_snapshot": "OpenCode Go list price 2026-11-22"
+    },
+    "config_sha256": "5b138597120197453593ec2638aa187926b3ebe17d58e21336df2d801f5ed145"
+  },
+  "execution": {
+    "started_at": "2026-11-22T13:10:25Z",
+    "finished_at": "2026-11-22T13:10:25Z",
+    "status": "completed",
+    "planned_units": 360,
+    "recorded_units": 360,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "3244a035e5381833432d4431dbd64a695bd090515c0c122217f4632a89a9ced2",
+    "extension_manifest_sha256": "3baa868943463b18842df26f816df3d2af3a32e94ea5b275d038994ffbcefd59"
+  },
+  "legacy_import": null,
+  "notes": [
+    "diff-guided pair: ctrl/rev",
+    "one request per pair encoded as two side records; not re-run"
+  ]
+}

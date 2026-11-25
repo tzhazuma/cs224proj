@@ -4,6 +4,41 @@
 
 **当前状态：六个真实完整运行（`test_v1_*`）已完成，检测/配对/修复/成本/统计/10 个案例/LLM 辅助盲评均已写入报告，结果表中不再有 `TBD`。** 唯一保留的 `TODO` 是作者/单位补充。报告已用 Tectonic 0.17.0 在 WSL 编译为 `report/report_zh.pdf`（17 页，Nimbus 字体）；无 unresolved、无缺字，目标 overfull 已消除。2026-11-14 新增最新扩展版 `report_latest_zh.tex` / `report_latest_zh.pdf`（35 页），旧的两份 PDF 均未改动。
 
+## 下一轮报告（2026-11-22）
+
+在 35 页最新扩展版之上新增独立的下一轮报告，三份旧 PDF（17/27/35 页）全部保持原样、未被覆盖。本轮不追求新的提示排行榜，而是先量化五个会威胁旧结论的薄弱环节，再执行五个可证伪实验，并如实报告负结果。
+
+| 项目 | 内容 |
+| --- | --- |
+| 中文源稿 / PDF | `report_next_zh.tex` / `report_next_zh.pdf` |
+| English source / PDF | `report_next_en.tex` / `report_next_en.pdf` |
+| 页数 / 版式 | 12 页，IEEEtran conference 双栏，letter |
+| 参考文献 | `references_next.bib`（42 条；含 2024--2026 的 CodeQL FP、ZeroFalse、AddressWatcher、RBZZER、位置偏差、自纠正/retraction、选择性预测等） |
+| 统一结果摘要 | `next_results_summary.md` |
+| 旧版 | `report_zh.*`（17 页）、`report_extended_zh.*`（27 页）、`report_latest_zh.*`（35 页），均未修改 |
+
+报告结构：五个欠缺的量化原因 → 对应 2024--2026 文献 → Idea → 实验设计与真实结果 → 成功/失败解释 → 下一阶段优先级；附录给出复现命令与“主结论/证据/状态”诚实性检查表。
+
+五条必须原样保留的结论：
+
+1. **CodeQL triage 强，但对 direct 不显著，且最终行依赖规则后处理。** 最终 68/0/70/2，macro-F1 0.9857；vs CodeQL 0.8173，+0.1684，Holm $p<10^{-6}$；vs direct 0.9571，+0.0286，95\% CI $[-0.0072,+0.0714]$，$p=0.289$；v2 单独 68/3/67/2（0.9643），最终 0 FP 依赖 3 个 `_22` 字段一致性规则的二次翻转。
+2. **Pair diff 没有显著收益。** 交换一致 DA：DeepSeek diff 62.22\% vs ctrl 60.00\%（+2.22 pp，Holm 1.0000）vs open 55.56\%（+6.67 pp，原始 $p=0.0428$，Holm 0.0855）；MiMo diff 60.56\% vs ctrl 62.22\%（$-1.67$ pp，Holm 0.9053）。
+3. **保守验证器几乎不撤，但没有收益。** 236 条请求只撤 4 条（TP 3/FP 1），撤销精确率 25.0\%；macro-F1 四臂为 0 到 $-0.0052$；MCC 只在 `mimo_cross` +0.0139（95\% CI 跨 0）。
+4. **100\% 行覆盖不是无泄漏。** 原路径 82 个 clean 在剔除 CWE-561 声明死代码后全部 100\% 行覆盖，其中 12 个实际是 bad；分支覆盖 52.7\%，21 个 `branch_complete` 全是 bad、0 个 good。
+5. **简单长度规则点估计高于 LLM。** `length_short` macro-F1 0.511 [0.422, 0.562]、MCC 0.094；8 个 LLM run 为 0.346--0.422；但 $\Delta$macro-F1 的聚类 bootstrap 95\% CI 全部跨 0，对最强 DeepSeek evidence 的 McNemar Holm $p=0.203$。
+
+编译与检查（WSL，Tectonic 0.17.0）：
+
+```bash
+cd /mnt/c/Users/tzh03/Downloads/cs224proj
+~/tools/tectonic/tectonic -X compile \
+  report/report_next_zh.tex --outdir report --keep-logs
+pdfinfo report/report_next_zh.pdf
+pdffonts report/report_next_zh.pdf
+```
+
+检查结果：12 页；NimbusRoman/NimbusSans/NimbusMonoPS 与 FandolSong/FandolKai 均已嵌入；0 个 unresolved reference/citation、0 个 `Missing character`、0 个 `Overfull \hbox`；最大 `Overfull \vbox` 3.18 pt（参考文献列平衡，低于 10 pt）；`pdftotext` 中 0 个 `??`、0 个 `TBD`、0 个 `TODO`。字体 shape 警告 `TU/NimbusRoman(0)/m/sc` 是 small-caps 形状缺失后的自动替换，不是缺字。
+
 ## 扩展版（2026-11-12）
 
 在旧报告之上新增独立的扩展版，旧 `report_zh.tex` / `report_zh.pdf` 保持原样、未被覆盖：
@@ -98,6 +133,11 @@ pdfinfo report/report_latest_zh.pdf
 | `report_extended_zh.pdf` | 扩展版已编译 PDF（27 页，Tectonic 0.17.0） |
 | `report_latest_zh.tex` | 最新扩展版源稿（35 页，含顺序去偏/二次验证/动态增强/CodeQL/schema） |
 | `report_latest_zh.pdf` | 最新扩展版已编译 PDF（35 页，Tectonic 0.17.0） |
+| `report_next_zh.tex` | 下一轮报告源稿（12 页，五个欠缺 + 五个可证伪实验 + 优先级） |
+| `report_next_zh.pdf` | 下一轮中文报告已编译 PDF（12 页，Tectonic 0.17.0） |
+| `report_next_en.tex` / `report_next_en.pdf` | 下一轮英文 IEEE 报告源稿与已编译 PDF（10 页） |
+| `references_next.bib` | 下一轮报告参考文献（42 条，含 2024--2026 直接对应文献） |
+| `next_results_summary.md` | 下一轮统一结果摘要、五条诚实结论、复现命令与限制 |
 | `references_latest.bib` | 最新扩展版参考文献（58 条，新增 30 条已核验） |
 | `latest_results_summary.md` | 最新六组实验的统一结果摘要、负面结论、复现命令与限制 |
 | `references.bib` | 旧版专用参考文献，IEEEtran 样式 |

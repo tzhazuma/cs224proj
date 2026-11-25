@@ -1,0 +1,62 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_interp_lr_balanced_20261122",
+  "created_at": "2026-11-22T13:11:17Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1/test",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": 40,
+    "label_counts": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    }
+  },
+  "method": {
+    "method_id": "lr_balanced",
+    "family": "static",
+    "name": "Interpretable baseline: lr_balanced",
+    "strategy": "lr_balanced",
+    "tool": {
+      "name": "interpretable-lexical-baseline",
+      "version": "2026-11-22"
+    },
+    "config_sha256": "326a6386f420cc20a4cda99f196962cf9dc8aabc5f787cc5f15cac33a2f7d86c"
+  },
+  "execution": {
+    "started_at": "2026-11-22T13:11:17Z",
+    "finished_at": "2026-11-22T13:11:17Z",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "1c5799506489cec8d5a9b74c05a6ff26fea730c8f653a44a7b83badea7bd7445",
+    "extension_manifest_sha256": "8fea7fded620ea16ae23a5d555c8c161bfe9a7a308a322eb6525ec058357d131"
+  },
+  "legacy_import": null,
+  "notes": [
+    "interpretable baseline: lr_balanced",
+    "no API call; predictions copied"
+  ]
+}

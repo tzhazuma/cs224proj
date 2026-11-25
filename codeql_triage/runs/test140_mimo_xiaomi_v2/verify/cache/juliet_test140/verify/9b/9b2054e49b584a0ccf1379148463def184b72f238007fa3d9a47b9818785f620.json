@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:48:11.725+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 4.314813499000593,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"4f451f5a-c5c3-44a2-905b-7d4a56e1b8da_2sr1fwg528egik6lts_c01b116c0b5d48dfa972b3b6d87c3f83\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": true, \\\"final_alert_verdict\\\": \\\"true_positive\\\", \\\"release_gap\\\": \\\"calloc(100, sizeof(wchar_t)) in sym_0: after wcscpy/printWLine, sym_0 returns without free; main then returns 0, exiting with block unreleased.\\\", \\\"reason\\\": \\\"data holds the only pointer; no free on any path before sym_0 returns and main exits, so the allocation leaks on all feasible paths.\\\", \\\"confidence\\\": 0.97}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344491,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":109,\"prompt_tokens\":671,\"total_tokens\":780,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:48:07.410+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "9b2054e49b584a0ccf1379148463def184b72f238007fa3d9a47b9818785f620"
+  },
+  "cache_key": "9b2054e49b584a0ccf1379148463def184b72f238007fa3d9a47b9818785f620",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": true, \"final_alert_verdict\": \"true_positive\", \"release_gap\": \"calloc(100, sizeof(wchar_t)) in sym_0: after wcscpy/printWLine, sym_0 returns without free; main then returns 0, exiting with block unreleased.\", \"reason\": \"data holds the only pointer; no free on any path before sym_0 returns and main exits, so the allocation leaks on all feasible paths.\", \"confidence\": 0.97}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 109,
+    "cost_usd": 0.00012446,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 671
+  },
+  "created_at": "2026-11-22T10:48:11.725+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.97,
+    "final_alert_verdict": "true_positive",
+    "final_leak_present": true,
+    "reason": "data holds the only pointer; no free on any path before sym_0 returns and main exits, so the allocation leaks on all feasible paths.",
+    "release_gap": "calloc(100, sizeof(wchar_t)) in sym_0: after wcscpy/printWLine, sym_0 returns without free; main then returns 0, exiting with block unreleased."
+  },
+  "prompt_sha256": "52e6e723510d72c32e3d1c8a8bea11881ae32f119774bda94209156493795f44",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "7ae39122f22b63c1ae9cd43aa254d1344cd3b7f03af5d5e3f5f003c719dc2e3c",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 0,
+      "cpp/memory-never-freed": 1
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "bad",
+    "language": "c",
+    "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_01__bad",
+    "variant": "01",
+    "y_true": 1
+  },
+  "unit_id": "CWE401_Memory_Leak__wchar_t_calloc_01__bad",
+  "usage": {
+    "completion_tokens": 109,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 671,
+    "prompt_tokens_details": null,
+    "total_tokens": 780
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 4.314855169999646
+}

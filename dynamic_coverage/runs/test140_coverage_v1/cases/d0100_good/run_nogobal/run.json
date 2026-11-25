@@ -1,0 +1,143 @@
+{
+  "leak_raw": true,
+  "leak_attributed": false,
+  "leak_blocks": [
+    {
+      "kind": "Direct",
+      "bytes": 73728,
+      "records": 1,
+      "attributed": false,
+      "deciding_frame": null,
+      "allocation_site": {
+        "function": "malloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 67
+      }
+    },
+    {
+      "kind": "Direct",
+      "bytes": 4096,
+      "records": 1,
+      "attributed": false,
+      "deciding_frame": {
+        "function": "printStructLine",
+        "file": "/mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c",
+        "line": 89
+      },
+      "allocation_site": {
+        "function": "malloc",
+        "file": "../../../../src/libsanitizer/asan/asan_malloc_linux.cpp",
+        "line": 67
+      }
+    }
+  ],
+  "attributed_blocks": [],
+  "attributed_bytes": 0,
+  "raw_bytes": 77824,
+  "leak_kinds": [],
+  "leak_summary": "SUMMARY: AddressSanitizer: 77824 byte(s) leaked in 2 allocation(s)",
+  "leak_summary_bytes": 77824,
+  "leak_summary_records": 2,
+  "asan_errors": [],
+  "deadly_signal": false,
+  "injection": {
+    "realloc_calls": 0,
+    "realloc_null_calls": 0,
+    "realloc_nonnull_calls": 0,
+    "injected": false,
+    "injected_at_call": null
+  },
+  "mode": "nogobal",
+  "build_variant": "plain",
+  "applicable": true,
+  "returncode": 23,
+  "timed_out": false,
+  "wall_ms": 229,
+  "failure_class": "exit_23",
+  "decision": "clean",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_lines": [],
+  "stderr_path": "cases/d0100_good/run_nogobal/stderr.txt",
+  "stdout_path": "cases/d0100_good/run_nogobal/stdout.txt",
+  "env": {
+    "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0:use_globals=0",
+    "DYNENH_REALLOC_FAIL_NONNULL": ""
+  },
+  "gcda_files": [
+    "CWE401_Memory_Leak__new_twoIntsStruct_01.gcda",
+    "__dynenh_probe_main.gcda"
+  ],
+  "gcov_checks": [
+    {
+      "source": "CWE401_Memory_Leak__new_twoIntsStruct_01.cpp",
+      "returncode": 0,
+      "lines_total": 20,
+      "lines_hit": 20,
+      "lines_total_parsed": 20,
+      "lines_hit_parsed": 20
+    }
+  ],
+  "coverage": {
+    "lines_total": 20,
+    "lines_hit": 20,
+    "line_pct": 1.0,
+    "branches_total": 4,
+    "branches_hit": 2,
+    "branch_pct": 0.5,
+    "files": [
+      {
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_01.cpp",
+        "lines_total": 20,
+        "lines_hit": 20,
+        "line_pct": 1.0,
+        "branches_total": 4,
+        "branches_hit": 2,
+        "branch_pct": 0.5,
+        "uncovered_lines": [],
+        "uncovered_branches": 2
+      }
+    ],
+    "uncovered_lines": [],
+    "uncovered_branches": [
+      {
+        "line": 58,
+        "source_block_id": 3,
+        "destination_block_id": 6,
+        "throw": true,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_01.cpp"
+      },
+      {
+        "line": 75,
+        "source_block_id": 4,
+        "destination_block_id": 6,
+        "throw": false,
+        "fallthrough": false,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s02/CWE401_Memory_Leak__new_twoIntsStruct_01.cpp"
+      }
+    ],
+    "uncovered_branch_count": 2,
+    "functions": {
+      "_ZN40CWE401_Memory_Leak__new_twoIntsStruct_01L7goodG2BEv": 1,
+      "_ZN40CWE401_Memory_Leak__new_twoIntsStruct_01L7goodB2GEv": 1,
+      "_ZN40CWE401_Memory_Leak__new_twoIntsStruct_014goodEv": 1
+    },
+    "dead_code_uncovered": [],
+    "effective_lines_total": 20,
+    "effective_line_pct": 1.0
+  },
+  "coverage_tier": "line_complete",
+  "coverage_tier_effective": "line_complete",
+  "coverage_error": [],
+  "entry_executed": true,
+  "site_coverage": {
+    "allocation_sites_total": 1,
+    "allocation_sites_hit": 1,
+    "release_sites_total": 1,
+    "release_sites_hit": 1,
+    "uncovered_sites": []
+  }
+}

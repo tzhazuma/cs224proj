@@ -1,0 +1,671 @@
+{
+  "schema_version": "benchmark-extension-metrics-v1",
+  "extension_id": "ext.coverage_instrumented_dynamic.v1",
+  "design": "coverage_instrumented_dynamic",
+  "generated_at": "2026-11-22T13:14:39Z",
+  "run_ids": {
+    "run": "next_dynamic_coverage_test140_v1_20261122"
+  },
+  "settings": {
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "confidence": 0.95,
+    "cluster_unit": "case_family",
+    "coverage_threshold": 0.8
+  },
+  "counts": {
+    "units": 140,
+    "valid": 70,
+    "by_status": {
+      "ok": 70,
+      "inconclusive": 70
+    },
+    "tiers": {
+      "line_complete": 113,
+      "partial": 6,
+      "branch_complete": 21
+    },
+    "tiers_by_label": {
+      "bad": {
+        "line_complete": 49,
+        "branch_complete": 21
+      },
+      "good": {
+        "line_complete": 64,
+        "partial": 6
+      }
+    },
+    "branch_complete_bad": 21,
+    "branch_complete_good": 0,
+    "mean_line_coverage": 0.9989379887119073,
+    "mean_branch_coverage": 0.5273109243697479,
+    "latent_bad": 0,
+    "latent_branch_complete": 0,
+    "latent_realloc_evidence": 0
+  },
+  "primary": {
+    "name": "branch_complete_rate",
+    "value": 0.15,
+    "n": 140,
+    "ci_low": null,
+    "ci_high": null,
+    "method": "Wilson interval over units",
+    "note": "21/140 units are branch-complete; all 21 are bad"
+  },
+  "metrics": {
+    "coverage": {
+      "mean_line_coverage": 0.9989379887119073,
+      "mean_branch_coverage": 0.5273109243697479,
+      "branch_complete_rate": 0.15,
+      "line_complete_or_better_rate": 0.9571428571428572,
+      "clean_branch_complete": 0,
+      "clean_line_complete": 64,
+      "clean_partial": 6,
+      "note": "line coverage does not prove clean; no clean unit is branch-complete"
+    },
+    "operational": {
+      "scores": {
+        "n": 140,
+        "valid": 140,
+        "invalid": 0,
+        "coverage": 1.0,
+        "invalid_rate": 0.0,
+        "confusion": {
+          "tp": 70,
+          "fp": 0,
+          "tn": 70,
+          "fn": 0
+        },
+        "label_counts": {
+          "vulnerable": 70,
+          "non_vulnerable": 70
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": 1.0,
+        "f1": 1.0,
+        "negative_f1": 1.0,
+        "macro_f1": 1.0,
+        "balanced_accuracy": 1.0,
+        "accuracy": 1.0,
+        "strict_accuracy": 1.0,
+        "mcc": 1.0,
+        "mcc_degenerate": false,
+        "predicted_positive_rate": 0.5,
+        "undefined_metrics": [],
+        "wilson": {
+          "precision": {
+            "successes": 70,
+            "total": 70,
+            "estimate": 1.0,
+            "low": 0.9479769375897331,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "recall": {
+            "successes": 70,
+            "total": 70,
+            "estimate": 1.0,
+            "low": 0.9479769375897331,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "specificity": {
+            "successes": 70,
+            "total": 70,
+            "estimate": 1.0,
+            "low": 0.9479769375897331,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "accuracy": {
+            "successes": 140,
+            "total": 140,
+            "estimate": 1.0,
+            "low": 0.9732937996305869,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "strict_accuracy": {
+            "successes": 140,
+            "total": 140,
+            "estimate": 1.0,
+            "low": 0.9732937996305869,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 140,
+            "total": 140,
+            "estimate": 1.0,
+            "low": 0.9732937996305869,
+            "high": 0.9999999999999999,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        }
+      },
+      "bootstrap": {
+        "macro_f1": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "f1": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "mcc": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "balanced_accuracy": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "accuracy": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        },
+        "strict_accuracy": {
+          "ci_low": 1.0,
+          "ci_high": 1.0,
+          "bootstrap_median": 1.0,
+          "bootstrap_mean": 1.0,
+          "valid_resamples": 10000,
+          "resamples": 10000,
+          "unstable": false
+        }
+      },
+      "note": "clean treated as negative; this is an operational view, not a proof"
+    },
+    "conservative": {
+      "scores": {
+        "n": 70,
+        "valid": 70,
+        "invalid": 0,
+        "coverage": 1.0,
+        "invalid_rate": 0.0,
+        "confusion": {
+          "tp": 70,
+          "fp": 0,
+          "tn": 0,
+          "fn": 0
+        },
+        "label_counts": {
+          "vulnerable": 70,
+          "non_vulnerable": 0
+        },
+        "precision": 1.0,
+        "recall": 1.0,
+        "specificity": null,
+        "f1": 1.0,
+        "negative_f1": null,
+        "macro_f1": null,
+        "balanced_accuracy": null,
+        "accuracy": 1.0,
+        "strict_accuracy": 1.0,
+        "mcc": 0.0,
+        "mcc_degenerate": true,
+        "predicted_positive_rate": 1.0,
+        "undefined_metrics": [
+          "specificity",
+          "negative_f1",
+          "macro_f1",
+          "balanced_accuracy"
+        ],
+        "wilson": {
+          "precision": {
+            "successes": 70,
+            "total": 70,
+            "estimate": 1.0,
+            "low": 0.9479769375897331,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "recall": {
+            "successes": 70,
+            "total": 70,
+            "estimate": 1.0,
+            "low": 0.9479769375897331,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "specificity": null,
+          "accuracy": {
+            "successes": 70,
+            "total": 70,
+            "estimate": 1.0,
+            "low": 0.9479769375897331,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "strict_accuracy": {
+            "successes": 70,
+            "total": 70,
+            "estimate": 1.0,
+            "low": 0.9479769375897331,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          },
+          "coverage": {
+            "successes": 70,
+            "total": 70,
+            "estimate": 1.0,
+            "low": 0.9479769375897331,
+            "high": 1.0,
+            "confidence": 0.95,
+            "z": 1.9599639845400536,
+            "method": "wilson"
+          }
+        }
+      },
+      "note": "clean abstains; specificity and macro-F1 are undefined, only recall/precision are meaningful"
+    },
+    "latent": {
+      "bad_clean_operational": 0,
+      "branch_complete_among_latent": 0,
+      "realloc_evidence_among_latent": 0,
+      "note": "12 bad units are clean under the default mode; 7 are explained by the realloc-failure branch, 5 only by root policy"
+    }
+  },
+  "parent_metrics": {
+    "schema_version": "benchmark-metrics-v1",
+    "run_id": "next_dynamic_coverage_test140_v1_20261122",
+    "protocol_version": "1.0.0",
+    "tier": "B",
+    "track": "juliet_cwe401",
+    "generated_at": "2026-11-22T13:14:39Z",
+    "settings": {
+      "bootstrap_resamples": 10000,
+      "bootstrap_seed": 42,
+      "confidence": 0.95,
+      "cluster_unit": "record.cluster_id",
+      "coverage_threshold": 0.8,
+      "strict_policy": "non-ok records count as errors in strict_accuracy; valid-only metrics exclude them"
+    },
+    "tasks": {
+      "leak_detection": {
+        "detection": {
+          "scores": {
+            "n": 140,
+            "valid": 70,
+            "invalid": 70,
+            "coverage": 0.5,
+            "invalid_rate": 0.5,
+            "confusion": {
+              "tp": 70,
+              "fp": 0,
+              "tn": 0,
+              "fn": 0
+            },
+            "label_counts": {
+              "vulnerable": 70,
+              "non_vulnerable": 0
+            },
+            "precision": 1.0,
+            "recall": 1.0,
+            "specificity": null,
+            "f1": 1.0,
+            "negative_f1": null,
+            "macro_f1": null,
+            "balanced_accuracy": null,
+            "accuracy": 1.0,
+            "strict_accuracy": 0.5,
+            "mcc": 0.0,
+            "mcc_degenerate": true,
+            "predicted_positive_rate": 1.0,
+            "undefined_metrics": [
+              "specificity",
+              "negative_f1",
+              "macro_f1",
+              "balanced_accuracy"
+            ],
+            "wilson": {
+              "precision": {
+                "successes": 70,
+                "total": 70,
+                "estimate": 1.0,
+                "low": 0.9479769375897331,
+                "high": 1.0,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "recall": {
+                "successes": 70,
+                "total": 70,
+                "estimate": 1.0,
+                "low": 0.9479769375897331,
+                "high": 1.0,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "specificity": null,
+              "accuracy": {
+                "successes": 70,
+                "total": 70,
+                "estimate": 1.0,
+                "low": 0.9479769375897331,
+                "high": 1.0,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "strict_accuracy": {
+                "successes": 70,
+                "total": 140,
+                "estimate": 0.5,
+                "low": 0.4182898409476934,
+                "high": 0.5817101590523066,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "coverage": {
+                "successes": 70,
+                "total": 140,
+                "estimate": 0.5,
+                "low": 0.4182898409476934,
+                "high": 0.5817101590523066,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              }
+            }
+          },
+          "bootstrap": {
+            "macro_f1": {
+              "ci_low": null,
+              "ci_high": null,
+              "bootstrap_median": null,
+              "bootstrap_mean": null,
+              "valid_resamples": 0,
+              "resamples": 10000,
+              "unstable": true
+            },
+            "f1": {
+              "ci_low": 1.0,
+              "ci_high": 1.0,
+              "bootstrap_median": 1.0,
+              "bootstrap_mean": 1.0,
+              "valid_resamples": 10000,
+              "resamples": 10000,
+              "unstable": false
+            },
+            "mcc": {
+              "ci_low": 0.0,
+              "ci_high": 0.0,
+              "bootstrap_median": 0.0,
+              "bootstrap_mean": 0.0,
+              "valid_resamples": 10000,
+              "resamples": 10000,
+              "unstable": false
+            },
+            "balanced_accuracy": {
+              "ci_low": null,
+              "ci_high": null,
+              "bootstrap_median": null,
+              "bootstrap_mean": null,
+              "valid_resamples": 0,
+              "resamples": 10000,
+              "unstable": true
+            },
+            "accuracy": {
+              "ci_low": 1.0,
+              "ci_high": 1.0,
+              "bootstrap_median": 1.0,
+              "bootstrap_mean": 1.0,
+              "valid_resamples": 10000,
+              "resamples": 10000,
+              "unstable": false
+            },
+            "strict_accuracy": {
+              "ci_low": 0.5,
+              "ci_high": 0.5,
+              "bootstrap_median": 0.5,
+              "bootstrap_mean": 0.5,
+              "valid_resamples": 10000,
+              "resamples": 10000,
+              "unstable": false
+            }
+          },
+          "cluster_count": 29,
+          "by_status": {
+            "ok": 70,
+            "inconclusive": 70
+          },
+          "by_side": {
+            "bad": 70,
+            "good": 70
+          }
+        },
+        "coverage_strata": {
+          "ge_0.90": {
+            "n": 140,
+            "valid": 70,
+            "invalid": 70,
+            "coverage": 0.5,
+            "invalid_rate": 0.5,
+            "confusion": {
+              "tp": 70,
+              "fp": 0,
+              "tn": 0,
+              "fn": 0
+            },
+            "label_counts": {
+              "vulnerable": 70,
+              "non_vulnerable": 0
+            },
+            "precision": 1.0,
+            "recall": 1.0,
+            "specificity": null,
+            "f1": 1.0,
+            "negative_f1": null,
+            "macro_f1": null,
+            "balanced_accuracy": null,
+            "accuracy": 1.0,
+            "strict_accuracy": 0.5,
+            "mcc": 0.0,
+            "mcc_degenerate": true,
+            "predicted_positive_rate": 1.0,
+            "undefined_metrics": [
+              "specificity",
+              "negative_f1",
+              "macro_f1",
+              "balanced_accuracy"
+            ],
+            "wilson": {
+              "precision": {
+                "successes": 70,
+                "total": 70,
+                "estimate": 1.0,
+                "low": 0.9479769375897331,
+                "high": 1.0,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "recall": {
+                "successes": 70,
+                "total": 70,
+                "estimate": 1.0,
+                "low": 0.9479769375897331,
+                "high": 1.0,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "specificity": null,
+              "accuracy": {
+                "successes": 70,
+                "total": 70,
+                "estimate": 1.0,
+                "low": 0.9479769375897331,
+                "high": 1.0,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "strict_accuracy": {
+                "successes": 70,
+                "total": 140,
+                "estimate": 0.5,
+                "low": 0.4182898409476934,
+                "high": 0.5817101590523066,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              },
+              "coverage": {
+                "successes": 70,
+                "total": 140,
+                "estimate": 0.5,
+                "low": 0.4182898409476934,
+                "high": 0.5817101590523066,
+                "confidence": 0.95,
+                "z": 1.9599639845400536,
+                "method": "wilson"
+              }
+            }
+          },
+          "0.50_0.90": null,
+          "lt_0.50": null,
+          "unknown": null
+        },
+        "inconclusive": {
+          "count": 70,
+          "coverage_inconclusive": 0,
+          "coverage_threshold": 0.8,
+          "policy": "clean prediction below threshold is excluded from valid-only and counted wrong in strict accuracy",
+          "strict_treated_as": "error"
+        },
+        "oracle_consistency": {
+          "counts": {},
+          "mismatches": 0
+        }
+      }
+    },
+    "cost": {
+      "currency": "USD",
+      "usd_known_sum": null,
+      "usd_unknown_records": 140,
+      "usd_complete": false,
+      "wall_s_sum": 720.299,
+      "cpu_s_sum": null,
+      "peak_rss_mb_max": null,
+      "prompt_tokens_sum": null,
+      "completion_tokens_sum": null,
+      "cached_prompt_tokens_sum": null,
+      "latency_ms_p50": null,
+      "latency_ms_p95": null,
+      "latency_samples": 0,
+      "cost_basis_counts": {
+        "local_compute": 140
+      },
+      "wall_s_per_100_units": 514.4992857142857,
+      "cost_per_true_positive_usd": null
+    },
+    "counts": {
+      "records": 140,
+      "planned_units": 140,
+      "by_task": {
+        "leak_detection": 140
+      },
+      "by_status": {
+        "ok": 70,
+        "inconclusive": 70
+      },
+      "missing_units": 0
+    },
+    "provenance": {
+      "run_manifest_sha256": "901371e848bcf64404721a59b29adeb735698bda9b0b3795a1f491a04d285fb8",
+      "predictions_sha256": "523eb7148c22bc46931054d74aca52088a2e860c1e256c38fa69aa18e71aef51"
+    },
+    "notes": [
+      "Tasks and tiers are not pooled into a single score.",
+      "Detection and pair metrics use valid predictions only; strict accuracy is separate.",
+      "Leak clean predictions below the coverage threshold are inconclusive, not true negatives.",
+      "Cost is a known-sum plus unknown count, never an imputed total."
+    ]
+  },
+  "cost": {
+    "currency": "USD",
+    "usd_known_sum": null,
+    "usd_unknown_records": 140,
+    "usd_complete": false,
+    "wall_s_sum": 720.299,
+    "cpu_s_sum": null,
+    "peak_rss_mb_max": null,
+    "prompt_tokens_sum": null,
+    "completion_tokens_sum": null,
+    "cached_prompt_tokens_sum": null,
+    "latency_ms_p50": null,
+    "latency_ms_p95": null,
+    "latency_samples": 0,
+    "cost_basis_counts": {
+      "local_compute": 140
+    }
+  },
+  "limitations": [
+    "Line coverage is near 100% but branch coverage is about 50%; covering a line does not exercise the leak path.",
+    "No clean unit reaches branch-complete coverage, so clean is inconclusive, never TN.",
+    "The 12 latent bad units are not recovered by line coverage; 7 need the realloc-failure injection.",
+    "Single run; gcov instrumentation can perturb timing but not leak verdicts."
+  ],
+  "provenance": {
+    "extension_version": "0.3.0",
+    "hashes": {
+      "run_manifest_sha256": "901371e848bcf64404721a59b29adeb735698bda9b0b3795a1f491a04d285fb8",
+      "predictions_sha256": "523eb7148c22bc46931054d74aca52088a2e860c1e256c38fa69aa18e71aef51",
+      "extension_manifest_sha256": "9d46e681dfb5677d144da713a2ce04d335ec9238c7ad75a7a238b8878aedf1c1",
+      "design_registry_sha256": "82f592880c8773b915c83119b29c8804f743baed2face84448b616c6d67c2505",
+      "records": 140
+    },
+    "source": "canonical extension run; metrics recomputed, not copied"
+  }
+}

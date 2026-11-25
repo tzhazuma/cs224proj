@@ -1,0 +1,73 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_conservative_deepseek_cross_20261122",
+  "created_at": "2026-11-22T12:48:19Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1/test",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": 40,
+    "label_counts": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    }
+  },
+  "method": {
+    "method_id": "conservative-three-way-deepseek_cross",
+    "family": "hybrid",
+    "name": "Conservative three-way verifier (deepseek claim, mimo verifier)",
+    "strategy": "conservative_three_way",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "OpenCode Go",
+      "endpoint": "https://opencode.ai/zen/go/v1",
+      "version": "v2.6-flash",
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "max_tokens_field": "max_completion_tokens",
+        "reasoning_effort": "none",
+        "response_format": "json_object"
+      },
+      "price_snapshot": "OpenCode Go list price 2026-11-22"
+    },
+    "config_sha256": "9ff30880894c2cc9d5b8479e9e2a8b581873e69a11a8d91dd131ee6a8200e63c"
+  },
+  "execution": {
+    "started_at": "2026-11-22T12:48:19Z",
+    "finished_at": "2026-11-22T12:48:19Z",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "5ed6ce861388b36e3ba2bc2063237e8f42389eede148388a5180ae370634e5b2",
+    "extension_manifest_sha256": "92fa9c2a106717f16e2ee929184508383442aacde56e9bf36776e57940fe1449"
+  },
+  "legacy_import": null,
+  "notes": [
+    "conservative verifier arm: deepseek_cross",
+    "exploratory post hoc; test already seen by the first pass"
+  ]
+}

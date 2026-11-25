@@ -1,0 +1,73 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_codeql_triage_mimo_v1_20261122",
+  "created_at": "2026-11-22T12:47:21Z",
+  "protocol_version": "1.0.0",
+  "tier": "B",
+  "track": "juliet_cwe401",
+  "tasks": [
+    "leak_detection"
+  ],
+  "dataset": {
+    "dataset_id": "juliet-cwe401-v1.3-subset-v1",
+    "split_id": "juliet-cwe401-v1.3-subset-v1/test",
+    "path": "juliet/subset_units.jsonl",
+    "sha256": "4827d1da6a1966759d66989dfb16678bc3e14d8f0588f9fe59d92a08ae4aac24",
+    "unit_manifest": null,
+    "unit_count": 140,
+    "group_count": 70,
+    "label_counts": {
+      "bad": 70,
+      "good": 70
+    }
+  },
+  "method": {
+    "method_id": "codeql-triage-triage_v1",
+    "family": "llm",
+    "name": "MiMo-V2.6-Flash CodeQL triage v1",
+    "strategy": "triage_v1",
+    "model": {
+      "model_id": "mimo-v2.6-flash",
+      "family": "mimo",
+      "provider": "Xiaomi official",
+      "endpoint": "https://api.xiaomimimo.com/v1",
+      "version": "v2.6-flash",
+      "decoding": {
+        "temperature": 0.0,
+        "max_tokens": 4096,
+        "max_tokens_field": "max_completion_tokens",
+        "reasoning_effort": "none",
+        "response_format": "json_object"
+      },
+      "price_snapshot": "Xiaomi official list price 2026-11-22"
+    },
+    "config_sha256": "a48a68d845eb86f15c79f6531cf4bbcf03d55e564ef4360d45fc3cebd9893a01"
+  },
+  "execution": {
+    "started_at": "2026-11-22T12:47:21Z",
+    "finished_at": "2026-11-22T12:47:21Z",
+    "status": "completed",
+    "planned_units": 140,
+    "recorded_units": 140,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "2b82c649bbd6d5de6939bcec6eb646da571dbfc9903270a426e23eae33981e3c",
+    "extension_manifest_sha256": "328e48679deba4bfcb9555ce3160041abf312f18f317eefeb2a6a179f8d30b86"
+  },
+  "legacy_import": null,
+  "notes": [
+    "CodeQL alert triage condition: triage_v1",
+    "decision recomputed from stored producer output; not re-run"
+  ]
+}

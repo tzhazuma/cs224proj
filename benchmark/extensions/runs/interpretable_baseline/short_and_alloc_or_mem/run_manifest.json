@@ -1,0 +1,62 @@
+{
+  "schema_version": "benchmark-run-v1",
+  "run_id": "next_interp_short_and_alloc_or_mem_20261122",
+  "created_at": "2026-11-22T13:11:06Z",
+  "protocol_version": "1.0.0",
+  "tier": "A",
+  "track": "secvuleval",
+  "tasks": [
+    "detection"
+  ],
+  "dataset": {
+    "dataset_id": "secvul-split-v1",
+    "split_id": "secvul-split-v1/test",
+    "path": "splits/test_detection_160.json",
+    "sha256": "bc83af63329963cb98c2e1f9b6d4f80e98e4dc16018d24b7308346d3abfa2bf8",
+    "unit_manifest": null,
+    "unit_count": 160,
+    "group_count": 40,
+    "label_counts": {
+      "vulnerable": 128,
+      "non_vulnerable": 32
+    }
+  },
+  "method": {
+    "method_id": "rule:short_and_alloc_or_mem",
+    "family": "static",
+    "name": "Interpretable baseline: rule:short_and_alloc_or_mem",
+    "strategy": "rule:short_and_alloc_or_mem",
+    "tool": {
+      "name": "interpretable-lexical-baseline",
+      "version": "2026-11-22"
+    },
+    "config_sha256": "65d04443dfa23a3e8df63d0f1b8fd7e86b8fd6812e646615e51de7a55359c673"
+  },
+  "execution": {
+    "started_at": "2026-11-22T13:11:06Z",
+    "finished_at": "2026-11-22T13:11:06Z",
+    "status": "completed",
+    "planned_units": 160,
+    "recorded_units": 160,
+    "retries": 0,
+    "concurrency": 1,
+    "command": null,
+    "command_sha256": null,
+    "environment": {}
+  },
+  "artifacts": {
+    "predictions": "predictions.jsonl",
+    "metrics": null,
+    "validation": "validation.json",
+    "log": null
+  },
+  "hashes": {
+    "predictions_sha256": "eb5092a0d1f670f36df6ab6d8e3d2aa69907d54b8f18b391ff3f2c67624731b2",
+    "extension_manifest_sha256": "f5553ea0349257053a55bdab554261c2827d25d15a7455ee8a4e581b087f2892"
+  },
+  "legacy_import": null,
+  "notes": [
+    "interpretable baseline: rule:short_and_alloc_or_mem",
+    "no API call; predictions copied"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:53.653+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 2.082758050000848,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"671bc6b0-a9dc-46ec-9657-7ce5aea24e25_2xz6abg528dm03be9s_5e7f7c6be2e8455daf650aded72e01c4\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": false, \\\"final_alert_verdict\\\": \\\"false_positive\\\", \\\"release_gap\\\": \\\"none\\\", \\\"reason\\\": \\\"The only heap allocation, new char in sym_5, is passed via dataVector to sym_4, which deletes dataVector[2]. sym_2's pointer is stack storage. No allocation reaches exit unreleased.\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344473,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":84,\"prompt_tokens\":961,\"total_tokens\":1045,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:51.570+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "59a20edcdeec9c94d07352e9b4e7222090baaf8b72b868d27bc5e4a03e0360b8"
+  },
+  "cache_key": "59a20edcdeec9c94d07352e9b4e7222090baaf8b72b868d27bc5e4a03e0360b8",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": false, \"final_alert_verdict\": \"false_positive\", \"release_gap\": \"none\", \"reason\": \"The only heap allocation, new char in sym_5, is passed via dataVector to sym_4, which deletes dataVector[2]. sym_2's pointer is stack storage. No allocation reaches exit unreleased.\", \"confidence\": 0.95}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 84,
+    "cost_usd": 0.00015806000000000004,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 961
+  },
+  "created_at": "2026-11-22T10:47:53.653+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.95,
+    "final_alert_verdict": "false_positive",
+    "final_leak_present": false,
+    "reason": "The only heap allocation, new char in sym_5, is passed via dataVector to sym_4, which deletes dataVector[2]. sym_2's pointer is stack storage. No allocation reaches exit unreleased.",
+    "release_gap": "none"
+  },
+  "prompt_sha256": "6a70209ef6b42a1cc1f4d16e8ea5f592283d761e77583dac8a29054cdde9856b",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "cedba1c17b47b542f74b841c89debe0b07afde8d4a8bce0f497921741c503d88",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 1,
+      "cpp/memory-never-freed": 0
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "good",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__new_char_72__good",
+    "variant": "72",
+    "y_true": 0
+  },
+  "unit_id": "CWE401_Memory_Leak__new_char_72__good",
+  "usage": {
+    "completion_tokens": 84,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 961,
+    "prompt_tokens_details": null,
+    "total_tokens": 1045
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 2.0828111530026945
+}

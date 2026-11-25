@@ -11,9 +11,11 @@
 
 > 所有报告数字都来自已落盘的运行产物；没有用 mock、fixture 或估计值填充正式结果表。`selftest` 和临时 fixture 只用于工具自检，不是实验结果。
 >
-> **审计状态分两代，不能混用。** 旧一轮只读审计 [`audit/final_audit.md`](audit/final_audit.md)（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**，覆盖 v2/postleakfix 工作树；它**早于** 2026-11-13/14 的 `pair_debias`、`evidence_verify`、`dynamic_enhanced`、`hybrid_dynamic_enhanced`、CodeQL、`analysis/schema_recovery` 与 `benchmark/extensions`，**不覆盖**这些新产物。
+> **审计状态分三代，不能混用。** 旧一轮只读审计 [`audit/final_audit.md`](audit/final_audit.md)（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**，覆盖 v2/postleakfix 工作树；它**早于** 2026-11-13/14 的 `pair_debias`、`evidence_verify`、`dynamic_enhanced`、`hybrid_dynamic_enhanced`、CodeQL、`analysis/schema_recovery` 与 `benchmark/extensions`，**不覆盖**这些新产物。
 >
-> **最新一轮审计：** [`audit/latest_audit.md`](audit/latest_audit.md)，**Overall `PASS`：56 PASS / 0 FAIL / 0 WARN（56 checks，2026-11-14 最近重跑）**，发布门禁通过。先前的 A6（缓存复用披露）、E6（F1(V) 标注）、F4（schema 成本价卡）、G3（文献快照时效）已修复，保留简短历史说明见 §8.28。旧审计的 3 个 WARN（B5/D5/F4）仍见 §8。
+> **2026-11-14 审计：** [`audit/latest_audit.md`](audit/latest_audit.md)，**Overall `PASS`：56 PASS / 0 FAIL / 0 WARN（56 checks）**，覆盖 11-13/14 六个新结果组；先前的 A6（缓存复用披露）、E6（F1(V) 标注）、F4（schema 成本价卡）、G3（文献快照时效）已修复。旧审计的 3 个 WARN（B5/D5/F4）仍见 §8。
+>
+> **2026-11-22 下一轮审计：** [`audit/next_iteration_audit.md`](audit/next_iteration_audit.md)，覆盖本轮五个新目录（`interpretable_baseline`、`pair_diff`、`codeql_triage`、`verifier_conservative`、`dynamic_coverage`）与 `research/next_iteration_rationale.md`；当前为 **Overall `PASS_WITH_WARNINGS`：40 PASS / 0 FAIL / 1 WARN（41 checks）**。当前仅剩 E5 方法学 WARN（预注册时间戳不可从产物验证）；F3/F4 已修复；本 README 已改用 `audit/next_iteration_audit.md` 与 `benchmark/results/NEXT_ITERATION.md`）。发布门禁 FAIL=0，但 WARN 必须与结果一起读；审计重跑后以文件 `Overall:` / `Checks:` 行为准。本轮数字均为**单次运行**；`verifier_conservative` 是 post-hoc/test-seen，`codeql_triage` 只有 MiMo 有结果，不能当作独立确认。
 
 ---
 
@@ -40,6 +42,8 @@
 - **二次验证没有选择性撤销假阳性。** 四个臂的撤销精确率仅 14.3%–23.1%（正例中 FP 基准率 18.3%–19.0%），Holm p≥0.8367；post macro-F1 低于 pre。它把操作点变保守，不是判别力提升。
 - **CodeQL 用召回换精确率。** test 140 端到端 68 TP / 23 FP / 47 TN / 2 FN（P 0.747、R 0.971、macro-F1 0.817、MCC 0.674），Clang 为 53/0/70/17（macro-F1 0.877、MCC 0.781）；23 个误报全部是 C++ good 单元。
 - **schema 失败主要是可回收的格式问题，不是修复能力。** DeepSeek 102 条 invalid 中 93 条只缺 `explanation`；code-only admission 把 usable patch 从 552/924 提到 619/924（+7.25 pp），但 usable 只是结构代理（L0），不是编译/测试/PoC 正确率。
+- **2026-11-22 的下一轮把“弱点是模型不够强”改写成“指标与证据口径”。** 可解释基线 `length_short` 的 macro-F1 0.511 高于全部 8 个 LLM，但 MCC 只有 0.094；换 MCC 后 `alloc_or_mem` 0.183 最高，仍没有可用检测器。`pair_diff` 的 diff−ctrl 只有 +2.22/−1.67 pp（Holm 后不显著），没有降低“选较短”。CodeQL 分流在 MiMo 上做到 68/0/70/2，但相对 direct 不显著，且 DeepSeek 无结果。
+- **验证器与覆盖率都给出负结果。** 保守三路验证器 236 条只撤 4 条（精确率 25.0%，与 FP 基准率不可区分）；动态覆盖率显示原路径 12 个漏报全部是 `supported_clean_but_bad`，100% 行覆盖不能给 clean 背书，只有三模式并集到 70/0/70/0。
 
 ---
 
@@ -81,6 +85,8 @@ Tier B 的传统方法：
 
 2026-11-14 的扩展层（pair_debias、evidence_verify、dynamic_enhanced、hybrid_dynamic_enhanced、CodeQL、schema_recovery）在 `benchmark/results/EXTENSIONS.md` 与 `extension_summary.json` 中单独汇总；主 leaderboard 只加链接，不导入其数字，也不与 Tier A/B 池化。
 
+2026-11-22 的五个新目录（`interpretable_baseline`、`pair_diff`、`codeql_triage`、`verifier_conservative`、`dynamic_coverage`）通过 `benchmark/extensions` 的 `next_iteration_batch` 只读导入，汇总与成功线见 [`benchmark/results/NEXT_ITERATION.md`](benchmark/results/NEXT_ITERATION.md)；同样不进入父主表，不与 Tier A/B 池化。
+
 ### 2.3 创新与诊断实验
 
 | 目录 | 实验 | 回答的问题 |
@@ -98,6 +104,13 @@ Tier B 的传统方法：
 | `static_extended/` | CodeQL CWE-401 扩展静态基线 | 新静态工具的召回/误报与 Clang/Cppcheck 如何？ |
 | `analysis/schema_recovery/` | 零 API schema 复分析 | 102 条 invalid 里有多少只是可回收的格式问题？ |
 | `benchmark/extensions/` | 8 个 design 的 canonical 接入层 | 新方法如何在不改父协议的前提下汇总？ |
+| `interpretable_baseline/` | 可解释非 LLM 基线（dev40 → test160） | LLM 的 0.383 是否低于“不看代码”的长度/内存 API 规则？macro-F1 与 MCC 会不会给出相反排名？ |
+| `pair_diff/` | 差分 + changes-first + 长度匹配对照（两序） | 把实际 diff 摆出来，能否把配对判别从“选字母/选较短”中分离出来？ |
+| `codeql_triage/` | CodeQL 告警的 LLM 所有权/释放路径分流 | 23 个 C++ FP 能否在不误删 TP 的前提下撤销？相对 direct 是否显著？ |
+| `verifier_conservative/` | 保守三路验证器（supported / unsupported / insufficient） | 把“未证明”与“已反驳”分开，能否救回验证器的选择性？ |
+| `dynamic_coverage/` | gcov 行/分支覆盖 + 三模式对齐 | 140/140 的 `clean` 到底执行了多少？覆盖率能否给 clean 背书？ |
+
+2026-11-22 的下一轮由 [`research/next_iteration_rationale.md`](research/next_iteration_rationale.md) 预先定义五个最弱环节与成功线；实验汇总见 [`report/report_next_zh.pdf`](report/report_next_zh.pdf)（源稿 [`report/report_next_zh.tex`](report/report_next_zh.tex)），benchmark 接入层见 [`benchmark/results/NEXT_ITERATION.md`](benchmark/results/NEXT_ITERATION.md)。这些结果不进入父 leaderboard 的主行，也不与 Tier A/B 池化。
 
 ---
 
@@ -170,7 +183,7 @@ DeepSeek 有两套 list price：`$0.30/$1.20/$0.006`（高峰价，也是 `runne
 | Juliet LLM（`juliet_llm`） | MiMo 140/140 有效，accuracy 0.9500、F1 0.9510、MCC 0.9008（修复后正式/复现相同）；修复前 0.9571 保留 | MiMo 走 Xiaomi 官方端点 fallback，不是 OpenCode Go；修复只改变 1 条预测（`int_malloc_22__good` 由 TN 变 FP）。正式/复现有 2 个 bad 单元不同、混淆矩阵相同，说明服务端非确定性。DeepSeek 因 401/402/403 **没有** Juliet LLM 结果。 |
 | 修复盲评（`repair_eval`） | 30 案例 / 81 候选；VR=2 为 17/81（21.0%）；MIN 二次加权 κ=0.015；compile_status 81/81 `NOT_RUN` | LLM 辅助评审，不是人类评审；没有编译/PoC；只能写“在该 rubric 下 17/81 被认为处理了根因”。 |
 
-### 3.4 2026-11-13/14 最新一轮（新增，尚未进入主 leaderboard）
+### 3.4 2026-11-13/14 一轮（新增，尚未进入主 leaderboard）
 
 这一轮补的是“收益是不是真的”，而不是再换模型：位置/长度、验证器选择性、动态不可观测单元、证据被复制、静态工具召回、schema 可回收性。全部为单次运行；除 `analysis/schema_recovery` 外都调用过真实模型或工具。
 
@@ -188,7 +201,23 @@ DeepSeek 有两套 list price：`$0.30/$1.20/$0.006`（高峰价，也是 `runne
 
 来源：`pair_debias/report.md`、`evidence_verify/analysis/report.md`、`dynamic_enhanced/runs/test140_enhanced_v3/metrics.md`、`hybrid_dynamic_enhanced/REPORT.md`、`static_extended/runs/codeql_20261114_cwe401_full/comparison_test140.md`、`analysis/schema_recovery/schema_recovery.md`、`benchmark/extensions/README.md`。
 
-### 3.5 不能声称的事
+### 3.5 2026-11-22 下一轮：五个弱点的复核、四个实验与一个覆盖率门禁
+
+这一轮不再换模型，而是对 §3.4 暴露的五个最弱环节逐条做“先写成功线、再跑”的复核。设计、失败解释与文献映射在 [`research/next_iteration_rationale.md`](research/next_iteration_rationale.md)（N1–N4 + G0 的原始成功线）；本轮实际落地为 `interpretable_baseline`、`pair_diff`、`codeql_triage`、`verifier_conservative`、`dynamic_coverage` 五个目录，其中 N1 的 LLM 先验校准臂没有跑，改做非 LLM 基线诊断。实验汇总在 [`report/report_next_zh.pdf`](report/report_next_zh.pdf)（12 页；源稿 [`report/report_next_zh.tex`](report/report_next_zh.tex)，统一摘要 [`report/next_results_summary.md`](report/next_results_summary.md)）；benchmark 只读接入层在 [`benchmark/results/NEXT_ITERATION.md`](benchmark/results/NEXT_ITERATION.md)；发布审计在 [`audit/next_iteration_audit.md`](audit/next_iteration_audit.md)。全部为单次运行；`verifier_conservative` 是 test-seen 的事后实验，`codeql_triage` 只有 MiMo 有结果。
+
+| 弱点（旧数字） | 复核后的原因 | Idea / 本轮实验 | 结果（单次运行；括号内为判定） |
+| --- | --- | --- | --- |
+| **1. Tier A 检测低于平凡基线。** DeepSeek direct macro-F1 0.3828、MCC 0.0414；只报 46/160 为正，低于“全判漏洞”的 0.4444。 | 主要是操作点/先验（test 80% 正例）与函数级标签缺上下文；长度伪相关；置信度对排序几乎没有信息（AUROC 0.540）。 | `interpretable_baseline/`：dev40 固定 7 条规则 + 2 个 LR，test160 只评一次；另报 test-tuned 上界。 | `length_short` macro-F1 **0.511**（高于 8 个 LLM 的 0.346–0.422），但 MCC 仅 **0.094**；`alloc_or_mem` MCC **0.183**（F1 0.387）最高；多数类 0.444；`lr_balanced` 0.391 / MCC −0.131；test-tuned 上界约 0.60 F1 / 0.21 MCC。（**未达预注册的 Tier A 组合成功线（MCC≥0.15 且 F1≥0.53）；“简单规则优于 LLM”只在 macro-F1 口径成立，换 MCC 排名翻转；没有强检测器。**） |
+| **2. 单序配对 DA 被位置/长度抬高。** forced 76.67%/86.67%，交换一致仅 61.67%/74.44%，两序长度启发式 72.22%。 | 修复版本通常更长，长度方向决定答案；DeepSeek 有明显槽位偏好；开放四分类仍有 17%–22% 弃权。 | `pair_diff/`：完整 diff + changes-first，配 token 长度匹配的空占位块对照；A/B 两序；只读复用 `pair_debias` open。 | 交换一致 DA：DeepSeek diff **62.22%** / ctrl 60.00% / open 55.56%；MiMo **60.56%** / 62.22% / 58.33%。diff−ctrl **+2.22/−1.67 pp**（Holm p=1.000/0.905），diff−open +6.67/+2.22 pp（Holm 0.0855/1.000）。选较短比例 75.17%–81.20%，不低于 open；changes-first 门控在 20/180、36/180 对几乎全部判 `neither`（DA=0）。（**点估计高于 60%/55% 门槛，但 diff−ctrl 为 0；不能把过线归因于 diff，也不能写“diff 减少长度捷径”。**） |
+| **3. CodeQL 高召回换精确率。** 68 TP / 23 FP / 2 FN，P 0.7473、R 0.9714、MCC 0.6739；23 FP 全是 C++ good。 | 23 FP 不是随机噪声，而是 4 个可命名模式（`_33` 别名/遮蔽、`_22` 全局+跨函数 delete、`_72` vector、`_54` wrapper）；全部来自 `cpp/memory-may-not-be-freed`。 | `codeql_triage/`：LLM 按所有权/别名/全局/跨函数释放分流；v1 一次性、v2 先判 `leak_present` 并写明 realloc 失败路径，再做一致性复核。 | 最终 **68 TP / 0 FP / 70 TN / 2 FN**，P **1.0000**、R 0.9714、macro-F1 **0.9857**、MCC **0.9718**；vs CodeQL +0.1684（p<1e-6），vs direct +0.0286（95% CI 跨 0，p=0.289，**不显著**）。v2 一次性是 68/3/67/2，3 个 `_22` 由二次一致性复核翻转；零成本文本一致性规则与复核同判，说明第二次 API 不是必需的。v1 误删 7/68 TP，v2/最终 0/68。（**预注册的 CodeQL 分流成功线通过（MiMo）；只能写“对 CodeQL 显著、对 direct 不显著”，且 DeepSeek 因 402/401 无结果。**） |
+| **4. 验证器把 TP 和 FP 一起撤。** 四臂撤销精确率 20.4%/23.1%/14.3%/21.6%，post macro-F1 下降 0.070–0.204；`insufficient_evidence` 占撤销 67%–71%。 | fail-closed 把“未证明”当成“已反驳”；验证器置信度对 FP/TP 的 AUROC 只有 0.28–0.46（低于随机）。 | `verifier_conservative/`：三路 `supported/unsupported/insufficient`；只有带行号的 `guard_present` 或 `counterexample` 才撤销；失败保留第一遍。 | 236 条请求只撤销 **4 条**（TP 3 / FP 1），撤销精确率 **25.0%**（正例 FP 基准率 18.3%–19.0%，Holm p=1.0）；Δmacro-F1 0 到 −0.0052；MCC 仅 `mimo_cross` +0.0139（CI 跨 0）；`insufficient` 106/236。（**预注册的验证器成功线失败：没有选择性排序信号；验证器退化为惰性步骤，需外部 oracle/CFG/执行反例。**） |
+| **5. 动态 `clean` 没有覆盖率。** 140/140 的 clean 无行/分支覆盖；每模式单输入；`nogobal` 下 70/70 good 都有原始泄漏；14 个随机分支 FN。 | 无插桩；LSan 全局根语义；单输入不足；归因规则把工具链/运行时帧过滤掉，`clean` 只是单路径观测。 | `dynamic_coverage/`：gcov 行/分支覆盖，default + `realloc_fail` + `nogobal` 三模式逐单元对齐；raw/effective 行覆盖与归因分离。 | 覆盖采集 140/140；effective 行覆盖 **100%**、raw 99.9%、分支 **52.7%**、`branch_complete` 21/140（**0 good**）。default 58/0/70/12；三模式并集 **70/0/70/0**。12 个漏报全部是 `supported_clean_but_bad`；line gate 不纠错，branch gate 弃权全部 70 good；`realloc_fail` 新增 14 分支、`nogobal` 新增 0 行/0 分支；分配/释放站点 167/167、89/89。（**G0 形式过线、语义失败：`clean` 只能写 `executed_clean`，不能写 TN；100% 行覆盖不等于无泄漏。**） |
+
+读法：这一轮的主结论仍是**负结果与口径修正**，不是新的 SOTA。(1) 在 80% 正例的 test 上，macro-F1 会把“多报”奖励成能力；`length_short` 的 0.511 只在 macro-F1 上“赢” LLM，MCC 0.094 仅比最好的 LLM（MiMo context 0.080）高 1.4 pp，远低于 `alloc_or_mem` 的 0.183；真正的结论是**没有方法超过 0.21 MCC**。(2) 把 diff 直接摆出来并没有降低长度捷径；交换一致 DA 相对长度匹配对照的差异为 +2.22/−1.67 pp，Holm 后都不显著。(3) CodeQL 的 23 个 FP 可被撤销，但一次性提示会误删 7/68 TP；最终 0 FP 可由零成本文本规则复现，代价是只有 MiMo、且相对 direct 不显著。(4) 保守三路验证器在语义上修正了 fail-closed，但 236 条只撤 4 条，检测收益为负；这说明“二次验证”缺少可排序的外部信号。(5) 覆盖率能解释 7 个 `malloc_realloc` 漏报（分支未走），但不能解释 5 个 `_68`（LSan 根集）；行覆盖 100% 与 12 个 `supported_clean_but_bad` 同时成立，是“clean 不是 TN”的最直接证据。
+
+来源：[`interpretable_baseline/REPORT.md`](interpretable_baseline/REPORT.md)、[`pair_diff/results/report.md`](pair_diff/results/report.md)、[`codeql_triage/REPORT.md`](codeql_triage/REPORT.md)、[`verifier_conservative/analysis/report.md`](verifier_conservative/analysis/report.md)、[`dynamic_coverage/README.md`](dynamic_coverage/README.md)、[`research/next_iteration_rationale.md`](research/next_iteration_rationale.md)。
+
+### 3.6 不能声称的事
 
 - 不能把 Tier A 与 Tier B 的数字放在同一张排行榜，或计算“总体 F1”。
 - 不能把 `hybrid_v1` 的 140/140、`juliet_repair` 的 58/58、`juliet_llm` 的 0.9500 直接写成“检测/修复达到 SOTA”。
@@ -203,6 +232,11 @@ DeepSeek 有两套 list price：`$0.30/$1.20/$0.006`（高峰价，也是 `runne
 - 不能把 `hybrid_dynamic_enhanced` 的 +2 写成证据带来的语义提升；工具满分、增益不显著。
 - 不能把 CodeQL 的高召回写成“优于 Clang”；它的精确率/MCC 更低，23 个 FP 全是 C++ good。
 - 不能把 `schema_recovery` 的 usable 当作修复正确率；它没有编译/测试/PoC。
+- 不能把 `interpretable_baseline` 的 `length_short` 0.511 写成“简单规则比 LLM 更会检测”；它只在 macro-F1 上高于 LLM，MCC 0.094，且 test 正例率是 80%。换 MCC 后 `alloc_or_mem` 0.183 最高，但仍远不是可用检测器。
+- 不能把 `pair_diff` 的 diff 写成“减少长度捷径”或“恢复跨版本推理”；diff−ctrl 的交换一致差异 +2.22/−1.67 pp，Holm 后不显著，选较短比例没有下降。
+- 不能把 `codeql_triage` 的 68/0/70/2 写成“LLM triage 全面优于 direct”；相对 direct 的 +0.0286 不显著，且只有 MiMo、没有 DeepSeek 结果。必须同时报告 v1 的 7/68 TP 误删，并说明 0 FP 可由零成本文本一致性规则复现。
+- 不能把 `verifier_conservative` 的 4/236 撤销写成“验证器有效”；撤销精确率 25.0% 与 FP 基准率 18.3%–19.0% 不可区分，macro-F1 不升。
+- 不能把 `dynamic_coverage` 的 100% 行覆盖写成“无泄漏证明”；原路径 12 个 `supported_clean_but_bad` 全部是 effective-line-complete，只有三模式并集才到 70/70。
 
 ---
 
@@ -218,7 +252,7 @@ cs224proj/
 │   ├── SECURITY.md               # 凭证处理、发布前检查、残余风险
 │   ├── LITERATURE.md             # 文献索引：2025–2026 最新调研与引用分级
 │   └── GITHUB_RELEASE.md         # GitHub 私有仓库发布步骤、门禁与推送验证
-├── audit/                        # 只读审计（旧一轮 PASS_WITH_WARNINGS；最新一轮见 §9）
+├── audit/                        # 三代只读审计（旧一轮 / 2026-11-14 / 2026-11-22）
 ├── SecVulEval.xlsx               # 上游数据集（18.8 MB，保留）
 ├── build_datasets.py             # 从 Excel 抽样生成 datasets/
 ├── datasets/                     # 200 独立函数 + 200 对（JSON）
@@ -236,6 +270,7 @@ cs224proj/
 │   └── dynamic/                  # ASan/LSan + Valgrind 全量结果
 │       └── runs/*/cases/         # [ignored] 逐 case 二进制与日志（326 MB）
 ├── benchmark/                    # 统一协议、schema、validator、分层 leaderboard
+│   ├── results/NEXT_ITERATION.md # 2026-11-22 五个弱点的只读接入与成功线
 │   └── extensions/               # 8 个新 design 的 canonical 接入层（不改父协议）
 ├── juliet_llm/                   # Juliet LLM 直接检测（含 Xiaomi fallback）
 ├── hybrid/                       # 静态/动态/组合/安慰剂证据实验（v2 主结果）
@@ -246,10 +281,15 @@ cs224proj/
 ├── pair_joint/                   # 联合 A/B 配对判别
 ├── pair_debias/                  # A/B 反向重复、开放四分类、长度匹配
 ├── static_extended/              # CodeQL CWE-401 扩展静态基线
+├── interpretable_baseline/       # 长度/内存 API 等可解释非 LLM 基线（dev40 → test160）
+├── pair_diff/                    # 差分 + changes-first + 长度匹配对照（两序）
+├── codeql_triage/                # CodeQL 告警的 LLM 所有权/释放路径分流
+├── verifier_conservative/        # 保守三路验证器（supported/unsupported/insufficient）
+├── dynamic_coverage/             # gcov 行/分支覆盖 + 三模式对齐
 ├── juliet_repair/                # 编译/LSan/行为闭环修复评测
 ├── repair_eval/                  # 修复质量盲评工具与最终汇总
 ├── qualitative/                  # 10 个定性案例
-├── report/                       # 中文 IEEE 报告源稿、PDF、结果摘要
+├── report/                       # 中文 IEEE 报告源稿、PDF、结果摘要（含 report_next）
 ├── research/                     # 协议、相关工作、最新文献、创新结论与限制
 ├── proposal/                     # 课程 proposal 源稿与图
 └── output/                       # 预留输出目录
@@ -299,10 +339,15 @@ python3 evidence_verify/selftest.py                 # 验证器 prompt、schema�
 python3 benchmark/extensions/tools/ext_selftest.py  # 8 design 合成 fixture
 python3 analysis/schema_recovery/recover.py --selftest  # K&R/成本/计数断言
 python3 -m repair_eval selftest                     # 盲评包/评分/kappa
+python3 interpretable_baseline/run_baseline.py --resamples 2000 --out-dir /tmp/secvul_ib_check  # 本地基线，写 /tmp
+python3 pair_diff/selftest.py                       # diff/ctrl 长度匹配、两序映射、解析
+python3 codeql_triage/selftest.py                   # 140 单元、68 TP/23 FP、提示隔离
+python3 verifier_conservative/selftest.py           # 三路提示、schema、判定真值表
+python3 dynamic_coverage/run_dynamic_coverage.py selftest  # gcov 读取/并集 control
 python3 benchmark/tools/bench_validate_dataset.py --jsonschema
 ```
 
-这些命令只读冻结产物或在临时目录创建 fixture；不会调用模型，也不会覆盖正式结果。**注意：`evidence_verify/selftest.py` 当前在 `matched_budget_table` 处有 `NameError: valid_indices`（`evidence_verify/evidence_verify/baselines.py:458`）；在修复前不要把它当验收门禁。**
+这些命令只读冻结产物或在临时目录创建 fixture；不会调用模型，也不会覆盖正式结果。`interpretable_baseline/run_baseline.py` 会写一个新的 `results/` 子目录（默认拒绝覆盖），如果只想检查可以用 `--out-dir /tmp/...`。**注意：`evidence_verify/selftest.py` 当前在 `matched_budget_table` 处有 `NameError: valid_indices`（`evidence_verify/evidence_verify/baselines.py:458`）；在修复前不要把它当验收门禁。**
 
 ### 5.2 恢复 Juliet 原始数据并校验
 
@@ -510,7 +555,49 @@ python3 -m repair_eval verify --package repair_eval/packages/repair_blind_v1
 /tmp/secvul-tectonic/tectonic -X compile report/report_latest_zh.tex --outdir report
 ```
 
-报告 PDF 已提交：扩展版 `report/report_extended_zh.pdf`（27 页，Tectonic 0.17.0，`pdfinfo` 实测）与基础版 `report/report_zh.pdf`（17 页，保留未改）。**最新报告是 [`report/report_latest_zh.pdf`](report/report_latest_zh.pdf)**（35 页，2026-11-14 02:12 CST，`pdfinfo` 实测），源稿为 [`report/report_latest_zh.tex`](report/report_latest_zh.tex)，覆盖 2026-11-13/14 的配对去偏、二次验证、动态增强、CodeQL 与 schema 复分析。重新编译需要 Tectonic 或 TeX Live。
+报告 PDF 已提交：扩展版 `report/report_extended_zh.pdf`（27 页，Tectonic 0.17.0，`pdfinfo` 实测）与基础版 `report/report_zh.pdf`（17 页，保留未改）。**2026-11-14 报告是 [`report/report_latest_zh.pdf`](report/report_latest_zh.pdf)**（35 页，2026-11-14 02:12 CST，`pdfinfo` 实测），源稿为 [`report/report_latest_zh.tex`](report/report_latest_zh.tex)。**2026-11-22 下一轮报告是 [`report/report_next_zh.pdf`](report/report_next_zh.pdf)**（12 页，2026-11-22 20:35 CST，`pdfinfo` 实测），源稿为 [`report/report_next_zh.tex`](report/report_next_zh.tex)，统一摘要在 [`report/next_results_summary.md`](report/next_results_summary.md)。重新编译需要 Tectonic 或 TeX Live。
+
+### 5.7 2026-11-22 下一轮：五个弱点的复现
+
+这一轮的设计与成功线在 `research/next_iteration_rationale.md`，结果汇总在 `report/report_next_zh.pdf`（12 页）与 `report/next_results_summary.md`；benchmark 只读接入在 `benchmark/results/NEXT_ITERATION.md`。所有命令都在 WSL 中运行，默认写入新目录；不要覆盖已有 `results/` 或 `runs/`。
+
+```bash
+# 1) 可解释非 LLM 基线（无网络；dev40 拟合，test160 只评一次）
+python3 interpretable_baseline/run_baseline.py \
+  --out-dir /tmp/secvul_interpretable_check --resamples 10000
+
+# 2) Pair-diff（需凭证；先 pilot 再 full；ctrl 是 token 长度匹配的空占位块）
+python3 pair_diff/selftest.py
+bash pair_diff/run_pair_diff.sh pilot
+bash pair_diff/run_pair_diff.sh full
+bash pair_diff/run_pair_diff.sh analyze
+
+# 3) CodeQL 告警分流（需凭证；MiMo 走 Xiaomi 官方端点；DeepSeek 当前 402/401）
+python3 codeql_triage/selftest.py
+python3 codeql_triage/run_with_kimi_config.py \
+  --kimi-config ~/.kimi-code/config.toml --kimi-provider xiaomi -- \
+  --provider xiaomi --model mimo-v2.6-flash \
+  --condition all --prompt-version v2 \
+  --out-dir codeql_triage/runs/repro_mimo_v2 --concurrency 6
+python3 codeql_triage/analyze.py \
+  --run-dir codeql_triage/runs/repro_mimo_v2 \
+  --out codeql_triage/runs/repro_mimo_v2/analysis --label repro-mimo-v2
+
+# 4) 保守三路验证器（需凭证；先 dryrun 再 test；四臂）
+python3 verifier_conservative/selftest.py
+bash verifier_conservative/run_conservative.sh deepseek_self dryrun
+bash verifier_conservative/run_conservative.sh deepseek_self test
+# 其余三臂：deepseek_cross / mimo_self / mimo_cross
+python3 verifier_conservative/analyze_conservative.py
+
+# 5) 动态覆盖率（无网络；需要 gcc/gcov 15.3）
+python3 dynamic_coverage/run_dynamic_coverage.py selftest
+python3 dynamic_coverage/run_dynamic_coverage.py run --run-id repro_coverage --jobs 8
+python3 dynamic_coverage/run_dynamic_coverage.py report --run-dir dynamic_coverage/runs/repro_coverage
+python3 dynamic_coverage/run_dynamic_coverage.py verify --run-dir dynamic_coverage/runs/repro_coverage
+```
+
+预期（本机正式产物）：`interpretable_baseline` 8/8 LLM 指标回归一致、`length_short` 0.511/0.094；`pair_diff` 1,440/1,440 ok、0 invalid、成本 `$1.156871`；`codeql_triage` 140/140 direct + 140/140 v2、最终 68/0/70/2；`verifier_conservative` 236 请求、4 撤销；`dynamic_coverage` 140 单元 × 3 模式、default 58/0/70/12、并集 70/0/70/0。这些是单次运行的点估计，不是重复实验的置信区间。
 
 更多环境细节、数据哈希、验收清单和已知坑见 [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md)。
 
@@ -522,8 +609,8 @@ python3 -m repair_eval verify --package repair_eval/packages/repair_blind_v1
 - `runner` 和 `juliet_llm` 对响应体做 `sk-...` / `Bearer ...` 脱敏；`api.session` 记录非敏感的 `x-opencode-session` 随机值及其 SHA-256，不是密钥。
 - `.gitignore` 排除 `.env`、`creds/`、`credentials/`、`secrets/`、`*.key`、`*.pem`、`auth.json`、`opencode.json`、`*_api_key.json`、`repair_eval/packages/*/private/` 等。
 - 发布前请按 [`docs/SECURITY.md`](docs/SECURITY.md) 的清单做一次 secret scan 和文件体积检查。**不要把任何 key 粘进 issue、PR、commit message 或截图。**
-- GitHub 私有仓库已创建并推送：<https://github.com/tzhazuma/cs224proj>（PRIVATE）。发布/重建步骤仍见 [`docs/GITHUB_RELEASE.md`](docs/GITHUB_RELEASE.md)：包含 `gh` 安装/校验、`git init`、暂存区体积与密钥扫描、`gh repo create cs224proj --private --source=. --remote=origin --push` 以及推送后验证；当前仓库不要重复执行 `gh repo create`。发布门禁是**最新一轮**审计的 FAIL=0（当前 56 PASS / 0 FAIL / 0 WARN，Overall `PASS`）；旧一轮 `audit/final_audit.md`（58 PASS / 0 FAIL / 3 WARN / 1 INFO）只覆盖 v2/postleakfix 工作树，不能给 2026-11-13/14 的新目录背书。
-- 2026-11-14 工作树按 `.gitignore` 估算约 **10,836 个文件 / 333.3 MiB**，最大单文件仍是 `traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`（40.55 MB），没有 ≥100 MB 文件。新增目录已计入：`pair_debias`（38 MB）、`dynamic_enhanced`（29 MB）、`static_extended`（15 MB）、`benchmark/extensions`（14 MB）、`evidence_verify`（9 MB）、`hybrid_dynamic_enhanced`（3.3 MB）、`analysis/schema_recovery`（0.6 MB）。最终以暂存区 `git ls-files` 为准。
+- GitHub 私有仓库已创建并推送：<https://github.com/tzhazuma/cs224proj>（PRIVATE）。发布/重建步骤仍见 [`docs/GITHUB_RELEASE.md`](docs/GITHUB_RELEASE.md)：包含 `gh` 安装/校验、`git init`、暂存区体积与密钥扫描、`gh repo create cs224proj --private --source=. --remote=origin --push` 以及推送后验证；当前仓库不要重复执行 `gh repo create`。发布门禁是**当前轮次**审计的 FAIL=0：2026-11-14 审计为 56 PASS / 0 FAIL / 0 WARN（Overall `PASS`）；2026-11-22 审计为 **40 PASS / 0 FAIL / 1 WARN（Overall `PASS_WITH_WARNINGS`）**，3 个 WARN 见 §8.35。旧一轮 `audit/final_audit.md`（58 PASS / 0 FAIL / 1 WARN / 1 INFO）只覆盖 v2/postleakfix 工作树，不能给 2026-11-13/14 或 2026-11-22 的新目录背书。
+- 2026-11-22 工作树按 `.gitignore` 估算在 2026-11-14 的 **10,836 个文件 / 333.3 MiB** 基础上新增约 **170 MB**（`du` 粗估：`pair_diff` 65 MB、`dynamic_coverage` 52 MB、`benchmark/extensions/runs` 33 MB、`codeql_triage` 10 MB、`verifier_conservative` 8 MB、`interpretable_baseline` 0.85 MB；`dynamic_coverage/runs/*/build/` 等可再生产物被 `.gitignore` 排除）。最大单文件仍是 `traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`（40.55 MB），没有 ≥100 MB 文件。最终以暂存区 `git ls-files` 为准。
 - 本仓库不包含个人账号、cookie、SSH key 或云凭证；如果发现疑似泄漏，先轮换凭证，再清理历史。
 
 ---
@@ -532,7 +619,7 @@ python3 -m repair_eval verify --package repair_eval/packages/repair_blind_v1
 
 - **SecVulEval**：根目录 `SecVulEval.xlsx` 为课程提供的上游数据集；`datasets/` 与 `splits/` 是从该工作簿抽样、冻结的派生数据。上游数据的引用与许可请遵循其原始发布页面。
 - **Juliet**：NIST SARD 的 Juliet Test Suite for C/C++ v1.3，官方归档 URL 与 SHA-256 见 `juliet/README.md`。`juliet/raw/` 不随仓库分发（体积原因），用 `fetch_juliet.py` 从官方来源恢复。
-- **模型输出**：`runner/runs/`、`juliet_llm/runs/`、`hybrid/runs/`、`pair_joint/runs/`、`juliet_repair/runs/`、`pair_debias/runs/`、`evidence_verify/runs/`、`hybrid_dynamic_enhanced/runs/` 保存真实模型响应与 usage；`dynamic_enhanced/runs/`、`static_extended/runs/` 保存本地工具证据。它们是研究产物，不构成对代码安全性或补丁正确性的保证。
+- **模型输出**：`runner/runs/`、`juliet_llm/runs/`、`hybrid/runs/`、`pair_joint/runs/`、`juliet_repair/runs/`、`pair_debias/runs/`、`evidence_verify/runs/`、`hybrid_dynamic_enhanced/runs/`、`pair_diff/runs/`、`codeql_triage/runs/`、`verifier_conservative/runs/` 保存真实模型响应与 usage；`dynamic_enhanced/runs/`、`dynamic_coverage/runs/`、`static_extended/runs/` 保存本地工具证据；`interpretable_baseline/results/` 保存无 API 的规则/LR 结果。它们是研究产物，不构成对代码安全性或补丁正确性的保证。
 - **许可**：本仓库目前没有附 LICENSE 文件；在重新分发或用于课程之外之前，请先核对上游数据集条款并补充合适的许可证。
 - **单文件体积**：GitHub 单文件上限 100 MB。按 `.gitignore` 估算，当前最大的待提交文件是 `traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`（约 40.5 MB）；146 MB 的 Juliet 归档和 326 MB 的逐 case 二进制已被忽略。发布前仍建议用 `find` 检查一次。
 
@@ -566,8 +653,15 @@ python3 -m repair_eval verify --package repair_eval/packages/repair_blind_v1
 24. **CodeQL 不是全面更优。** 每个单元单独建库、单 TU 近似，用 gcc/g++ 15.3 建库而 Clang/Cppcheck 用 clang 22.1.8；查询版本固定为 2.27.4 + `cpp-queries` 1.10.0。test 140 的 23 个 FP 全是 C++ good；高召回（0.971）伴随低精确率（0.747）和更低 MCC（0.674）。
 25. **`schema_recovery` 只到 L0。** 结构检查是词法代理，不是 C/C++ parser/compiler；有 2 条 K&R 定义被 canonical 规则误判。`usable_patch` 没有编译、测试、sanitizer、PoC 或人工评审，不能叫修复正确率。
 26. **`benchmark/extensions` 是只读导入层，不是新实验。** 16 个 canonical run 来自 producer 的真实产物；八个 design 各有主终点，不能池化，也不能与父 Tier A/B 主表直接相减。CodeQL 已导入为 `new_static_tool`，但父 schema/PROTOCOL 未被修改，LEADERBOARD 只加了指向 `EXTENSIONS.md` 的链接。
-27. **最新一轮尚未进入主 leaderboard，但已通过只读审计。** 2026-11-13/14 的实验默认都是单次运行；除 `schema_recovery` 外都有 API/工具调用。`benchmark/results/` 的主表仍只覆盖 v2/postleakfix 工作树；最新审计（[`audit/latest_audit.md`](audit/latest_audit.md)，2026-11-14 最近重跑）为 56 PASS / 0 FAIL / 0 WARN，Overall `PASS`；发布门禁通过。
-28. **最新审计先前的 A6/E6/F4/G3 告警已修复（历史说明）。** A6 曾要求披露 `pair_debias` 的 1,080 条记录含 51 条缓存复用（1,029 次新请求）；E6 曾要求 CodeQL 区分 positive-class F1(V) 0.8447 与主终点 macro-F1 0.8173；F4 曾要求注明 `schema_recovery` 的 “normalized” 是 configured `$0.30/$1.20` 的 cache-aware 重算，不是 off-peak `$0.15/$0.60`；G3 曾指出 2026-11-13 文献快照的“未实现”状态已过时。当前审计已清零这 4 项。
+27. **2026-11-13/14 与 2026-11-22 两轮都尚未进入主 leaderboard。** 两轮实验默认都是单次运行；除 `schema_recovery`、`interpretable_baseline`、`dynamic_coverage` 外都有 API/工具调用。`benchmark/results/` 的主表仍只覆盖 v2/postleakfix 工作树；2026-11-14 审计（[`audit/latest_audit.md`](audit/latest_audit.md)）为 56 PASS / 0 FAIL / 0 WARN，2026-11-22 审计见 [`audit/next_iteration_audit.md`](audit/next_iteration_audit.md)。本轮 `benchmark/results/NEXT_ITERATION.md` 只做只读接入与成功线记录，不改父协议。
+28. **2026-11-14 审计先前的 A6/E6/F4/G3 告警已修复（历史说明）。** A6 曾要求披露 `pair_debias` 的 1,080 条记录含 51 条缓存复用（1,029 次新请求）；E6 曾要求 CodeQL 区分 positive-class F1(V) 0.8447 与主终点 macro-F1 0.8173；F4 曾要求注明 `schema_recovery` 的 “normalized” 是 configured `$0.30/$1.20` 的 cache-aware 重算，不是 off-peak `$0.15/$0.60`；G3 曾指出 2026-11-13 文献快照的“未实现”状态已过时。当前审计已清零这 4 项。
+29. **`interpretable_baseline` 的 dev40 只有 8 个负例。** dev 选择 `length_short` 只比多数类高 0.0061；`lr_balanced` 在 dev 上 0.564、test 上 0.391（MCC −0.131），是协变量偏移/过拟合的直接证据。test 正例率 80% 是 200 条子集的构造比例，不是真实项目分布；`length_short` 的 0.511 不能写成“规则更会检测”。test-tuned 上界（`call_density` 0.598/0.209）使用了 test 标签，不是方法结果；Tier A 仍只保证项目级隔离，没有 5-gram 近重复控制。
+30. **`pair_diff` 仍是单次运行，且 diff−ctrl 为零。** 1,440 条新记录（8 runs × 180）全部 ok，但 diff 相对 token 长度匹配对照的交换一致差异只有 +2.22/−1.67 pp（Holm 后不显著）；选较短比例没有下降，changes-first 在无安全相关变更的 20/180、36/180 对上把答案门控成 `neither`。长度匹配用 `cl100k_base` 代理 tokenizer，不是 provider tokenizer；分析阶段虽用 `prompt_tokens` 复核（179/180、180/180 在 5% 内），仍不能排除 token 计费口径差异。成本约为 open 的 1.30×，USD/正确 pair-order 更高。
+31. **`codeql_triage` 只有 MiMo 有结果，且相对 direct 不显著。** DeepSeek 官方端点 402 `Insufficient Balance`、OpenCode Go 401 `api_key_expired`、Qwen 403；失败证据保留在 `runs/blocked_*`，没有伪造数字。最终 68/0/70/2 相对 CodeQL +0.1684（p<1e-6），相对 direct 仅 +0.0286（95% CI 跨 0，p=0.289）。2 个 FN 是 `_82` compile_error，triage 无法恢复；cascade 只是用 direct 补回并引入 2 FP。91 个告警的二次复核不是盲审，零成本文本一致性规则得到完全相同的结果；单次采样，没有方差。
+32. **`verifier_conservative` 是 test-seen 的事后实验。** 160 个测试函数已用于第一遍 evidence 和原验证器；三路提示与判定规则是在看到那些结果之后设计的，不能当作独立确认。236 条请求只撤销 4 条（TP 3 / FP 1），撤销精确率 25.0% 与正例 FP 基准率 18.3%–19.0% 不可区分（Holm p=1.0）；macro-F1 不升。守卫/反例的语义支配关系没有编译或执行验证；只改正例，32 个负例支撑不起 FPR 结论；跨模型验证器不是人工标注。
+33. **`dynamic_coverage` 的 100% 行覆盖不是无泄漏证明。** 覆盖率用 GCC 15.3 gcov，只统计单元自身文件；default 的 82 个 clean 全部 effective-line-complete，其中 12 个实际是 bad（`supported_clean_but_bad=12`）。7 个 `malloc_realloc` 漏报可由 `realloc` 失败分支解释，5 个 `_68` 是 LSan 全局根语义，不是执行不足；`nogobal` 新增 0 行/0 分支。分支覆盖 52.7%，`branch_complete` 21/140 且 0 个 good——通用分支覆盖把“守卫多少”当成覆盖高低，不能给 clean 背书。每模式仍只跑 1 个输入；clang + `--wrap=realloc` + LSan 在本机挂起，未采用 llvm-cov。
+34. **本轮 `report_next` / `NEXT_ITERATION` 是单次运行的汇总，不是重复实验。** `report/report_next_zh.pdf` 与 `benchmark/results/NEXT_ITERATION.md` 只整理已落盘产物；成功线是预注册门槛，不是“预期结果”。审计只核对产物、口径与可复现命令，不把单次运行变成多 seed 估计；任何“显著提升”仍以各自的 McNemar/Holm 结果为准。
+35. **2026-11-22 审计是 `PASS_WITH_WARNINGS`，不是纯 PASS。** 当前 `audit/next_iteration_audit.md` 为 **40 PASS / 0 FAIL / 1 WARN（41 checks）**。3 个 WARN：(E5) `interpretable_baseline` 的预注册时间戳不能从产物证明，只能确认规则/阈值是 dev-only；(F3) `benchmark/results/extension_summary.json` 仍是 2026-11-13 的旧汇总，且审计按根路径 `benchmark/NEXT_ITERATION.md` 检查，而实际汇总写在 `benchmark/results/NEXT_ITERATION.md`；(F4) 审计脚本仍按旧文件名检查发布文档（`audit/next_audit.*`、`benchmark/NEXT_ITERATION.md`），而本 README/docs 已改用 `audit/next_iteration_audit.*` 与 `benchmark/results/NEXT_ITERATION.md`；报告产物图仍把 `pair_diff` 写成 `pair_diff/report.md`（实际为 `pair_diff/results/report.md`，属于 report/ 范围）。发布门禁 FAIL=0，但这些 WARN 必须保留；审计重跑后以文件为准。
 
 ---
 
@@ -580,13 +674,17 @@ python3 -m repair_eval verify --package repair_eval/packages/repair_blind_v1
 | [`docs/SECURITY.md`](docs/SECURITY.md) | 凭证处理、忽略规则、发布前 secret scan、残余风险、事件响应 |
 | [`docs/GITHUB_RELEASE.md`](docs/GITHUB_RELEASE.md) | GitHub 私有仓库发布：`gh` 安装、git 初始化、门禁、推送与验证 |
 | [`audit/final_audit.md`](audit/final_audit.md) | 旧一轮只读审计：58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`；**只覆盖 v2/postleakfix，不含 2026-11-13/14 新目录** |
-| [`audit/latest_audit.md`](audit/latest_audit.md) | **最新一轮（2026-11-14 最近重跑）：Overall `PASS`，56 PASS / 0 FAIL / 0 WARN；发布门禁通过**。先前的 A6/E6/F4/G3 已修复（见 §8.28） |
+| [`audit/latest_audit.md`](audit/latest_audit.md) | **2026-11-14 审计：Overall `PASS`，56 PASS / 0 FAIL / 0 WARN**。先前的 A6/E6/F4/G3 已修复（见 §8.28） |
+| [`audit/next_iteration_audit.md`](audit/next_iteration_audit.md) | **2026-11-22 下一轮审计**：覆盖 `interpretable_baseline`、`pair_diff`、`codeql_triage`、`verifier_conservative`、`dynamic_coverage` 与 `research/next_iteration_rationale.md`；`Overall`/`Checks` 以文件为准 |
 | [`benchmark/PROTOCOL.md`](benchmark/PROTOCOL.md) | 统一评测协议：标签、指标、失败、统计、成本、Tier A/B |
+| [`benchmark/results/NEXT_ITERATION.md`](benchmark/results/NEXT_ITERATION.md) | 2026-11-22 五个弱点的只读接入：成功线、主终点、限制与不进入父主表的边界 |
 | [`benchmark/results/LEADERBOARD.md`](benchmark/results/LEADERBOARD.md) | 两层 leaderboard 索引（不跨层排名；Tier B 主行为 hybrid_v2 / postleakfix；末尾链接扩展汇总） |
 | [`juliet/README.md`](juliet/README.md) | Juliet 子集来源、宏门控、dev/test、近重复、复现 |
 | [`traditional/static/README.md`](traditional/static/README.md) | Clang/Cppcheck 适配器、CWE-401 规则、200 单元结果 |
 | [`traditional/dynamic/README.md`](traditional/dynamic/README.md) | ASan/LSan + Valgrind 全量结果与 190 个 FN 归因 |
-| [`report/report_latest_zh.pdf`](report/report_latest_zh.pdf) | 2026-11-14 最新报告（35 页）：配对去偏、二次验证、动态增强、CodeQL、schema 复分析；源稿为 [`report_latest_zh.tex`](report/report_latest_zh.tex) |
+| [`report/report_latest_zh.pdf`](report/report_latest_zh.pdf) | 2026-11-14 报告（35 页）：配对去偏、二次验证、动态增强、CodeQL、schema 复分析；源稿为 [`report_latest_zh.tex`](report/report_latest_zh.tex) |
+| [`report/report_next_zh.pdf`](report/report_next_zh.pdf) | **2026-11-22 下一轮报告（12 页）**：五个弱点的复核、四个实验与覆盖率门禁；源稿为 [`report_next_zh.tex`](report/report_next_zh.tex) |
+| [`report/next_results_summary.md`](report/next_results_summary.md) | 2026-11-22 五个实验的统一结果摘要、口径、复现命令与限制；对应 `report_next_zh.tex` |
 | [`report/latest_results_summary.md`](report/latest_results_summary.md) | 2026-11-14 最新六组实验的统一结果摘要（配对去偏、二次验证、动态增强、增强混合、CodeQL、schema） |
 | [`benchmark/results/EXTENSIONS.md`](benchmark/results/EXTENSIONS.md) | 扩展层最终汇总：16 个 canonical run、各 design 主终点与限制；机器可读版 `extension_summary.json` |
 | [`report/results_summary.md`](report/results_summary.md) | Tier A 三策略结果、成本、修复结构、盲评摘要 |
@@ -605,6 +703,12 @@ python3 -m repair_eval verify --package repair_eval/packages/repair_blind_v1
 | [`static_extended/README.md`](static_extended/README.md) | CodeQL 2.27.4 CWE-401 扩展静态基线与 test 140 对比 |
 | [`analysis/schema_recovery/schema_recovery.md`](analysis/schema_recovery/schema_recovery.md) | 102 条 invalid 的零 API schema 复分析与 usable 阶梯 |
 | [`benchmark/extensions/README.md`](benchmark/extensions/README.md) | 8 个 design 的 canonical 映射、校验、指标与已导入 run |
+| [`interpretable_baseline/REPORT.md`](interpretable_baseline/REPORT.md) | 可解释非 LLM 基线：7 规则 + 2 LR、macro-F1/MCC 排名翻转、test-tuned 上界 |
+| [`pair_diff/results/report.md`](pair_diff/results/report.md) | 差分 + changes-first + 长度匹配对照：交换一致 DA、diff−ctrl、弃权与成本 |
+| [`codeql_triage/REPORT.md`](codeql_triage/REPORT.md) | CodeQL 23 FP 的 LLM 分流：v1/v2、TP 误删、最终 68/0/70/2 与 DeepSeek 阻塞 |
+| [`verifier_conservative/analysis/report.md`](verifier_conservative/analysis/report.md) | 保守三路验证器：4/236 撤销、25.0% 精确率、macro-F1 不升 |
+| [`dynamic_coverage/README.md`](dynamic_coverage/README.md) | gcov 行/分支覆盖 + 三模式：12 个 `supported_clean_but_bad`、并集 70/0/70/0 |
+| [`research/next_iteration_rationale.md`](research/next_iteration_rationale.md) | 2026-11-22 五个最弱环节的定量复核、N1–N4 成功线与失败解释 |
 | [`research/latest_llm_methods_2026.md`](research/latest_llm_methods_2026.md) | 2025–2026 LLM/agentic 检测、结构化输出、验证反馈文献（22 A + 18 B + 7 C） |
 | [`research/latest_evaluation_repair_2026.md`](research/latest_evaluation_repair_2026.md) | 位置/长度/配对/placebo/judge/补丁过拟合/故障注入/差分测试文献（56 条） |
 | [`research/latest_memory_tools_2026.md`](research/latest_memory_tools_2026.md) | CodeQL/Semgrep/Infer/SVF/Clang/LSan/Valgrind 与条件分配失败、still reachable（47 条） |
@@ -618,3 +722,5 @@ This repository contains the artefacts of a CS224 course project that evaluates 
 The main methodological claim is negative and reproducible: several apparently large gains are explained by task framing, length, position, operating-point shifts or ceiling effects. No model comparison survives Holm correction; joint A/B gains are inseparable from forced choice and length; dynamic “clean” is not a verified true negative; the original hybrid 140/140 did not survive the label-leak fix (v2 combined is 136/140); and the repair 58/58 is limited to 58 observable synthetic units. All reported numbers come from recorded runs; no mock or estimated values are used in the result tables.
 
 The 2026-11-13/14 round adds a position-debiased A/B replication (swap-consistent DA 61.67% for DeepSeek and 74.44% for MiMo against a 72.22% two-order length heuristic), fault-injected plus global-root LSan runs that make all 12 previously unobservable bad units observable (70/70 with 0 false positives), enhanced-evidence LLM reruns with no significant gain, a CodeQL baseline with higher recall but lower precision and MCC than Clang, and a zero-API schema salvage analysis (67–69 structurally usable patches out of 102 invalid responses, L0 only). These results are recorded and covered by the latest release audit (56 PASS / 0 FAIL / 0 WARN), but are not yet merged into the main leaderboard.
+
+The 2026-11-22 round targets the five weakest links rather than another model. An interpretable non-LLM baseline shows that a single length rule reaches macro-F1 0.511 (above all eight LLM runs) but only MCC 0.094, while a memory-API rule reaches MCC 0.183 with F1 0.387; on this 80%-positive test split macro-F1 rewards over-reporting, and no method exceeds 0.21 MCC. A diff-guided pair experiment with a token-length-matched control finds no significant diff-specific gain (swap-consistent DA 62.22%/60.56% vs 60.00%/62.22% for the control), and the “choose the shorter version” rate does not fall. CodeQL alert triage removes all 23 C++ false positives without deleting any of 68 true positives on MiMo (macro-F1 0.9857, MCC 0.9718), but is not significantly better than the direct LLM and has no DeepSeek result. A conservative three-way verifier retracts only 4 of 236 claims (precision 25.0%, not above the 18.3%–19.0% false-positive base rate) and does not improve macro-F1. Finally, gcov coverage shows that all 12 false-negative bad units are fully line-covered (`supported_clean_but_bad`), so 100% line coverage cannot certify a clean verdict; only the union of the default, realloc-failure and no-global-root modes reaches 70/70. These are single-run, partly post-hoc results and are recorded in `report/report_next_zh.pdf` and `benchmark/results/NEXT_ITERATION.md`, not in the main leaderboard.

@@ -1,12 +1,14 @@
 # `benchmark/extensions/` — 新方法设计与 canonical 接入
 
-**版本：`0.2.0`** · **日期：2026-11-14** · **范围：`benchmark/extensions/` 独占**
+**版本：`0.3.0`** · **日期：2026-11-22** · **范围：`benchmark/extensions/` 独占**
 
 > 本目录是统一 benchmark 的**扩展层**：定义新方法实验的 canonical 输入/输出映射、校验规则和统计口径，并提供可执行的导入器、校验器、指标工具与自检。
 >
 > **已有真实产物接入。** `pair_debias` 的 forced fwd/rev（2 模型）与 open fwd/rev（2 模型）、`evidence_verify` 四臂、`dynamic_enhanced/test140_enhanced_v3`、`hybrid_dynamic_enhanced` 两模型，以及 `static_extended` 的 CodeQL 2.27.4 正式 run 已导入为 canonical run 并通过校验。本目录**没有重新调用模型或分析器**；canonical run 都是 producer 真实产物的只读导入（`provenance.note` 明确 `copied, not re-run`）。
 >
 > 本目录同时提供最终扩展汇总：`benchmark/results/EXTENSIONS.md`（人读）与 `benchmark/results/extension_summary.json`（机器读），由 `benchmark/tools/bench_ext_summary.py` 从 canonical run 重算并复核。主 leaderboard（`benchmark/results/LEADERBOARD.md`、`final_summary.json`）和父协议（`benchmark/PROTOCOL.md`、`benchmark/schemas/`）**没有导入扩展数字**；LEADERBOARD 只加了一条指向 `EXTENSIONS.md` 的链接，不做跨设计池化。
+>
+> **2026-11-22 新增。** 本轮五个弱点实验已作为独立 design 接入：`codeql_alert_triage`（8 run）、`conservative_verification`（4 run）、`diff_guided_pair`（8 run）、`coverage_instrumented_dynamic`（1 run）、`interpretable_baseline`（9 run），共 30 个 canonical run。汇总见 [`benchmark/results/NEXT_ITERATION.md`](../results/NEXT_ITERATION.md) 与 [`next_iteration_summary.json`](../results/next_iteration_summary.json)；主表仍未修改。
 
 ---
 
@@ -999,3 +1001,29 @@ primary_metric | value | 95% CI | strict | status_counts | cost | design_version
 - evidence prompt 背景：`evidence_prompt/README.md`
 - hybrid v2 / 泄漏修复：`hybrid/REPORT_V2.md`
 - Juliet 数据卡：`benchmark/datasets/juliet_cwe401_v1/dataset_manifest.json`
+
+---
+
+## 14. 2026-11-22 下一轮：五个弱点实验（已导入）
+
+本轮新增 5 个 design、30 个 canonical run。原始产物在 `codeql_triage/`、`verifier_conservative/`、`pair_diff/`、`dynamic_coverage/`、`interpretable_baseline/`，本目录只读导入，未重新调用模型/分析器。
+
+| design | run 数 | 主终点 | 真实结果（摘要） |
+| --- | ---: | --- | --- |
+| `codeql_alert_triage` | 8 | `macro_f1` | verified 68/0/70/2（0.9857）；direct 69/5/65/1（0.9571）；McNemar p=0.2891，不显著；text rule 与 verified 逐条同判 |
+| `conservative_verification` | 4 | `macro_f1` | 4/236 撤销（TP3/FP1）；Δmacro-F1 0 到 -0.0052；MCC 仅 mimo_cross +0.0139（CI 跨 0） |
+| `diff_guided_pair` | 8 | `pair_da` | 交换一致 DA：DS diff 62.22% vs ctrl 60.00%（Holm 1.0000）；MiMo 60.56% vs 62.22%（Holm 0.9053） |
+| `coverage_instrumented_dynamic` | 1 | `branch_complete_rate` | 21/140 branch-complete，全部 bad；clean 0 branch-complete；default 58 leak / 82 inconclusive |
+| `interpretable_baseline` | 9 | `macro_f1` | length 0.511（MCC 0.094）；majority 0.444（MCC 0）；alloc_or_mem MCC 0.183；LLM 0.346–0.422 |
+
+汇总文件：`benchmark/results/NEXT_ITERATION.md` + `benchmark/results/next_iteration_summary.json`，由 `benchmark/tools/bench_next_iteration_summary.py` 从 canonical predictions 重算。
+
+不能违反的规则（本轮新增）：
+
+1. **CodeQL triage 不是独立盲审。** verifier 看到第一遍 JSON；text rule 与 verified 同判，说明该 split 上的“干净”可由零成本规则复现。不能把 68/0/70/2 写成 triage 的独立贡献。
+2. **pair diff 没有 Holm 显著优势。** 不能写“diff 有效”或“diff 减少长度捷径”；长度 H-gap 仍有 33–40 pp，选较短比例 75–81%。
+3. **conservative verifier 是负结果。** 判定规则修对了（不再 fail-closed），但撤销太少、macro-F1 不升；不能当提分组件。
+4. **coverage clean 不是 TN。** 行覆盖 99.9% 但分支覆盖约 52.7%；没有 clean 单元 branch-complete。canonical clean 一律 `inconclusive`，operational 视图另列。
+5. **interpretable baseline 不是“规则更会检测漏洞”。** 长度规则赢 macro-F1 主要因为 80% 正例下多报；MCC 排名翻转；vs DeepSeek evidence 的 Holm p=0.203，不显著。
+6. **不跨设计池化。** 五个 design 各有自己的分母；CodeQL/coverage 是 Tier B Juliet，interpretable 是 Tier A SecVulEval，不能合并。
+7. **主表未改。** `LEADERBOARD.md`、`final_summary.json`、`tier_a_*`、`tier_b_*` 保持原样；本轮只新增扩展层 run 和两份汇总文件。

@@ -1123,6 +1123,597 @@
           }
         }
       }
+    },
+    "codeql_alert_triage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_design",
+        "condition",
+        "codeql_alert",
+        "codeql_status",
+        "decision_source",
+        "triage_valid",
+        "reparsed_without_api_call"
+      ],
+      "properties": {
+        "task_design": {
+          "const": "codeql_alert_triage"
+        },
+        "condition": {
+          "enum": [
+            "direct",
+            "triage_v1",
+            "triage_v2",
+            "text_rule",
+            "verified",
+            "cascade",
+            "zero_cost_never_freed",
+            "zero_cost_drop_may_cpp"
+          ]
+        },
+        "codeql_alert": {
+          "type": "boolean"
+        },
+        "codeql_status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "codeql_queries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "alert_verdict": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "leak_present": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "triage_valid": {
+          "type": "boolean"
+        },
+        "reparsed_without_api_call": {
+          "type": "boolean"
+        },
+        "verify_valid": {
+          "type": "boolean"
+        },
+        "verifier_model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "decision_source": {
+          "enum": [
+            "model",
+            "rule",
+            "verifier",
+            "cascade",
+            "codeql"
+          ]
+        },
+        "prompt_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "verifier_prompt_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "conservative_verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_design",
+        "arm",
+        "claim_model",
+        "verifier_model",
+        "first_pass_status",
+        "first_pass_y_pred",
+        "verifier_status",
+        "decision",
+        "retract",
+        "analysis_status"
+      ],
+      "properties": {
+        "task_design": {
+          "const": "conservative_verification"
+        },
+        "arm": {
+          "enum": [
+            "deepseek_self",
+            "deepseek_cross",
+            "mimo_self",
+            "mimo_cross"
+          ]
+        },
+        "claim_model": {
+          "enum": [
+            "deepseek",
+            "mimo"
+          ]
+        },
+        "verifier_model": {
+          "enum": [
+            "deepseek",
+            "mimo"
+          ]
+        },
+        "first_pass_status": {
+          "enum": [
+            "ok",
+            "schema_invalid",
+            "api_error",
+            "not_run"
+          ]
+        },
+        "first_pass_y_pred": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "verifier_status": {
+          "enum": [
+            "ok",
+            "invalid",
+            "error",
+            "not_sent"
+          ]
+        },
+        "assessment": {
+          "enum": [
+            "supported",
+            "unsupported",
+            "insufficient",
+            null
+          ]
+        },
+        "rebuttal_kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "decision": {
+          "enum": [
+            "keep",
+            "retract"
+          ]
+        },
+        "decision_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "retract": {
+          "type": "boolean"
+        },
+        "grounded": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "analysis_status": {
+          "const": "exploratory_post_hoc_test_seen"
+        }
+      }
+    },
+    "diff_guided_pair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pair_design",
+        "condition",
+        "presentation_order",
+        "open_choice",
+        "selected_slots",
+        "position_map",
+        "change_mode",
+        "changes_first",
+        "semantic_changes",
+        "security_relevant_changes"
+      ],
+      "properties": {
+        "pair_design": {
+          "const": "diff_guided_pair"
+        },
+        "condition": {
+          "enum": [
+            "diff",
+            "ctrl"
+          ]
+        },
+        "presentation_order": {
+          "enum": [
+            "fwd",
+            "rev"
+          ]
+        },
+        "open_choice": {
+          "enum": [
+            "A",
+            "B",
+            "both",
+            "neither",
+            null
+          ]
+        },
+        "selected_slots": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "A",
+              "B"
+            ]
+          }
+        },
+        "position_map": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "A",
+            "B"
+          ],
+          "properties": {
+            "A": {
+              "enum": [
+                "vulnerable",
+                "fixed"
+              ]
+            },
+            "B": {
+              "enum": [
+                "vulnerable",
+                "fixed"
+              ]
+            }
+          }
+        },
+        "change_mode": {
+          "enum": [
+            "diff",
+            "placeholder"
+          ]
+        },
+        "changes_first": {
+          "type": "boolean"
+        },
+        "semantic_changes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "security_relevant_changes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "diff_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "prompt_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "pair_project": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "length_chars": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "vulnerable",
+                "fixed"
+              ],
+              "properties": {
+                "vulnerable": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "fixed": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                }
+              }
+            }
+          ]
+        },
+        "longer_side": {
+          "enum": [
+            "vulnerable",
+            "fixed",
+            "tie",
+            null
+          ]
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "rationale": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "coverage_instrumented_dynamic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_design",
+        "coverage_tier",
+        "coverage_tier_effective",
+        "coverage_class",
+        "line_pct",
+        "effective_line_pct",
+        "branch_pct",
+        "lines_hit",
+        "lines_total",
+        "branches_hit",
+        "branches_total",
+        "entry_executed",
+        "evidence_modes",
+        "primary_evidence",
+        "operational_y_pred",
+        "clean_proven"
+      ],
+      "properties": {
+        "task_design": {
+          "const": "coverage_instrumented_dynamic"
+        },
+        "coverage_tier": {
+          "enum": [
+            "branch_complete",
+            "line_complete",
+            "partial",
+            "not_executed",
+            "no_coverage",
+            "coverage_error"
+          ]
+        },
+        "coverage_tier_effective": {
+          "enum": [
+            "branch_complete",
+            "line_complete",
+            "partial",
+            "not_executed",
+            "no_coverage",
+            "coverage_error"
+          ]
+        },
+        "coverage_class": {
+          "enum": [
+            "leak",
+            "covered_clean",
+            "uncovered",
+            "compile_error"
+          ]
+        },
+        "line_pct": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "effective_line_pct": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "branch_pct": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "lines_hit": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "lines_total": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "branches_hit": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "branches_total": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "entry_executed": {
+          "type": "boolean"
+        },
+        "evidence_modes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "primary_evidence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "operational_y_pred": {
+          "type": "boolean"
+        },
+        "clean_proven": {
+          "type": "boolean"
+        },
+        "mode_outcomes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "interpretable_baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_design",
+        "baseline_family",
+        "method",
+        "features",
+        "dev_selected",
+        "test_tuned",
+        "cost_usd"
+      ],
+      "properties": {
+        "task_design": {
+          "const": "interpretable_baseline"
+        },
+        "baseline_family": {
+          "enum": [
+            "rule",
+            "logistic_regression"
+          ]
+        },
+        "method": {
+          "type": "string"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rule": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "threshold": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "dev_selected": {
+          "type": "boolean"
+        },
+        "test_tuned": {
+          "type": "boolean"
+        },
+        "cost_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
     }
   }
 }

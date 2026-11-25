@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "method": "pair_diff",
+  "dataset_sha256": "21218fd8db79f75f4759cab66907796f68c73449c2a820c6e8c6a0e74ebbb47d",
+  "dataset_units": 180,
+  "phase": "test",
+  "conditions": {
+    "deepseek": {
+      "diff_fwd": {
+        "n": 180,
+        "correct": 123,
+        "da": 0.683333,
+        "committed_da": 0.891304,
+        "abstention_rate": 0.233333,
+        "position_bias_da_a_minus_b": -0.122222,
+        "fisher_p": 0.10867789576613365
+      },
+      "diff_rev": {
+        "n": 180,
+        "correct": 127,
+        "da": 0.705556,
+        "committed_da": 0.881944,
+        "abstention_rate": 0.2,
+        "position_bias_da_a_minus_b": -0.077777,
+        "fisher_p": 0.32653803505016776
+      },
+      "ctrl_fwd": {
+        "n": 180,
+        "correct": 124,
+        "da": 0.688889,
+        "committed_da": 0.849315,
+        "abstention_rate": 0.188889,
+        "position_bias_da_a_minus_b": -0.088889,
+        "fisher_p": 0.2596523126138204
+      },
+      "ctrl_rev": {
+        "n": 180,
+        "correct": 125,
+        "da": 0.694444,
+        "committed_da": 0.862069,
+        "abstention_rate": 0.194444,
+        "position_bias_da_a_minus_b": -0.033333,
+        "fisher_p": 0.7464113513943283
+      },
+      "open_fwd": {
+        "n": 180,
+        "correct": 119,
+        "da": 0.661111,
+        "committed_da": 0.838028,
+        "abstention_rate": 0.211111,
+        "position_bias_da_a_minus_b": 0.033334,
+        "fisher_p": 0.7529600763787058
+      },
+      "open_rev": {
+        "n": 180,
+        "correct": 115,
+        "da": 0.638889,
+        "committed_da": 0.771812,
+        "abstention_rate": 0.172222,
+        "position_bias_da_a_minus_b": 0.122222,
+        "fisher_p": 0.12039846128352666
+      }
+    },
+    "mimo": {
+      "diff_fwd": {
+        "n": 180,
+        "correct": 123,
+        "da": 0.683333,
+        "committed_da": 0.904412,
+        "abstention_rate": 0.244444,
+        "position_bias_da_a_minus_b": -0.144445,
+        "fisher_p": 0.05402148085341747
+      },
+      "diff_rev": {
+        "n": 180,
+        "correct": 120,
+        "da": 0.666667,
+        "committed_da": 0.869565,
+        "abstention_rate": 0.233333,
+        "position_bias_da_a_minus_b": -0.088889,
+        "fisher_p": 0.26832044970395463
+      },
+      "ctrl_fwd": {
+        "n": 180,
+        "correct": 119,
+        "da": 0.661111,
+        "committed_da": 0.894737,
+        "abstention_rate": 0.261111,
+        "position_bias_da_a_minus_b": -0.122222,
+        "fisher_p": 0.11496836240039038
+      },
+      "ctrl_rev": {
+        "n": 180,
+        "correct": 125,
+        "da": 0.694444,
+        "committed_da": 0.868056,
+        "abstention_rate": 0.2,
+        "position_bias_da_a_minus_b": -0.011111,
+        "fisher_p": 1.0
+      },
+      "open_fwd": {
+        "n": 180,
+        "correct": 119,
+        "da": 0.661111,
+        "committed_da": 0.843972,
+        "abstention_rate": 0.216667,
+        "position_bias_da_a_minus_b": -0.122222,
+        "fisher_p": 0.11496836240039038
+      },
+      "open_rev": {
+        "n": 180,
+        "correct": 118,
+        "da": 0.655556,
+        "committed_da": 0.842857,
+        "abstention_rate": 0.222222,
+        "position_bias_da_a_minus_b": 0.044445,
+        "fisher_p": 0.6381332211240601
+      }
+    }
+  },
+  "exchange": {
+    "deepseek": {
+      "diff": {
+        "da_both_orders": 0.622222,
+        "semantic_agreement_rate": 0.8,
+        "same_letter_rate": 0.070312,
+        "order_mcnemar_p": 0.557197093963623
+      },
+      "ctrl": {
+        "da_both_orders": 0.6,
+        "semantic_agreement_rate": 0.794444,
+        "same_letter_rate": 0.075758,
+        "order_mcnemar_p": 1.0
+      },
+      "open": {
+        "da_both_orders": 0.555556,
+        "semantic_agreement_rate": 0.727778,
+        "same_letter_rate": 0.145038,
+        "order_mcnemar_p": 0.6075913612730801
+      }
+    },
+    "mimo": {
+      "diff": {
+        "da_both_orders": 0.605556,
+        "semantic_agreement_rate": 0.833333,
+        "same_letter_rate": 0.063492,
+        "order_mcnemar_p": 0.6900379657745361
+      },
+      "ctrl": {
+        "da_both_orders": 0.622222,
+        "semantic_agreement_rate": 0.85,
+        "same_letter_rate": 0.054264,
+        "order_mcnemar_p": 0.26317596435546875
+      },
+      "open": {
+        "da_both_orders": 0.583333,
+        "semantic_agreement_rate": 0.794444,
+        "same_letter_rate": 0.085938,
+        "order_mcnemar_p": 1.0
+      }
+    }
+  },
+  "cost": {
+    "deepseek": {
+      "open": {
+        "requests": 360,
+        "cost_usd": 0.304602,
+        "correct_pair_orders": 234
+      },
+      "ctrl": {
+        "requests": 360,
+        "cost_usd": 0.381058,
+        "correct_pair_orders": 249
+      },
+      "diff": {
+        "requests": 360,
+        "cost_usd": 0.394993,
+        "correct_pair_orders": 250
+      }
+    },
+    "mimo": {
+      "open": {
+        "requests": 360,
+        "cost_usd": 0.145586,
+        "correct_pair_orders": 237
+      },
+      "ctrl": {
+        "requests": 360,
+        "cost_usd": 0.190969,
+        "correct_pair_orders": 244
+      },
+      "diff": {
+        "requests": 360,
+        "cost_usd": 0.189849,
+        "correct_pair_orders": 243
+      }
+    }
+  },
+  "length_shortcut": {
+    "deepseek": {
+      "diff_fwd": {
+        "heuristic_correct_da": 0.776119,
+        "heuristic_wrong_da": 0.413043,
+        "gap": 0.363076,
+        "choose_shorter_committed": 0.804348
+      },
+      "diff_rev": {
+        "heuristic_correct_da": 0.772727,
+        "heuristic_wrong_da": 0.520833,
+        "gap": 0.251894,
+        "choose_shorter_committed": 0.770833
+      },
+      "ctrl_fwd": {
+        "heuristic_correct_da": 0.791045,
+        "heuristic_wrong_da": 0.391304,
+        "gap": 0.399741,
+        "choose_shorter_committed": 0.808219
+      },
+      "ctrl_rev": {
+        "heuristic_correct_da": 0.75,
+        "heuristic_wrong_da": 0.541667,
+        "gap": 0.208333,
+        "choose_shorter_committed": 0.751724
+      },
+      "open_fwd": {
+        "heuristic_correct_da": 0.746269,
+        "heuristic_wrong_da": 0.413043,
+        "gap": 0.333226,
+        "choose_shorter_committed": 0.760563
+      },
+      "open_rev": {
+        "heuristic_correct_da": 0.712121,
+        "heuristic_wrong_da": 0.4375,
+        "gap": 0.274621,
+        "choose_shorter_committed": 0.731544
+      }
+    },
+    "mimo": {
+      "diff_fwd": {
+        "heuristic_correct_da": 0.768657,
+        "heuristic_wrong_da": 0.434783,
+        "gap": 0.333874,
+        "choose_shorter_committed": 0.808824
+      },
+      "diff_rev": {
+        "heuristic_correct_da": 0.75,
+        "heuristic_wrong_da": 0.4375,
+        "gap": 0.3125,
+        "choose_shorter_committed": 0.782609
+      },
+      "ctrl_fwd": {
+        "heuristic_correct_da": 0.753731,
+        "heuristic_wrong_da": 0.391304,
+        "gap": 0.362427,
+        "choose_shorter_committed": 0.81203
+      },
+      "ctrl_rev": {
+        "heuristic_correct_da": 0.772727,
+        "heuristic_wrong_da": 0.479167,
+        "gap": 0.29356,
+        "choose_shorter_committed": 0.777778
+      },
+      "open_fwd": {
+        "heuristic_correct_da": 0.753731,
+        "heuristic_wrong_da": 0.391304,
+        "gap": 0.362427,
+        "choose_shorter_committed": 0.801418
+      },
+      "open_rev": {
+        "heuristic_correct_da": 0.719697,
+        "heuristic_wrong_da": 0.479167,
+        "gap": 0.24053,
+        "choose_shorter_committed": 0.764286
+      }
+    }
+  },
+  "notes": [
+    "Real provider calls; cost is configured-price, not an invoice.",
+    "Exchange-consistent DA requires both A/B orders to be correct.",
+    "The control arm is a token-length-matched placeholder block without the diff."
+  ]
+}

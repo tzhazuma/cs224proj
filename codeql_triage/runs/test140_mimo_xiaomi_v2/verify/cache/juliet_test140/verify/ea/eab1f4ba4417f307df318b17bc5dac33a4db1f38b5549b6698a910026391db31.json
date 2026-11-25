@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:48:12.722+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 2.21643153200057,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"7a3da855-9057-4495-ba71-8d2a551d5958_2sr3rrg528emh9ys5c_b1ec8807d7fc4da39a3e1cf58002afba\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": false, \\\"final_alert_verdict\\\": \\\"false_positive\\\", \\\"release_gap\\\": \\\"none\\\", \\\"reason\\\": \\\"sym_2's malloc is freed via the shadowed alias on every path; sym_1 uses stack ALLOCA, not heap. No heap allocation reaches exit unreleased.\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344492,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":75,\"prompt_tokens\":843,\"total_tokens\":918,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:48:10.506+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "eab1f4ba4417f307df318b17bc5dac33a4db1f38b5549b6698a910026391db31"
+  },
+  "cache_key": "eab1f4ba4417f307df318b17bc5dac33a4db1f38b5549b6698a910026391db31",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": false, \"final_alert_verdict\": \"false_positive\", \"release_gap\": \"none\", \"reason\": \"sym_2's malloc is freed via the shadowed alias on every path; sym_1 uses stack ALLOCA, not heap. No heap allocation reaches exit unreleased.\", \"confidence\": 0.95}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 75,
+    "cost_usd": 0.00013902,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 843
+  },
+  "created_at": "2026-11-22T10:48:12.722+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.95,
+    "final_alert_verdict": "false_positive",
+    "final_leak_present": false,
+    "reason": "sym_2's malloc is freed via the shadowed alias on every path; sym_1 uses stack ALLOCA, not heap. No heap allocation reaches exit unreleased.",
+    "release_gap": "none"
+  },
+  "prompt_sha256": "a69e96b2ecd02d9e3e6c15c3575b33652b1d3d75327443c93af44cca7fdb8e1a",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "47bb5840e52858244dd5db81fc434b3af14b25cca056d88244f70e1b506305f4",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 1,
+      "cpp/memory-never-freed": 0
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "good",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__wchar_t_malloc_33__good",
+    "variant": "33",
+    "y_true": 0
+  },
+  "unit_id": "CWE401_Memory_Leak__wchar_t_malloc_33__good",
+  "usage": {
+    "completion_tokens": 75,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 843,
+    "prompt_tokens_details": null,
+    "total_tokens": 918
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 2.216482197000005
+}

@@ -68,12 +68,20 @@ python3 benchmark/tools/bench_metrics.py \
 | 历史（排除） | `superseded/leakage_sensitive_v1/...`、`superseded/pre_postleakfix_harness/...` | 11 个被取代的 run（10 hybrid v1 + 1 旧 harness LLM）；冻结文件只移动不改写，`discover_runs()` 跳过，不进入主 leaderboard |
 | 汇总 | `LEADERBOARD.md` / `final_summary.json` | **最终统一汇总**：Tier A/B 分层、evidence、pair-joint、LLM/hybrid、repair、成本/延迟/配对统计 |
 | 扩展汇总 | `EXTENSIONS.md` / `extension_summary.json` | **扩展层独立汇总**：pair_debias、evidence_verify、dynamic_enhanced、hybrid_dynamic_enhanced、CodeQL 新静态工具、schema_recovery；不与 Tier A/B 或设计间池化 |
+| 扩展新结果 | `../extensions/runs/codeql_alert_triage/` | 8 个 canonical run：direct、v1/v2 triage、text rule、verified、cascade、2 个零成本规则；test-140 |
+| 扩展新结果 | `../extensions/runs/conservative_verification/` | 4 个 canonical run：2 claim 模型 × self/cross 保守验证器；160 单元 |
+| 扩展新结果 | `../extensions/runs/diff_guided_pair/` | 8 个 canonical run：2 模型 × {diff, ctrl} × {fwd, rev}；180 对 |
+| 扩展新结果 | `../extensions/runs/coverage_instrumented_dynamic/` | 1 个 canonical run：gcc/gcov 行/分支覆盖；test-140；clean=inconclusive |
+| 扩展新结果 | `../extensions/runs/interpretable_baseline/` | 9 个 canonical run：7 条规则 + 2 个逻辑回归；test-160 |
+| 扩展下一轮汇总 | `NEXT_ITERATION.md` / `next_iteration_summary.json` | **2026-11-22 弱点实验统一汇总**：五个 design 分开报告；不跨设计池化，不改主表 |
 | 历史汇总 | `tier_a_summary.json` / `tier_a_leaderboard.md` | 整合前 12-run Tier A 视图（保留，不是最终索引） |
 | 历史汇总 | `tier_b_summary.json` / `tier_b_leaderboard.md` | 整合前 5-tool Tier B 视图（保留，不是最终索引） |
 
 Tier A 的原始 run 仍在 `runner/runs/test_v1_*`，本目录不复制、不覆盖；派生只复制预测与标签，不调用模型。Tier B 的原始产物仍在 `traditional/static/runs/` 与 `traditional/dynamic/runs/`，`bench_collect_tier_b.py` 只读映射。所有 run 的 `PROVENANCE.md` 记录源文件哈希。
 
 Round-2 新结果由 `benchmark/tools/bench_import_round2.py` 只读导入：`evidence_prompt/`、`pair_joint/`、`hybrid/`、`juliet_llm/`、`juliet_repair/` 的原始目录均未改写。导入共生成 17 个派生 canonical run；每个 run 都经过 `bench_validate.py --jsonschema` 与 `bench_metrics.py`。Tier B 的 canonical hybrid 是 **v2**（`hybrid/runs/hybrid_v2_*`，leak-fixed 输入包 `hybrid/inputs_v2/units.jsonl`）；v1 的 10 个派生 run 以及 postleakfix 之前的旧 harness LLM run 已移动到 `superseded/`，文件未改写，且被最终汇总跳过。`pair_joint` 的一个联合请求落成两条 canonical side 记录，成本/墙钟各 50%，token/latency 只记一次，避免重复计数；其任务标签为 `extensions.forced_choice=true`，不得与分侧 pair 合并。
+
+2026-11-22 的下一轮弱点实验由 `benchmark/extensions/tools/ext_import.py --design next_iteration_batch` 只读导入，配置在 `benchmark/extensions/configs/next_iteration_batch.json`。五个 design 共 30 个 canonical run：CodeQL alert triage 8、conservative verification 4、diff-guided pair 8、coverage-instrumented dynamic 1、interpretable baseline 9。每个 run 都通过 `ext_validate.py --jsonschema` 和 `ext_metrics.py`；汇总由 `benchmark/tools/bench_next_iteration_summary.py` 生成 `NEXT_ITERATION.md` 与 `next_iteration_summary.json`。这五个 design 不进入 Tier A/B 主表，也不互相池化。
 
 最终汇总同时报告两种成本口径：`cost.usd_known_sum`（各 run 记录值）与 `cost.normalized.usd_sum`（按固定 provider 价卡从逐条 usage 重算：DeepSeek `0.15/0.60/0.003`、MiMo `0.14/0.28/0.0028` USD/1M tokens）。normalized 不使用记录值回填；本地工具的 `null` 不是 0；MiMo Xiaomi 端点没有返回计费字段，其 normalized 是 reference-price 计算。
 

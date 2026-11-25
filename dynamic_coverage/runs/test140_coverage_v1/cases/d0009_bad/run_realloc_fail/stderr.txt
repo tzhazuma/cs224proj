@@ -1,0 +1,16 @@
+[dynenh] realloc #1
+[dynenh] realloc ptr=NULL
+
+=================================================================
+==83516==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 100 byte(s) in 1 object(s) allocated from:
+    #0 0x7c2a0912a6af in realloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:81
+    #1 0x611a1b32c398 in __wrap_realloc /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_enhanced/dyne/assets/inject_realloc.c:67
+    #2 0x611a1b32a90f in CWE401_Memory_Leak__char_realloc_01_bad /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_realloc_01.c:29
+    #3 0x611a1b32aa04 in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0009_bad/build/__dynenh_probe_main.c:2
+    #4 0x7c2a08c2a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #5 0x7c2a08c2a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #6 0x611a1b32a814 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0009_bad/build/unit.wrap.exe+0x3814) (BuildId: d182aff7c4c8829480eb9b1c27fd1504513a0a82)
+
+SUMMARY: AddressSanitizer: 100 byte(s) leaked in 1 allocation(s).

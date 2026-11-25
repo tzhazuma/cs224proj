@@ -1,0 +1,825 @@
+% !TeX program = xelatex
+% CS224 下一轮报告（中文，IEEE 会议双栏）。
+% 所有数值来自 codeql_triage/、dynamic_coverage/、interpretable_baseline/、
+% pair_diff/、verifier_conservative/ 的落盘结果与 research/next_iteration_rationale.md；
+% 旧 report_zh/report_extended_zh/report_latest_zh 未被覆盖。
+\RequirePackage[T1]{fontenc}
+\documentclass[conference]{IEEEtran}
+
+\usepackage[UTF8,scheme=plain,fontset=fandol]{ctex}
+\setmainfont{Nimbus Roman}
+\setsansfont{Nimbus Sans}
+\setmonofont{Nimbus Mono PS}
+\setCJKmainfont{FandolSong-Regular.otf}[
+    BoldFont=FandolSong-Bold.otf,
+    ItalicFont=FandolKai-Regular.otf,
+    BoldItalicFont=FandolKai-Regular.otf,
+    SmallCapsFont=FandolSong-Regular.otf]
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{balance}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\urlstyle{tt}
+\hypersetup{
+  pdfauthor={Yu Zhang},
+  pdftitle={从五个失败环节到可证伪改进：C/C++ 漏洞检测、配对判别与动态证据的下一轮实测报告}
+}
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\IEEEkeywordsname}{关键词}
+\renewcommand{\refname}{参考文献}
+\renewcommand{\thetable}{\arabic{table}}
+
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=single,
+  rulecolor=\color{black},
+  xleftmargin=0.4em,
+  xrightmargin=0.4em,
+  aboveskip=0.4em,
+  belowskip=0.4em
+}
+
+\newcommand{\tabhead}[1]{\textbf{#1}}
+\newcommand{\best}[1]{\textbf{#1}}
+
+\title{从五个失败环节到可证伪改进：\\C/C++ 漏洞检测、配对判别与动态证据的下一轮实测报告}
+\author{
+\IEEEauthorblockN{Yu Zhang}
+\IEEEauthorblockA{CS224 课程项目\\
+ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:Zhangyu12026@shanghaitech.edu.cn}{Zhangyu12026@shanghaitech.edu.cn}}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+上一轮报告用统一契约比较了多种大语言模型（large language model，LLM）提示策略、静态工具与动态分析，但仍留下五个会威胁结论的薄弱环节：检测 macro-F1 低于常量与长度基线；配对判别的单序准确率含长度方向与槽位成分；CodeQL 的 23 个假阳性没有可解释的过滤方案；二次验证器大量误撤真阳性；动态分析的 \texttt{coverage=1.000} 只是判定覆盖率。本轮不追求新的提示排行榜，而是先量化这五个欠缺，再执行五个可证伪实验，并如实报告成功与失败。结果如下。动态覆盖率门禁在 140 个 Juliet CWE-401 单元上采集成功 140/140，剔除 CWE-561 声明死代码后有效行覆盖 100\%，但原路径 82 个 clean 中仍有 12 个实际是 bad；分支覆盖仅 52.7\%，21 个分支完整单元全是 bad、0 个 good，行门控零纠错、分支门控把 70 个 good 全部弃权。可解释基线中，dev 预注册的长度规则在 test 160 上 macro-F1 为 0.511，高于 8 个 LLM run 的 0.346--0.422；但它的 MCC 只有 0.094，MCC 最高的简单规则是 \texttt{alloc\_or\_mem} 0.183，而长度规则与最强 LLM 的 $\Delta$macro-F1 聚类 bootstrap 区间跨 0。配对差分实验新增 1{,}440 条真实记录，交换一致 DA 为 DeepSeek 62.22\%、MiMo 60.56\%，相对长度匹配对照的 $+2.22$/$-1.67$ pp 经 Holm 后均不显著；相对开放四分类的 $+6.67$ pp 原始 $p=0.0428$、Holm 后 0.0855。CodeQL 告警 triage 把 macro-F1 从 0.8173 提到 0.9857，但相对 direct 的 0.9571 只高 0.0286（95\% CI $[-0.0072,+0.0714]$，$p=0.289$），且最终 68/0/70/2 依赖 3 个 \texttt{\_22} 字段一致性规则的二次翻转；v2 单独是 68/3/67/2。保守三路验证器在 236 条请求中只撤销 4 条（TP 3/FP 1），撤销精确率 25.0\%，macro-F1 四臂为 0 到 $-0.0052$，没有检测收益。结论是：本轮的五个实验只产生一个“相对 CodeQL 显著、相对 direct 不显著”的条件正结果，其余为负结果、诊断性结果或测量性结果；下一阶段应优先冻结口径、改用外部可执行证据，并在新 holdout 上复现配对信号，而不是继续调提示。
+\end{abstract}
+
+\begin{IEEEkeywords}
+漏洞检测，配对判别，CodeQL 告警分流，动态覆盖率，选择性预测，可复现评估
+\end{IEEEkeywords}
+
+\section{引言}
+\label{sec:intro}
+
+上一轮报告在 SecVulEval 与 Juliet CWE-401 两个层级上建立了统一契约：同一套字段、失败分类、coverage/strict 口径和成本向量；Tier A 与 Tier B 不池化、不横比。该报告的主要结论是谨慎的：检测 macro-F1 在 0.35--0.42 之间，配对单序准确率虽高但交换顺序后明显下降，动态增强能把 12 个旧不可观测 bad 变成可复核证据，但 \texttt{clean} 仍不是无泄漏证明。问题在于，这些结论仍是“点估计 + 限定”，没有回答一个更基本的问题：\emph{现有方法到底弱在哪里，弱多少，下一轮做什么才可能改变结论}。
+
+本轮的任务不是再跑一个更大的排行榜，而是把上一轮暴露的五个薄弱环节逐一量化，并为每个环节设计一个可证伪实验。五个环节是：
+\begin{enumerate}
+  \item \textbf{检测}：DeepSeek direct 的 macro-F1 0.3828、MCC 0.0414，低于“恒判漏洞”的 0.4444，也低于一个不看代码的长度规则；
+  \item \textbf{配对}：单序强制二选一 76.67\%/86.67\%，交换一致只剩 61.67\%/74.44\%，且 180 对中 130 对漏洞版本更短；
+  \item \textbf{CodeQL}~\cite{codeqldocs}：test 140 上 68 TP/23 FP/2 FN，23 个 FP 全部来自 \texttt{cpp/memory-may-not-be-freed}；
+  \item \textbf{验证器}：fail-closed 二次验证把 macro-F1 降低 0.070--0.204，撤销并不偏向假阳性；
+  \item \textbf{动态}：140/140 的 \texttt{clean} 没有行/分支覆盖率，\texttt{coverage=1.000} 是判定覆盖率。
+\end{enumerate}
+
+针对这五个环节，本轮执行了五个实验：G0 动态覆盖率门禁、B1 可解释非 LLM 基线、P1 差分引导的配对评估、C1 CodeQL 告警 triage、V1 保守三路验证器。它们不是五个“新方法”，而是五个“把话说清楚”的实验：每个都预先写明主终点、成功线和失败即结论；失败的实验不删除 run，而是把失败机制写进报告。
+
+本文的贡献是：
+\begin{itemize}
+  \item 给出五个薄弱环节的量化复核，区分“操作点失败”“排序失败”“证据不可检查”“测量口径错误”四类原因；
+  \item 把 2024--2026 年与每个环节直接对应的文献映射到实验设计，明确哪些结论可以借用、哪些数字不能池化；
+  \item 完成五个真实实验并报告全部负结果：CodeQL triage 相对 direct 不显著、pair diff 无显著收益、保守验证器几乎不撤但无收益、100\% 行覆盖不是无泄漏、长度规则点估计高于 LLM；
+  \item 给出下一阶段的优先级、成功线、停止规则与成本，并把“如果只能做一个”收敛到零 API 的两个动作。
+\end{itemize}
+
+本文的研究问题如下。
+\begin{enumerate}
+  \item \textbf{RQ1}：在 80\% 正例的 Tier A test 160 上，现有 LLM 的检测点估计是否低于常量/长度基线？差距来自操作点还是排序？
+  \item \textbf{RQ2}：控制长度方向与槽位后，配对判别还剩多少信号？差分提示能否显著提高交换一致 DA？
+  \item \textbf{RQ3}：CodeQL 的 23 个 FP 是否可命名、可过滤？LLM triage 相对 CodeQL 与 direct 各自的效应量是多少？
+  \item \textbf{RQ4}：把验证器改成“只撤具体反证”的三路判定后，能否在保住 TP 的同时纠正 FP？
+  \item \textbf{RQ5}：100\% 行覆盖能否作为动态 \texttt{clean} 的证书？覆盖率门控会弃权多少 good？
+\end{enumerate}
+
+\section{统一口径与证据边界}
+\label{sec:protocol}
+
+\subsection{数据与隔离}
+
+表~\ref{tab:data} 列出本轮使用的四个冻结数据集。Tier A 的 dev/test 在 idx、project、函数体 MD5 上交集均为 0；Tier B 只使用 Juliet CWE-401 的 \texttt{split=test} 140 个单元~\cite{boland2012juliet,sard,mitrecwe401}。Tier A 与 Tier B 的标签、分母、成本口径不同，本文不池化、不横比。
+
+\begin{table}[t]
+\centering
+\caption{本轮使用的冻结数据}
+\label{tab:data}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrl@{}}
+\toprule
+数据集 & $n$ & 正例 & 用途 \\
+\midrule
+Tier A dev & 40 & 32 & 规则/阈值选择 \\
+Tier A test & 160 & 128 & 检测主表 \\
+Pair test & 180 对 & 180 & 配对判别 \\
+Juliet test & 140 & 70 & 静态/动态/triage \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{指标}
+
+本文同时报告以下指标，避免单一指标掩盖操作点差异：
+\begin{itemize}
+  \item \textbf{macro-F1}：正类 F1 与负类 F1 的宏平均。在 80\% 正例上，它奖励“多报”，因此不能单独作为检测能力。
+  \item \textbf{MCC}：同时惩罚 FP 与 FN；本轮把它设为检测的并列主终点。
+  \item \textbf{DA}：配对准确率，invalid 记错；\textbf{交换一致 DA}：正序与反序都判对的比例，是配对主终点。
+  \item \textbf{TP 误删}：triage 撤销的 CodeQL 真阳性告警数；必须与 FP 撤销一起报。
+  \item \textbf{covered\_clean}：clean 且单元自身可达行全部执行；它是证据强度标签，不是正确性标签。
+\end{itemize}
+
+\subsection{统计协议}
+
+配对二分类用 exact McNemar~\cite{mcnemar1947}；多重比较在预注册检验族内做 Holm~\cite{holm1979}；比例区间用 Wilson~\cite{wilson1927}；跨项目比较用 10{,}000 次按 project 聚类的 percentile bootstrap（seed 42）~\cite{efron1979}。所有区间与 $p$ 值均来自落盘结果，未在报告中重新挑选检验。
+
+\subsection{预注册与证据边界}
+
+五个实验的预注册状态不同，必须分开读：
+\begin{itemize}
+  \item \textbf{B1}：规则、阈值、主指标在 test 评估前写入 \texttt{interpretable\_baseline/README.md}；属于预注册。
+  \item \textbf{G0}：门禁要求（行覆盖 $\ge$90\%、free/delete 站点执行、raw/attributed 分离）在运行前定义；属于预注册门禁。
+  \item \textbf{P1}：条件、对照、主终点与 Holm 检验族在运行前定义；属于预注册。
+  \item \textbf{C1}：v1$\to$v2 是看到 v1 的 7 个 TP 误删后改的提示；最终行还包含二次复核与文本规则；属于探索性迭代，不能写成“一次性预注册”。
+  \item \textbf{V1}：三路提示与判定规则是在看到 test 160 的第一遍与旧验证器结果之后设计的；\url{analysis_status=exploratory_post_hoc_test_seen}，不是独立确认。
+\end{itemize}
+
+此外，本轮所有 run 都是单次采样（temperature 0），没有多 seed 方差；成本按配置价与 provider 报告的 token 计算，不是发票；CodeQL 建库算力没有折成钱。这些限制在 §\ref{sec:threats} 统一讨论。
+
+\section{五个欠缺：量化原因、文献与改进假设}
+\label{sec:gaps}
+
+\subsection{检测：低于常量基线与单参数长度规则}
+\label{sec:gap-detect}
+
+\subsubsection{量化}
+
+表~\ref{tab:detect} 把 8 个 LLM run、2 个常量规则、7 条表面规则和 2 个 LR 放在同一张表里。最刺眼的三行是：恒判漏洞的 macro-F1 0.444；dev 预注册的长度规则 0.511；DeepSeek direct 0.383。DeepSeek direct 的 accuracy 38.75\% 也低于恒判漏洞的 80\%。
+
+\begin{table*}[t]
+\centering
+\caption{Tier A test 160 上的检测点估计（全部为真实运行或只读重算）}
+\label{tab:detect}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+方法 & TP & FP & TN & FN & P & R & macro-F1 & MCC \\
+\midrule
+恒判漏洞 & 128 & 32 & 0 & 0 & 0.800 & 1.000 & 0.444 & 0.000 \\
+恒判安全 & 0 & 0 & 32 & 128 & --- & 0.000 & 0.167 & 0.000 \\
+\texttt{length\_short}（dev 中位数 1504） & 75 & 15 & 17 & 53 & 0.833 & 0.586 & \best{0.511} & 0.094 \\
+\texttt{length\_short}（dev 调阈值 3227） & 101 & 23 & 9 & 27 & 0.815 & 0.789 & \best{0.533} & 0.067 \\
+\texttt{alloc\_or\_mem} & 32 & 2 & 30 & 96 & 0.941 & 0.250 & 0.387 & \best{0.183} \\
+\texttt{lr\_balanced} & 59 & 20 & 12 & 69 & 0.747 & 0.461 & 0.391 & $-0.131$ \\
+DeepSeek direct & 38 & 8 & 24 & 90 & 0.826 & 0.297 & 0.383 & 0.041 \\
+DeepSeek evidence & 49 & 11 & 21 & 78 & 0.817 & 0.386 & \best{0.422} & 0.035 \\
+MiMo direct & 35 & 7 & 25 & 93 & 0.806 & 0.242 & 0.346 & 0.008 \\
+MiMo context & 38 & 6 & 27 & 90 & 0.861 & 0.252 & 0.365 & \best{0.080} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsubsection{五条量化原因}
+
+\textbf{(1) 操作点错配。}DeepSeek direct 只把 46/160 判为正（28.75\%），而真实正例率是 80\%。它的 precision 0.826 只比基准率 0.80 高 2.6 pp；这是基准率的影子，不是判别力。事后把置信度阈值调到 0.3，可把 macro-F1 抬到 0.528、accuracy 到 73.13\%，但 MCC 只从 0.041 到 0.062。\emph{操作点可以修，排序没有修}。
+
+\textbf{(2) 置信度几乎不排序。}DeepSeek direct 的 \texttt{confidence} 对“是否漏洞”的 AUROC 约 0.540，接近随机。这意味着任何“调阈值/换先验”的做法最多复现 0.528 的 macro-F1，无法把 MCC 拉到可用水平。
+
+\textbf{(3) CWE 结构差异。}CWE-416 召回 0.05（1/20）、CWE-20 0.125（1/8）、CWE-264/200 为 0；CWE-190 0.83、CWE-125 0.62、CWE-787 0.64。模式匹配型 CWE 能到 55\%--83\%，生命周期型与契约型接近 0。CWE-416 一项占 20/128 正例，是低召回的主要来源之一。
+
+\textbf{(4) 长度方向相反。}FN 的中位长度是 971.5 字符，TP 是 1,967.5。最短四分位（Q1）正例率 82.5\%，DeepSeek accuracy 只有 25.0\%：它在最短、最该报的片段上默认“安全”。长度规则的方向是“短$\to$漏洞”，正好与数据集先验一致；LLM 的方向相反。
+
+\textbf{(5) 标签语义。}标签是“修复前漏洞侧 vs 修复后侧”，不是“函数文本里一定有一个可见缺陷”。90 个 DeepSeek FN 中，76.7\% 的 rationale 含 “no clear / insufficient / unclear” 类措辞；典型 FN 是 \texttt{fastrpc\_map\_get()} 这类标准引用计数 wrapper，漏洞取决于调用者。LLM 说“函数本身看不出”往往是对的，但任务要求它判边。
+
+\subsubsection{2024--2026 文献}
+
+SecVulEval 报告最佳模型在语句级口径下 F1 仅 23.83\%，说明“低 F1”是该基准的常态~\cite{ahmed2026secvuleval}。PrimeVul 指出同一个 7B 模型在 BigVul 上 68.26\% F1、在去泄漏的真实划分上 3.09\%，标签泄漏与分布偏移会制造虚假高分~\cite{ding2025primevul}。Top Score on the Wrong Exam 进一步证明，只用词频/词数就能在多个函数级基准上取得高分，9/10 的 ML4VD 论文把任务定义成函数级二分类，而多数样本离开调用上下文无法判定~\cite{risse2025topscore}。CORRECT 给出乐观的一面：在 2{,}000 对 context-rich 样本上，关键 CWE 可到 0.7 F1 / 0.8 precision，多数 FP 来自推理错误而非分类错误~\cite{li2025correct}。From Generalist to Specialist 支持 CWE 分层：CWE-specific/多类模型优于 generalist~\cite{alatiq2024specialist}。Ullah 等报告只改函数名/变量名可让 26\% 的 LLM 回答翻转~\cite{ull2024}。
+
+综合读法：本项目的 0.383 与文献的 3.09\%--23.83\% 同一量级，不能拿文献的 68\% 来要求它；但文献也说明，补上下文或按 CWE 路由是可行的改进方向，而不是继续换提示词。
+
+\subsubsection{Idea}
+
+检测环节的改进假设是：\emph{0.383 主要是操作点/先验失败，叠加函数级标签缺上下文；前者可用预注册校准修复，后者需要改任务或补真实上下文}。具体设计为四臂：A0 direct 控制；A1 在 system prompt 声明 80\% 正例率并要求输出 $P(\text{vulnerable})$，在 dev 上选 balanced-accuracy 阈值；A2 给生命周期/边界/整数/输入契约四项检查表，允许 \texttt{undecidable}；A3 用长度分层的 few-shot 去掉长度先验。主终点是 MCC，并列 macro-F1；若 MCC 升到 $\ge$0.15 且 macro-F1 $\ge$0.53 才算能力提升，若只有 macro-F1 升而 MCC $\le$0.07 则只算“基准率套利”。
+
+\subsection{配对：长度方向与槽位偏好}
+\label{sec:gap-pair}
+
+\subsubsection{量化}
+
+表~\ref{tab:pairbase} 复述上一轮的四个条件。单序强制 76.67\%/86.67\% 看起来可用，但交换一致只剩 61.67\%/74.44\%；开放四分类更低（55.56\%/58.33\%）。DeepSeek 的正向 A 选择率 92.22\%、B 61.11\%，反向 93.33\%/62.22\%，偏差跟着 A 槽走，约 31 pp。
+
+\begin{table}[t]
+\centering
+\caption{配对判别的单序与交换一致 DA（180 对）}
+\label{tab:pairbase}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+模型 & 任务 & 正向 & 反向 & 交换一致 \\
+\midrule
+DeepSeek & forced & 76.67 & 77.78 & \best{61.67} \\
+DeepSeek & open & 66.11 & 63.89 & \best{55.56} \\
+MiMo & forced & 86.67 & 81.67 & \best{74.44} \\
+MiMo & open & 66.11 & 65.56 & \best{58.33} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+更关键的是长度方向。180 对中 130 对漏洞版本更短、44 对修复版本更短、6 对等长。“选较短版本”单向 74.44\%，两序同语义 72.22\%。DeepSeek 的 61.67\% 显著低于 72.22\%（Holm $p=0.0289$）；MiMo 的 74.44\% 只高 2.22 pp（$p=0.644$）。
+
+唯一能区分“语义判断”和“选较短”的子集是 44 个 fshorter 对（修复版本更短，长度规则天然错误）。两序都对：DeepSeek 15/44 = 34.1\%（随机基线 25\%，$p=0.166$），MiMo 20/44 = 45.5\%（$p=0.0045$，但仍低于 50\%）。把 44 个 fshorter 与 44 个最近邻 vshorter 匹配成方向平衡的 88 对后：DeepSeek 42/88 = 47.7\%（$p=0.749$，随机），MiMo 56/88 = 63.6\%（$p=0.0138$，弱信号）。
+
+“10\% 长度匹配”不够：匹配子集仍是 101 vshorter : 37 fshorter，长度启发式 72.92\%。修复补丁通常只加几行检查/释放，长度差很小，但方向仍然是“修复更长”。\emph{正确的控制是方向平衡或长度中性化，不是幅度匹配}。
+
+\subsubsection{2024--2026 文献}
+
+Judging the Judges 在 15 个 judge、22 个任务、15 万+ 实例上发现位置偏差真实存在、随 judge/task 变化，且受候选质量差的影响强于受长度影响；结论是必须 swap 并报告 position consistency~\cite{shi2025judges}。Bias in the Loop 进一步指出，代码 LLM-judge 对 prompt 呈现线索高度敏感，语义保持扰动可改变判定~\cite{zhao2026bias}。PrimeVul 强调 P-C/P-V/P-B/P-R 要分开报，forced-choice 不能与 side-wise 混比~\cite{ding2025primevul}；Top Score 把“选较短”归为同一类伪相关~\cite{risse2025topscore}。SecVulEval 则提醒配对标签本身可能缺上下文~\cite{ahmed2026secvuleval}。
+
+\subsubsection{Idea}
+
+配对环节的改进假设是：\emph{单序 86.67\% 的主要成分是长度方向与槽位；控制两者后，MiMo 可能保留弱语义信号，DeepSeek 没有}。设计为：把每对较短一侧用空白/注释填充到与较长一侧差 $\le$2\%，不改变任何 token 语义；跑中性化后的强制二选一（N2-a）、证据先行（N2-b）、等价性判断（N2-c），正反两序；主终点是 N2-a 的交换一致 DA；44 个 fshorter 子集作为预注册敏感性；成功线是 MiMo $\ge$60\% 且比 50\% 高至少 10 pp，DeepSeek $\ge$55\%。
+
+\subsection{CodeQL：23 个假阳性集中在一个查询}
+\label{sec:gap-codeql}
+
+\subsubsection{量化}
+
+表~\ref{tab:codeqlbase} 给出三个操作点。CodeQL~\cite{codeqldocs} 并集召回 0.971，但 precision 0.747；\texttt{never-freed} 单独是 46 TP/0 FP，召回 0.657；\texttt{never} + may 仅在 C 上是 60 TP/0 FP，召回 0.857。理想证人过滤（FP 全删、TP 全留）是 68/0/2/70，macro-F1 0.986——这是上界，不是已实现结果。
+
+\begin{table}[t]
+\centering
+\caption{CodeQL test 140 的三个操作点与理想上界}
+\label{tab:codeqlbase}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+方案 & TP & FP & FN & P & R & macro-F1 \\
+\midrule
+并集 & 68 & 23 & 2 & 0.747 & 0.971 & 0.817 \\
+never only & 46 & 0 & 24 & 1.000 & 0.657 & 0.823 \\
+never + may C & 60 & 0 & 10 & 1.000 & 0.857 & 0.928 \\
+理想证人 & 68 & 0 & 2 & 1.000 & 0.971 & 0.986 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+23/23 个 FP 来自 \texttt{cpp/memory-may-not-be-freed}，23/23 是 C++ good；\texttt{cpp/memory-never-freed} 在 test 140 上 0 FP。CodeQL 官方 CWE 覆盖把 \texttt{memory-may-not-be-freed} 列为 CWE-401 相关查询~\cite{codeqlcwe}，其查询语义是“函数可能提前返回而未释放”~\cite{codeqlmay}。按 Juliet 变体分：\texttt{\_33} 15 个（引用别名 + 变量遮蔽）、\texttt{\_22} 3 个（sink 内释放）、\texttt{\_72} 3 个（STL 容器逃逸）、\texttt{\_54} 2 个（sink）。这不是 23 个随机错误，而是四个可命名的建模缺口。
+
+三个简单过滤器：\texttt{code\_flows} 过滤失败——45 个 may hit 的 \texttt{code\_flows} 全部为 0，用 $\ge$1 会把 22 个 may TP 和 23 个 FP 一起删掉；词法 \texttt{free}/\texttt{delete} 计数失败——\texttt{\_33} 的 good 与 bad 都有 2 个 \texttt{free(}，阈值 $\le$1 保留 5 个 may TP 但仍有 8 FP，$\le$2 保留 15 个 TP 但 FP 不变；语言过滤部分成功——may 仅在 C 上 14 TP/0 FP，加 never 后 60/0/10/70。与 Clang SA~\cite{clangsa}、Cppcheck~\cite{cppcheck} 的高精度/低召回相比，CodeQL 是另一端的操作点。
+
+\subsubsection{2024--2026 文献}
+
+ZeroFalse 把静态告警当结构化契约，附 flow-sensitive trace、上下文与 CWE 知识再让 LLM 裁决，在 OWASP Java Benchmark 上 F1 0.912、OpenVuln 0.955~\cite{iranmanesh2025zerofalse}。CodeQL FP 的 Java 实证研究把 500 个采样 FP 分成五类（missed path constraint/sanitization 36.6\%、benign execution context 29.4\%、missing trust boundary 27.6\%、concurrency 5\%、sink 1.4\%），查询精化删除 81.8\% 已审 FP、保留 7/8 TP~\cite{sajadi2026codeqlfp}。IRIS 用 LLM 补静态分析规格，把 CWE-Bench-Java 的 27/120 提到 55/120~\cite{li2025iris}。709 Defects 报告 CodeQL 在 258 个嵌入式项目上按报告计 FP 率 34\%，集中在少数规则/项目~\cite{shen2025finding709}。轻量模块化资源泄漏检查处理别名与过程间 sink，正好对应 \texttt{\_33}/\texttt{\_22}/\texttt{\_54}~\cite{shadab2025resourceleak}。静态分析器 FN/FP 历史 issue 研究支持“按模式修查询”而非逐条手审~\cite{cui2024fnfp}。
+
+\subsubsection{Idea}
+
+CodeQL 环节的改进假设是：\emph{23 个 FP 可以用“释放证人”过滤，而不损失 may TP；关键是 must-free 支配，不是 exists-free}。设计五个臂：C0 never-only、C1 may-union、C1b may-C-only、C2 静态证人（别名/引用/遮蔽、sink 摘要、容器元素逃逸；要求所有路径上的 free）、C3 LLM 裁决（只给分配点、may 诊断、函数体、sink 签名；只有能引用缺失 free 的具体行/路径才判 FP）、C4 hybrid（C2 未决给 C3，仍不确定则 keep）。主终点是 recall$\ge$0.90 时的 precision；成功线 P$\ge$0.90 且 R$\ge$0.90、TP 损失 $\le$2；若只能做到 C-only，就报三个操作点，不写“更好的工具”。
+
+\subsection{验证器：fail-closed 把“未证明”当“已反驳”}
+\label{sec:gap-verifier}
+
+\subsubsection{量化}
+
+表~\ref{tab:verifierbase} 复述旧验证器的四臂。撤销精确率 14.3\%--23.1\%，与正例 FP 基准率 18.3\%--19.0\% 几乎相同；超几何检验 Holm $p\ge0.8367$。两个臂把 11/11 个 FP 都撤了，同时撤了 40--43 个 TP。macro-F1 下降 0.070--0.204。
+
+\begin{table}[t]
+\centering
+\caption{旧验证器四臂：撤销构成与 macro-F1}
+\label{tab:verifierbase}
+\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+臂 & 撤销 & TP 撤 & FP 撤 & 精确率 & $\Delta$F1 & AUROC \\
+\midrule
+DS 自审 & 54 & 43 & 11 & 20.4 & $-0.204$ & 0.400 \\
+DS 跨 & 26 & 20 & 6 & 23.1 & $-0.070$ & 0.455 \\
+MiMo 自审 & 21 & 18 & 3 & 14.3 & $-0.085$ & 0.282 \\
+MiMo 跨 & 51 & 40 & 11 & 21.6 & $-0.184$ & 0.304 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+撤销类型：\texttt{insufficient\_evidence} 占 66.7\%--71.4\%。它的语义是“函数体内看不出攻击者控制/可达性”，但第一遍本来就是函数级输入，调用者/攻击者控制通常不在函数内；于是验证器把“缺少上下文”误读成“漏洞不成立”。具体类型（\texttt{guard\_present}、\texttt{no\_reachable\_flow}）的 precision 反而较高（60\%--100\%），但每臂只有 3--11 个，覆盖太低。
+
+更致命的是排序：验证器 \texttt{confidence} 对 FP vs TP 的 AUROC 为 0.400/0.455/0.282/0.304，四个臂都低于 0.5；\texttt{evidence\_check} 在所有臂几乎常量，AUROC=0.5。即使把 fail-closed 改成阈值扫描，也救不回来。
+
+\subsubsection{2024--2026 文献}
+
+LLMs Cannot Self-Correct Reasoning Yet 证明没有外部反馈时，intrinsic self-correction 不能可靠提升推理，甚至会让性能下降~\cite{huang2024selfcorrect}。When Do LLMs Admit Their Mistakes? 发现 LLM 有能力 retract，但很少自发做，retraction 与内部 belief 相关~\cite{yang2025retraction}。Are LLMs reliable code reviewers? 报告 LLM 经常把正确实现判成不合规，更详细的 prompt 反而提高误判率，并提出 fix-guided verification filter：把模型提出的 fix 当可执行反事实证据~\cite{jin2026overcorrection}。选择性预测/弃权视角见 Chow~\cite{chow1970}、Geifman \& El-Yaniv~\cite{geifman2017selective}、Angelopoulos \& Bates~\cite{angelopoulos2021conformal}；cascade 经济学见 FrugalGPT~\cite{frugalgpt2023}。
+
+\subsubsection{Idea}
+
+验证器环节的改进假设是：\emph{表层失败是 fail-closed 语义（可修），深层失败是没有 FP/TP 排序信号（难修）}。设计三路判定：\texttt{supported}（引用行 + 函数内可见流建立具体缺陷）保留；\texttt{unsupported}（能指出具体守卫或反例）仅当行号有效时撤销；\texttt{insufficient}（源码不足以建立 claim，但也给不出具体反证）保留。机械规则：只有 \texttt{unsupported} + \texttt{guard\_present} 或 \texttt{counterexample} 才可能撤销；行号必须在 $1..N$、不重复、至少一行非注释/非括号代码；\texttt{guard\_present} 还要求守卫词法。主终点从“撤销率”改成“验证器分数对 FP/TP 的 AUROC”；若 AUROC $\le$0.55，放弃“二次验证提升检测”，改用编译/PoC/静态证人。
+
+\subsection{动态：\texttt{coverage=1.000} 是判定覆盖率}
+\label{sec:gap-dynamic}
+
+\subsubsection{量化}
+
+\texttt{dynamic\_enhanced/dyne/metrics.py} 的 \texttt{coverage} 定义是
+\begin{equation}
+\text{coverage} = \frac{|\text{rows}| - \text{undecided}}{|\text{rows}|},
+\end{equation}
+即“140 个单元中有多少个给出了 leak/clean 判定”。这是\emph{决策覆盖率}，不是行覆盖率、分支覆盖率或路径覆盖率。编译参数只有 \texttt{-fsanitize=address -fno-omit-frame-pointer -O0 -g}，没有 \texttt{--coverage}、\texttt{-fprofile-instr-generate}、\texttt{gcov} 或 \texttt{llvm-cov}；140 个单元 0 行覆盖率、0 分支覆盖率，每模式只跑 1 个输入。
+
+\texttt{nogobal} 下 70/70 good 都有\emph{原始}泄漏，但 0 个被归因到单元源码；0 FP 完全依赖归因规则（只看分配栈第一个落在非工具链位置的源码帧）。正确的写法是“0 attributed FP”，不是“0 FP”。
+
+全量 3{,}316 的 190 个 FN 已经暴露了单输入问题：108 个 \texttt{malloc\_realloc\_*}（只有 realloc 失败才泄漏）、68 个 \texttt{\_45}/\texttt{\_68}（全局指针，LSan 默认 still reachable）、14 个 \texttt{\_12}（随机分支，单次运行走到非泄漏路径）。
+
+\subsubsection{2024--2026 文献}
+
+Zhu、Hall 与 May 的经典综述把覆盖率作为测试充分性准则，并明确它是必要但不充分~\cite{zhu1997coverage}；本文的实验给出一个具体反例：100\% 行覆盖不等于无泄漏。AddressWatcher 把 leak 定义为“不可从栈/全局到达”，并用 sanitizer 定位修复，直接对应 \texttt{nogobal} 的根集语义与归因规则~\cite{murali2024addresswatcher}。RBZZER 用轻量静态分析标风险区再做定向 fuzzing，比 AFL/AFLGo/AFLfast/PerfFuzz 等发现更多泄漏（作者报告至少 +112\%），说明泄漏检测需要定向路径探索~\cite{peng2025rbzzer}。Data Coverage for Guided Fuzzing 指出代码覆盖只反映程序结构的一小部分，数据覆盖在 OSS-Fuzz 上发现 28 个新 bug~\cite{wang2024datacoverage}。
+
+\subsubsection{Idea}
+
+动态环节的改进假设是：\emph{覆盖率是证据强度，不是正确性证书；行覆盖只能排除“没执行”，不能排除“执行了但泄漏”}。设计 G0 门禁：编译加 \texttt{--coverage}；每单元/模式记录行覆盖、分支覆盖、执行的 \texttt{free}/\texttt{delete} 站点；只有行覆盖 $\ge$90\% 且每个 \texttt{free}/\texttt{delete} 站点至少执行一次才写 \texttt{clean}，否则写 \texttt{undecided}；对随机分支变体跑 20 个固定种子；所有表同时给 raw leak 与 attributed leak；抽 20 个单元人工检查分配栈第一帧。
+
+\subsection{小结：欠缺、文献与 Idea 的映射}
+
+表~\ref{tab:gapmap} 把五个环节压缩成一行。可以看到，五个环节的失败机制并不相同：检测是“操作点 + 标签语义”，配对是“长度方向 + 槽位”，CodeQL 是“建模缺口 + 无 trace”，验证器是“语义 bug + 无排序”，动态是“测量口径错误”。因此下一轮不能用一个统一的“更强模型/更好提示”解决。
+
+\begin{table*}[t]
+\centering
+\caption{五个欠缺、量化原因、对应文献与改进假设}
+\label{tab:gapmap}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{2.1cm}p{4.2cm}p{4.6cm}p{5.2cm}@{}}
+\toprule
+环节 & 最弱数字 & 复核后的根因 & Idea（可证伪） \\
+\midrule
+检测 & DeepSeek direct 0.383/0.041；低于常量 0.444 与长度 0.511 & 操作点保守（pred+ 28.8\%）+ 置信度不排序（AUROC 0.54）+ CWE-416/20 近 0 + 长度方向相反 & 预注册校准 + CWE 检查表 + 长度分层 few-shot；主终点 MCC \\
+配对 & 单序 76.67/86.67；交换一致 61.67/74.44；长度规则 72.22 & 130/180 漏洞更短；方向平衡后 DS 47.7\%、MiMo 63.6\%；槽位 31 pp & 长度中性化 + 方向平衡 + 双序 + 证据先行/等价任务 \\
+CodeQL & 68 TP/23 FP/2 FN；P 0.747 & 23 FP 全在 may 查询、4 个 C++ 变体；\texttt{code\_flows}=0；词法过滤失败 & must-free 证人 + sink/容器摘要；三个操作点 \\
+验证器 & 撤销精确率 14.3--23.1\%；$\Delta$F1 $-0.070$ 到 $-0.204$ & \texttt{insufficient} 占 67--71\%；AUROC 0.28--0.46；具体机制覆盖 3--11 个 & 三路判定 + fail-open + fix-guided/外部 oracle \\
+动态 & \texttt{coverage=1.000}；70/70 good 原始泄漏 & 判定覆盖率不是代码覆盖；无插桩；单输入；归因规则承重 & 行/分支覆盖 + free 站点 + 多 seed + raw/attributed 分离 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{实验设计与真实结果}
+\label{sec:results}
+
+需要先说明执行范围。五个实验并不等于 §\ref{sec:gaps} 中五个 Idea 的全部臂：G0 完整执行了三模式覆盖率与门控；B1 只执行了基线侧（7 条规则 + 2 个 LR），§\ref{sec:gap-detect} 的 A1--A3 LLM 臂没有运行，它们是下一阶段的预注册设计；P1 执行了 diff/ctrl/open 六条件，§\ref{sec:gap-pair} 的长度中性化 N2-a--N2-c 没有运行；C1 执行了 LLM triage（v1/v2）与 91 条告警复核，§\ref{sec:gap-codeql} 的 C2 静态证人没有实现，C0/C1/C1b 只做零成本重算；V1 完整执行了四臂三路验证器。把未执行的臂写成结果是不可接受的，本文只在 §\ref{sec:gaps} 把它们写成 Idea/设计，并在 §\ref{sec:priority} 给出成功线与停止规则。
+
+\subsection{G0：动态覆盖率门禁}
+\label{sec:g0}
+
+\subsubsection{设计}
+
+对冻结 test 140 逐单元编译\emph{原始未修改}的 Juliet 源文件；评测端只额外提供一个 probe \texttt{main()}，调用该单元自己的 \texttt{bad} 或 \texttt{good} 入口。编译参数为 \texttt{gcc/g++ -O0 -g -fsanitize=address -fno-omit-frame-pointer --coverage -w}~\cite{serebryany2012asan}；链接 \texttt{--coverage}、\texttt{juliet/raw/testcasesupport/io.o}、\texttt{std\_thread.o}、\texttt{-lpthread -lm}。每个单元只编译一次，链接两个二进制：plain（default/nogobal）与 wrap（\texttt{-Wl,--wrap=realloc} + \texttt{inject\_realloc.c}）~\cite{cppreference_realloc}。三种模式逐次运行，运行前删除旧 \texttt{.gcda}，运行后用 \texttt{gcov -j -b -c} 读取 JSON~\cite{gcov}。三个模式共享同一份 \texttt{.gcno} 块编号，因此分支并集不会因重复编译而错位。
+
+覆盖率只统计单元自身文件：\texttt{unit.sources} 中的 \texttt{.c/.cpp} 以及同组 \texttt{group\_id*.h}；\texttt{testcasesupport}、STL 头、probe main 不计入。tier 定义是精确的，不是百分比阈值：\texttt{branch\_complete}（每行执行且每个记录到的分支至少走一次）、\texttt{line\_complete}（每行执行但至少一个分支未走）、\texttt{partial}（有可执行行未执行）、\texttt{not\_executed}、\texttt{no\_coverage}/\texttt{coverage\_error}。CWE-561 声明死代码单列：6 个 good 单元各有 1 行位于 \texttt{if (GLOBAL\_CONST\_FALSE)} 的不可达分支，源码明确标注 \texttt{INCIDENTAL: CWE 561 Dead Code}；本文同时保留 raw 与 effective 两个口径，不把未执行行算成已执行。
+
+\subsubsection{结果}
+
+表~\ref{tab:covmode} 给出逐模式覆盖率。140/140 采集成功，0 \texttt{compile\_error}、0 \texttt{coverage\_error}；default 与归档 140/140 一致，并集与归档并集 140/140 一致；并集相对旧 ASan/Valgrind 的 128/140 差异恰好是 12 个 bad~\cite{valgrindmanual}。\texttt{realloc\_fail} 的 14 个 \texttt{partial} 就是 14 个 realloc 单元：注入失败后走 \texttt{if (data != NULL)} 的 false 分支，跳过了成功路径的 \texttt{free/print} 行；这是故障路径本身的控制流，不是采集失败。
+
+\begin{table}[t]
+\centering
+\caption{三种模式的覆盖率与泄漏判定（test 140）}
+\label{tab:covmode}
+\footnotesize
+\setlength{\tabcolsep}{2.8pt}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+模式 & 适用 & bad leak & good leak & 行覆盖 & 分支覆盖 \\
+\midrule
+default & 140 & 58 & 0 & 100.0 & 50.0 \\
+realloc\_fail & 14 & 7 & 0 & 97.8 & 50.0 \\
+nogobal & 140 & 63 & 0 & 100.0 & 50.0 \\
+并集 & 140 & 70 & 0 & 100.0 & 52.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+有效行覆盖 100.0\%、原始行覆盖 99.9\%、分支覆盖 52.7\%、入口 140/140。\texttt{branch\_complete} 只有 21 个，且 \textbf{0 个 good}：21 个全是 bad。原因是 good 单元普遍有 \texttt{if (allocation == NULL) exit(-1)} 守卫和 \texttt{GLOBAL\_CONST\_FALSE} 死代码分支，错误处理越多，未走分支越多。\emph{通用分支覆盖在本数据上不是 clean 的充分证据，甚至不是质量信号：它把代码形状（守卫多少）当成了覆盖高低}。
+
+表~\ref{tab:covgate} 是门控视图。line gate 对原路径没有任何纠错作用：12 个漏报全部 line-complete，所以既不被弃权，也不被改判；它只把 6 个死代码单元从 raw 视图里弃权。branch gate 更严，但 70 个 good 全部弃权（0 TN），同时仍有 2 个 \texttt{\_68} bad 被当作有覆盖支持的 clean。增强并集 + line gate 是 70 TP/0 FN/70 TN/0 abstain，但这个 1.000 的前提是三种定向模式都跑；缺任何一种，12 个漏报会回来。
+
+\begin{table}[t]
+\centering
+\caption{覆盖率门控视图（原路径 vs 增强并集）}
+\label{tab:covgate}
+\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+视图 & TP & FP & TN & FN & abstain \\
+\midrule
+default operational & 58 & 0 & 70 & 12 & 0 \\
+default line-gated & 58 & 0 & 70 & 12 & 0 \\
+default branch-gated & 58 & 0 & 0 & 12 & 70 \\
+enhanced operational & 70 & 0 & 70 & 0 & 0 \\
+enhanced line-gated & 70 & 0 & 70 & 0 & 0 \\
+enhanced branch-gated & 70 & 0 & 0 & 0 & 70 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+12 个漏报的机制拆分为：7 个 \texttt{malloc\_realloc\_*} 由 \texttt{realloc\_fail} 新增 14 个分支（7 bad + 7 good）解释；5 个 \texttt{\_68} 由 LSan~\cite{lsan} 根集语义解释，\texttt{nogobal} 新增 0 行/0 分支——代码路径完全相同，变的只是“全局是否算根”。分配/释放调用点覆盖 167/167、89/89，包括 12 个漏报 bad；\emph{调用点覆盖也不能区分“执行了分配/释放”与“该块被泄漏”}。
+
+\subsubsection{判定}
+
+G0 是“测量成功、门禁失败”。它证明了 100\% 行覆盖不是无泄漏证书，也证明了 branch gate 在本数据上不可用（70 个 good 全部弃权）；增强并集的 1.000 只能写成“三种定向模式的并集覆盖了全部 70 个 bad”，不能写成“动态检测 100\%”。
+
+\subsection{B1：可解释非 LLM 基线}
+\label{sec:b1}
+
+\subsubsection{设计}
+
+7 条规则和 2 个 LR，全部只使用 \texttt{func\_body} 的表面特征；先去掉注释、字符串、字符字面量，再统计字符数、调用数、\texttt{alloc}/\texttt{free} 计数、\texttt{mem\_api} 数、分支密度。阈值只在 dev 40 上选：\texttt{chars} 中位数 1504、\texttt{calls} 中位数 16、dev 正例率 0.8。dev 选择规则是 dev macro-F1 最高者，并列时 MCC 高者；选中 \texttt{length\_short}（\texttt{chars} $\le$1504）。注意它与 \texttt{prior\_majority} 的 dev 差距只有 0.0061，远小于 40 条样本的噪声；这个选择本身不稳定。两个 LR 用标准库 IRLS，5 个特征，L2 $\lambda$=1.0，阈值固定 0.5，不在 test 上调。
+
+\subsubsection{结果}
+
+表~\ref{tab:detect} 已给出主表。\texttt{length\_short} 在 test 160 上 TP 75/FP 15/TN 17/FN 53，macro-F1 0.511 [0.422, 0.562]，MCC 0.094。8 个 LLM run 为 0.346--0.422，最好的 DeepSeek evidence 0.422。点估计上长度规则高 +8.9 到 +16.5 pp。
+
+但统计上只能说到“逐单元正确数更多”，不能说“macro-F1 显著更高”。表~\ref{tab:mcnemar} 给出配对比较：\texttt{length\_short} vs DeepSeek direct，McNemar $b/c=70/40$，$p=0.0054$，Holm 0.038；vs MiMo direct，69/32，$p=0.0003$，Holm 0.002；vs DeepSeek evidence，69/47，$p=0.0507$，Holm 0.203，\emph{不显著}。而 $\Delta$macro-F1 的聚类 bootstrap 95\% CI 全部跨 0（vs direct $[-0.107,+0.224]$）。两个检验回答不同问题：McNemar 问“逐单元是否正确”，bootstrap 问“macro-F1 差值是否稳定”；不能混写。
+
+\begin{table}[t]
+\centering
+\caption{长度规则与 LLM 的配对比较（common-valid）}
+\label{tab:mcnemar}
+\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+baseline & LLM & $n$ & $b/c$ & $p$ & Holm \\
+\midrule
+length & DS direct & 160 & 70/40 & 0.0054 & \best{0.038} \\
+length & DS evidence & 159 & 69/47 & 0.0507 & 0.203 \\
+length & MiMo direct & 150 & 69/32 & 0.0003 & \best{0.002} \\
+alloc\_or\_mem & DS direct & 160 & 23/23 & 1.000 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+指标翻转是本节最重要的诊断。按 macro-F1：\texttt{length\_short} 0.511 > \texttt{prior\_majority} 0.444 > \texttt{lr\_unweighted} 0.443 > DeepSeek evidence 0.422 > \dots > \texttt{alloc\_or\_mem} 0.387。按 MCC：\texttt{alloc\_or\_mem} 0.183 > \texttt{alloc\_unbalanced} 0.142 > \texttt{mem\_api\_present} 0.129 > \texttt{length\_short} 0.094 > MiMo context 0.080 > DeepSeek direct 0.041 > 多数类 0.000。在 80\% 正例上，macro-F1 主要奖励“多报正类”；MCC 才同时惩罚两类错误。
+
+\subsubsection{test-tuned 上界与错误结构}
+
+允许在 test 上选阈值/训练时，最好的单特征是 \texttt{call\_density} $\ge$0.2：macro-F1 0.598、MCC 0.209；\texttt{chars} $\le$3973：0.565/0.130；LR 在 test 上 5 折 CV 是 0.502。即使允许 test 标签训练，这些表面特征也没有出现强检测器；最好的 LLM confidence oracle 是 DeepSeek context 0.526/0.180，仍低于单特征 oracle 0.598，且 MCC 低于 \texttt{alloc\_or\_mem} 0.183。
+
+长度分层解释了机制：Q1 最短 40 条，正例率 82.5\%，长度规则召回 1.000、特异度 0，macro-F1 0.452；DeepSeek direct 召回 0.091、特异度 1.000，macro-F1 0.242。Q4 最长 40 条，长度规则召回 0、特异度 1.000，macro-F1 0.216；DeepSeek direct 召回 0.552、特异度 0.545，macro-F1 0.520。总 macro-F1 是四层混合：长度规则用“最短半区全报”换取了足够的正类 F1，LLM 的保守操作点在 Q1/Q2 丢了太多正例。\emph{这不是 LLM 在长函数上更差，而是它在短函数上几乎不报}。
+
+错误重叠也支持这一点：DeepSeek direct 的 90 个 FN 中，长度规则抓回 62 个（68.9\%），代价是 15 个 FP；\texttt{alloc\_or\_mem} 只抓回 16 个（17.8\%），但几乎不误报 FP。\texttt{prior\_majority} 和 \texttt{lr\_unweighted} 抓回 100\%/98.9\% 的 FN，但把所有负例都报掉；这不是检测，是先验。
+
+\subsubsection{判定}
+
+B1 是“诊断成功、方法失败”。它证明了长度规则在 macro-F1 上点估计高于 LLM，但 MCC 只有 0.094，且 $\Delta$macro-F1 的区间跨 0；它不能证明“简单规则更会检测漏洞”。正确的结论是：\emph{现有 LLM 的操作点太保守，而 test 的 80\% 正例率让“多报”在 macro-F1 上划算；换 MCC 看，排序能力仍然弱}。
+
+\subsection{P1：差分引导、长度对照、位置去偏}
+\label{sec:p1}
+
+\subsubsection{设计}
+
+180 对 $\times$ 2 模型 $\times$ 4 个新条件（\texttt{diff\_fwd}/\texttt{diff\_rev}/\texttt{ctrl\_fwd}/\texttt{ctrl\_rev}）= 1{,}440 条新记录；\texttt{open\_fwd}/\texttt{open\_rev} 只读复用 \texttt{pair\_debias} 的 720 条记录。\texttt{diff} 输入两份完整代码 + 从 A 到 B 的 unified diff + 变更清单要求；\texttt{ctrl} 输入两份完整代码 + token 长度匹配、内容为空的占位块 + 同样的变更清单要求；\texttt{open} 是已发布的开放四分类（无 diff、无变更清单）。
+
+三个条件共用同一套开放判定（A/B/both/neither）、同一套证据规则和同一个位置映射。diff 的方向始终 A$\to$B；正向时它是 vulnerable$\to$fixed，反向时是 fixed$\to$vulnerable，方向跟随槽位交换，因此不能直接泄漏标签。长度对照用 \texttt{tiktoken cl100k\_base} 生成与 diff 块等 token 数的占位块，内容为“no information about either revision”的重复行，不含任何代码或安全提示；两条件的 system prompt、两份完整代码、user template 其余部分逐字节相同，只有 \texttt{\{change\_block\}} 不同。分析阶段用 API 返回的 \texttt{prompt\_tokens} 复核每对的实际差异，并给出 $|\text{ctrl}-\text{diff}|/\text{diff}\le5\%$ 的匹配子集。
+
+\subsubsection{结果}
+
+表~\ref{tab:pairdiff} 是主结果。DeepSeek diff 62.22\%、ctrl 60.00\%、open 55.56\%；MiMo diff 60.56\%、ctrl 62.22\%、open 58.33\%。diff$-$ctrl 为 +2.22 pp（Holm 1.0000）和 $-1.67$ pp（Holm 0.9053）；diff$-$open 为 +6.67 pp（原始 $p=0.0428$，Holm 0.0855）和 +2.22 pp（原始 $p=0.5413$，Holm 1.0000）。\emph{没有 Holm 后显著的 diff 优势}。
+
+\begin{table*}[t]
+\centering
+\caption{Pair diff 主结果：交换一致 DA（180 对，正反两序都判对）}
+\label{tab:pairdiff}
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+模型 & diff & ctrl & open & diff$-$ctrl & diff$-$open & 成本/USD \\
+\midrule
+DeepSeek & 62.22 & 60.00 & 55.56 & +2.22（Holm 1.0000） & +6.67（Holm 0.0855） & 0.7761 \\
+MiMo & 60.56 & 62.22 & 58.33 & $-1.67$（Holm 0.9053） & +2.22（Holm 1.0000） & 0.3808 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+committed 子集有内容信号，但被弃权抵消：diff 在 committed 子集上比“选较短”高 +7.97 到 +11.81 pp（DeepSeek）、+8.70 到 +10.29 pp（MiMo）；但主 DA 按 180 对计，diff 的弃权率 20.00\%--24.44\%，高于 open 的 17.22\%--22.22\%。
+
+没有一致证据表明 diff 减少了长度捷径：diff/ctrl 的“选较短”比例 75.17\%--81.20\%，不低于 open 的 73.15\%--80.14\%；在“较短侧必错”的 44 对上，diff$-$ctrl 仅 +2.27 pp（两个模型 $p=1.0000$）；长度匹配 $\le$10\% 子集上模型仍低于启发式（约 67\% vs 72.9\%）。
+
+changes-first 的新失败模式是变更范围门控：变更清单没有安全相关项时，DeepSeek 20/180、MiMo 36/180 对几乎全部判 \texttt{neither}，DA=0；open 在同一批 pair 上也只有 15.00\%/11.11\%，说明子集本身难，但门控丢掉了少数可能答对的 pair。ctrl 有同样门控，说明它主要由“先列变更”指令驱动，而不是 diff 内容。
+
+成本效率没有改善：diff 成本约为 open 的 1.30$\times$；相对 ctrl 正确 pair-order 仅 +1/$-1$，相对 open +16/+6（DeepSeek 250 vs 234，MiMo 243 vs 237）；USD/正确 pair-order 更高。总成本 \$1.156871，4{,}366{,}678 prompt / 453{,}037 completion tokens。
+
+\subsubsection{判定}
+
+P1 是“零结果”。diff 相对长度匹配对照、相对 open 的交换一致 DA 差都没有通过 Holm；DeepSeek 的 +6.67 pp 原始 $p=0.0428$ 但 Holm 后 0.0855；MiMo 的 diff 甚至低于 ctrl。committed 子集的内容信号不足以抵消弃权与成本。\emph{“把 diff 摆出来并先列变更”没有显著改善跨版本判别}。
+
+\subsection{C1：CodeQL 告警 triage}
+\label{sec:c1}
+
+\subsubsection{设计}
+
+MiMo \texttt{mimo-v2.6-flash}，test 140 全量 direct + triage v1 + triage v2 + 91 条告警二次复核。主策略是“除非模型明确说 \texttt{false\_positive}，否则保留告警”；\texttt{uncertain} 和 invalid 回退到保留/CodeQL。报告 TP 误删、FP 撤销、macro-F1/MCC、成本。v1 与 v2 的区别在提示：v2 显式加入 realloc 失败规则、字段极性自检和“先判 leak 是否存在、再判 release gap”的顺序。
+
+\subsubsection{结果}
+
+表~\ref{tab:triage} 是主表。CodeQL 68/23/47/2，macro-F1 0.8173、MCC 0.6739；direct 69/5/65/1，0.9571/0.9158；triage v1 61/5/65/9，0.8999/0.8013，TP 误删 7/68；triage v2 68/3/67/2，0.9643/0.9287，TP 误删 0/68；v2 + 复核/文本规则 68/0/70/2，0.9857/0.9718；cascade（告警复核 + 无告警 direct）70/2/68/0，0.9857/0.9718。
+
+\begin{table*}[t]
+\centering
+\caption{CodeQL triage 主表（test 140，strict）}
+\label{tab:triage}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+策略 & TP & FP & TN & FN & macro-F1 & MCC & TP 误删 \\
+\midrule
+CodeQL & 68 & 23 & 47 & 2 & 0.8173 & 0.6739 & --- \\
+direct & 69 & 5 & 65 & 1 & 0.9571 & 0.9158 & --- \\
+triage v1 & 61 & 5 & 65 & 9 & 0.8999 & 0.8013 & 7/68 \\
+triage v2 & 68 & 3 & 67 & 2 & 0.9643 & 0.9287 & 0/68 \\
+v2 + 复核/文本规则 & \best{68} & \best{0} & \best{70} & \best{2} & \best{0.9857} & \best{0.9718} & \best{0/68} \\
+cascade & 70 & 2 & 68 & 0 & 0.9857 & 0.9718 & 0/68 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+配对检验：最终 vs CodeQL，$+0.1684$ macro-F1，95\% CI $[+0.1084,+0.2349]$，$p<10^{-6}$；最终 vs direct，$+0.0286$，95\% CI $[-0.0072,+0.0714]$，$p=0.289$，\emph{不显著}；triage v2 vs direct，$+0.0072$，95\% CI $[-0.0217,+0.0375]$，$p=1.000$。
+
+v1 的 7 个 TP 误删全是 \texttt{malloc\_realloc\_*}：v1 把“realloc 可能失败”误读成“原始块一定泄漏”，于是撤销了 7 个 bad 的告警。v2 显式要求“只有 realloc 返回 NULL 且原始指针未被释放才判 leak”，TP 误删降到 0，FP 撤销从 18 升到 20。最终 23 个 FP 全撤，其中 20 个由 v2、3 个由二次一致性复核/文本规则翻转；这 3 个都是 \texttt{\_22} 的字段自相矛盾（\texttt{leak\_present} 与 \texttt{release\_gap} 冲突），不是所有权推理失败。二次复核 91/91 有效，changed decisions 3，fixed FP 3、broken TP 0。
+
+2 个 CodeQL FN 是 \texttt{\_82} 的 \texttt{compile\_error}（\texttt{new\_twoIntsStruct}、\texttt{new\_wchar\_t} 的 bad+good 各 2 个，共 4 个编译失败）；triage 无法从“没有告警”里恢复这 2 个 bad，cascade 用 direct 补回 2 个 TP，但引入 2 个 FP。
+
+成本：direct \$0.003021 + triage \$0.030545 + verify \$0.012229 = \$0.045795；triage p50 6.91 s、p95 14.20 s；CodeQL 建库约 42.5 s/单元（200 单元均值；test 140 逐单元墙钟之和约 6{,}061.8 s）。零成本基线：\texttt{never-freed only} 46/0/70/24，macro-F1 0.8234；\texttt{drop C++ may-not-be-freed} 60/0/70/10，0.9282。
+
+\subsubsection{判定}
+
+C1 是“相对 CodeQL 强、相对 direct 不显著、最终行依赖规则后处理”的条件正结果。v2 单独 0.9643 已经高于 direct 0.9571，但 $p=1.000$；最终 0.9857 的三个 \texttt{\_22} 翻转来自字段一致性规则，不是 LLM 的所有权推理。\emph{不能写成“LLM triage 显著优于 direct”，也不能写成“端到端 0 FP 是 LLM 的功劳”}。
+
+\subsection{V1：保守三路验证器}
+\label{sec:v1}
+
+\subsubsection{设计}
+
+只验证第一遍的正例；三路 \texttt{supported}/\texttt{unsupported}/\texttt{insufficient}；只有 \texttt{unsupported} + 具体 \texttt{guard\_present} 或 \texttt{counterexample} 才撤销；\texttt{insufficient}、schema-invalid、API error 一律保留（fail-open）。机械判定规则在 \texttt{conservative/decision.py}：只有 \texttt{unsupported} + \texttt{guard\_present} 或 \texttt{counterexample} 才可能撤销；引用的行号必须在 $1..N$、不重复，且至少一行是非空白、非纯注释/纯括号代码；\texttt{guard\_present} 还要求该行含守卫词法（\texttt{if/return/\&\&/比较/边界函数} 等）；\texttt{counterexample} 必须有具体反例文本（不是 \texttt{none}）。四臂：DeepSeek 正例 $\times$ \{DeepSeek, MiMo\}、MiMo 正例 $\times$ \{DeepSeek, MiMo\}；236 条真实请求（60/60/58/58）。
+
+\subsubsection{结果}
+
+表~\ref{tab:conservative} 是四臂结果。合计撤销 4/236（TP 3/FP 1），撤销精确率 25.0\%；正例 FP 基准率 18.3\%--19.0\%；超几何检验不显著（Holm $p=1.0$）。macro-F1 四臂为 0、0、$-0.0052$、$-0.0028$；MCC 只在 \texttt{mimo\_cross} +0.0139（95\% CI 跨 0），代价是 2 个 TP 损失换 1 个 FP 纠正。\texttt{insufficient} 占 106/236，\texttt{unsupported} 只有 4 条；模型很少给出可用的具体反证。
+
+\begin{table}[t]
+\centering
+\caption{保守三路验证器四臂（236 条请求）}
+\label{tab:conservative}
+\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+臂 & 撤销 & TP 损 & FP 纠 & $\Delta$F1 & $\Delta$MCC \\
+\midrule
+DS self & 1 & 1 & 0 & $-0.0052$ & $-0.0064$ \\
+DS cross & 0 & 0 & 0 & 0.0000 & 0.0000 \\
+MiMo self & 0 & 0 & 0 & 0.0000 & 0.0000 \\
+MiMo cross & 3 & 2 & 1 & $-0.0028$ & +0.0139 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+原验证器主口径在同一批正例上撤销 155 条；保守规则 4 条；两者相差约 39 倍。成本 \$0.151758，与原验证器同一量级；随机/低置信基线增量成本为 0。
+
+\subsubsection{判定}
+
+V1 是“判定语义修对了、检测收益为负”的负结果。它消除了“把 insufficient 当撤销”的大规模误撤销，但严格到只接受具体守卫/反例时，模型几乎不输出 \texttt{unsupported}，验证器退化为惰性步骤。\emph{不能写成“保守规则修好了验证器”}。
+
+\subsection{五个实验的结果总表}
+
+表~\ref{tab:summary} 把五个实验的主终点、结果与状态放在一起。只有 C1 是条件正结果（相对 CodeQL 显著、相对 direct 不显著）；G0 是测量性结果；B1、P1、V1 都是负结果或“诊断性正结果、方法性负结果”。
+
+\begin{table*}[t]
+\centering
+\caption{五个实验的主终点、真实结果与判定}
+\label{tab:summary}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{1.5cm}p{3.2cm}p{6.3cm}p{5.4cm}@{}}
+\toprule
+实验 & 主终点 & 真实结果 & 判定 \\
+\midrule
+G0 & 行/分支覆盖 + 门控 & 140/140 采集；有效行 100\%；分支 52.7\%；82 clean 中 12 bad；line gate 零纠错；branch gate 弃权 70 good & 测量成功，门禁失败 \\
+B1 & macro-F1 + MCC & 长度 0.511/0.094；LLM 0.346--0.422；McNemar vs direct Holm 0.038/0.002；vs evidence 0.203；$\Delta$F1 CI 跨 0 & 点估计正、统计有限 \\
+P1 & 交换一致 DA & diff 62.22/60.56；ctrl 60.00/62.22；open 55.56/58.33；diff$-$ctrl Holm 1.0/0.905；diff$-$open Holm 0.0855/1.0 & 零结果 \\
+C1 & macro-F1 + TP 误删 & 0.9857 vs CodeQL 0.8173（$p<10^{-6}$）；vs direct 0.9571（$p=0.289$）；v2 单独 0.9643；3 个 \texttt{\_22} 规则翻转 & 条件正结果 \\
+V1 & $\Delta$macro-F1 / 撤销精确率 & 4/236 撤销；精确率 25\%；$\Delta$F1 0 到 $-0.0052$；AUROC 无排序 & 负结果 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{成功与失败的解释}
+\label{sec:explain}
+
+\subsection{G0：为什么“100\% 行覆盖”仍然漏报}
+
+行覆盖回答的是“这条语句有没有执行”，泄漏回答的是“分配出去的块在所有路径上是否仍可达/被释放”。两者不是同一个谓词。原路径 82 个 clean 全部 line-complete，其中 12 个 bad 的分配点、释放点、入口都执行了；漏报来自\emph{分支未走}（7 个 realloc 失败路径）和\emph{根集语义}（5 个全局指针）。覆盖率门控只能把“没执行”的单元弃权，不能把“执行了但走错分支”的单元改判。branch gate 看似更严，但 good 单元为了错误处理写了更多守卫，未走分支更多，于是 70 个 good 全部弃权；它把代码形状当成了质量信号。这是“覆盖率作为充分性准则”的经典反例~\cite{zhu1997coverage}。
+
+\subsection{B1：为什么长度规则点估计更高}
+
+三个机制叠加。第一，test 正例率 80\%，macro-F1 的二类平均奖励“多报”：恒判漏洞的 positive F1 0.889、negative F1 0，macro 0.444；任何“多报但不太离谱”的方法都能接近这个数。第二，LLM 的操作点极保守：DeepSeek direct 只报 28.75\% 为正，positive F1 0.437，macro 0.383；它不是不会排，而是把阈值放得很高。第三，长度规则在最短半区全报：Q1/Q2 召回 1.0、特异度 0，Q3/Q4 全不报；总 macro-F1 是四层混合，正好拟合了“短函数更常被标为正例”的数据集偏差。换 MCC 看，长度规则只有 0.094，\texttt{alloc\_or\_mem} 0.183；LLM 的 MCC 0.008--0.080。\emph{长度规则赢的是操作点，不是排序}。
+
+dev/test 偏移让“拟合”和“选择”都不稳：dev 40 只有 8 个负例，\texttt{length\_short} 只比多数类高 0.0061；\texttt{lr\_balanced} 在 dev 上 0.564，LOO 0.298，test 0.391、MCC $-0.131$。任何“dev 拟合的小模型”在这个划分上都不应被当成稳定方法。
+
+\subsection{P1：为什么 diff 没有显著收益}
+
+第一，长度方向没有被 diff 消除。180 对中 130 对漏洞版本更短；diff 只是把差异摆出来，不改变“修复版本通常更长”这个事实。模型仍然可以读长度，且 diff/ctrl 的“选较短”比例 75\%--81\%，不低于 open。第二，diff 增加的是 token，不是可判定的语义。修复补丁往往只加几行检查/释放，diff 很小；模型在 committed 子集上有 +8 到 +12 pp 的内容信号，但它在 20\%--24\% 的对上弃权，主 DA 按 180 对计就被抵消。第三，changes-first 引入了新的门控失败：变更清单没有安全相关项时，模型几乎全判 \texttt{neither}；这个门控由指令驱动（ctrl 同样存在），不是 diff 内容驱动。第四，成本增加 1.30$\times$，USD/正确 pair-order 更高。\emph{diff 是一个合理的“证据呈现”工程，但在本数据上没有统计上可分辨的收益}。
+
+\subsection{C1：为什么“强”但不显著}
+
+相对 CodeQL，triage 的 +0.1684 是真实的：它把 23 个 FP 中的 20 个撤掉，同时 0 TP 误删（v2）。但相对 direct，+0.0286 不显著，因为 direct 本身已经 0.9571：140 个单元里 direct 只错 6 个（5 FP + 1 FN），triage 要再改进的空间只有几个单元。最终 0.9857 的三个 \texttt{\_22} 翻转来自字段一致性规则：这 3 个 good 的 \texttt{leak\_present} 与 \texttt{release\_gap} 自相矛盾，二次复核/文本规则把它们翻成 FP；这不是“所有权推理”，而是“输出自洽性检查”。因此最终行是“CodeQL + LLM triage + 规则后处理”的组合，不是纯 LLM 的能力。
+
+v1$\to$v2 的提示敏感性也说明 0.9857 不是方法的稳定性能：只改提示，TP 误删从 7 降到 0、FP 撤销从 18 升到 20。Juliet 的记忆化是另一个威胁：清洗去掉了标签/路径/CWE/\texttt{bad|good} 标识符，但保留控制流结构、宏展开后的 \texttt{printLine} 序列、变量形状；2026 的告警裁决研究报告 o4-mini 能重建清洗后的 Juliet 原始身份。最后，2 个 CodeQL FN 是 \texttt{\_82} 编译失败，triage 无法恢复；召回上限不是 1.0，而是 136/140 可分析 + 2 个 bad 可读。
+
+\subsection{V1：为什么“几乎不撤”仍然没有收益}
+
+三路判定把“未证明”与“已反驳”分开，语义上是正确的：\texttt{insufficient} 不再被当成撤销理由。但模型很少给出可用的具体反证：236 条里只有 4 条 \texttt{unsupported}，其中 3 条是 TP、1 条是 FP；撤销精确率 25.0\%，与正例 FP 基准率 18.3\%--19.0\% 不可区分。原验证器的 155 条撤销里，67\%--71\% 是 \texttt{insufficient}；修掉它之后，剩下的具体机制覆盖太低（每臂 3--11 个），不足以改变总体 macro-F1。更根本的是没有排序信号：验证器 \texttt{confidence} 对 FP/TP 的 AUROC 0.28--0.46，低于随机；即使做阈值扫描，也不能把 FP 排在 TP 前面。这与“没有外部反馈的自纠正不可靠”一致~\cite{huang2024selfcorrect}，也与“LLM 代码审查容易过度纠正”一致~\cite{jin2026overcorrection}。\emph{正确的下一步不是再调 prompt，而是把守卫变成可检查的图性质（支配关系）或执行反例}。
+
+\subsection{跨实验的共同机制}
+
+四个机制贯穿五个实验。
+
+\textbf{(1) 函数级标签缺上下文。}检测的 FN 反复出现“取决于调用者/未提供的实现”；配对的开放弃权 17\%--22\%；验证器的 \texttt{insufficient} 占 67\%--71\%。这不是三个独立的失败，而是同一个任务定义问题：函数文本不足以判定修复前/后侧。
+
+\textbf{(2) 操作点与排序混淆。}macro-F1 在 80\% 正例上奖励多报；长度规则、恒判漏洞、\texttt{lr\_unweighted} 都靠“多报”排在 LLM 前面。MCC/AUROC 才暴露排序弱：DeepSeek direct MCC 0.041、confidence AUROC 0.540；验证器 AUROC 0.28--0.46。
+
+\textbf{(3) 证据不可检查。}LLM 的“守卫/反例”没有编译/执行验证；CodeQL 的 may 查询 \texttt{code\_flows}=0；diff 的变更清单没有安全语义；验证器的 \texttt{guard\_present} 只做词法检查。四个实验都指向同一个结论：\emph{没有外部可执行证据时，LLM 的“具体理由”不能当作证据}。
+
+\textbf{(4) 小样本 + 单次运行。}40 个项目、23 个 FP、4 个撤销、44 个 fshorter 对；Wilson/聚类 bootstrap CI 很宽。点估计的排序可能在下一次运行翻转；本轮所有结论都应按“探索性”读。
+
+\section{下一阶段优先级}
+\label{sec:priority}
+
+表~\ref{tab:priority} 给出下一阶段的优先级、成功线、停止规则与成本。排序原则是：先冻结口径（0 API），再做零 API 的静态证人，最后才做需要新模型调用的实验。理由很直接：本轮已经证明，在没有新证据来源的情况下继续调提示，收益上限很低；而口径不统一会让任何新结果无法与旧结果并列。
+
+\begin{table*}[t]
+\centering
+\caption{下一阶段优先级（P0 先做；P1 需要新 run；P2 是外推）}
+\label{tab:priority}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{0.8cm}p{4.6cm}p{4.8cm}p{3.8cm}p{1.9cm}@{}}
+\toprule
+级别 & 动作 & 成功线 & 停止规则 & 成本 \\
+\midrule
+P0 & 冻结口径：检测并列 macro-F1/MCC/pred+；配对报交换一致 DA + 方向平衡；动态 clean 带行/分支覆盖与 free 站点；triage 报 TP 误删 & 报告不再出现单指标“提升” & --- & 0 \\
+P0 & 主表加入常量/长度基线；MCC 参照 \texttt{alloc\_or\_mem} & 读者能看到 0.444/0.511/0.183 & --- & 0 \\
+P1 & 预注册长度中性化 pair（新 holdout）：填充空白/注释到 $\le$2\% 长度差；方向平衡 88 对作敏感性 & MiMo $\ge$60\% 且 >50\% 至少 10 pp；DeepSeek $\ge$55\% & MiMo fshorter 两序都对 <40\% 则停 & \$2--3 \\
+P1 & CodeQL \texttt{\_33} must-free 支配证人：先做 20 个 \texttt{\_33} 单元 & 删 15 FP、留 5 TP；全量 P$\ge$0.90/R$\ge$0.90 & 不能同时保住 5 个 TP 则停 & 本地，0 API \\
+P1 & 外部 oracle 替代 LLM 验证器：编译 + LSan/Valgrind + 最小 PoC & 固定预算撤销精确率 $\ge$40\% 且 TP 损失 $\le$10\% & 仍无排序信号则放弃二次验证 & <\$1 + 本地 \\
+P2 & 检测任务改造：语句级/差异行，或真实调用者/被调用者上下文 & MCC $\ge$0.15 且 macro-F1 $\ge$0.53 & dev pilot MCC <0.10 则停 & \$0.4--0.6 \\
+P2 & 真实项目/跨 CWE 的 CodeQL 告警人评 20--50 条 & 报告 TP/FP、TP 误删、成本 & 无法获得人评则只写 Juliet & 中 \\
+P2 & 多 seed/多温度重复，报决策翻转率与方差 & 翻转率与主结论方向一致 & --- & 3--5$\times$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{如果只能做一个}
+
+先做 P0 的口径冻结 + P1 的零 API \texttt{\_33} 证人。理由：它们不需要新模型调用，且直接决定两个最大主张——“pair 86.67\%”和“CodeQL 0.9857”——能不能继续写。前者已经被本轮证明在方向平衡后只剩 47.7\%/63.6\%；后者已经被证明相对 direct 不显著，且最终行依赖规则后处理。把这两件事写清楚，比再跑一个更大的排行榜更有价值。
+
+\subsection{明确不再做的事}
+
+\begin{itemize}
+  \item 不再用单一 macro-F1 宣布“检测提升”；在 80\% 正例上它奖励多报。
+  \item 不再用单序强制二选一 DA 宣布“跨版本推理”；必须报交换一致 DA 与方向平衡子集。
+  \item 不再用 \texttt{coverage=1.000} 宣布“动态无泄漏”；必须报行/分支覆盖、free 站点、raw/attributed 分离。
+  \item 不再用“LLM 二次验证”提升检测；除非先证明验证器分数对 FP/TP 的 AUROC $\ge$0.65。
+  \item 不再把 CodeQL 的 0.9857 写成“纯 LLM triage”；必须报 v2 单独、规则后处理、TP 误删与 direct 对照。
+\end{itemize}
+
+\section{效度威胁}
+\label{sec:threats}
+
+\textbf{Juliet 记忆化。}清洗去掉了标签、路径、CWE、\texttt{bad|good} 标识符、注释和 \texttt{Benign, fixed string}，但保留控制流结构、宏展开后的 \texttt{printLine} 序列、变量形状。2026 的告警裁决研究报告 o4-mini 能重建清洗后的 Juliet 原始身份；因此 0.9857、23 个 FP 的撤销、91/91 复核都可能含“见过这个变体”的成分。不能外推到真实项目。
+
+\textbf{单次采样。}所有 LLM run 都是 temperature 0、单次请求；没有重复采样、没有置信区间覆盖模型方差；\texttt{confidence} 没有做 ECE/reliability。无法区分“方法稳定”与“这一次采样恰好”。
+
+\textbf{test-seen。}验证器的三路提示与判定规则是在看到 test 160 的第一遍和旧验证器结果之后设计的；\url{analysis_status=exploratory_post_hoc_test_seen}。B1 的规则/阈值是预注册的，但 dev 40 只有 8 个负例，选择本身不稳定；P1 的 88 对方向平衡子集在复核中是事后构造的，N2 才把它作为预注册敏感性。
+
+\textbf{提示敏感。}C1 的 v1$\to$v2 只改提示，TP 误删从 7 降到 0、FP 撤销从 18 升到 20；0.9857 不是“方法”的稳定性能。V1 的三路提示也只测了一个版本。
+
+\textbf{成本口径。}按配置价与 provider 报告的 token 计算，不是发票；没有人类复核成本；CodeQL 建库算力没有折成钱。triage 的 \$0.045795 不能与“人工审 23 个 FP 的时间”直接比较。
+
+\textbf{无真实项目/跨 CWE。}只 CWE-401、只 Juliet；不能外推到 CWE-416/415/476 或真实 C/C++ 项目。23 个 FP 是 Juliet 的 4 个变体；真实项目的 sink/容器/别名更复杂。
+
+\textbf{无人工标签审计。}Juliet 的 bad/good 由 \texttt{OMITBAD}/\texttt{OMITGOOD} 宏门控唯一决定；23 个 FP 的“正确撤销”按标签判，不是按真实释放路径判。若 Juliet 的 good 版本自身有隐藏泄漏（NIST TN 1995 报告过已知问题），标签也可能不完美。
+
+\textbf{小样本。}40 个项目、23 个 FP、4 个撤销、44 个 fshorter 对；Wilson/聚类 bootstrap CI 很宽。MDE 约 0.10--0.15（检测）、10--12 pp（配对）；小于这个量级的差异只能写“未检测到”。
+
+\section{结论}
+\label{sec:conclusion}
+
+本轮把上一轮报告的五个薄弱环节逐一量化，并执行了五个可证伪实验。结论可以压缩成五句话。
+
+第一，\textbf{检测的 0.383 主要不是“模型不够强”，而是操作点与标签语义}：它低于恒判漏洞的 0.444 和长度规则的 0.511；置信度 AUROC 0.540，调阈值只能抬 macro-F1、抬不了 MCC；CWE-416/20 与短函数是结构性缺口。
+
+第二，\textbf{配对的 86.67\% 不能解释为跨版本推理}：130/180 对漏洞版本更短；方向平衡后 DeepSeek 47.7\%（随机）、MiMo 63.6\%（弱信号）；diff 提示没有显著收益（diff$-$ctrl Holm 1.0/0.905）。
+
+第三，\textbf{CodeQL triage 是条件正结果}：相对 CodeQL 0.8173 显著（$p<10^{-6}$），相对 direct 0.9571 不显著（$p=0.289$）；最终 68/0/70/2 依赖 3 个 \texttt{\_22} 字段一致性规则；v2 单独 0.9643，TP 误删 0/68。
+
+第四，\textbf{保守验证器语义正确但没有收益}：4/236 撤销、精确率 25.0\%、macro-F1 不升；没有 FP/TP 排序信号（AUROC 0.28--0.46）；下一步应改用编译/PoC/静态证人，而不是再调 prompt。
+
+第五，\textbf{100\% 行覆盖不是无泄漏}：82 个 clean 中 12 个实际是 bad；分支覆盖 52.7\%、21 个分支完整单元全是 bad；line gate 零纠错、branch gate 弃权 70 个 good。动态 \texttt{clean} 只能写成“该次执行的可达行走完”，不能写成 TN。
+
+本轮的价值不在于“又赢了哪个基线”，而在于把“哪里输了、为什么输、下一步怎么证伪”写清楚。下一阶段的优先级是：先冻结口径，再做零 API 的 must-free 证人，最后才做需要新模型调用的长度中性化配对与外部 oracle。只有当中性化后的配对信号在新 holdout 上复现，且 CodeQL 证人能在不损失 TP 的前提下删掉 FP，才值得继续扩大实验。
+
+\appendices
+
+\section{诚实性检查表}
+\label{app:honesty}
+
+表~\ref{tab:honesty} 把本文的五个主结论与证据、状态放在一起，便于审计。任何一条被引用时，都必须带上“状态”列。
+
+\begin{table*}[t]
+\centering
+\caption{主结论、证据与状态（引用时必须带状态）}
+\label{tab:honesty}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{4.2cm}p{7.2cm}p{3.2cm}@{}}
+\toprule
+结论 & 证据 & 状态 \\
+\midrule
+CodeQL triage 强但对 direct 不显著 & 0.9857 vs 0.8173（$p<10^{-6}$）；vs 0.9571（$p=0.289$）；v2 单独 0.9643；3 个 \texttt{\_22} 规则翻转 & 条件正结果；探索性 \\
+Pair diff 无显著收益 & diff 62.22/60.56；ctrl 60.00/62.22；diff$-$ctrl Holm 1.0/0.905；diff$-$open Holm 0.0855/1.0 & 零结果；预注册 \\
+保守验证器几乎不撤但无收益 & 4/236；精确率 25.0\%；$\Delta$F1 0 到 $-0.0052$；AUROC 0.28--0.46 & 负结果；test-seen \\
+100\% 行覆盖非无泄漏 & 82 clean 中 12 bad；分支 52.7\%；21 个 branch\_complete 全 bad；branch gate 弃权 70 good & 测量性结果 \\
+简单长度规则点估计高于 LLM & 0.511 vs 0.346--0.422；MCC 0.094；McNemar vs direct Holm 0.038/0.002；vs evidence 0.203 & 点估计正、统计有限 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+
+\section{复现与产物}
+\label{app:repro}
+
+所有实验在 WSL Ubuntu、Python 3.14 下运行；凭证由 \texttt{run\_with\_kimi\_config.py} 从 Kimi Code 配置读入进程内存，不打印、不落盘；manifest 只记录 \texttt{api\_key\_present}，并固定 \texttt{api\_key\_value\_stored=false}、\texttt{authorization\_header\_stored=false}。
+
+\begin{lstlisting}[language=bash]
+cd /mnt/c/Users/tzh03/Downloads/cs224proj
+
+# G0: dynamic coverage (existing run)
+python3 - <<'PY'
+import json
+d=json.load(open('dynamic_coverage/runs/test140_coverage_v1/metrics.json'))
+print(d['coverage_overall'])
+PY
+
+# B1: interpretable baselines
+python3 interpretable_baseline/run_baseline.py --help
+
+# P1: pair diff
+python3 pair_diff/selftest.py
+bash pair_diff/run_pair_diff.sh analyze
+
+# C1: CodeQL triage
+python3 codeql_triage/selftest.py
+python3 codeql_triage/analyze.py \
+  --run-dir codeql_triage/runs/test140_mimo_xiaomi_v2 \
+  --out codeql_triage/runs/test140_mimo_xiaomi_v2/analysis \
+  --label mimo-v2.6-flash-xiaomi-v2
+
+# V1: conservative verifier
+python3 verifier_conservative/selftest.py
+python3 verifier_conservative/analyze_conservative.py
+
+# report
+~/tools/tectonic/tectonic -X compile \
+  report/report_next_zh.tex --outdir report --keep-logs
+\end{lstlisting}
+
+产物地图：
+\begin{itemize}
+  \item \url{codeql_triage/REPORT.md}
+  \item \url{dynamic_coverage/README.md}
+  \item \url{interpretable_baseline/REPORT.md}
+  \item \url{pair_diff/results/report.md}
+  \item \url{verifier_conservative/analysis/report.md}
+  \item \url{research/next_iteration_rationale.md}
+\end{itemize}
+统一摘要见 \url{report/next_results_summary.md}。
+
+\balance
+\bibliographystyle{IEEEtran}
+\bibliography{references_next}
+\end{document}

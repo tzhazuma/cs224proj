@@ -1,0 +1,28 @@
+
+=================================================================
+==83396==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 4096 byte(s) in 1 object(s) allocated from:
+    #0 0x7446bf12b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x7446bec8b36b in __GI__IO_file_doallocate /usr/src/glibc-2.44-1ubuntu2.1/libio/filedoalloc.c:91
+    #2 0x7446bec9cca5 in __GI__IO_doallocbuf /usr/src/glibc-2.44-1ubuntu2.1/libio/genops.c:373
+    #3 0x7446bec9a368 in _IO_new_file_overflow /usr/src/glibc-2.44-1ubuntu2.1/libio/fileops.c:797
+    #4 0x7446bec9af62 in _IO_new_file_xsputn /usr/src/glibc-2.44-1ubuntu2.1/libio/fileops.c:1323
+    #5 0x7446bec9af62 in _IO_new_file_xsputn /usr/src/glibc-2.44-1ubuntu2.1/libio/fileops.c:1276
+    #6 0x7446bec8e239 in __GI__IO_puts /usr/src/glibc-2.44-1ubuntu2.1/libio/ioputs.c:40
+    #7 0x5b9ff7452a47 in printLine /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcasesupport/io.c:15
+    #8 0x5b9ff74528fb in CWE401_Memory_Leak__char_malloc_01_bad /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_malloc_01.c:33
+    #9 0x5b9ff745299d in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0005_bad/build/__dynenh_probe_main.c:2
+    #10 0x7446bec2a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #11 0x7446bec2a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #12 0x5b9ff74527b4 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0005_bad/build/unit.plain.exe+0x37b4) (BuildId: e71401f283daf350eb7fe02107174f048c7877de)
+
+Direct leak of 100 byte(s) in 1 object(s) allocated from:
+    #0 0x7446bf12b5ef in malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:67
+    #1 0x5b9ff74528a8 in CWE401_Memory_Leak__char_malloc_01_bad /mnt/c/Users/tzh03/Downloads/cs224proj/juliet/raw/testcases/CWE401_Memory_Leak/s01/CWE401_Memory_Leak__char_malloc_01.c:29
+    #2 0x5b9ff745299d in main /mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0005_bad/build/__dynenh_probe_main.c:2
+    #3 0x7446bec2a640 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59
+    #4 0x7446bec2a757 in __libc_start_main_impl ../csu/libc-start.c:372
+    #5 0x5b9ff74527b4 in _start (/mnt/c/Users/tzh03/Downloads/cs224proj/dynamic_coverage/runs/test140_coverage_v1/cases/d0005_bad/build/unit.plain.exe+0x37b4) (BuildId: e71401f283daf350eb7fe02107174f048c7877de)
+
+SUMMARY: AddressSanitizer: 4196 byte(s) leaked in 2 allocation(s).

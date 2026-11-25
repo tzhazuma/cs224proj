@@ -2886,6 +2886,1078 @@ def import_hybrid_enhanced_dynamic(
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# Next-iteration producers (2026-11-22)
+# ---------------------------------------------------------------------------
+
+_ALERT_CONDITION_KEYS = {
+    "direct": ("direct_pred", "model"),
+    "triage_v1": ("triage_keep", "model"),
+    "triage_v2": ("triage_keep", "model"),
+    "text_rule": ("rule_text_consistency", "rule"),
+    "verified": ("triage_verified", "verifier"),
+    "cascade": ("hybrid_cascade_direct", "cascade"),
+    "zero_cost_never_freed": ("query_never_only", "codeql"),
+    "zero_cost_drop_may_cpp": ("drop_may_cpp", "codeql"),
+}
+
+_ALERT_METHOD_FAMILY = {
+    "direct": "llm",
+    "triage_v1": "llm",
+    "triage_v2": "llm",
+    "text_rule": "hybrid",
+    "verified": "hybrid",
+    "cascade": "hybrid",
+    "zero_cost_never_freed": "static",
+    "zero_cost_drop_may_cpp": "static",
+}
+
+
+def _next_usage_with_latency(raw: Mapping[str, Any]) -> dict[str, Any] | None:
+    usage = _normalize_usage(raw)
+    latency = as_number(pick(raw, "wall_seconds", "response.request_latency_seconds"))
+    if usage is None and latency is None:
+        return None
+    result = dict(usage or {})
+    if result.get("latency_ms") is None and latency is not None:
+        result["latency_ms"] = latency * 1000.0
+    return result
+
+
+def _next_pair_usage_cost(raw: Mapping[str, Any], config: Mapping[str, Any]) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    response = raw.get("response") if isinstance(raw.get("response"), Mapping) else {}
+    cost_obj = response.get("cost") if isinstance(response.get("cost"), Mapping) else {}
+    attempts = response.get("attempts")
+    latency = as_number(response.get("request_latency_seconds"))
+    usage = {
+        "prompt_tokens": as_int(cost_obj.get("prompt_tokens")),
+        "completion_tokens": as_int(cost_obj.get("completion_tokens")),
+        "cached_prompt_tokens": as_int(cost_obj.get("cached_prompt_tokens")),
+        "reasoning_tokens": as_int(pick(response, "response_meta.reasoning_tokens")),
+        "latency_ms": latency * 1000.0 if latency is not None else None,
+        "api_attempts": len(attempts) if isinstance(attempts, list) and attempts else None,
+    }
+    if not any(value is not None for value in usage.values()):
+        usage = None
+    usd = as_number(cost_obj.get("cost_usd"))
+    cost = None
+    if usd is not None or latency is not None:
+        cost = {
+            "usd": usd,
+            "wall_s": latency,
+            "cpu_s": None,
+            "peak_rss_mb": None,
+            "currency": "USD",
+            "cost_basis": "api_price" if usd is not None else "unknown",
+            "pricing_snapshot": config.get("pricing_snapshot"),
+            "note": "configured list price; not an invoice",
+        }
+    return usage, cost
+
+
+def _merge_usage(first: Mapping[str, Any] | None, second: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    if first is None and second is None:
+        return None
+    result: dict[str, Any] = {}
+    for key in ("prompt_tokens", "completion_tokens", "cached_prompt_tokens", "reasoning_tokens"):
+        values = [
+            value
+            for value in (
+                (first or {}).get(key),
+                (second or {}).get(key),
+            )
+            if isinstance(value, int) and not isinstance(value, bool)
+        ]
+        result[key] = sum(values) if values else None
+    latencies = [
+        float(value)
+        for value in ((first or {}).get("latency_ms"), (second or {}).get("latency_ms"))
+        if isinstance(value, (int, float)) and not isinstance(value, bool)
+    ]
+    result["latency_ms"] = sum(latencies) if latencies else None
+    attempts = [
+        value
+        for value in ((first or {}).get("api_attempts"), (second or {}).get("api_attempts"))
+        if isinstance(value, int) and not isinstance(value, bool)
+    ]
+    result["api_attempts"] = sum(attempts) if attempts else None
+    return result
+
+
+def _merge_cost(first: Mapping[str, Any] | None, second: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    if first is None and second is None:
+        return None
+    usd_values = [
+        float(value)
+        for value in ((first or {}).get("usd"), (second or {}).get("usd"))
+        if isinstance(value, (int, float)) and not isinstance(value, bool)
+    ]
+    wall_values = [
+        float(value)
+        for value in ((first or {}).get("wall_s"), (second or {}).get("wall_s"))
+        if isinstance(value, (int, float)) and not isinstance(value, bool)
+    ]
+    return {
+        "usd": sum(usd_values) if usd_values else None,
+        "wall_s": sum(wall_values) if wall_values else None,
+        "cpu_s": None,
+        "peak_rss_mb": None,
+        "currency": "USD",
+        "cost_basis": "api_price" if usd_values else "unknown",
+        "pricing_snapshot": (first or second or {}).get("pricing_snapshot"),
+        "note": "pipeline sum of the recorded calls; configured list price",
+    }
+
+
+def import_alert_triage(
+    config: Mapping[str, Any],
+    *,
+    run_dir: Path,
+    unit_map_path: Path,
+    out_dir: Path,
+    force: bool,
+    dry_run: bool,
+) -> dict[str, Any]:
+    design = "codeql_alert_triage"
+    condition = str(config.get("condition") or "")
+    if condition not in _ALERT_CONDITION_KEYS:
+        raise ExtensionError(f"unknown codeql_alert_triage condition {condition!r}")
+    condition_key, decision_source = _ALERT_CONDITION_KEYS[condition]
+    method = _method_from_config(config)
+    if method.get("family") != _ALERT_METHOD_FAMILY[condition]:
+        raise ExtensionError(
+            f"{condition} requires config.method.family={_ALERT_METHOD_FAMILY[condition]}"
+        )
+    split_filter = str(config.get("split") or "test")
+    unit_index = juliet_unit_index(unit_map_path)
+    units: dict[str, dict[str, Any]] = {}
+    for meta in unit_index.values():
+        if split_filter and meta.get("split") != split_filter:
+            continue
+        units[meta["unit_id"]] = meta
+    if len(units) != 140:
+        raise ExtensionError(f"expected 140 test units, got {len(units)}")
+    dataset = _dataset_meta(
+        config,
+        path=unit_map_path,
+        dataset_id="juliet-cwe401-v1.3-subset-v1",
+        split_id=f"juliet-cwe401-v1.3-subset-v1/{split_filter}",
+        unit_count=len(units),
+        group_count=len({meta["group_id"] for meta in units.values()}),
+        label_counts={
+            "bad": sum(1 for meta in units.values() if meta["label"] == "bad"),
+            "good": sum(1 for meta in units.values() if meta["label"] == "good"),
+        },
+    )
+
+    sys.path.insert(0, str(project_root() / "codeql_triage"))
+    try:
+        import analyze as codeql_analyze  # type: ignore
+    except Exception as exc:  # noqa: BLE001
+        raise ExtensionError(f"cannot import codeql_triage/analyze.py: {exc}") from exc
+    rows = codeql_analyze.build_rows(run_dir)
+    rows_by_unit = {str(row["unit_id"]): row for row in rows}
+    if set(rows_by_unit) != {meta["upstream_unit_id"] for meta in units.values()}:
+        raise ExtensionError("CodeQL triage rows do not match the frozen test-140 unit set")
+
+    def load_raw(name: str) -> dict[str, Mapping[str, Any]]:
+        path = run_dir / name
+        if not path.exists():
+            return {}
+        return {str(record.get("unit_id")): record for record in load_records(path)}
+
+    raw_direct = load_raw("results_direct.jsonl")
+    raw_triage = load_raw("results_triage.jsonl")
+    raw_verify = load_raw("verify/results_verify.jsonl")
+    raw_sha = sha256_file(run_dir / "manifest.json") if (run_dir / "manifest.json").exists() else None
+    run_id = _new_run_id(config)
+    records: list[dict[str, Any]] = []
+    for unit_id in sorted(units, key=lambda value: units[value]["upstream_unit_id"]):
+        meta = units[unit_id]
+        upstream = meta["upstream_unit_id"]
+        row = rows_by_unit[upstream]
+        y_pred = bool(row[condition_key])
+        raw_for_usage: Mapping[str, Any] | None = None
+        if condition in ("direct",):
+            raw_for_usage = raw_direct.get(upstream)
+        elif condition in ("triage_v1", "triage_v2"):
+            raw_for_usage = raw_triage.get(upstream)
+        usage = _next_usage_with_latency(raw_for_usage) if raw_for_usage else None
+        cost_block = _normalize_cost(raw_for_usage, "llm", config) if raw_for_usage else None
+        if condition == "verified":
+            verify_raw = raw_verify.get(upstream)
+            if verify_raw is not None:
+                verify_usage, verify_cost = _next_usage_with_latency(verify_raw), _normalize_cost(verify_raw, "llm", config)
+                usage = _merge_usage(usage, verify_usage)
+                cost_block = _merge_cost(cost_block, verify_cost)
+        if condition in ("text_rule", "cascade", "zero_cost_never_freed", "zero_cost_drop_may_cpp"):
+            usage = None
+            cost_block = None
+        raw_triage_row = raw_triage.get(upstream) or {}
+        raw_direct_row = raw_direct.get(upstream) or {}
+        queries = sorted(
+            (pick(raw_direct_row, "unit.codeql_by_query", default={}) or {}).keys()
+        )
+        reparsed = condition in ("triage_v1", "triage_v2") and not bool(row["raw_triage_valid"])
+        notes = {
+            "direct": "fresh direct replication on the same frozen test-140 units",
+            "triage_v1": "v1 triage prompt; kept unless the model says false_positive",
+            "triage_v2": "v2 triage prompt; two absent-alert 'uncertain' answers were re-parsed from stored content without a new API call",
+            "text_rule": "deterministic text-consistency rule applied to the v2 triage text; no new API call",
+            "verified": "grounded verifier applied to v2 alert decisions; verifier sees the first-pass JSON",
+            "cascade": "verified alert decision, direct prediction on no-alert units",
+            "zero_cost_never_freed": "CodeQL never-freed query only; zero model cost",
+            "zero_cost_drop_may_cpp": "drop C++ may-not-be-freed alerts unless a never-freed alert also fires; zero model cost",
+        }[condition]
+        records.append(
+            _base_record(
+                run_id=run_id,
+                tier="B",
+                track="juliet_cwe401",
+                task="leak_detection",
+                unit_id=unit_id,
+                cluster_id=meta["family"],
+                group_id=meta["group_id"],
+                side=meta["label"],
+                dataset=dataset,
+                method=method,
+                input_block=_input_block(
+                    view="unit",
+                    prompt_sha256=first_str(raw_for_usage or {}, "prompt_sha256"),
+                    context_mode="tool_evidence" if condition not in ("direct",) else "none",
+                    sanitized=True,
+                    sanitizer_version="juliet-deidentified-view-v1",
+                ),
+                label={
+                    "y_true": meta["label"] == "bad",
+                    "cwe": ["CWE-401"],
+                    "label_source": "juliet_intended",
+                    "label_note": None,
+                },
+                status="ok",
+                provenance=_provenance(
+                    raw_path=run_dir,
+                    raw_sha=raw_sha or "",
+                    record_index=None,
+                    note=f"{condition}: copied from producer run; decision recomputed with the producer's own build_rows; not re-run",
+                ),
+                y_pred=y_pred,
+                confidence=as_number(pick(raw_for_usage or {}, "parsed.confidence")) if condition in ("direct", "triage_v1", "triage_v2") else None,
+                rationale=first_str(raw_for_usage or {}, "parsed.reason") if condition in ("direct", "triage_v1", "triage_v2") else None,
+                raw_output_sha256=sha256_text(str(raw_for_usage.get("content"))) if raw_for_usage and raw_for_usage.get("content") else None,
+                usage=usage,
+                cost=cost_block,
+                extensions={
+                    "task_design": design,
+                    "condition": condition,
+                    "codeql_alert": bool(row["codeql_alert"]),
+                    "codeql_status": row.get("codeql_status"),
+                    "codeql_queries": queries,
+                    "alert_verdict": row.get("alert_verdict"),
+                    "leak_present": row.get("leak_present") if isinstance(row.get("leak_present"), bool) else None,
+                    "triage_valid": bool(row["triage_valid"]),
+                    "reparsed_without_api_call": reparsed,
+                    "verify_valid": bool(row["verify_valid"]),
+                    "verifier_model": "mimo-v2.6-flash" if row["verify_valid"] else None,
+                    "decision_source": decision_source,
+                    "prompt_version": first_str(raw_for_usage or {}, "prompt_version"),
+                    "verifier_prompt_version": first_str(raw_verify.get(upstream) or {}, "prompt_version"),
+                    "notes": notes,
+                },
+            )
+        )
+    ext_manifest = _extension_manifest(
+        config=config,
+        design=design,
+        run_role="single",
+        presentation_order=None,
+        pairing_id=None,
+        sibling_run_id=None,
+        claim_manifest=None,
+        fault_manifest=None,
+        tool_registry=None,
+        baseline_run=config.get("baseline_run"),
+    )
+    return _import_single(
+        config=config,
+        design=design,
+        run_id=run_id,
+        tier="B",
+        track="juliet_cwe401",
+        dataset=dataset,
+        method=method,
+        records=records,
+        planned=len(units),
+        ext_manifest=ext_manifest,
+        out_dir=out_dir,
+        force=force,
+        dry_run=dry_run,
+        notes=[f"CodeQL alert triage condition: {condition}", "decision recomputed from stored producer output; not re-run"],
+        validate_kwargs={"unit_map": str(unit_map_path)},
+    )
+
+
+def import_conservative_verification(
+    config: Mapping[str, Any],
+    *,
+    first_pass_path: Path,
+    decisions_path: Path,
+    verifier_results_path: Path,
+    out_dir: Path,
+    force: bool,
+    dry_run: bool,
+) -> dict[str, Any]:
+    design = "conservative_verification"
+    arm = str(config.get("arm") or "")
+    if arm not in ("deepseek_self", "deepseek_cross", "mimo_self", "mimo_cross"):
+        raise ExtensionError(f"unknown conservative arm {arm!r}")
+    method = _method_from_config(config)
+    if method.get("family") != "hybrid":
+        raise ExtensionError("conservative_verification requires config.method.family=hybrid")
+    first_records = load_records(first_pass_path)
+    if len(first_records) != 160:
+        raise ExtensionError(f"first-pass run must have 160 records, got {len(first_records)}")
+    decisions = {
+        int(record["idx"]): record
+        for record in load_records(decisions_path)
+        if str(record.get("arm")) == arm
+    }
+    verifier_results = {
+        int(record["idx"]): record
+        for record in load_records(verifier_results_path)
+        if record.get("idx") is not None
+    }
+    split_path = _config_path(config, "split_path") or (project_root() / "splits" / "test_detection_160.json")
+    dataset = _dataset_meta(
+        config,
+        path=split_path,
+        dataset_id="secvul-split-v1",
+        split_id="secvul-split-v1/test",
+        unit_count=160,
+        group_count=40,
+        label_counts={"vulnerable": 128, "non_vulnerable": 32},
+    )
+    run_id = _new_run_id(config)
+    records: list[dict[str, Any]] = []
+    for first in first_records:
+        unit_id = str(first["unit_id"])
+        idx = int(unit_id.rsplit(":", 1)[1])
+        label = as_bool((first.get("label") or {}).get("y_true"))
+        first_status = str(first.get("status"))
+        first_pred = as_bool((first.get("prediction") or {}).get("y_pred")) if first_status == "ok" else None
+        decision = decisions.get(idx)
+        verifier = verifier_results.get(idx)
+        verifier_status = "not_sent"
+        assessment = None
+        rebuttal_kind = None
+        decision_name = "keep"
+        decision_reason = "negative_unchanged" if first_pred is False else "no_verifier_record"
+        retract = False
+        grounded = None
+        confidence = None
+        if first_status == "ok" and first_pred is True and decision is not None:
+            verifier_status = str(decision.get("status") or "ok")
+            assessment = decision.get("assessment")
+            rebuttal_kind = decision.get("rebuttal_kind")
+            retract = bool((decision.get("decision") or {}).get("retract"))
+            decision_name = "retract" if retract else "keep"
+            decision_reason = str((decision.get("decision") or {}).get("reason") or "")
+            grounded = (decision.get("audit") or {}).get("rebuttal_grounded")
+            confidence = as_number(decision.get("confidence"))
+        final_status = first_status
+        final_pred = first_pred
+        if first_status == "ok" and first_pred is True and decision is not None:
+            final_pred = False if retract else bool(first_pred)
+        usage = first.get("usage")
+        cost = first.get("cost")
+        if verifier is not None:
+            usage = _merge_usage(usage, _normalize_usage(verifier))
+            cost = _merge_cost(cost, _normalize_cost(verifier, "llm", config))
+        records.append(
+            _base_record(
+                run_id=run_id,
+                tier="A",
+                track="secvuleval",
+                task="detection",
+                unit_id=unit_id,
+                cluster_id=str(first.get("cluster_id")),
+                dataset=dataset,
+                method=method,
+                input_block=_input_block(
+                    view="function",
+                    prompt_sha256=first_str(verifier or {}, "prompt_sha256"),
+                    context_mode="none",
+                    sanitized=True,
+                    sanitizer_version="verifier-conservative-2026-11-22",
+                ),
+                label={
+                    "y_true": bool(label),
+                    "cwe": list((first.get("label") or {}).get("cwe") or []),
+                    "label_source": "secvuleval",
+                    "label_note": None,
+                },
+                status=final_status,
+                provenance=_provenance(
+                    raw_path=decisions_path,
+                    raw_sha=sha256_file(decisions_path),
+                    record_index=None,
+                    note=f"{arm}: first pass copied from canonical run; verifier decision joined by idx; not re-run",
+                ),
+                y_pred=final_pred if final_status == "ok" else None,
+                confidence=confidence,
+                rationale=first_str(decision or {}, "reason") if decision else None,
+                usage=usage,
+                cost=cost,
+                error=_normalize_error(verifier or {}, final_status) if final_status != "ok" else None,
+                extensions={
+                    "task_design": design,
+                    "arm": arm,
+                    "claim_model": str(config.get("claim_model") or arm.split("_")[0]),
+                    "verifier_model": str(config.get("verifier_model") or arm.split("_")[-1]),
+                    "first_pass_status": first_status if first_status in ("ok", "schema_invalid", "api_error", "not_run") else "not_run",
+                    "first_pass_y_pred": first_pred,
+                    "verifier_status": verifier_status,
+                    "assessment": assessment if assessment in ("supported", "unsupported", "insufficient") else None,
+                    "rebuttal_kind": rebuttal_kind,
+                    "decision": decision_name,
+                    "decision_reason": decision_reason,
+                    "retract": retract,
+                    "grounded": grounded,
+                    "confidence": confidence,
+                    "analysis_status": "exploratory_post_hoc_test_seen",
+                },
+            )
+        )
+    ext_manifest = _extension_manifest(
+        config=config,
+        design=design,
+        run_role="single",
+        presentation_order=None,
+        pairing_id=None,
+        sibling_run_id=None,
+        claim_manifest=None,
+        fault_manifest=None,
+        tool_registry=None,
+        baseline_run=config.get("baseline_run"),
+    )
+    return _import_single(
+        config=config,
+        design=design,
+        run_id=run_id,
+        tier="A",
+        track="secvuleval",
+        dataset=dataset,
+        method=method,
+        records=records,
+        planned=160,
+        ext_manifest=ext_manifest,
+        out_dir=out_dir,
+        force=force,
+        dry_run=dry_run,
+        notes=[f"conservative verifier arm: {arm}", "exploratory post hoc; test already seen by the first pass"],
+    )
+
+
+def import_diff_pair(
+    config: Mapping[str, Any],
+    *,
+    raw_path: Path,
+    pair_path: Path,
+    position_map_path: Path,
+    out_dir: Path,
+    force: bool,
+    dry_run: bool,
+) -> dict[str, Any]:
+    design = "diff_guided_pair"
+    method = _method_from_config(config)
+    if method.get("family") != "llm":
+        raise ExtensionError("diff_guided_pair requires config.method.family=llm")
+    condition = str(config.get("condition") or "")
+    order = str(config.get("order") or "")
+    if condition not in ("diff", "ctrl"):
+        raise ExtensionError("config.condition must be diff or ctrl")
+    if order not in ("fwd", "rev"):
+        raise ExtensionError("config.order must be fwd or rev")
+    pairs = pair_split_index(pair_path)
+    raw_records = load_records(raw_path)
+    raw_sha = sha256_file(raw_path)
+    raw_by_pair: dict[str, tuple[int, Mapping[str, Any]]] = {}
+    for index, raw in enumerate(raw_records):
+        pair_id = first_str(raw, "pair_id")
+        if not pair_id:
+            raise ExtensionError(f"diff raw record {index + 1}: missing pair_id")
+        if pair_id in raw_by_pair:
+            raise ExtensionError(f"diff raw has duplicate pair_id {pair_id!r}")
+        raw_by_pair[pair_id] = (index, raw)
+    position_data = json.loads(position_map_path.read_text(encoding="utf-8"))
+    assignments = position_data.get("assignments") or {}
+    dataset = _dataset_meta(
+        config,
+        path=pair_path,
+        dataset_id="secvul-split-v1",
+        split_id="secvul-split-v1/test-pairs",
+        unit_count=2 * len(pairs),
+        group_count=len(pairs),
+        label_counts={"vulnerable": len(pairs), "fixed": len(pairs)},
+    )
+    run_id = _new_run_id(config)
+    records: list[dict[str, Any]] = []
+    for pair_id in sorted(pairs):
+        pair = pairs[pair_id]
+        item = raw_by_pair.get(pair_id)
+        raw = item[1] if item else None
+        assignment = assignments.get(pair_id) or {}
+        vulnerable_slot = str(assignment.get("vulnerable_slot") or "")
+        fixed_slot = str(assignment.get("fixed_slot") or "")
+        if {vulnerable_slot, fixed_slot} != {"A", "B"}:
+            raise ExtensionError(f"{pair_id}: position map must assign one vulnerable and one fixed slot")
+        pm = {"A": "vulnerable" if vulnerable_slot == "A" else "fixed", "B": "vulnerable" if vulnerable_slot == "B" else "fixed"}
+        if raw is None:
+            choice = None
+            status = "not_run"
+            selected_slots: list[str] = []
+            confidence = None
+            rationale = None
+            usage = cost = None
+            prompt_sha = diff_sha = None
+            changes_first = False
+            semantic_changes = 0
+            security_relevant = 0
+        else:
+            choice = _normalize_open_choice(pick(raw, "parsed.vulnerable_version", "parsed.open_choice", "vulnerable_version"))
+            status = _status_for_raw(raw, parsed_valid=choice is not None)
+            selected_slots = {"A": ["A"], "B": ["B"], "both": ["A", "B"], "neither": []}.get(choice or "", [])
+            confidence = as_number(pick(raw, "parsed.confidence"))
+            rationale = first_str(raw, "parsed.rationale")
+            usage, cost = _next_pair_usage_cost(raw, config)
+            prompt_sha = first_str(raw, "prompt_sha256")
+            diff_sha = first_str(raw, "prompt.diff_sha256")
+            changes_first = bool(pick(raw, "validation.changes.changes_first", default=False))
+            parsed_changes = pick(raw, "parsed.semantic_changes", default=[])
+            semantic_changes = len(parsed_changes) if isinstance(parsed_changes, list) else 0
+            security_relevant = sum(
+                1 for item_change in (parsed_changes or [])
+                if isinstance(item_change, Mapping) and item_change.get("security_relevant") is True
+            )
+        flagged_sides = {pm[slot] for slot in selected_slots if slot in pm}
+        version_chars = pick(raw or {}, "prompt.version_chars", default={}) or {}
+        lengths = {
+            "vulnerable": as_int(version_chars.get(vulnerable_slot)) if isinstance(version_chars, Mapping) else None,
+            "fixed": as_int(version_chars.get(fixed_slot)) if isinstance(version_chars, Mapping) else None,
+        }
+        if lengths["vulnerable"] is None or lengths["fixed"] is None:
+            lengths = {"vulnerable": None, "fixed": None}
+            longer = None
+        elif lengths["vulnerable"] > lengths["fixed"]:
+            longer = "vulnerable"
+        elif lengths["fixed"] > lengths["vulnerable"]:
+            longer = "fixed"
+        else:
+            longer = "tie"
+        project = first_str(pair.get("vulnerable") or {}, "project")
+        for side in ("vulnerable", "fixed"):
+            y_true = side == "vulnerable"
+            y_pred = None
+            if status == "ok":
+                y_pred = side in flagged_sides
+            records.append(
+                _base_record(
+                    run_id=run_id,
+                    tier="A",
+                    track="secvuleval",
+                    task="pair_detection",
+                    unit_id=canonical_pair_unit_id(pair_id, side),
+                    cluster_id=pair_id,
+                    group_id=pair_id,
+                    side=side,
+                    dataset=dataset,
+                    method=method,
+                    input_block=_input_block(
+                        view="pair",
+                        prompt_sha256=prompt_sha,
+                        context_mode="none",
+                        sanitized=True,
+                        sanitizer_version="pair-diff-2026-11-22.1",
+                    ),
+                    label={
+                        "y_true": y_true,
+                        "cwe": normalize_cwe_list((pair.get("vulnerable") or {}).get("cwe_list")) if side == "vulnerable" else [],
+                        "label_source": "secvuleval",
+                        "label_note": None,
+                    },
+                    status=status,
+                    provenance=_provenance(
+                        raw_path=raw_path,
+                        raw_sha=raw_sha,
+                        record_index=item[0] if item else None,
+                        note=f"{condition}_{order}: one 4-way response encoded as two side records; not re-run",
+                    ),
+                    y_pred=y_pred,
+                    confidence=confidence,
+                    rationale=rationale,
+                    usage=usage if side == "vulnerable" else None,
+                    cost=cost if side == "vulnerable" else None,
+                    extensions={
+                        "pair_design": design,
+                        "condition": condition,
+                        "presentation_order": order,
+                        "open_choice": choice,
+                        "selected_slots": selected_slots,
+                        "position_map": pm,
+                        "change_mode": "diff" if condition == "diff" else "placeholder",
+                        "changes_first": changes_first,
+                        "semantic_changes": semantic_changes,
+                        "security_relevant_changes": security_relevant,
+                        "diff_sha256": diff_sha,
+                        "prompt_sha256": prompt_sha,
+                        "pair_project": project,
+                        "length_chars": lengths,
+                        "longer_side": longer,
+                        "confidence": confidence,
+                        "rationale": rationale,
+                        "notes": "usage/cost recorded once on the vulnerable side; one request per pair",
+                    },
+                )
+            )
+    ext_manifest = _extension_manifest(
+        config=config,
+        design=design,
+        run_role="single",
+        presentation_order=None,
+        pairing_id=None,
+        sibling_run_id=None,
+        claim_manifest=None,
+        fault_manifest=None,
+        tool_registry=None,
+        baseline_run=config.get("baseline_run"),
+    )
+    return _import_single(
+        config=config,
+        design=design,
+        run_id=run_id,
+        tier="A",
+        track="secvuleval",
+        dataset=dataset,
+        method=method,
+        records=records,
+        planned=2 * len(pairs),
+        ext_manifest=ext_manifest,
+        out_dir=out_dir,
+        force=force,
+        dry_run=dry_run,
+        notes=[f"diff-guided pair: {condition}/{order}", "one request per pair encoded as two side records; not re-run"],
+    )
+
+
+def import_coverage_dynamic(
+    config: Mapping[str, Any],
+    *,
+    raw_path: Path,
+    unit_map_path: Path,
+    out_dir: Path,
+    force: bool,
+    dry_run: bool,
+) -> dict[str, Any]:
+    design = "coverage_instrumented_dynamic"
+    method = _method_from_config(config)
+    if method.get("family") != "dynamic":
+        raise ExtensionError("coverage_instrumented_dynamic requires config.method.family=dynamic")
+    split_filter = str(config.get("split") or "test")
+    unit_index = juliet_unit_index(unit_map_path)
+    units: dict[str, dict[str, Any]] = {}
+    for meta in unit_index.values():
+        if split_filter and meta.get("split") != split_filter:
+            continue
+        units[meta["unit_id"]] = meta
+    if len(units) != 140:
+        raise ExtensionError(f"expected 140 test units, got {len(units)}")
+    raw_records = load_records(raw_path)
+    raw_by_unit = {str(record.get("unit_id")): record for record in raw_records}
+    if set(raw_by_unit) != {meta["upstream_unit_id"] for meta in units.values()}:
+        raise ExtensionError("coverage raw does not match the frozen test-140 unit set")
+    dataset = _dataset_meta(
+        config,
+        path=unit_map_path,
+        dataset_id="juliet-cwe401-v1.3-subset-v1",
+        split_id=f"juliet-cwe401-v1.3-subset-v1/{split_filter}",
+        unit_count=len(units),
+        group_count=len({meta["group_id"] for meta in units.values()}),
+        label_counts={
+            "bad": sum(1 for meta in units.values() if meta["label"] == "bad"),
+            "good": sum(1 for meta in units.values() if meta["label"] == "good"),
+        },
+    )
+    run_id = _new_run_id(config)
+    raw_sha = sha256_file(raw_path)
+    records: list[dict[str, Any]] = []
+    for unit_id in sorted(units, key=lambda value: units[value]["upstream_unit_id"]):
+        meta = units[unit_id]
+        raw = raw_by_unit[meta["upstream_unit_id"]]
+        default_mode = (raw.get("modes") or {}).get("default") or {}
+        default_decision = str(default_mode.get("decision") or raw.get("decision") or "")
+        union_decision = str(raw.get("decision") or "")
+        tier = str(raw.get("coverage_tier") or "unknown")
+        tier_effective = str(raw.get("coverage_tier_effective") or tier)
+        coverage_union = raw.get("coverage_union") or {}
+        leak = default_decision == "leak"
+        if raw.get("compile_error"):
+            status = "compile_error"
+        elif leak:
+            status = "ok"
+        else:
+            status = "inconclusive"
+        if leak:
+            coverage_class = "leak"
+        elif raw.get("compile_error"):
+            coverage_class = "compile_error"
+        elif raw.get("entry_executed"):
+            coverage_class = "covered_clean"
+        else:
+            coverage_class = "uncovered"
+        line_pct = as_number(coverage_union.get("line_pct"))
+        effective_line_pct = as_number(coverage_union.get("effective_line_pct"))
+        branch_pct = as_number(coverage_union.get("branch_pct"))
+        runtime_ms = as_number(raw.get("runtime_ms"))
+        records.append(
+            _base_record(
+                run_id=run_id,
+                tier="B",
+                track="juliet_cwe401",
+                task="leak_detection",
+                unit_id=unit_id,
+                cluster_id=meta["family"],
+                group_id=meta["group_id"],
+                side=meta["label"],
+                dataset=dataset,
+                method=method,
+                input_block=_input_block(
+                    view="unit",
+                    prompt_sha256=None,
+                    context_mode="dynamic_trace",
+                    sanitized=False,
+                    source_sha256=None,
+                ),
+                label={
+                    "y_true": meta["label"] == "bad",
+                    "cwe": ["CWE-401"],
+                    "label_source": "juliet_intended",
+                    "label_note": None,
+                },
+                status=status,
+                provenance=_provenance(
+                    raw_path=raw_path,
+                    raw_sha=raw_sha,
+                    record_index=None,
+                    note="coverage-instrumented dynamic run; clean is inconclusive, never TN",
+                ),
+                y_pred=True if leak else None,
+                coverage={
+                    "unit_executed": bool(raw.get("entry_executed")),
+                    "target_function_entered": bool(raw.get("entry_executed")),
+                    "line_coverage": line_pct,
+                    "branch_coverage": branch_pct,
+                    "allocation_site_executed": None,
+                    "free_site_executed": None,
+                    "coverage_source": "gcov",
+                    "notes": "gcc --coverage + gcov JSON; clean units are line-complete at most and never branch-complete",
+                },
+                cost={
+                    "usd": None,
+                    "wall_s": runtime_ms / 1000.0 if runtime_ms is not None else None,
+                    "cpu_s": None,
+                    "peak_rss_mb": None,
+                    "currency": "USD",
+                    "cost_basis": "local_compute",
+                    "pricing_snapshot": None,
+                    "note": "local gcc/gcov run; USD not applicable",
+                },
+                extensions={
+                    "task_design": design,
+                    "coverage_tier": tier if tier in ("branch_complete", "line_complete", "partial", "not_executed", "no_coverage", "coverage_error") else "coverage_error",
+                    "coverage_tier_effective": tier_effective if tier_effective in ("branch_complete", "line_complete", "partial", "not_executed", "no_coverage", "coverage_error") else "coverage_error",
+                    "coverage_class": coverage_class if coverage_class in ("leak", "covered_clean", "uncovered", "compile_error") else "uncovered",
+                    "line_pct": line_pct,
+                    "effective_line_pct": effective_line_pct,
+                    "branch_pct": branch_pct,
+                    "lines_hit": as_int(coverage_union.get("lines_hit")),
+                    "lines_total": as_int(coverage_union.get("lines_total")),
+                    "branches_hit": as_int(coverage_union.get("branches_hit")),
+                    "branches_total": as_int(coverage_union.get("branches_total")),
+                    "entry_executed": bool(raw.get("entry_executed")),
+                    "evidence_modes": list(raw.get("evidence_modes") or []),
+                    "primary_evidence": raw.get("primary_evidence"),
+                    "operational_y_pred": leak,
+                    "clean_proven": False,
+                    "mode_outcomes": {
+                        str(mode): str((payload or {}).get("outcome") or (payload or {}).get("status") or "")
+                        for mode, payload in (raw.get("modes") or {}).items()
+                        if isinstance(payload, Mapping)
+                    },
+                    "notes": f"default-mode decision={default_decision}; union decision={union_decision}; line coverage alone does not prove a clean verdict",
+                },
+            )
+        )
+    ext_manifest = _extension_manifest(
+        config=config,
+        design=design,
+        run_role="single",
+        presentation_order=None,
+        pairing_id=None,
+        sibling_run_id=None,
+        claim_manifest=None,
+        fault_manifest=None,
+        tool_registry=None,
+        baseline_run=config.get("baseline_run"),
+    )
+    return _import_single(
+        config=config,
+        design=design,
+        run_id=run_id,
+        tier="B",
+        track="juliet_cwe401",
+        dataset=dataset,
+        method=method,
+        records=records,
+        planned=len(units),
+        ext_manifest=ext_manifest,
+        out_dir=out_dir,
+        force=force,
+        dry_run=dry_run,
+        notes=["coverage-instrumented dynamic run", "clean imported as inconclusive, not TN"],
+        validate_kwargs={"unit_map": str(unit_map_path)},
+    )
+
+
+def import_interpretable_baseline(
+    config: Mapping[str, Any],
+    *,
+    raw_path: Path,
+    split_path: Path,
+    out_dir: Path,
+    force: bool,
+    dry_run: bool,
+) -> dict[str, Any]:
+    design = "interpretable_baseline"
+    method = _method_from_config(config)
+    if method.get("family") != "static":
+        raise ExtensionError("interpretable_baseline requires config.method.family=static")
+    method_name = str(config.get("baseline_method") or "")
+    if not method_name:
+        raise ExtensionError("config.baseline_method is required")
+    split = json.loads(split_path.read_text(encoding="utf-8"))
+    samples = split.get("samples") if isinstance(split, dict) else None
+    if not isinstance(samples, list):
+        raise ExtensionError(f"{split_path}: expected a split object with a samples array")
+    raw_records = load_records(raw_path)
+    raw_by_idx = {
+        int(record["idx"]): record
+        for record in raw_records
+        if str(record.get("method")) == method_name and str(record.get("split")) == "test"
+    }
+    if len(raw_by_idx) != len(samples):
+        raise ExtensionError(f"baseline predictions for {method_name}: {len(raw_by_idx)} records for {len(samples)} samples")
+    dataset = _dataset_meta(
+        config,
+        path=split_path,
+        dataset_id="secvul-split-v1",
+        split_id="secvul-split-v1/test",
+        unit_count=len(samples),
+        group_count=len({str(sample.get("project")) for sample in samples}),
+        label_counts={
+            "vulnerable": sum(1 for sample in samples if sample.get("is_vulnerable")),
+            "non_vulnerable": sum(1 for sample in samples if not sample.get("is_vulnerable")),
+        },
+    )
+    run_id = _new_run_id(config)
+    raw_sha = sha256_file(raw_path)
+    records: list[dict[str, Any]] = []
+    for sample in sorted(samples, key=lambda item: int(item["idx"])):
+        idx = int(sample["idx"])
+        raw = raw_by_idx[idx]
+        y_true = bool(sample.get("is_vulnerable"))
+        y_pred = as_bool(raw.get("pred"))
+        if y_pred is None:
+            raise ExtensionError(f"baseline prediction for idx {idx} is not binary")
+        records.append(
+            _base_record(
+                run_id=run_id,
+                tier="A",
+                track="secvuleval",
+                task="detection",
+                unit_id=f"secvul:det:{idx}",
+                cluster_id=str(sample.get("project")),
+                dataset=dataset,
+                method=method,
+                input_block=_input_block(
+                    view="function",
+                    prompt_sha256=None,
+                    context_mode="none",
+                    sanitized=True,
+                    sanitizer_version="lexical-features-2026-11-22",
+                ),
+                label={
+                    "y_true": y_true,
+                    "cwe": normalize_cwe_list(sample.get("cwe_list")),
+                    "label_source": "secvuleval",
+                    "label_note": None,
+                },
+                status="ok",
+                provenance=_provenance(
+                    raw_path=raw_path,
+                    raw_sha=raw_sha,
+                    record_index=None,
+                    note=f"{method_name}: copied from producer predictions; no API call",
+                ),
+                y_pred=y_pred,
+                confidence=as_number(raw.get("score")),
+                cost={
+                    "usd": None,
+                    "wall_s": None,
+                    "cpu_s": None,
+                    "peak_rss_mb": None,
+                    "currency": "USD",
+                    "cost_basis": "local_compute",
+                    "pricing_snapshot": None,
+                    "note": "no API calls; local compute not measured",
+                },
+                extensions={
+                    "task_design": design,
+                    "baseline_family": "logistic_regression" if method_name.startswith("lr_") else "rule",
+                    "method": method_name,
+                    "features": list(config.get("features") or []),
+                    "rule": config.get("rule"),
+                    "threshold": config.get("threshold"),
+                    "score": as_number(raw.get("score")),
+                    "dev_selected": bool(config.get("dev_selected", False)),
+                    "test_tuned": False,
+                    "cost_usd": 0.0,
+                    "note": "lexical baseline; not a static analyzer; no API calls",
+                },
+            )
+        )
+    ext_manifest = _extension_manifest(
+        config=config,
+        design=design,
+        run_role="single",
+        presentation_order=None,
+        pairing_id=None,
+        sibling_run_id=None,
+        claim_manifest=None,
+        fault_manifest=None,
+        tool_registry=None,
+        baseline_run=config.get("baseline_run"),
+    )
+    return _import_single(
+        config=config,
+        design=design,
+        run_id=run_id,
+        tier="A",
+        track="secvuleval",
+        dataset=dataset,
+        method=method,
+        records=records,
+        planned=len(samples),
+        ext_manifest=ext_manifest,
+        out_dir=out_dir,
+        force=force,
+        dry_run=dry_run,
+        notes=[f"interpretable baseline: {method_name}", "no API call; predictions copied"],
+    )
+
+
+def _dispatch_next_design(
+    design: str,
+    config: Mapping[str, Any],
+    *,
+    out_path: Path,
+    force: bool,
+    dry_run: bool,
+) -> dict[str, Any]:
+    if design == "codeql_alert_triage":
+        run_dir = _config_path(config, "analysis_run", required=True)
+        unit_map = _config_path(config, "unit_map", required=True)
+        assert run_dir is not None and unit_map is not None
+        return import_alert_triage(
+            config, run_dir=run_dir, unit_map_path=unit_map, out_dir=out_path, force=force, dry_run=dry_run
+        )
+    if design == "conservative_verification":
+        first = _config_path(config, "first_pass", required=True)
+        decisions = _config_path(config, "decisions", required=True)
+        verifier = _config_path(config, "verifier_results", required=True)
+        assert first is not None and decisions is not None and verifier is not None
+        return import_conservative_verification(
+            config,
+            first_pass_path=first,
+            decisions_path=decisions,
+            verifier_results_path=verifier,
+            out_dir=out_path,
+            force=force,
+            dry_run=dry_run,
+        )
+    if design == "diff_guided_pair":
+        raw = _config_path(config, "raw", required=True)
+        pair_path = _config_path(config, "pair_split", required=True)
+        position_map = _config_path(config, "position_map", required=True)
+        assert raw is not None and pair_path is not None and position_map is not None
+        return import_diff_pair(
+            config,
+            raw_path=raw,
+            pair_path=pair_path,
+            position_map_path=position_map,
+            out_dir=out_path,
+            force=force,
+            dry_run=dry_run,
+        )
+    if design == "coverage_instrumented_dynamic":
+        raw = _config_path(config, "raw", required=True)
+        unit_map = _config_path(config, "unit_map", required=True)
+        assert raw is not None and unit_map is not None
+        return import_coverage_dynamic(
+            config, raw_path=raw, unit_map_path=unit_map, out_dir=out_path, force=force, dry_run=dry_run
+        )
+    if design == "interpretable_baseline":
+        raw = _config_path(config, "raw", required=True)
+        split = _config_path(config, "split_path", required=True)
+        assert raw is not None and split is not None
+        return import_interpretable_baseline(
+            config, raw_path=raw, split_path=split, out_dir=out_path, force=force, dry_run=dry_run
+        )
+    raise ExtensionError(f"design {design!r} is not a next-iteration batch design")
+
+
+def import_next_batch(
+    batch_path: Path,
+    *,
+    force: bool,
+    dry_run: bool,
+    jsonschema: bool,
+) -> dict[str, Any]:
+    batch = json.loads(batch_path.read_text(encoding="utf-8"))
+    runs = batch.get("runs")
+    if not isinstance(runs, list) or not runs:
+        raise ExtensionError(f"{batch_path}: expected a non-empty runs array")
+    results: list[dict[str, Any]] = []
+    for index, item in enumerate(runs, start=1):
+        if not isinstance(item, Mapping):
+            raise ExtensionError(f"{batch_path}: runs[{index}] must be an object")
+        design = str(item.get("design") or "")
+        raw_config = item.get("config")
+        if not isinstance(raw_config, Mapping):
+            raise ExtensionError(f"{batch_path}: runs[{index}].config must be an object")
+        config = json.loads(json.dumps(raw_config))
+        config["_config_path"] = str(batch_path)
+        config["jsonschema"] = bool(jsonschema)
+        out_value = item.get("out") or config.get("out")
+        if not out_value:
+            raise ExtensionError(f"{batch_path}: runs[{index}] is missing out")
+        out_path = resolve_path(str(out_value), [project_root()])
+        summary = _dispatch_next_design(
+            design, config, out_path=out_path, force=force, dry_run=dry_run
+        )
+        results.append(summary)
+    return {"batch": str(batch_path), "runs": results, "count": len(results)}
+
+
 def _import_single(
     *,
     config: Mapping[str, Any],
@@ -2963,6 +4035,12 @@ def main(argv: list[str] | None = None) -> int:
         "new_static_tool",
         "enhanced_dynamic",
         "hybrid_enhanced_dynamic",
+        "codeql_alert_triage",
+        "conservative_verification",
+        "diff_guided_pair",
+        "coverage_instrumented_dynamic",
+        "interpretable_baseline",
+        "next_iteration_batch",
     ])
     parser.add_argument("--config", required=True, help="JSON import config")
     parser.add_argument("--raw", help="producer raw JSONL (overrides config.raw)")
@@ -2979,6 +4057,19 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     try:
+        if args.design == "next_iteration_batch":
+            summary = import_next_batch(
+                Path(args.config).resolve(),
+                force=args.force,
+                dry_run=args.dry_run,
+                jsonschema=args.jsonschema,
+            )
+            sys.stdout.write(json.dumps(summary, ensure_ascii=False, indent=2, allow_nan=False) + "\n")
+            if args.dry_run:
+                sys.stderr.write("dry run: staged output validated and removed\n")
+            else:
+                sys.stderr.write(f"wrote {summary.get('count')} run(s)\n")
+            return 0
         config = load_config(args.config)
         if args.jsonschema:
             config["jsonschema"] = True
@@ -3000,6 +4091,23 @@ def main(argv: list[str] | None = None) -> int:
         out_path = Path(out_value).expanduser()
         if not out_path.is_absolute():
             out_path = (Path(config["_config_path"]).parent / out_path).resolve()
+
+        if args.design in (
+            "codeql_alert_triage",
+            "conservative_verification",
+            "diff_guided_pair",
+            "coverage_instrumented_dynamic",
+            "interpretable_baseline",
+        ):
+            summary = _dispatch_next_design(
+                args.design, config, out_path=out_path, force=args.force, dry_run=args.dry_run
+            )
+            sys.stdout.write(json.dumps(summary, ensure_ascii=False, indent=2, allow_nan=False) + "\n")
+            if args.dry_run:
+                sys.stderr.write("dry run: staged output validated and removed\n")
+            else:
+                sys.stderr.write(f"wrote {summary.get('out_dir')}\n")
+            return 0
 
         if args.design == "evidence_retraction":
             first_path = _config_path(config, "first_pass_run", required=True)

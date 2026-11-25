@@ -10,12 +10,12 @@
 
 **发布状态：PUBLISHED（私有仓库已创建并推送：<https://github.com/tzhazuma/cs224proj>）。**
 
-- **审计分两代。** 旧一轮 `audit/final_audit.md`（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**，只覆盖 v2/postleakfix 工作树；它**不含** 2026-11-13/14 的 `pair_debias`、`evidence_verify`、`dynamic_enhanced`、`hybrid_dynamic_enhanced`、CodeQL、`analysis/schema_recovery` 与 `benchmark/extensions`。**最新一轮审计：[`audit/latest_audit.md`](../audit/latest_audit.md)，Overall `PASS`：56 PASS / 0 FAIL / 0 WARN（2026-11-14 最近重跑）**；发布门禁通过。先前的 A6/E6/F4/G3 已修复，保留简短历史说明见 §2.1。
+- **审计分三代。** 旧一轮 `audit/final_audit.md`（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 1 WARN / 1 INFO，Overall `PASS_WITH_WARNINGS`**，只覆盖 v2/postleakfix 工作树；它**不含** 2026-11-13/14 的 `pair_debias`、`evidence_verify`、`dynamic_enhanced`、`hybrid_dynamic_enhanced`、CodeQL、`analysis/schema_recovery` 与 `benchmark/extensions`。**2026-11-14 审计：[`audit/latest_audit.md`](../audit/latest_audit.md)，Overall `PASS`：56 PASS / 0 FAIL / 0 WARN**；先前的 A6/E6/F4/G3 已修复。**2026-11-22 下一轮审计：[`audit/next_iteration_audit.md`](../audit/next_iteration_audit.md)**，覆盖 `interpretable_baseline`、`pair_diff`、`codeql_triage`、`verifier_conservative`、`dynamic_coverage` 与 `research/next_iteration_rationale.md`；当前为 **40 PASS / 0 FAIL / 1 WARN，Overall `PASS_WITH_WARNINGS`（41 checks）**；发布门禁只认当前轮次的 `Overall`/`Checks`，FAIL=0 但 WARN 必须保留。
 - 本地项目已经是 Git 仓库：`origin` 指向 `https://github.com/tzhazuma/cs224proj.git`，当前分支 `main` 跟踪 `origin/main`；本次文档同步**没有执行 `git commit`/`git push`，也没有执行 `gh`**。
 - `gh` 在首次预检时不在 `PATH`；`~/.config/gh` 已有登录配置（当时只检查存在性，**没有读取或打印任何认证文件**）。本次未重新验证 `gh` 安装状态；重建/换机时按第 4 节安装。
-- 按 `.gitignore` 估算的待发布内容（2026-11-14）：**约 10,836 个文件 / 333.3 MiB**；最大单文件仍是 40,554,155 字节（`traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`），**没有 ≥100 MB 的文件**。新增目录已计入：`pair_debias` 38 MB、`dynamic_enhanced` 29 MB、`static_extended` 15 MB、`benchmark/extensions` 14 MB、`evidence_verify` 9 MB、`hybrid_dynamic_enhanced` 3.3 MB、`analysis/schema_recovery` 0.6 MB。最终以暂存区 `git ls-files` 为准。
+- 按 `.gitignore` 估算的待发布内容（2026-11-22）：在 2026-11-14 的 **10,836 个文件 / 333.3 MiB** 基础上新增约 **170 MB**（`du` 粗估：`pair_diff` 65 MB、`dynamic_coverage` 52 MB、`benchmark/extensions/runs` 33 MB、`codeql_triage` 10 MB、`verifier_conservative` 8 MB、`interpretable_baseline` 0.85 MB；`dynamic_coverage/runs/*/build/` 等可再生产物被忽略）。最大单文件仍是 40,554,155 字节（`traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl`），**没有 ≥100 MB 的文件**。最终以暂存区 `git ls-files` 为准。
 - 本文保留从零重建/复现发布的完整步骤；**当前仓库已存在，不要重复执行 §8.2 的 `gh repo create`**。日常更新只需 `git add`/`commit`/`push`（按第 6 节检查后）。
-- **2026-11-14 的 README/docs 与新实验尚未提交/推送**；本目录文档同步没有执行 `git`/`gh`，由主代理统一发布。
+- **2026-11-22 的 README/docs 与本轮五个新实验尚未提交/推送**；本目录文档同步没有执行 `git`/`gh`，由主代理统一发布。
 
 本文的命令全部在 **WSL** 中执行，不要用 Windows 的 Git Bash 初始化这个仓库，避免权限位和换行符混用。
 
@@ -26,7 +26,7 @@
 本流程只创建版本控制元数据和 GitHub 私有仓库，**不重跑实验、不修改或覆盖任何原始实验结果**。
 
 - 不运行会改写 `requests.jsonl`、`results.jsonl`、`manifest.json`、`metrics.json`、报告或冻结数据的脚本。
-- 如确需重跑审计/实验，必须写入新的重跑目录（旧审计脚本重跑会覆盖 `audit/final_audit.{json,md}`，最新审计脚本写 `audit/latest_audit.{json,md}`；旧文件先备份到仓库外；其它实验写到新的 `repro_*` 目录），不得覆盖原始结果；这属于对应负责人的范围，不在本文执行。
+- 如确需重跑审计/实验，必须写入新的重跑目录（旧审计脚本重跑会覆盖 `audit/final_audit.{json,md}`；2026-11-14 脚本写 `audit/latest_audit.{json,md}`；2026-11-22 审计写 `audit/next_iteration_audit.{json,md}`；旧文件先备份到仓库外；其它实验写到新的 `repro_*` 目录），不得覆盖原始结果；这属于对应负责人的范围，不在本文执行。
 - **不读取、不复制、不打印** `~/.config/gh` 下的认证文件；不运行 `gh auth token`；不把 token 写进 remote URL、命令行、日志、截图或提交信息。
 - 不使用 `git add -f` 绕过 `.gitignore`。缓存、原始 Juliet 树、逐 case 二进制、请求缓存和盲评 `private/` 都不进仓库。
 - `.gitignore` 只影响未跟踪文件；已经被 `git add` 的密钥不会因为补一条 ignore 而消失，必须从索引移除（`git reset` / `git rm --cached`）。
@@ -40,7 +40,7 @@
 
 ### 2.1 Audit must-fix 清零
 
-审计分两代。旧一轮（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO**，Overall **`PASS_WITH_WARNINGS`**，must-fix 为空，只覆盖 v2/postleakfix。**最新一轮：[`audit/latest_audit.md`](../audit/latest_audit.md)，Overall `PASS`：56 PASS / 0 FAIL / 0 WARN（2026-11-14 最近重跑）**，发布门禁通过。先前的 A6（缓存复用披露）、E6（F1(V) 标注）、F4（schema 成本价卡）、G3（文献快照时效）已修复；下面保留旧一轮 5 个 must-fix 与新增检查的关闭证据：
+审计分三代。旧一轮（2026-11-11T21:45:48Z）为 **58 PASS / 0 FAIL / 1 WARN / 1 INFO**，Overall **`PASS_WITH_WARNINGS`**，must-fix 为空，只覆盖 v2/postleakfix。**2026-11-14 审计：[`audit/latest_audit.md`](../audit/latest_audit.md)，Overall `PASS`：56 PASS / 0 FAIL / 0 WARN**。**2026-11-22 下一轮审计：[`audit/next_iteration_audit.md`](../audit/next_iteration_audit.md)**，覆盖五个新目录与 `research/next_iteration_rationale.md`；当前为 **40 PASS / 0 FAIL / 1 WARN（`PASS_WITH_WARNINGS`）**，发布门禁只认当前轮次。先前的 A6（缓存复用披露）、E6（F1(V) 标注）、F4（schema 成本价卡）、G3（文献快照时效）已修复；下面保留旧一轮 5 个 must-fix 与新增检查的关闭证据：
 
 | ID | 区域 | 修复与证据 | 状态 |
 | --- | --- | --- | --- |
@@ -52,7 +52,7 @@
 | L5 | v1 对照保留 | `hybrid_v1` 与 pre-leakfix 的 2 个 juliet_llm run 原样保留，作为泄漏对照；审计确认未被改写 | 已通过 |
 | I7 | normalized 成本 | 79 个 run / 9,584 条请求；verification PASS，0 peak rows，0 changed source artifacts | 已通过 |
 
-先复核旧一轮（历史证据）；**发布门禁只认最新一轮**：
+先复核旧一轮（历史证据）；**发布门禁只认当前轮次**：
 
 ```bash
 cd /mnt/c/Users/tzh03/Downloads/cs224proj
@@ -62,15 +62,21 @@ grep -n '^Checks:' audit/final_audit.md
 
 旧一轮应看到 `Overall: **PASS_WITH_WARNINGS**`、`Checks: 58 PASS, 0 FAIL, 3 WARN, 1 INFO.`。由于 B5/D5/F4 是 WARN，**不要为了得到纯 `PASS` 删除 WARN 说明**；若出现新的 FAIL，停止。
 
-最新一轮以审计代理给出的路径为准：
+当前轮次以审计代理给出的路径为准：
 
 ```bash
+# 2026-11-14
 LATEST_AUDIT="audit/latest_audit.md"
 grep -n '^Overall:' "$LATEST_AUDIT"
 grep -n '^Checks:' "$LATEST_AUDIT"
+
+# 2026-11-22
+NEXT_AUDIT="audit/next_iteration_audit.md"
+grep -n '^Overall:' "$NEXT_AUDIT"
+grep -n '^Checks:' "$NEXT_AUDIT"
 ```
 
-当前 `audit/latest_audit.md` 的 `Overall` 是 **PASS**、FAIL=0、WARN=0；先前的 A6/E6/F4/G3 已修复（历史说明见 §2.1）。发布前仍应重跑审计确认工作树未变。新目录的发布范围至少包括：`pair_debias/`、`evidence_verify/`、`dynamic_enhanced/`、`hybrid_dynamic_enhanced/`、`static_extended/`、`analysis/schema_recovery/`、`benchmark/extensions/`、`docs/LITERATURE.md`、三份 `research/latest_*.md`，以及 `report/report_latest_zh.pdf`、`report/report_latest_zh.tex`、`report/references_latest.bib`、`report/latest_results_summary.md`、`benchmark/results/EXTENSIONS.md` 与 `benchmark/results/extension_summary.json`。
+2026-11-14 的 `audit/latest_audit.md` 是 **PASS**、FAIL=0、WARN=0；2026-11-22 的 `audit/next_iteration_audit.md` 以 `Overall:`/`Checks:` 行为准。发布前仍应重跑当前轮次审计确认工作树未变。发布范围至少包括：`pair_debias/`、`evidence_verify/`、`dynamic_enhanced/`、`hybrid_dynamic_enhanced/`、`static_extended/`、`analysis/schema_recovery/`、`benchmark/extensions/`、`interpretable_baseline/`、`pair_diff/`、`codeql_triage/`、`verifier_conservative/`、`dynamic_coverage/`、`docs/LITERATURE.md`、三份 `research/latest_*.md`、`research/next_iteration_rationale.md`，以及 `report/report_latest_zh.pdf`、`report/report_latest_zh.tex`、`report/report_next_zh.pdf`、`report/report_next_zh.tex`、`report/references_latest.bib`、`report/latest_results_summary.md`、`benchmark/results/EXTENSIONS.md`、`benchmark/results/extension_summary.json`、`benchmark/results/NEXT_ITERATION.md`、`benchmark/results/next_iteration_summary.json`、`audit/next_iteration_audit.md` 与 `audit/next_iteration_audit.json`。
 
 - B5、D5、F4 是 WARN，不阻断发布，但不要删除它们在 README/报告中的说明。
 - 审计脚本已切到 **v2 / postleakfix** 官方产物（`HYBRID_OFFICIAL=hybrid_v2`、`JULIET_OFFICIAL_RUNS=*_postleakfix`），并把 v1/pre-leakfix 作为历史对照检查；重跑时不需要再改脚本。
@@ -98,7 +104,7 @@ grep -n '^Checks:' "$LATEST_AUDIT"
 | Git 身份 | `user.name`、`user.email` 已设置（未打印具体值） |
 | `/mnt/c` 的 `core.filemode` | 自动探测为 `false`；本文仍显式设置 |
 | 符号链接 / 嵌套 `.git` | 未发现 |
-| 可发布文件 | 约 10,836 个 / 333.3 MiB（2026-11-14 估算；以 `git ls-files` 为准） |
+| 可发布文件 | 约 10,836 个 / 333.3 MiB（2026-11-14 估算）+ 2026-11-22 新增约 170 MB；以 `git ls-files` 为准 |
 | 最大单文件 | 40,554,155 B，`traditional/dynamic/runs/cwe401_juliet_v1_3_asan_valgrind/results.jsonl` |
 | ≥100 MB 文件 | 0 |
 | 密钥样式文件名/内容 | 只打印文件名的扫描未发现命中 |
@@ -410,7 +416,7 @@ command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified
 - `repair_eval/packages/*/private/` 被跟踪；
 - `juliet/cache/`、`juliet/raw/`、`juliet/build/`、`*/cases/`、`*/support/`、`**/runs/*/cache/` 被跟踪；
 - 大量 `100755` 权限位；
-- 审计 FAIL 未清零（发布时以 `audit/latest_audit.md` 的 FAIL 数为准；当前为 0 FAIL、0 WARN）。
+- 审计 FAIL 未清零（发布时以 `audit/next_iteration_audit.md` 的 FAIL 数为准；2026-11-22 为 0 FAIL、1 WARN，`PASS_WITH_WARNINGS`）。
 
 ---
 
@@ -555,11 +561,11 @@ gh --version
 
 | 字段 | 值 |
 | --- | --- |
-| UTC 时间 | 2026-11-12 首次发布；2026-11-14 文档/实验同步待主流程推送（本文未执行 git/gh） |
+| UTC 时间 | 2026-11-12 首次发布；2026-11-14 与 2026-11-22 文档/实验同步待主流程推送（本文未执行 git/gh） |
 | commit SHA | 见仓库 `HEAD`（本文档不复制 SHA，避免与后续提交不一致） |
 | 仓库 URL | <https://github.com/tzhazuma/cs224proj> |
 | visibility | `PRIVATE` |
-| audit 时间 / Overall | 旧一轮 2026-11-11T21:45:48Z / `PASS_WITH_WARNINGS`（58 PASS / 0 FAIL / 3 WARN / 1 INFO）；**最新一轮 2026-11-14 最近重跑 / `PASS`（56 PASS / 0 FAIL / 0 WARN）** |
+| audit 时间 / Overall | 旧一轮 2026-11-11T21:45:48Z / `PASS_WITH_WARNINGS`（58 PASS / 0 FAIL / 1 WARN / 1 INFO）；2026-11-14 / `PASS`（56 PASS / 0 FAIL / 0 WARN）；**2026-11-22 / `PASS_WITH_WARNINGS`（40 PASS / 0 FAIL / 1 WARN，41 checks）** |
 | gh 版本 | 首次预检为 v2.103.3（临时目录校验；当前安装状态未重新验证） |
 | 操作者 | 仓库维护者 |
 
@@ -624,7 +630,9 @@ gh repo edit cs224proj --visibility private --accept-visibility-change-consequen
 ## 11. 最终检查清单
 
 - [x] 旧一轮 `audit/final_audit.md` 为 **58 PASS / 0 FAIL / 3 WARN / 1 INFO**、Overall `PASS_WITH_WARNINGS`；C3/D6/I3/I5/L4 全部关闭
-- [x] 最新一轮审计 `audit/latest_audit.md` 已落盘，为 **PASS**（56 PASS / 0 FAIL / 0 WARN，2026-11-14 最近重跑）；覆盖六个新结果组（pair_debias、evidence_verify、dynamic_enhanced、hybrid_dynamic_enhanced、static_extended、schema_recovery）；先前的 A6/E6/F4/G3 已修复，历史说明保留
+- [x] 2026-11-14 审计 `audit/latest_audit.md` 已落盘，为 **PASS**（56 PASS / 0 FAIL / 0 WARN）；覆盖六个新结果组（pair_debias、evidence_verify、dynamic_enhanced、hybrid_dynamic_enhanced、static_extended、schema_recovery）；先前的 A6/E6/F4/G3 已修复，历史说明保留
+- [x] 2026-11-22 审计 `audit/next_iteration_audit.md` 已落盘，为 **PASS_WITH_WARNINGS**（40 PASS / 0 FAIL / 1 WARN，41 checks）；覆盖 `interpretable_baseline`、`pair_diff`、`codeql_triage`、`verifier_conservative`、`dynamic_coverage` 与 `research/next_iteration_rationale.md`；3 个 WARN 见根 README §8.35
+- [ ] 本轮新增文件已纳入发布范围：`report/report_next_zh.pdf`、`report/report_next_zh.tex`、`report/next_results_summary.md`、`benchmark/results/NEXT_ITERATION.md`、`benchmark/results/next_iteration_summary.json`、`audit/next_iteration_audit.md`、`audit/next_iteration_audit.json`，以及五个新目录的 README/REPORT/结果
 - [x] `audit/run_final_audit.py` 已按 `hybrid_v2` / `*_postleakfix` 官方产物运行（脚本已切到 v2，无需再改）
 - [x] B5/D5/F4 等 WARN 的说明仍保留在报告中
 - [ ] `gh --version` 正常，`gh auth status` 返回 0（本次未执行 `gh`，未重新验证）

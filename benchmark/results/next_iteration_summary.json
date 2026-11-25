@@ -1,0 +1,3041 @@
+{
+  "schema_version": "benchmark-next-iteration-summary-v1",
+  "generated_at": "2026-11-22T14:01:12Z",
+  "protocol_version": "1.0.0",
+  "extension_version": "0.3.0",
+  "registry_version": "2026-11-22.1",
+  "scope": {
+    "designs": [
+      "codeql_alert_triage",
+      "conservative_verification",
+      "diff_guided_pair",
+      "coverage_instrumented_dynamic",
+      "interpretable_baseline"
+    ],
+    "canonical_runs": 30,
+    "pooling": "none; each design has its own denominator and primary endpoint",
+    "main_tables_modified": false
+  },
+  "source_artifacts": {
+    "codeql_triage/benchmark_export.json": "6cc734be3b67e6e36d5e885725eec4c73129cabce6bd01256676ba491f8728bd",
+    "verifier_conservative/analysis/metrics.json": "fe9f245e3eddd3b081cffaac623afa7d14919a06ac38a64ad1f3c549ed3e42d8",
+    "pair_diff/results/benchmark_export.json": "3b4ce28b915eefa19a1b3842ce91ef30527a1669b5ef71dc02311e5da50edaef",
+    "dynamic_coverage/runs/test140_coverage_v1/metrics.json": "32c292b0783e1fe572ec4e4450fa2a03f1381e3d18e11df16f735cc6613b07b5",
+    "interpretable_baseline/results/main_20261122c/metrics.json": "a3374d1debe9bbd3a9a6959c66b44564400a47032e52d0cd3d4fa81a75c418b6"
+  },
+  "designs": {
+    "codeql_alert_triage": {
+      "design": "codeql_alert_triage",
+      "title": "CodeQL CWE-401 alert triage (MiMo v2, test-140)",
+      "primary_metric": "macro_f1",
+      "runs": [
+        {
+          "run_id": "next_codeql_triage_mimo_direct_v2_20261122",
+          "condition": "direct",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+          "records": 140,
+          "confusion": {
+            "tp": 69,
+            "fp": 5,
+            "tn": 65,
+            "fn": 1
+          },
+          "macro_f1": 0.9571078431372549,
+          "mcc": 0.915782091251428,
+          "precision": 0.9324324324324325,
+          "recall": 0.9857142857142858,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": 0.0030214576,
+            "usd_unknown_records": 0,
+            "usd_complete": true,
+            "wall_s_sum": 446.50491891299316,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": 77410,
+            "completion_tokens_sum": 6676,
+            "cached_prompt_tokens_sum": 70592,
+            "latency_ms_p50": 2833.1463170015923,
+            "latency_ms_p95": 5727.8982104005945,
+            "latency_samples": 140,
+            "cost_basis_counts": {
+              "api_price": 140
+            }
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        {
+          "run_id": "next_codeql_triage_mimo_v1_20261122",
+          "condition": "triage_v1",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v1",
+          "records": 140,
+          "confusion": {
+            "tp": 61,
+            "fp": 5,
+            "tn": 65,
+            "fn": 9
+          },
+          "macro_f1": 0.8999183006535948,
+          "mcc": 0.8013093298449995,
+          "precision": 0.9242424242424242,
+          "recall": 0.8714285714285714,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": 0.025050530400000003,
+            "usd_unknown_records": 0,
+            "usd_complete": true,
+            "wall_s_sum": 982.6724048750148,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": 131075,
+            "completion_tokens_sum": 24305,
+            "cached_prompt_tokens_sum": 768,
+            "latency_ms_p50": 6881.068936500014,
+            "latency_ms_p95": 10380.146169348876,
+            "latency_samples": 140,
+            "cost_basis_counts": {
+              "api_price": 140
+            }
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        {
+          "run_id": "next_codeql_triage_mimo_v2_20261122",
+          "condition": "triage_v2",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2",
+          "records": 140,
+          "confusion": {
+            "tp": 68,
+            "fp": 3,
+            "tn": 67,
+            "fn": 2
+          },
+          "macro_f1": 0.9642838920353078,
+          "mcc": 0.92866619526337,
+          "precision": 0.9577464788732394,
+          "recall": 0.9714285714285714,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": 0.030544500000000002,
+            "usd_unknown_records": 0,
+            "usd_complete": true,
+            "wall_s_sum": 1092.9771085299872,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": 171675,
+            "completion_tokens_sum": 23250,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": 6913.229500500165,
+            "latency_ms_p95": 14195.509138799749,
+            "latency_samples": 140,
+            "cost_basis_counts": {
+              "api_price": 140
+            }
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        {
+          "run_id": "next_codeql_triage_mimo_v2_text_rule_20261122",
+          "condition": "text_rule",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_text_rule",
+          "records": 140,
+          "confusion": {
+            "tp": 68,
+            "fp": 0,
+            "tn": 70,
+            "fn": 2
+          },
+          "macro_f1": 0.985711369667279,
+          "mcc": 0.97182531580755,
+          "precision": 1.0,
+          "recall": 0.9714285714285714,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": null,
+            "usd_unknown_records": 140,
+            "usd_complete": false,
+            "wall_s_sum": null,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": null,
+            "completion_tokens_sum": null,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": null,
+            "latency_ms_p95": null,
+            "latency_samples": 0,
+            "cost_basis_counts": {}
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        {
+          "run_id": "next_codeql_triage_mimo_v2_verified_20261122",
+          "condition": "verified",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_verified",
+          "records": 140,
+          "confusion": {
+            "tp": 68,
+            "fp": 0,
+            "tn": 70,
+            "fn": 2
+          },
+          "macro_f1": 0.985711369667279,
+          "mcc": 0.97182531580755,
+          "precision": 1.0,
+          "recall": 0.9714285714285714,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": 0.012228720000000002,
+            "usd_unknown_records": 49,
+            "usd_complete": false,
+            "wall_s_sum": 361.75749284303674,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": 70112,
+            "completion_tokens_sum": 8618,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": 3797.3877619988343,
+            "latency_ms_p95": 6486.128173000907,
+            "latency_samples": 91,
+            "cost_basis_counts": {
+              "api_price": 91
+            }
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        {
+          "run_id": "next_codeql_triage_mimo_v2_cascade_20261122",
+          "condition": "cascade",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_cascade",
+          "records": 140,
+          "confusion": {
+            "tp": 70,
+            "fp": 2,
+            "tn": 68,
+            "fn": 0
+          },
+          "macro_f1": 0.985711369667279,
+          "mcc": 0.97182531580755,
+          "precision": 0.9722222222222222,
+          "recall": 1.0,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": null,
+            "usd_unknown_records": 140,
+            "usd_complete": false,
+            "wall_s_sum": null,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": null,
+            "completion_tokens_sum": null,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": null,
+            "latency_ms_p95": null,
+            "latency_samples": 0,
+            "cost_basis_counts": {}
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        {
+          "run_id": "next_codeql_triage_zero_cost_never_freed_20261122",
+          "condition": "zero_cost_never_freed",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/zero_cost_never_freed",
+          "records": 140,
+          "confusion": {
+            "tp": 46,
+            "fp": 0,
+            "tn": 70,
+            "fn": 24
+          },
+          "macro_f1": 0.8233809924306139,
+          "mcc": 0.6995439243733446,
+          "precision": 1.0,
+          "recall": 0.6571428571428571,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": null,
+            "usd_unknown_records": 140,
+            "usd_complete": false,
+            "wall_s_sum": null,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": null,
+            "completion_tokens_sum": null,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": null,
+            "latency_ms_p95": null,
+            "latency_samples": 0,
+            "cost_basis_counts": {}
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        {
+          "run_id": "next_codeql_triage_zero_cost_drop_may_cpp_20261122",
+          "condition": "zero_cost_drop_may_cpp",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/zero_cost_drop_may_cpp",
+          "records": 140,
+          "confusion": {
+            "tp": 60,
+            "fp": 0,
+            "tn": 70,
+            "fn": 10
+          },
+          "macro_f1": 0.9282051282051282,
+          "mcc": 0.8660254037844386,
+          "precision": 1.0,
+          "recall": 0.8571428571428571,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": null,
+            "usd_unknown_records": 140,
+            "usd_complete": false,
+            "wall_s_sum": null,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": null,
+            "completion_tokens_sum": null,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": null,
+            "latency_ms_p95": null,
+            "latency_samples": 0,
+            "cost_basis_counts": {}
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        }
+      ],
+      "by_condition": {
+        "direct": {
+          "run_id": "next_codeql_triage_mimo_direct_v2_20261122",
+          "condition": "direct",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+          "records": 140,
+          "confusion": {
+            "tp": 69,
+            "fp": 5,
+            "tn": 65,
+            "fn": 1
+          },
+          "macro_f1": 0.9571078431372549,
+          "mcc": 0.915782091251428,
+          "precision": 0.9324324324324325,
+          "recall": 0.9857142857142858,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": 0.0030214576,
+            "usd_unknown_records": 0,
+            "usd_complete": true,
+            "wall_s_sum": 446.50491891299316,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": 77410,
+            "completion_tokens_sum": 6676,
+            "cached_prompt_tokens_sum": 70592,
+            "latency_ms_p50": 2833.1463170015923,
+            "latency_ms_p95": 5727.8982104005945,
+            "latency_samples": 140,
+            "cost_basis_counts": {
+              "api_price": 140
+            }
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        "triage_v1": {
+          "run_id": "next_codeql_triage_mimo_v1_20261122",
+          "condition": "triage_v1",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v1",
+          "records": 140,
+          "confusion": {
+            "tp": 61,
+            "fp": 5,
+            "tn": 65,
+            "fn": 9
+          },
+          "macro_f1": 0.8999183006535948,
+          "mcc": 0.8013093298449995,
+          "precision": 0.9242424242424242,
+          "recall": 0.8714285714285714,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": 0.025050530400000003,
+            "usd_unknown_records": 0,
+            "usd_complete": true,
+            "wall_s_sum": 982.6724048750148,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": 131075,
+            "completion_tokens_sum": 24305,
+            "cached_prompt_tokens_sum": 768,
+            "latency_ms_p50": 6881.068936500014,
+            "latency_ms_p95": 10380.146169348876,
+            "latency_samples": 140,
+            "cost_basis_counts": {
+              "api_price": 140
+            }
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        "triage_v2": {
+          "run_id": "next_codeql_triage_mimo_v2_20261122",
+          "condition": "triage_v2",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2",
+          "records": 140,
+          "confusion": {
+            "tp": 68,
+            "fp": 3,
+            "tn": 67,
+            "fn": 2
+          },
+          "macro_f1": 0.9642838920353078,
+          "mcc": 0.92866619526337,
+          "precision": 0.9577464788732394,
+          "recall": 0.9714285714285714,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": 0.030544500000000002,
+            "usd_unknown_records": 0,
+            "usd_complete": true,
+            "wall_s_sum": 1092.9771085299872,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": 171675,
+            "completion_tokens_sum": 23250,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": 6913.229500500165,
+            "latency_ms_p95": 14195.509138799749,
+            "latency_samples": 140,
+            "cost_basis_counts": {
+              "api_price": 140
+            }
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        "text_rule": {
+          "run_id": "next_codeql_triage_mimo_v2_text_rule_20261122",
+          "condition": "text_rule",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_text_rule",
+          "records": 140,
+          "confusion": {
+            "tp": 68,
+            "fp": 0,
+            "tn": 70,
+            "fn": 2
+          },
+          "macro_f1": 0.985711369667279,
+          "mcc": 0.97182531580755,
+          "precision": 1.0,
+          "recall": 0.9714285714285714,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": null,
+            "usd_unknown_records": 140,
+            "usd_complete": false,
+            "wall_s_sum": null,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": null,
+            "completion_tokens_sum": null,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": null,
+            "latency_ms_p95": null,
+            "latency_samples": 0,
+            "cost_basis_counts": {}
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        "verified": {
+          "run_id": "next_codeql_triage_mimo_v2_verified_20261122",
+          "condition": "verified",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_verified",
+          "records": 140,
+          "confusion": {
+            "tp": 68,
+            "fp": 0,
+            "tn": 70,
+            "fn": 2
+          },
+          "macro_f1": 0.985711369667279,
+          "mcc": 0.97182531580755,
+          "precision": 1.0,
+          "recall": 0.9714285714285714,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": 0.012228720000000002,
+            "usd_unknown_records": 49,
+            "usd_complete": false,
+            "wall_s_sum": 361.75749284303674,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": 70112,
+            "completion_tokens_sum": 8618,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": 3797.3877619988343,
+            "latency_ms_p95": 6486.128173000907,
+            "latency_samples": 91,
+            "cost_basis_counts": {
+              "api_price": 91
+            }
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        "cascade": {
+          "run_id": "next_codeql_triage_mimo_v2_cascade_20261122",
+          "condition": "cascade",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_cascade",
+          "records": 140,
+          "confusion": {
+            "tp": 70,
+            "fp": 2,
+            "tn": 68,
+            "fn": 0
+          },
+          "macro_f1": 0.985711369667279,
+          "mcc": 0.97182531580755,
+          "precision": 0.9722222222222222,
+          "recall": 1.0,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": null,
+            "usd_unknown_records": 140,
+            "usd_complete": false,
+            "wall_s_sum": null,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": null,
+            "completion_tokens_sum": null,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": null,
+            "latency_ms_p95": null,
+            "latency_samples": 0,
+            "cost_basis_counts": {}
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        "zero_cost_never_freed": {
+          "run_id": "next_codeql_triage_zero_cost_never_freed_20261122",
+          "condition": "zero_cost_never_freed",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/zero_cost_never_freed",
+          "records": 140,
+          "confusion": {
+            "tp": 46,
+            "fp": 0,
+            "tn": 70,
+            "fn": 24
+          },
+          "macro_f1": 0.8233809924306139,
+          "mcc": 0.6995439243733446,
+          "precision": 1.0,
+          "recall": 0.6571428571428571,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": null,
+            "usd_unknown_records": 140,
+            "usd_complete": false,
+            "wall_s_sum": null,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": null,
+            "completion_tokens_sum": null,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": null,
+            "latency_ms_p95": null,
+            "latency_samples": 0,
+            "cost_basis_counts": {}
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        },
+        "zero_cost_drop_may_cpp": {
+          "run_id": "next_codeql_triage_zero_cost_drop_may_cpp_20261122",
+          "condition": "zero_cost_drop_may_cpp",
+          "path": "benchmark/extensions/runs/codeql_alert_triage/zero_cost_drop_may_cpp",
+          "records": 140,
+          "confusion": {
+            "tp": 60,
+            "fp": 0,
+            "tn": 70,
+            "fn": 10
+          },
+          "macro_f1": 0.9282051282051282,
+          "mcc": 0.8660254037844386,
+          "precision": 1.0,
+          "recall": 0.8571428571428571,
+          "coverage": 1.0,
+          "cost": {
+            "currency": "USD",
+            "usd_known_sum": null,
+            "usd_unknown_records": 140,
+            "usd_complete": false,
+            "wall_s_sum": null,
+            "cpu_s_sum": null,
+            "peak_rss_mb_max": null,
+            "prompt_tokens_sum": null,
+            "completion_tokens_sum": null,
+            "cached_prompt_tokens_sum": null,
+            "latency_ms_p50": null,
+            "latency_ms_p95": null,
+            "latency_samples": 0,
+            "cost_basis_counts": {}
+          },
+          "status_counts": {
+            "ok": 140
+          }
+        }
+      },
+      "comparisons": {
+        "verified_vs_direct": {
+          "delta_macro_f1": 0.02860352653002407,
+          "mcnemar": {
+            "n": 140,
+            "b_left_correct_right_wrong": 2,
+            "c_left_wrong_right_correct": 6,
+            "mcnemar": {
+              "a_correct_b_wrong": 2,
+              "a_wrong_b_correct": 6,
+              "discordant": 8,
+              "total": 140,
+              "p_value": 0.2890625,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 0.3333333333333333,
+              "risk_difference": -0.02857142857142857,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            }
+          },
+          "producer_bootstrap_ci": [
+            -0.007235363886213375,
+            0.07141467848186411
+          ],
+          "significant": false,
+          "note": "95% bootstrap CI crosses zero; exact McNemar p=0.2891"
+        },
+        "text_rule_vs_verified": {
+          "mcnemar": {
+            "n": 140,
+            "b_left_correct_right_wrong": 0,
+            "c_left_wrong_right_correct": 0,
+            "mcnemar": {
+              "a_correct_b_wrong": 0,
+              "a_wrong_b_correct": 0,
+              "discordant": 0,
+              "total": 140,
+              "p_value": 1.0,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": null,
+              "risk_difference": 0.0,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            }
+          },
+          "note": "identical predictions on this split; the verified condition adds no unit-level change over a deterministic text rule"
+        },
+        "codeql_alert_only": {
+          "accuracy": 0.8214285714285714,
+          "f1_positive": 0.8447204968944099,
+          "fn": 2,
+          "fp": 23,
+          "macro_f1": 0.8173182316404822,
+          "mcc": 0.6738973950355189,
+          "precision": 0.7472527472527473,
+          "recall": 0.9714285714285714,
+          "tn": 47,
+          "tp": 68
+        }
+      },
+      "checks": [
+        {
+          "check": "direct: stored macro-F1 matches recomputation",
+          "ok": true,
+          "detail": "stored=0.9571, recomputed=0.9571"
+        },
+        {
+          "check": "direct: confusion matches producer export",
+          "ok": true,
+          "detail": "canonical={'tp': 69, 'fp': 5, 'tn': 65, 'fn': 1}, producer={'tp': 69, 'fp': 5, 'tn': 65, 'fn': 1}"
+        },
+        {
+          "check": "triage_v1: stored macro-F1 matches recomputation",
+          "ok": true,
+          "detail": "stored=0.8999, recomputed=0.8999"
+        },
+        {
+          "check": "triage_v1: confusion matches producer export",
+          "ok": true,
+          "detail": "canonical={'tp': 61, 'fp': 5, 'tn': 65, 'fn': 9}, producer={'tp': 61, 'fp': 5, 'tn': 65, 'fn': 9}"
+        },
+        {
+          "check": "triage_v2: stored macro-F1 matches recomputation",
+          "ok": true,
+          "detail": "stored=0.9643, recomputed=0.9643"
+        },
+        {
+          "check": "triage_v2: confusion matches producer export",
+          "ok": true,
+          "detail": "canonical={'tp': 68, 'fp': 3, 'tn': 67, 'fn': 2}, producer={'tp': 68, 'fp': 3, 'tn': 67, 'fn': 2}"
+        },
+        {
+          "check": "text_rule: stored macro-F1 matches recomputation",
+          "ok": true,
+          "detail": "stored=0.9857, recomputed=0.9857"
+        },
+        {
+          "check": "text_rule: confusion matches producer export",
+          "ok": true,
+          "detail": "canonical={'tp': 68, 'fp': 0, 'tn': 70, 'fn': 2}, producer={'tp': 68, 'fp': 0, 'tn': 70, 'fn': 2}"
+        },
+        {
+          "check": "verified: stored macro-F1 matches recomputation",
+          "ok": true,
+          "detail": "stored=0.9857, recomputed=0.9857"
+        },
+        {
+          "check": "verified: confusion matches producer export",
+          "ok": true,
+          "detail": "canonical={'tp': 68, 'fp': 0, 'tn': 70, 'fn': 2}, producer={'tp': 68, 'fp': 0, 'tn': 70, 'fn': 2}"
+        },
+        {
+          "check": "cascade: stored macro-F1 matches recomputation",
+          "ok": true,
+          "detail": "stored=0.9857, recomputed=0.9857"
+        },
+        {
+          "check": "cascade: confusion matches producer export",
+          "ok": true,
+          "detail": "canonical={'tp': 70, 'fp': 2, 'tn': 68, 'fn': 0}, producer={'tp': 70, 'fp': 2, 'tn': 68, 'fn': 0}"
+        },
+        {
+          "check": "zero_cost_never_freed: stored macro-F1 matches recomputation",
+          "ok": true,
+          "detail": "stored=0.8234, recomputed=0.8234"
+        },
+        {
+          "check": "zero_cost_never_freed: confusion matches producer export",
+          "ok": true,
+          "detail": "canonical={'tp': 46, 'fp': 0, 'tn': 70, 'fn': 24}, producer={'tp': 46, 'fp': 0, 'tn': 70, 'fn': 24}"
+        },
+        {
+          "check": "zero_cost_drop_may_cpp: stored macro-F1 matches recomputation",
+          "ok": true,
+          "detail": "stored=0.9282, recomputed=0.9282"
+        },
+        {
+          "check": "zero_cost_drop_may_cpp: confusion matches producer export",
+          "ok": true,
+          "detail": "canonical={'tp': 60, 'fp': 0, 'tn': 70, 'fn': 10}, producer={'tp': 60, 'fp': 0, 'tn': 70, 'fn': 10}"
+        },
+        {
+          "check": "verified vs direct: McNemar matches producer",
+          "ok": true,
+          "detail": "recomputed p=0.289062, producer p=0.289062"
+        },
+        {
+          "check": "text rule vs verified: zero discordant",
+          "ok": true,
+          "detail": "discordant=0"
+        }
+      ],
+      "limitations": [
+        "DeepSeek has no results; do not impute MiMo numbers.",
+        "Final vs direct macro-F1 +0.0286, 95% CI crosses zero, McNemar p=0.289.",
+        "Verifier sees the first-pass JSON; 91/91 is not an independent blind review.",
+        "Juliet is synthetic and may be memorized; cleaned views preserve structure.",
+        "All 23 CodeQL FPs are C++ good units from cpp/memory-may-not-be-freed.",
+        "Two CodeQL false negatives are compile_error units; triage cannot recover them.",
+        "Single sample, temperature 0; no calibration or human adjudication."
+      ],
+      "registry_status": "result_imported",
+      "run_count": 8
+    },
+    "conservative_verification": {
+      "design": "conservative_verification",
+      "title": "Conservative three-way verification (exploratory, test-seen)",
+      "primary_metric": "macro_f1",
+      "runs": [
+        {
+          "run_id": "next_conservative_deepseek_self_20261122",
+          "arm": "deepseek_self",
+          "path": "benchmark/extensions/runs/conservative_verification/deepseek_self",
+          "records": 160,
+          "pre_macro_f1": 0.4223374290729477,
+          "post_macro_f1": 0.4171554252199413,
+          "delta_macro_f1": -0.005182003853006378,
+          "pre_mcc": 0.03480374982882533,
+          "post_mcc": 0.02838650631593768,
+          "retractions": 1,
+          "retracted_tp": 1,
+          "retracted_fp": 0,
+          "confusion": {
+            "tp": 48,
+            "fp": 11,
+            "tn": 21,
+            "fn": 79
+          },
+          "pre_confusion": {
+            "tp": 49,
+            "fp": 11,
+            "tn": 21,
+            "fn": 78
+          },
+          "mcnemar_pre_vs_post": {
+            "n": 160,
+            "b_left_correct_right_wrong": 1,
+            "c_left_wrong_right_correct": 0,
+            "mcnemar": {
+              "a_correct_b_wrong": 1,
+              "a_wrong_b_correct": 0,
+              "discordant": 1,
+              "total": 160,
+              "p_value": 1.0,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": null,
+              "risk_difference": 0.00625,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            }
+          },
+          "producer_mcnemar": {
+            "both_correct": 69,
+            "both_wrong": 90,
+            "discordant": 1,
+            "method": "exact two-sided McNemar on strict-correctness outcomes",
+            "n": 160,
+            "p_value_exact_two_sided": 1.0,
+            "p_value_holm": 1.0,
+            "post_correct": 69,
+            "pre_correct": 70,
+            "pre_correct_post_wrong": 1,
+            "pre_wrong_post_correct": 0
+          },
+          "producer_delta": {
+            "accuracy": -0.0062893081761006275,
+            "balanced_accuracy": -0.003937007874015741,
+            "fn": 1,
+            "fp": 0,
+            "macro_f1": -0.005182003853006378,
+            "mcc": -0.006417243512887649,
+            "positive_f1": -0.007935138864930136,
+            "precision": -0.003107344632768294,
+            "predicted_positive_rate": -0.006289308176100683,
+            "recall": -0.007874015748031482,
+            "specificity": 0.0,
+            "strict_accuracy": -0.006249999999999978,
+            "tn": 0,
+            "tp": -1
+          }
+        },
+        {
+          "run_id": "next_conservative_deepseek_cross_20261122",
+          "arm": "deepseek_cross",
+          "path": "benchmark/extensions/runs/conservative_verification/deepseek_cross",
+          "records": 160,
+          "pre_macro_f1": 0.4223374290729477,
+          "post_macro_f1": 0.4223374290729477,
+          "delta_macro_f1": 0.0,
+          "pre_mcc": 0.03480374982882533,
+          "post_mcc": 0.03480374982882533,
+          "retractions": 0,
+          "retracted_tp": 0,
+          "retracted_fp": 0,
+          "confusion": {
+            "tp": 49,
+            "fp": 11,
+            "tn": 21,
+            "fn": 78
+          },
+          "pre_confusion": {
+            "tp": 49,
+            "fp": 11,
+            "tn": 21,
+            "fn": 78
+          },
+          "mcnemar_pre_vs_post": {
+            "n": 160,
+            "b_left_correct_right_wrong": 0,
+            "c_left_wrong_right_correct": 0,
+            "mcnemar": {
+              "a_correct_b_wrong": 0,
+              "a_wrong_b_correct": 0,
+              "discordant": 0,
+              "total": 160,
+              "p_value": 1.0,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": null,
+              "risk_difference": 0.0,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            }
+          },
+          "producer_mcnemar": {
+            "both_correct": 70,
+            "both_wrong": 90,
+            "discordant": 0,
+            "method": "exact two-sided McNemar on strict-correctness outcomes",
+            "n": 160,
+            "p_value_exact_two_sided": 1.0,
+            "p_value_holm": 1.0,
+            "post_correct": 70,
+            "pre_correct": 70,
+            "pre_correct_post_wrong": 0,
+            "pre_wrong_post_correct": 0
+          },
+          "producer_delta": {
+            "accuracy": 0.0,
+            "balanced_accuracy": 0.0,
+            "fn": 0,
+            "fp": 0,
+            "macro_f1": 0.0,
+            "mcc": 0.0,
+            "positive_f1": 0.0,
+            "precision": 0.0,
+            "predicted_positive_rate": 0.0,
+            "recall": 0.0,
+            "specificity": 0.0,
+            "strict_accuracy": 0.0,
+            "tn": 0,
+            "tp": 0
+          }
+        },
+        {
+          "run_id": "next_conservative_mimo_self_20261122",
+          "arm": "mimo_self",
+          "path": "benchmark/extensions/runs/conservative_verification/mimo_self",
+          "records": 160,
+          "pre_macro_f1": 0.4067258097792449,
+          "post_macro_f1": 0.4067258097792449,
+          "delta_macro_f1": 0.0,
+          "pre_mcc": 0.012556093649092003,
+          "post_mcc": 0.012556093649092003,
+          "retractions": 0,
+          "retracted_tp": 0,
+          "retracted_fp": 0,
+          "confusion": {
+            "tp": 47,
+            "fp": 11,
+            "tn": 20,
+            "fn": 80
+          },
+          "pre_confusion": {
+            "tp": 47,
+            "fp": 11,
+            "tn": 20,
+            "fn": 80
+          },
+          "mcnemar_pre_vs_post": {
+            "n": 160,
+            "b_left_correct_right_wrong": 0,
+            "c_left_wrong_right_correct": 0,
+            "mcnemar": {
+              "a_correct_b_wrong": 0,
+              "a_wrong_b_correct": 0,
+              "discordant": 0,
+              "total": 160,
+              "p_value": 1.0,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": null,
+              "risk_difference": 0.0,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            }
+          },
+          "producer_mcnemar": {
+            "both_correct": 67,
+            "both_wrong": 93,
+            "discordant": 0,
+            "method": "exact two-sided McNemar on strict-correctness outcomes",
+            "n": 160,
+            "p_value_exact_two_sided": 1.0,
+            "p_value_holm": 1.0,
+            "post_correct": 67,
+            "pre_correct": 67,
+            "pre_correct_post_wrong": 0,
+            "pre_wrong_post_correct": 0
+          },
+          "producer_delta": {
+            "accuracy": 0.0,
+            "balanced_accuracy": 0.0,
+            "fn": 0,
+            "fp": 0,
+            "macro_f1": 0.0,
+            "mcc": 0.0,
+            "positive_f1": 0.0,
+            "precision": 0.0,
+            "predicted_positive_rate": 0.0,
+            "recall": 0.0,
+            "specificity": 0.0,
+            "strict_accuracy": 0.0,
+            "tn": 0,
+            "tp": 0
+          }
+        },
+        {
+          "run_id": "next_conservative_mimo_cross_20261122",
+          "arm": "mimo_cross",
+          "path": "benchmark/extensions/runs/conservative_verification/mimo_cross",
+          "records": 160,
+          "pre_macro_f1": 0.4067258097792449,
+          "post_macro_f1": 0.40396916516319503,
+          "delta_macro_f1": -0.0027566446160498526,
+          "pre_mcc": 0.012556093649092003,
+          "post_mcc": 0.02646837923441313,
+          "retractions": 3,
+          "retracted_tp": 2,
+          "retracted_fp": 1,
+          "confusion": {
+            "tp": 45,
+            "fp": 10,
+            "tn": 21,
+            "fn": 82
+          },
+          "pre_confusion": {
+            "tp": 47,
+            "fp": 11,
+            "tn": 20,
+            "fn": 80
+          },
+          "mcnemar_pre_vs_post": {
+            "n": 160,
+            "b_left_correct_right_wrong": 2,
+            "c_left_wrong_right_correct": 1,
+            "mcnemar": {
+              "a_correct_b_wrong": 2,
+              "a_wrong_b_correct": 1,
+              "discordant": 3,
+              "total": 160,
+              "p_value": 1.0,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 2.0,
+              "risk_difference": 0.00625,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            }
+          },
+          "producer_mcnemar": {
+            "both_correct": 65,
+            "both_wrong": 92,
+            "discordant": 3,
+            "method": "exact two-sided McNemar on strict-correctness outcomes",
+            "n": 160,
+            "p_value_exact_two_sided": 1.0,
+            "p_value_holm": 1.0,
+            "post_correct": 66,
+            "pre_correct": 67,
+            "pre_correct_post_wrong": 2,
+            "pre_wrong_post_correct": 1
+          },
+          "producer_delta": {
+            "accuracy": -0.006329113924050611,
+            "balanced_accuracy": 0.008255016510032909,
+            "fn": 2,
+            "fp": -1,
+            "macro_f1": -0.0027566446160498526,
+            "mcc": 0.013912285585321128,
+            "positive_f1": -0.013602613602613611,
+            "precision": 0.007836990595611382,
+            "predicted_positive_rate": -0.01898734177215189,
+            "recall": -0.01574803149606302,
+            "specificity": 0.032258064516129004,
+            "strict_accuracy": -0.006250000000000033,
+            "tn": 1,
+            "tp": -2
+          }
+        }
+      ],
+      "summary": {
+        "retractions": 4,
+        "verifier_requests": 236,
+        "retracted_tp": 3,
+        "retracted_fp": 1,
+        "retraction_precision": 0.25,
+        "original_fail_closed_retractions": 155,
+        "note": "the original verifier retracted 155 records; the conservative rule retracts 4"
+      },
+      "checks": [
+        {
+          "check": "deepseek_self: post macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.4172, producer=0.4172"
+        },
+        {
+          "check": "deepseek_self: retraction count matches producer",
+          "ok": true,
+          "detail": "canonical=1, producer=1"
+        },
+        {
+          "check": "deepseek_cross: post macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.4223, producer=0.4223"
+        },
+        {
+          "check": "deepseek_cross: retraction count matches producer",
+          "ok": true,
+          "detail": "canonical=0, producer=0"
+        },
+        {
+          "check": "mimo_self: post macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.4067, producer=0.4067"
+        },
+        {
+          "check": "mimo_self: retraction count matches producer",
+          "ok": true,
+          "detail": "canonical=0, producer=0"
+        },
+        {
+          "check": "mimo_cross: post macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.4040, producer=0.4040"
+        },
+        {
+          "check": "mimo_cross: retraction count matches producer",
+          "ok": true,
+          "detail": "canonical=3, producer=3"
+        },
+        {
+          "check": "all arms: total retractions 4 / 236 requests",
+          "ok": true,
+          "detail": "retractions=4, verifier_requests=236"
+        }
+      ],
+      "limitations": [
+        "Exploratory and post hoc: the test split was already seen by the first pass and the original verifier.",
+        "Only 4 retractions; retraction precision 25% has a wide interval and is not above the FP base rate.",
+        "Random and low-confidence matched-budget baselines are equal or better on macro-F1/MCC.",
+        "The verifier reads model text; grounding checks line numbers, not semantic domination."
+      ],
+      "registry_status": "result_imported_exploratory",
+      "run_count": 4
+    },
+    "diff_guided_pair": {
+      "design": "diff_guided_pair",
+      "title": "Diff-guided pair discrimination with a length-matched control",
+      "primary_metric": "pair_da",
+      "runs": [
+        {
+          "run_id": "next_pair_diff_deepseek_diff_fwd_20261122",
+          "model": "deepseek",
+          "condition": "diff",
+          "order": "fwd",
+          "path": "benchmark/extensions/runs/diff_guided_pair/deepseek_diff_fwd",
+          "pairs": 180,
+          "valid_pairs": 180,
+          "invalid_pairs": 0,
+          "correct": 123,
+          "pair_da": 0.6833333333333333,
+          "pair_da_all": 0.6833333333333333,
+          "decisive": 138,
+          "macro_f1_side": 0.7981999937716048,
+          "status_counts": {
+            "ok": 360
+          }
+        },
+        {
+          "run_id": "next_pair_diff_deepseek_diff_rev_20261122",
+          "model": "deepseek",
+          "condition": "diff",
+          "order": "rev",
+          "path": "benchmark/extensions/runs/diff_guided_pair/deepseek_diff_rev",
+          "pairs": 180,
+          "valid_pairs": 180,
+          "invalid_pairs": 0,
+          "correct": 127,
+          "pair_da": 0.7055555555555556,
+          "pair_da_all": 0.7055555555555556,
+          "decisive": 144,
+          "macro_f1_side": 0.8041958041958042,
+          "status_counts": {
+            "ok": 360
+          }
+        },
+        {
+          "run_id": "next_pair_diff_deepseek_ctrl_fwd_20261122",
+          "model": "deepseek",
+          "condition": "ctrl",
+          "order": "fwd",
+          "path": "benchmark/extensions/runs/diff_guided_pair/deepseek_ctrl_fwd",
+          "pairs": 180,
+          "valid_pairs": 180,
+          "invalid_pairs": 0,
+          "correct": 124,
+          "pair_da": 0.6888888888888889,
+          "pair_da_all": 0.6888888888888889,
+          "decisive": 146,
+          "macro_f1_side": 0.7820146565644019,
+          "status_counts": {
+            "ok": 360
+          }
+        },
+        {
+          "run_id": "next_pair_diff_deepseek_ctrl_rev_20261122",
+          "model": "deepseek",
+          "condition": "ctrl",
+          "order": "rev",
+          "path": "benchmark/extensions/runs/diff_guided_pair/deepseek_ctrl_rev",
+          "pairs": 180,
+          "valid_pairs": 180,
+          "invalid_pairs": 0,
+          "correct": 125,
+          "pair_da": 0.6944444444444444,
+          "pair_da_all": 0.6944444444444444,
+          "decisive": 145,
+          "macro_f1_side": 0.7904881625811858,
+          "status_counts": {
+            "ok": 360
+          }
+        },
+        {
+          "run_id": "next_pair_diff_mimo_diff_fwd_20261122",
+          "model": "mimo",
+          "condition": "diff",
+          "order": "fwd",
+          "path": "benchmark/extensions/runs/diff_guided_pair/mimo_diff_fwd",
+          "pairs": 180,
+          "valid_pairs": 179,
+          "invalid_pairs": 1,
+          "correct": 123,
+          "pair_da": 0.6871508379888268,
+          "pair_da_all": 0.6833333333333333,
+          "decisive": 136,
+          "macro_f1_side": 0.8071426307950693,
+          "status_counts": {
+            "ok": 358,
+            "schema_invalid": 2
+          }
+        },
+        {
+          "run_id": "next_pair_diff_mimo_diff_rev_20261122",
+          "model": "mimo",
+          "condition": "diff",
+          "order": "rev",
+          "path": "benchmark/extensions/runs/diff_guided_pair/mimo_diff_rev",
+          "pairs": 180,
+          "valid_pairs": 179,
+          "invalid_pairs": 1,
+          "correct": 120,
+          "pair_da": 0.6703910614525139,
+          "pair_da_all": 0.6666666666666666,
+          "decisive": 138,
+          "macro_f1_side": 0.784746835443038,
+          "status_counts": {
+            "ok": 358,
+            "schema_invalid": 2
+          }
+        },
+        {
+          "run_id": "next_pair_diff_mimo_ctrl_fwd_20261122",
+          "model": "mimo",
+          "condition": "ctrl",
+          "order": "fwd",
+          "path": "benchmark/extensions/runs/diff_guided_pair/mimo_ctrl_fwd",
+          "pairs": 180,
+          "valid_pairs": 180,
+          "invalid_pairs": 0,
+          "correct": 119,
+          "pair_da": 0.6611111111111111,
+          "pair_da_all": 0.6611111111111111,
+          "decisive": 133,
+          "macro_f1_side": 0.7883597883597884,
+          "status_counts": {
+            "ok": 360
+          }
+        },
+        {
+          "run_id": "next_pair_diff_mimo_ctrl_rev_20261122",
+          "model": "mimo",
+          "condition": "ctrl",
+          "order": "rev",
+          "path": "benchmark/extensions/runs/diff_guided_pair/mimo_ctrl_rev",
+          "pairs": 180,
+          "valid_pairs": 180,
+          "invalid_pairs": 0,
+          "correct": 125,
+          "pair_da": 0.6944444444444444,
+          "pair_da_all": 0.6944444444444444,
+          "decisive": 144,
+          "macro_f1_side": 0.7925944380430382,
+          "status_counts": {
+            "ok": 360
+          }
+        }
+      ],
+      "comparisons": {
+        "within_design": {
+          "deepseek:diff_vs_ctrl": {
+            "n_pairs": 180,
+            "diff_stable_da": 0.6222222222222222,
+            "ctrl_stable_da": 0.6,
+            "b": 7,
+            "c": 3,
+            "mcnemar": {
+              "a_correct_b_wrong": 7,
+              "a_wrong_b_correct": 3,
+              "discordant": 10,
+              "total": 180,
+              "p_value": 0.34375,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 2.3333333333333335,
+              "risk_difference": 0.022222222222222223,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            },
+            "holm_p": 1.0,
+            "significant_holm_0_05": false,
+            "by_order": {
+              "fwd": {
+                "n_pairs": 180,
+                "diff_da": 0.6833333333333333,
+                "ctrl_da": 0.6888888888888889,
+                "b": 5,
+                "c": 6,
+                "mcnemar": {
+                  "a_correct_b_wrong": 5,
+                  "a_wrong_b_correct": 6,
+                  "discordant": 11,
+                  "total": 180,
+                  "p_value": 1.0,
+                  "p_value_method": "exact two-sided binomial",
+                  "odds_ratio": 0.8333333333333334,
+                  "risk_difference": -0.005555555555555556,
+                  "significant_unadjusted_0_05": false,
+                  "alpha": 0.05
+                },
+                "holm_p": 1.0,
+                "significant_holm_0_05": false
+              },
+              "rev": {
+                "n_pairs": 180,
+                "diff_da": 0.7055555555555556,
+                "ctrl_da": 0.6944444444444444,
+                "b": 5,
+                "c": 3,
+                "mcnemar": {
+                  "a_correct_b_wrong": 5,
+                  "a_wrong_b_correct": 3,
+                  "discordant": 8,
+                  "total": 180,
+                  "p_value": 0.7265625,
+                  "p_value_method": "exact two-sided binomial",
+                  "odds_ratio": 1.6666666666666667,
+                  "risk_difference": 0.011111111111111112,
+                  "significant_unadjusted_0_05": false,
+                  "alpha": 0.05
+                },
+                "holm_p": 1.0,
+                "significant_holm_0_05": false
+              },
+              "stable": {
+                "n_pairs": 180,
+                "diff_da": 0.6222222222222222,
+                "ctrl_da": 0.6,
+                "b": 7,
+                "c": 3,
+                "mcnemar": {
+                  "a_correct_b_wrong": 7,
+                  "a_wrong_b_correct": 3,
+                  "discordant": 10,
+                  "total": 180,
+                  "p_value": 0.34375,
+                  "p_value_method": "exact two-sided binomial",
+                  "odds_ratio": 2.3333333333333335,
+                  "risk_difference": 0.022222222222222223,
+                  "significant_unadjusted_0_05": false,
+                  "alpha": 0.05
+                },
+                "holm_p": 1.0,
+                "significant_holm_0_05": false
+              }
+            },
+            "holm_family": "3 tests per model: fwd, rev, exchange-consistent stable DA"
+          },
+          "mimo:diff_vs_ctrl": {
+            "n_pairs": 180,
+            "diff_stable_da": 0.6055555555555555,
+            "ctrl_stable_da": 0.6222222222222222,
+            "b": 7,
+            "c": 10,
+            "mcnemar": {
+              "a_correct_b_wrong": 7,
+              "a_wrong_b_correct": 10,
+              "discordant": 17,
+              "total": 180,
+              "p_value": 0.629058837890625,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 0.7,
+              "risk_difference": -0.016666666666666666,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            },
+            "holm_p": 0.9052734375,
+            "significant_holm_0_05": false,
+            "by_order": {
+              "fwd": {
+                "n_pairs": 180,
+                "diff_da": 0.6833333333333333,
+                "ctrl_da": 0.6611111111111111,
+                "b": 7,
+                "c": 3,
+                "mcnemar": {
+                  "a_correct_b_wrong": 7,
+                  "a_wrong_b_correct": 3,
+                  "discordant": 10,
+                  "total": 180,
+                  "p_value": 0.34375,
+                  "p_value_method": "exact two-sided binomial",
+                  "odds_ratio": 2.3333333333333335,
+                  "risk_difference": 0.022222222222222223,
+                  "significant_unadjusted_0_05": false,
+                  "alpha": 0.05
+                },
+                "holm_p": 0.9052734375,
+                "significant_holm_0_05": false
+              },
+              "rev": {
+                "n_pairs": 180,
+                "diff_da": 0.6666666666666666,
+                "ctrl_da": 0.6944444444444444,
+                "b": 5,
+                "c": 10,
+                "mcnemar": {
+                  "a_correct_b_wrong": 5,
+                  "a_wrong_b_correct": 10,
+                  "discordant": 15,
+                  "total": 180,
+                  "p_value": 0.3017578125,
+                  "p_value_method": "exact two-sided binomial",
+                  "odds_ratio": 0.5,
+                  "risk_difference": -0.027777777777777776,
+                  "significant_unadjusted_0_05": false,
+                  "alpha": 0.05
+                },
+                "holm_p": 0.9052734375,
+                "significant_holm_0_05": false
+              },
+              "stable": {
+                "n_pairs": 180,
+                "diff_da": 0.6055555555555555,
+                "ctrl_da": 0.6222222222222222,
+                "b": 7,
+                "c": 10,
+                "mcnemar": {
+                  "a_correct_b_wrong": 7,
+                  "a_wrong_b_correct": 10,
+                  "discordant": 17,
+                  "total": 180,
+                  "p_value": 0.629058837890625,
+                  "p_value_method": "exact two-sided binomial",
+                  "odds_ratio": 0.7,
+                  "risk_difference": -0.016666666666666666,
+                  "significant_unadjusted_0_05": false,
+                  "alpha": 0.05
+                },
+                "holm_p": 0.9052734375,
+                "significant_holm_0_05": false
+              }
+            },
+            "holm_family": "3 tests per model: fwd, rev, exchange-consistent stable DA"
+          }
+        },
+        "holm_family": "3 tests per model: fwd, rev, stable",
+        "cross_design_open": {
+          "deepseek": {
+            "n_pairs": 180,
+            "diff_stable_da": 0.6222222222222222,
+            "open_stable_da": 0.5555555555555556,
+            "b": 21,
+            "c": 9,
+            "mcnemar": {
+              "a_correct_b_wrong": 21,
+              "a_wrong_b_correct": 9,
+              "discordant": 30,
+              "total": 180,
+              "p_value": 0.04277394525706768,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 2.3333333333333335,
+              "risk_difference": 0.06666666666666667,
+              "significant_unadjusted_0_05": true,
+              "alpha": 0.05
+            },
+            "producer_p_value": 0.04277394525706768,
+            "producer_holm_p": 0.08554789051413536,
+            "note": "cross-design reference from open_choice_pair; not pooled and not part of the within-design Holm family"
+          },
+          "mimo": {
+            "n_pairs": 180,
+            "diff_stable_da": 0.6055555555555555,
+            "open_stable_da": 0.5777777777777777,
+            "b": 15,
+            "c": 10,
+            "mcnemar": {
+              "a_correct_b_wrong": 15,
+              "a_wrong_b_correct": 10,
+              "discordant": 25,
+              "total": 180,
+              "p_value": 0.42435622215270996,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 1.5,
+              "risk_difference": 0.027777777777777776,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            },
+            "producer_p_value": 0.5412561893463135,
+            "producer_holm_p": 1.0,
+            "note": "cross-design reference from open_choice_pair; not pooled and not part of the within-design Holm family"
+          }
+        }
+      },
+      "length_shortcut": {
+        "deepseek": {
+          "diff_fwd": {
+            "heuristic_correct_da": 0.776119,
+            "heuristic_wrong_da": 0.413043,
+            "gap": 0.363076,
+            "choose_shorter_committed": 0.804348
+          },
+          "diff_rev": {
+            "heuristic_correct_da": 0.772727,
+            "heuristic_wrong_da": 0.520833,
+            "gap": 0.251894,
+            "choose_shorter_committed": 0.770833
+          },
+          "ctrl_fwd": {
+            "heuristic_correct_da": 0.791045,
+            "heuristic_wrong_da": 0.391304,
+            "gap": 0.399741,
+            "choose_shorter_committed": 0.808219
+          },
+          "ctrl_rev": {
+            "heuristic_correct_da": 0.75,
+            "heuristic_wrong_da": 0.541667,
+            "gap": 0.208333,
+            "choose_shorter_committed": 0.751724
+          },
+          "open_fwd": {
+            "heuristic_correct_da": 0.746269,
+            "heuristic_wrong_da": 0.413043,
+            "gap": 0.333226,
+            "choose_shorter_committed": 0.760563
+          },
+          "open_rev": {
+            "heuristic_correct_da": 0.712121,
+            "heuristic_wrong_da": 0.4375,
+            "gap": 0.274621,
+            "choose_shorter_committed": 0.731544
+          }
+        },
+        "mimo": {
+          "diff_fwd": {
+            "heuristic_correct_da": 0.768657,
+            "heuristic_wrong_da": 0.434783,
+            "gap": 0.333874,
+            "choose_shorter_committed": 0.808824
+          },
+          "diff_rev": {
+            "heuristic_correct_da": 0.75,
+            "heuristic_wrong_da": 0.4375,
+            "gap": 0.3125,
+            "choose_shorter_committed": 0.782609
+          },
+          "ctrl_fwd": {
+            "heuristic_correct_da": 0.753731,
+            "heuristic_wrong_da": 0.391304,
+            "gap": 0.362427,
+            "choose_shorter_committed": 0.81203
+          },
+          "ctrl_rev": {
+            "heuristic_correct_da": 0.772727,
+            "heuristic_wrong_da": 0.479167,
+            "gap": 0.29356,
+            "choose_shorter_committed": 0.777778
+          },
+          "open_fwd": {
+            "heuristic_correct_da": 0.753731,
+            "heuristic_wrong_da": 0.391304,
+            "gap": 0.362427,
+            "choose_shorter_committed": 0.801418
+          },
+          "open_rev": {
+            "heuristic_correct_da": 0.719697,
+            "heuristic_wrong_da": 0.479167,
+            "gap": 0.24053,
+            "choose_shorter_committed": 0.764286
+          }
+        }
+      },
+      "change_relevance": {
+        "deepseek": {
+          "definition": "Exploratory split by whether the model's own change list contains at least one security_relevant=true item. It describes the change-first mechanism; it is not randomized.",
+          "groups": {
+            "any_security_relevant": {
+              "n": 160,
+              "correct": 123,
+              "committed": 138,
+              "neither": 19,
+              "both": 3,
+              "da": 0.76875,
+              "committed_da": 0.891304,
+              "neither_rate": 0.11875,
+              "both_rate": 0.01875
+            },
+            "no_security_relevant": {
+              "n": 20,
+              "correct": 0,
+              "committed": 0,
+              "neither": 19,
+              "both": 1,
+              "da": 0.0,
+              "committed_da": null,
+              "neither_rate": 0.95,
+              "both_rate": 0.05
+            }
+          }
+        },
+        "mimo": {
+          "definition": "Exploratory split by whether the model's own change list contains at least one security_relevant=true item. It describes the change-first mechanism; it is not randomized.",
+          "groups": {
+            "any_security_relevant": {
+              "n": 144,
+              "correct": 123,
+              "committed": 136,
+              "neither": 8,
+              "both": 0,
+              "da": 0.854167,
+              "committed_da": 0.904412,
+              "neither_rate": 0.055556,
+              "both_rate": 0.0
+            },
+            "no_security_relevant": {
+              "n": 36,
+              "correct": 0,
+              "committed": 0,
+              "neither": 36,
+              "both": 0,
+              "da": 0.0,
+              "committed_da": null,
+              "neither_rate": 1.0,
+              "both_rate": 0.0
+            }
+          }
+        }
+      },
+      "checks": [
+        {
+          "check": "deepseek/diff/fwd: correct count and pair total match producer",
+          "ok": true,
+          "detail": "canonical=123/180 (valid 180), producer=123/180"
+        },
+        {
+          "check": "deepseek/diff/rev: correct count and pair total match producer",
+          "ok": true,
+          "detail": "canonical=127/180 (valid 180), producer=127/180"
+        },
+        {
+          "check": "deepseek/ctrl/fwd: correct count and pair total match producer",
+          "ok": true,
+          "detail": "canonical=124/180 (valid 180), producer=124/180"
+        },
+        {
+          "check": "deepseek/ctrl/rev: correct count and pair total match producer",
+          "ok": true,
+          "detail": "canonical=125/180 (valid 180), producer=125/180"
+        },
+        {
+          "check": "mimo/diff/fwd: correct count and pair total match producer",
+          "ok": true,
+          "detail": "canonical=123/180 (valid 179), producer=123/180"
+        },
+        {
+          "check": "mimo/diff/rev: correct count and pair total match producer",
+          "ok": true,
+          "detail": "canonical=120/180 (valid 179), producer=120/180"
+        },
+        {
+          "check": "mimo/ctrl/fwd: correct count and pair total match producer",
+          "ok": true,
+          "detail": "canonical=119/180 (valid 180), producer=119/180"
+        },
+        {
+          "check": "mimo/ctrl/rev: correct count and pair total match producer",
+          "ok": true,
+          "detail": "canonical=125/180 (valid 180), producer=125/180"
+        }
+      ],
+      "limitations": [
+        "No diff advantage survives Holm; the control and the diff arm are within 2.2 pp on exchange-consistent DA.",
+        "The length shortcut remains: heuristic-correct pairs are 33-40 pp more accurate than heuristic-wrong pairs.",
+        "The control is a length-matched empty block; it changes caution as well as content.",
+        "The open arm is a cross-design reference from open_choice_pair, never pooled.",
+        "The changes-first gate fails on pairs where the model reports no security-relevant change: DA is 0 on 20/180 (DeepSeek) and 36/180 (MiMo).",
+        "Single greedy decode; no seed variance."
+      ],
+      "registry_status": "result_imported",
+      "run_count": 8
+    },
+    "coverage_instrumented_dynamic": {
+      "design": "coverage_instrumented_dynamic",
+      "title": "Coverage-instrumented dynamic leak analysis (test-140)",
+      "primary_metric": "branch_complete_rate",
+      "runs": [
+        {
+          "run_id": "next_dynamic_coverage_test140_v2_20261122",
+          "path": "benchmark/extensions/runs/coverage_instrumented_dynamic/test140_coverage_v2",
+          "records": 140,
+          "tiers": {
+            "line_complete": 113,
+            "partial": 6,
+            "branch_complete": 21
+          },
+          "tiers_by_label": {
+            "bad": {
+              "line_complete": 49,
+              "branch_complete": 21
+            },
+            "good": {
+              "line_complete": 64,
+              "partial": 6
+            }
+          },
+          "mean_line_coverage": 0.9989379887119073,
+          "mean_branch_coverage": 0.5273109243697479,
+          "operational": {
+            "confusion": {
+              "tp": 58,
+              "fp": 0,
+              "tn": 70,
+              "fn": 12
+            },
+            "macro_f1": 0.9136513157894737,
+            "mcc": 0.8410214463203253
+          },
+          "conservative": {
+            "valid": 58,
+            "recall": 1.0,
+            "specificity": null,
+            "macro_f1": null,
+            "note": "clean abstains; only recall is meaningful"
+          },
+          "latent": {
+            "bad_clean_operational": 12,
+            "realloc_evidence": 7,
+            "root_policy_only": 5,
+            "branch_complete": 2
+          },
+          "status_counts": {
+            "ok": 58,
+            "inconclusive": 82
+          }
+        }
+      ],
+      "checks": [
+        {
+          "check": "raw tier branch_complete: count matches producer default mode",
+          "ok": true,
+          "detail": "canonical=21, producer=21"
+        },
+        {
+          "check": "effective tier branch_complete: count matches producer overall",
+          "ok": true,
+          "detail": "canonical=21, producer=21"
+        },
+        {
+          "check": "raw tier line_complete: count matches producer default mode",
+          "ok": true,
+          "detail": "canonical=113, producer=113"
+        },
+        {
+          "check": "effective tier line_complete: count matches producer overall",
+          "ok": true,
+          "detail": "canonical=119, producer=119"
+        },
+        {
+          "check": "raw tier partial: count matches producer default mode",
+          "ok": true,
+          "detail": "canonical=6, producer=6"
+        },
+        {
+          "check": "effective tier partial: count matches producer overall",
+          "ok": true,
+          "detail": "canonical=0, producer=0"
+        },
+        {
+          "check": "raw tier not_executed: count matches producer default mode",
+          "ok": true,
+          "detail": "canonical=0, producer=0"
+        },
+        {
+          "check": "effective tier not_executed: count matches producer overall",
+          "ok": true,
+          "detail": "canonical=0, producer=0"
+        },
+        {
+          "check": "raw tier no_coverage: count matches producer default mode",
+          "ok": true,
+          "detail": "canonical=0, producer=0"
+        },
+        {
+          "check": "effective tier no_coverage: count matches producer overall",
+          "ok": true,
+          "detail": "canonical=0, producer=0"
+        },
+        {
+          "check": "raw tier coverage_error: count matches producer default mode",
+          "ok": true,
+          "detail": "canonical=0, producer=0"
+        },
+        {
+          "check": "effective tier coverage_error: count matches producer overall",
+          "ok": true,
+          "detail": "canonical=0, producer=0"
+        },
+        {
+          "check": "branch-complete: 21 bad / 0 good",
+          "ok": true,
+          "detail": "bad=21, good=0"
+        },
+        {
+          "check": "default mode is 58 leak / 82 inconclusive",
+          "ok": true,
+          "detail": "ok=58, inconclusive=82"
+        },
+        {
+          "check": "clean units are inconclusive, never TN",
+          "ok": true,
+          "detail": "70 clean units checked"
+        },
+        {
+          "check": "operational confusion matches producer",
+          "ok": true,
+          "detail": "canonical={'tp': 58, 'fp': 0, 'tn': 70, 'fn': 12}, producer={'tp': 58, 'fp': 0, 'tn': 70, 'fn': 12}"
+        }
+      ],
+      "limitations": [
+        "Line coverage is 99.9% but branch coverage is about 52.7%; a covered line does not exercise the leak path.",
+        "No clean unit is branch-complete, so clean is inconclusive, never TN.",
+        "12 bad units are clean under the default mode; 7 need the realloc-failure branch, 5 are root-policy only.",
+        "Coverage is evidence about execution, not a detection score."
+      ],
+      "registry_status": "result_imported",
+      "run_count": 1
+    },
+    "interpretable_baseline": {
+      "design": "interpretable_baseline",
+      "title": "Interpretable non-LLM lexical baselines (Tier A test-160)",
+      "primary_metric": "macro_f1",
+      "runs": [
+        {
+          "run_id": "next_interp_prior_majority_20261122",
+          "method": "rule:prior_majority",
+          "path": "benchmark/extensions/runs/interpretable_baseline/prior_majority",
+          "records": 160,
+          "confusion": {
+            "tp": 128,
+            "fp": 32,
+            "tn": 0,
+            "fn": 0
+          },
+          "macro_f1": 0.4444444444444444,
+          "mcc": 0.0,
+          "precision": 0.8,
+          "recall": 1.0,
+          "specificity": 0.0,
+          "predicted_positive_rate": 1.0
+        },
+        {
+          "run_id": "next_interp_length_short_20261122",
+          "method": "rule:length_short",
+          "path": "benchmark/extensions/runs/interpretable_baseline/length_short",
+          "records": 160,
+          "confusion": {
+            "tp": 75,
+            "fp": 15,
+            "tn": 17,
+            "fn": 53
+          },
+          "macro_f1": 0.5107033639143731,
+          "mcc": 0.09449111825230681,
+          "precision": 0.8333333333333334,
+          "recall": 0.5859375,
+          "specificity": 0.53125,
+          "predicted_positive_rate": 0.5625
+        },
+        {
+          "run_id": "next_interp_calls_high_20261122",
+          "method": "rule:calls_high",
+          "path": "benchmark/extensions/runs/interpretable_baseline/calls_high",
+          "records": 160,
+          "confusion": {
+            "tp": 53,
+            "fp": 14,
+            "tn": 18,
+            "fn": 75
+          },
+          "macro_f1": 0.41579487179487173,
+          "mcc": -0.019002571855431766,
+          "precision": 0.7910447761194029,
+          "recall": 0.4140625,
+          "specificity": 0.5625,
+          "predicted_positive_rate": 0.41875
+        },
+        {
+          "run_id": "next_interp_alloc_unbalanced_20261122",
+          "method": "rule:alloc_unbalanced",
+          "path": "benchmark/extensions/runs/interpretable_baseline/alloc_unbalanced",
+          "records": 160,
+          "confusion": {
+            "tp": 12,
+            "fp": 0,
+            "tn": 32,
+            "fn": 116
+          },
+          "macro_f1": 0.2634920634920635,
+          "mcc": 0.14237369936287486,
+          "precision": 1.0,
+          "recall": 0.09375,
+          "specificity": 1.0,
+          "predicted_positive_rate": 0.075
+        },
+        {
+          "run_id": "next_interp_mem_api_present_20261122",
+          "method": "rule:mem_api_present",
+          "path": "benchmark/extensions/runs/interpretable_baseline/mem_api_present",
+          "records": 160,
+          "confusion": {
+            "tp": 23,
+            "fp": 2,
+            "tn": 30,
+            "fn": 105
+          },
+          "macro_f1": 0.32996751594849516,
+          "mcc": 0.12909944487358058,
+          "precision": 0.92,
+          "recall": 0.1796875,
+          "specificity": 0.9375,
+          "predicted_positive_rate": 0.15625
+        },
+        {
+          "run_id": "next_interp_alloc_or_mem_20261122",
+          "method": "rule:alloc_or_mem",
+          "path": "benchmark/extensions/runs/interpretable_baseline/alloc_or_mem",
+          "records": 160,
+          "confusion": {
+            "tp": 32,
+            "fp": 2,
+            "tn": 30,
+            "fn": 96
+          },
+          "macro_f1": 0.38740428191904985,
+          "mcc": 0.18333969940564226,
+          "precision": 0.9411764705882353,
+          "recall": 0.25,
+          "specificity": 0.9375,
+          "predicted_positive_rate": 0.2125
+        },
+        {
+          "run_id": "next_interp_short_and_alloc_or_mem_20261122",
+          "method": "rule:short_and_alloc_or_mem",
+          "path": "benchmark/extensions/runs/interpretable_baseline/short_and_alloc_or_mem",
+          "records": 160,
+          "confusion": {
+            "tp": 11,
+            "fp": 0,
+            "tn": 32,
+            "fn": 117
+          },
+          "macro_f1": 0.25593227075797925,
+          "mcc": 0.13585424483219571,
+          "precision": 1.0,
+          "recall": 0.0859375,
+          "specificity": 1.0,
+          "predicted_positive_rate": 0.06875
+        },
+        {
+          "run_id": "next_interp_lr_unweighted_20261122",
+          "method": "lr_unweighted",
+          "path": "benchmark/extensions/runs/interpretable_baseline/lr_unweighted",
+          "records": 160,
+          "confusion": {
+            "tp": 127,
+            "fp": 32,
+            "tn": 0,
+            "fn": 1
+          },
+          "macro_f1": 0.4425087108013937,
+          "mcc": -0.03965257928590721,
+          "precision": 0.7987421383647799,
+          "recall": 0.9921875,
+          "specificity": 0.0,
+          "predicted_positive_rate": 0.99375
+        },
+        {
+          "run_id": "next_interp_lr_balanced_20261122",
+          "method": "lr_balanced",
+          "path": "benchmark/extensions/runs/interpretable_baseline/lr_balanced",
+          "records": 160,
+          "confusion": {
+            "tp": 59,
+            "fp": 20,
+            "tn": 12,
+            "fn": 69
+          },
+          "macro_f1": 0.3912188448548587,
+          "mcc": -0.13126025510803613,
+          "precision": 0.7468354430379747,
+          "recall": 0.4609375,
+          "specificity": 0.375,
+          "predicted_positive_rate": 0.49375
+        }
+      ],
+      "comparisons": {
+        "length_short_vs_llm": {
+          "deepseek_direct": {
+            "n_common": 160,
+            "b_rule_correct_llm_wrong": 70,
+            "c_rule_wrong_llm_correct": 40,
+            "mcnemar": {
+              "a_correct_b_wrong": 70,
+              "a_wrong_b_correct": 40,
+              "discordant": 110,
+              "total": 160,
+              "p_value": 0.005447429511444482,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 1.75,
+              "risk_difference": 0.1875,
+              "significant_unadjusted_0_05": true,
+              "alpha": 0.05
+            },
+            "holm_p": 0.03813200658011138,
+            "significant_holm_0_05": true,
+            "producer_holm_p": 0.03813200658011138,
+            "holm_family_note": "producer pre-declared Holm family"
+          },
+          "deepseek_evidence": {
+            "n_common": 159,
+            "b_rule_correct_llm_wrong": 69,
+            "c_rule_wrong_llm_correct": 47,
+            "mcnemar": {
+              "a_correct_b_wrong": 69,
+              "a_wrong_b_correct": 47,
+              "discordant": 116,
+              "total": 159,
+              "p_value": 0.050729556682883294,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 1.4680851063829787,
+              "risk_difference": 0.13836477987421383,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            },
+            "holm_p": 0.20291822673153317,
+            "significant_holm_0_05": false,
+            "producer_holm_p": 0.20291822673153317,
+            "holm_family_note": "producer pre-declared Holm family"
+          },
+          "mimo_direct": {
+            "n_common": 150,
+            "b_rule_correct_llm_wrong": 69,
+            "c_rule_wrong_llm_correct": 32,
+            "mcnemar": {
+              "a_correct_b_wrong": 69,
+              "a_wrong_b_correct": 32,
+              "discordant": 101,
+              "total": 150,
+              "p_value": 0.00029596019615458444,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 2.15625,
+              "risk_difference": 0.24666666666666667,
+              "significant_unadjusted_0_05": true,
+              "alpha": 0.05
+            },
+            "holm_p": 0.002071721373082091,
+            "significant_holm_0_05": true,
+            "producer_holm_p": 0.002071721373082091,
+            "holm_family_note": "producer pre-declared Holm family"
+          }
+        },
+        "holm_family": "3 tests: length rule vs DeepSeek direct, DeepSeek evidence, MiMo direct",
+        "producer_test_tuned_upper_bound": {
+          "chars": {
+            "feature": "chars",
+            "direction": "<=",
+            "threshold": 3973.0,
+            "macro_f1": 0.5645294005949744,
+            "mcc": 0.1297942162146668,
+            "confusion": {
+              "tp": 108,
+              "fp": 23,
+              "tn": 9,
+              "fn": 20
+            },
+            "precision": 0.8244274809160306,
+            "recall": 0.84375,
+            "specificity": 0.28125
+          },
+          "calls": {
+            "feature": "calls",
+            "direction": "<=",
+            "threshold": 29.0,
+            "macro_f1": 0.5518207282913166,
+            "mcc": 0.10476975951561868,
+            "confusion": {
+              "tp": 102,
+              "fp": 22,
+              "tn": 10,
+              "fn": 26
+            },
+            "precision": 0.8225806451612904,
+            "recall": 0.796875,
+            "specificity": 0.3125
+          },
+          "alloc_minus_free": {
+            "feature": "alloc_minus_free",
+            "direction": ">=",
+            "threshold": 0.0,
+            "macro_f1": 0.46248600223964165,
+            "mcc": -0.016448792373994225,
+            "confusion": {
+              "tp": 123,
+              "fp": 31,
+              "tn": 1,
+              "fn": 5
+            },
+            "precision": 0.7987012987012987,
+            "recall": 0.9609375,
+            "specificity": 0.03125
+          },
+          "mem_api": {
+            "feature": "mem_api",
+            "direction": "<=",
+            "threshold": 4.0,
+            "macro_f1": 0.4706766917293233,
+            "mcc": 0.04607756775840914,
+            "confusion": {
+              "tp": 126,
+              "fp": 31,
+              "tn": 1,
+              "fn": 2
+            },
+            "precision": 0.802547770700637,
+            "recall": 0.984375,
+            "specificity": 0.03125
+          },
+          "branch_density": {
+            "feature": "branch_density",
+            "direction": "<=",
+            "threshold": 0.17391304347826086,
+            "macro_f1": 0.5750725711815206,
+            "mcc": 0.15022696840284328,
+            "confusion": {
+              "tp": 107,
+              "fp": 22,
+              "tn": 10,
+              "fn": 21
+            },
+            "precision": 0.8294573643410853,
+            "recall": 0.8359375,
+            "specificity": 0.3125
+          },
+          "call_density": {
+            "feature": "call_density",
+            "direction": ">=",
+            "threshold": 0.18181818181818182,
+            "macro_f1": 0.5980973758751537,
+            "mcc": 0.20851441405707477,
+            "confusion": {
+              "tp": 98,
+              "fp": 17,
+              "tn": 15,
+              "fn": 30
+            },
+            "precision": 0.8521739130434782,
+            "recall": 0.765625,
+            "specificity": 0.46875
+          }
+        }
+      },
+      "checks": [
+        {
+          "check": "rule:prior_majority: macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.4444, producer=0.4444"
+        },
+        {
+          "check": "rule:prior_majority: MCC matches producer",
+          "ok": true,
+          "detail": "canonical=0.0000, producer=0.0000"
+        },
+        {
+          "check": "rule:length_short: macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.5107, producer=0.5107"
+        },
+        {
+          "check": "rule:length_short: MCC matches producer",
+          "ok": true,
+          "detail": "canonical=0.0945, producer=0.0945"
+        },
+        {
+          "check": "rule:calls_high: macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.4158, producer=0.4158"
+        },
+        {
+          "check": "rule:calls_high: MCC matches producer",
+          "ok": true,
+          "detail": "canonical=-0.0190, producer=-0.0190"
+        },
+        {
+          "check": "rule:alloc_unbalanced: macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.2635, producer=0.2635"
+        },
+        {
+          "check": "rule:alloc_unbalanced: MCC matches producer",
+          "ok": true,
+          "detail": "canonical=0.1424, producer=0.1424"
+        },
+        {
+          "check": "rule:mem_api_present: macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.3300, producer=0.3300"
+        },
+        {
+          "check": "rule:mem_api_present: MCC matches producer",
+          "ok": true,
+          "detail": "canonical=0.1291, producer=0.1291"
+        },
+        {
+          "check": "rule:alloc_or_mem: macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.3874, producer=0.3874"
+        },
+        {
+          "check": "rule:alloc_or_mem: MCC matches producer",
+          "ok": true,
+          "detail": "canonical=0.1833, producer=0.1833"
+        },
+        {
+          "check": "rule:short_and_alloc_or_mem: macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.2559, producer=0.2559"
+        },
+        {
+          "check": "rule:short_and_alloc_or_mem: MCC matches producer",
+          "ok": true,
+          "detail": "canonical=0.1359, producer=0.1359"
+        },
+        {
+          "check": "lr_unweighted: macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.4425, producer=0.4425"
+        },
+        {
+          "check": "lr_unweighted: MCC matches producer",
+          "ok": true,
+          "detail": "canonical=-0.0397, producer=-0.0397"
+        },
+        {
+          "check": "lr_balanced: macro-F1 matches producer",
+          "ok": true,
+          "detail": "canonical=0.3912, producer=0.3912"
+        },
+        {
+          "check": "lr_balanced: MCC matches producer",
+          "ok": true,
+          "detail": "canonical=-0.1313, producer=-0.1313"
+        },
+        {
+          "check": "length rule vs DeepSeek direct: McNemar matches producer",
+          "ok": true,
+          "detail": "recomputed=0.005447"
+        },
+        {
+          "check": "length rule vs DeepSeek evidence: not Holm-significant",
+          "ok": true,
+          "detail": "Holm p=0.2029"
+        }
+      ],
+      "limitations": [
+        "The length rule wins macro-F1 mainly because it predicts positive more often on an 80%-positive split.",
+        "MCC ranking flips: alloc_or_mem 0.183 > length 0.094 > best LLM 0.080.",
+        "Majority-class macro-F1 0.444 is above all 8 LLM runs but MCC is 0 and specificity is 0.",
+        "McNemar vs DeepSeek direct is Holm-significant, but the delta macro-F1 CI crosses zero and vs DeepSeek evidence is not significant.",
+        "Dev-40 has only 8 negatives; the length rule beats majority by 0.0061 on dev."
+      ],
+      "registry_status": "result_imported",
+      "run_count": 9
+    }
+  },
+  "headline": [
+    {
+      "id": "codeql-triage",
+      "statement": "CodeQL MiMo triage reaches 68 TP / 0 FP / 70 TN / 2 FN (macro-F1 0.9857), but it is not significantly better than direct (69/5/65/1; McNemar b=2, c=6, p=0.2891; delta macro-F1 95% CI crosses zero).",
+      "evidence": {
+        "verified": {
+          "tp": 68,
+          "fp": 0,
+          "tn": 70,
+          "fn": 2
+        },
+        "direct": {
+          "tp": 69,
+          "fp": 5,
+          "tn": 65,
+          "fn": 1
+        },
+        "verified_macro_f1": 0.985711369667279,
+        "direct_macro_f1": 0.9571078431372549,
+        "mcnemar": {
+          "n": 140,
+          "b_left_correct_right_wrong": 2,
+          "c_left_wrong_right_correct": 6,
+          "mcnemar": {
+            "a_correct_b_wrong": 2,
+            "a_wrong_b_correct": 6,
+            "discordant": 8,
+            "total": 140,
+            "p_value": 0.2890625,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.3333333333333333,
+            "risk_difference": -0.02857142857142857,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          }
+        },
+        "text_rule_equals_verified": true
+      }
+    },
+    {
+      "id": "pair-diff",
+      "statement": "Diff-guided pair discrimination has no Holm-significant advantage over the length-matched control: DeepSeek +2.22 pp (p=0.3438, Holm=1.0000), MiMo -1.67 pp (p=0.6291, Holm=0.9053).",
+      "evidence": {
+        "deepseek:diff_vs_ctrl": {
+          "n_pairs": 180,
+          "diff_stable_da": 0.6222222222222222,
+          "ctrl_stable_da": 0.6,
+          "b": 7,
+          "c": 3,
+          "mcnemar": {
+            "a_correct_b_wrong": 7,
+            "a_wrong_b_correct": 3,
+            "discordant": 10,
+            "total": 180,
+            "p_value": 0.34375,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 2.3333333333333335,
+            "risk_difference": 0.022222222222222223,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "holm_p": 1.0,
+          "significant_holm_0_05": false,
+          "by_order": {
+            "fwd": {
+              "n_pairs": 180,
+              "diff_da": 0.6833333333333333,
+              "ctrl_da": 0.6888888888888889,
+              "b": 5,
+              "c": 6,
+              "mcnemar": {
+                "a_correct_b_wrong": 5,
+                "a_wrong_b_correct": 6,
+                "discordant": 11,
+                "total": 180,
+                "p_value": 1.0,
+                "p_value_method": "exact two-sided binomial",
+                "odds_ratio": 0.8333333333333334,
+                "risk_difference": -0.005555555555555556,
+                "significant_unadjusted_0_05": false,
+                "alpha": 0.05
+              },
+              "holm_p": 1.0,
+              "significant_holm_0_05": false
+            },
+            "rev": {
+              "n_pairs": 180,
+              "diff_da": 0.7055555555555556,
+              "ctrl_da": 0.6944444444444444,
+              "b": 5,
+              "c": 3,
+              "mcnemar": {
+                "a_correct_b_wrong": 5,
+                "a_wrong_b_correct": 3,
+                "discordant": 8,
+                "total": 180,
+                "p_value": 0.7265625,
+                "p_value_method": "exact two-sided binomial",
+                "odds_ratio": 1.6666666666666667,
+                "risk_difference": 0.011111111111111112,
+                "significant_unadjusted_0_05": false,
+                "alpha": 0.05
+              },
+              "holm_p": 1.0,
+              "significant_holm_0_05": false
+            },
+            "stable": {
+              "n_pairs": 180,
+              "diff_da": 0.6222222222222222,
+              "ctrl_da": 0.6,
+              "b": 7,
+              "c": 3,
+              "mcnemar": {
+                "a_correct_b_wrong": 7,
+                "a_wrong_b_correct": 3,
+                "discordant": 10,
+                "total": 180,
+                "p_value": 0.34375,
+                "p_value_method": "exact two-sided binomial",
+                "odds_ratio": 2.3333333333333335,
+                "risk_difference": 0.022222222222222223,
+                "significant_unadjusted_0_05": false,
+                "alpha": 0.05
+              },
+              "holm_p": 1.0,
+              "significant_holm_0_05": false
+            }
+          },
+          "holm_family": "3 tests per model: fwd, rev, exchange-consistent stable DA"
+        },
+        "mimo:diff_vs_ctrl": {
+          "n_pairs": 180,
+          "diff_stable_da": 0.6055555555555555,
+          "ctrl_stable_da": 0.6222222222222222,
+          "b": 7,
+          "c": 10,
+          "mcnemar": {
+            "a_correct_b_wrong": 7,
+            "a_wrong_b_correct": 10,
+            "discordant": 17,
+            "total": 180,
+            "p_value": 0.629058837890625,
+            "p_value_method": "exact two-sided binomial",
+            "odds_ratio": 0.7,
+            "risk_difference": -0.016666666666666666,
+            "significant_unadjusted_0_05": false,
+            "alpha": 0.05
+          },
+          "holm_p": 0.9052734375,
+          "significant_holm_0_05": false,
+          "by_order": {
+            "fwd": {
+              "n_pairs": 180,
+              "diff_da": 0.6833333333333333,
+              "ctrl_da": 0.6611111111111111,
+              "b": 7,
+              "c": 3,
+              "mcnemar": {
+                "a_correct_b_wrong": 7,
+                "a_wrong_b_correct": 3,
+                "discordant": 10,
+                "total": 180,
+                "p_value": 0.34375,
+                "p_value_method": "exact two-sided binomial",
+                "odds_ratio": 2.3333333333333335,
+                "risk_difference": 0.022222222222222223,
+                "significant_unadjusted_0_05": false,
+                "alpha": 0.05
+              },
+              "holm_p": 0.9052734375,
+              "significant_holm_0_05": false
+            },
+            "rev": {
+              "n_pairs": 180,
+              "diff_da": 0.6666666666666666,
+              "ctrl_da": 0.6944444444444444,
+              "b": 5,
+              "c": 10,
+              "mcnemar": {
+                "a_correct_b_wrong": 5,
+                "a_wrong_b_correct": 10,
+                "discordant": 15,
+                "total": 180,
+                "p_value": 0.3017578125,
+                "p_value_method": "exact two-sided binomial",
+                "odds_ratio": 0.5,
+                "risk_difference": -0.027777777777777776,
+                "significant_unadjusted_0_05": false,
+                "alpha": 0.05
+              },
+              "holm_p": 0.9052734375,
+              "significant_holm_0_05": false
+            },
+            "stable": {
+              "n_pairs": 180,
+              "diff_da": 0.6055555555555555,
+              "ctrl_da": 0.6222222222222222,
+              "b": 7,
+              "c": 10,
+              "mcnemar": {
+                "a_correct_b_wrong": 7,
+                "a_wrong_b_correct": 10,
+                "discordant": 17,
+                "total": 180,
+                "p_value": 0.629058837890625,
+                "p_value_method": "exact two-sided binomial",
+                "odds_ratio": 0.7,
+                "risk_difference": -0.016666666666666666,
+                "significant_unadjusted_0_05": false,
+                "alpha": 0.05
+              },
+              "holm_p": 0.9052734375,
+              "significant_holm_0_05": false
+            }
+          },
+          "holm_family": "3 tests per model: fwd, rev, exchange-consistent stable DA"
+        }
+      }
+    },
+    {
+      "id": "conservative-verifier",
+      "statement": "The conservative verifier retracts only 4 of 236 requests (TP 3 / FP 1); macro-F1 does not rise (0 to -0.0052) and MCC rises only on mimo_cross (+0.0139, CI crosses zero).",
+      "evidence": {
+        "retractions": 4,
+        "verifier_requests": 236,
+        "retracted_tp": 3,
+        "retracted_fp": 1,
+        "retraction_precision": 0.25,
+        "original_fail_closed_retractions": 155,
+        "note": "the original verifier retracted 155 records; the conservative rule retracts 4"
+      }
+    },
+    {
+      "id": "coverage-clean",
+      "statement": "Line coverage cannot prove clean: effective line coverage is 100% for 140/140 units, but only 21 are branch-complete and all 21 are bad; no clean unit is branch-complete.",
+      "evidence": {
+        "tiers": {
+          "line_complete": 113,
+          "partial": 6,
+          "branch_complete": 21
+        },
+        "tiers_by_label": {
+          "bad": {
+            "line_complete": 49,
+            "branch_complete": 21
+          },
+          "good": {
+            "line_complete": 64,
+            "partial": 6
+          }
+        },
+        "operational_macro_f1": 0.9136513157894737,
+        "latent": {
+          "bad_clean_operational": 12,
+          "realloc_evidence": 7,
+          "root_policy_only": 5,
+          "branch_complete": 2
+        }
+      }
+    },
+    {
+      "id": "interpretable-baseline",
+      "statement": "The length baseline beats all 8 LLM runs on macro-F1 (0.511 vs 0.346-0.422), but not on MCC (0.094 vs best LLM 0.080); McNemar vs DeepSeek direct is Holm-significant (0.038), vs DeepSeek evidence it is not (0.203).",
+      "evidence": {
+        "length": {
+          "run_id": "next_interp_length_short_20261122",
+          "method": "rule:length_short",
+          "path": "benchmark/extensions/runs/interpretable_baseline/length_short",
+          "records": 160,
+          "confusion": {
+            "tp": 75,
+            "fp": 15,
+            "tn": 17,
+            "fn": 53
+          },
+          "macro_f1": 0.5107033639143731,
+          "mcc": 0.09449111825230681,
+          "precision": 0.8333333333333334,
+          "recall": 0.5859375,
+          "specificity": 0.53125,
+          "predicted_positive_rate": 0.5625
+        },
+        "majority": {
+          "run_id": "next_interp_prior_majority_20261122",
+          "method": "rule:prior_majority",
+          "path": "benchmark/extensions/runs/interpretable_baseline/prior_majority",
+          "records": 160,
+          "confusion": {
+            "tp": 128,
+            "fp": 32,
+            "tn": 0,
+            "fn": 0
+          },
+          "macro_f1": 0.4444444444444444,
+          "mcc": 0.0,
+          "precision": 0.8,
+          "recall": 1.0,
+          "specificity": 0.0,
+          "predicted_positive_rate": 1.0
+        },
+        "alloc_or_mem": {
+          "run_id": "next_interp_alloc_or_mem_20261122",
+          "method": "rule:alloc_or_mem",
+          "path": "benchmark/extensions/runs/interpretable_baseline/alloc_or_mem",
+          "records": 160,
+          "confusion": {
+            "tp": 32,
+            "fp": 2,
+            "tn": 30,
+            "fn": 96
+          },
+          "macro_f1": 0.38740428191904985,
+          "mcc": 0.18333969940564226,
+          "precision": 0.9411764705882353,
+          "recall": 0.25,
+          "specificity": 0.9375,
+          "predicted_positive_rate": 0.2125
+        },
+        "comparisons": {
+          "deepseek_direct": {
+            "n_common": 160,
+            "b_rule_correct_llm_wrong": 70,
+            "c_rule_wrong_llm_correct": 40,
+            "mcnemar": {
+              "a_correct_b_wrong": 70,
+              "a_wrong_b_correct": 40,
+              "discordant": 110,
+              "total": 160,
+              "p_value": 0.005447429511444482,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 1.75,
+              "risk_difference": 0.1875,
+              "significant_unadjusted_0_05": true,
+              "alpha": 0.05
+            },
+            "holm_p": 0.03813200658011138,
+            "significant_holm_0_05": true,
+            "producer_holm_p": 0.03813200658011138,
+            "holm_family_note": "producer pre-declared Holm family"
+          },
+          "deepseek_evidence": {
+            "n_common": 159,
+            "b_rule_correct_llm_wrong": 69,
+            "c_rule_wrong_llm_correct": 47,
+            "mcnemar": {
+              "a_correct_b_wrong": 69,
+              "a_wrong_b_correct": 47,
+              "discordant": 116,
+              "total": 159,
+              "p_value": 0.050729556682883294,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 1.4680851063829787,
+              "risk_difference": 0.13836477987421383,
+              "significant_unadjusted_0_05": false,
+              "alpha": 0.05
+            },
+            "holm_p": 0.20291822673153317,
+            "significant_holm_0_05": false,
+            "producer_holm_p": 0.20291822673153317,
+            "holm_family_note": "producer pre-declared Holm family"
+          },
+          "mimo_direct": {
+            "n_common": 150,
+            "b_rule_correct_llm_wrong": 69,
+            "c_rule_wrong_llm_correct": 32,
+            "mcnemar": {
+              "a_correct_b_wrong": 69,
+              "a_wrong_b_correct": 32,
+              "discordant": 101,
+              "total": 150,
+              "p_value": 0.00029596019615458444,
+              "p_value_method": "exact two-sided binomial",
+              "odds_ratio": 2.15625,
+              "risk_difference": 0.24666666666666667,
+              "significant_unadjusted_0_05": true,
+              "alpha": 0.05
+            },
+            "holm_p": 0.002071721373082091,
+            "significant_holm_0_05": true,
+            "producer_holm_p": 0.002071721373082091,
+            "holm_family_note": "producer pre-declared Holm family"
+          }
+        }
+      }
+    }
+  ],
+  "validation": {
+    "runs_checked": 30,
+    "schema_ok": true,
+    "parent_metrics_ok": true,
+    "design_checks_total": 71,
+    "design_checks_failed": 0,
+    "runs": [
+      {
+        "run_id": "next_codeql_triage_mimo_direct_v2_20261122",
+        "design": "codeql_alert_triage",
+        "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 140
+      },
+      {
+        "run_id": "next_codeql_triage_mimo_v1_20261122",
+        "design": "codeql_alert_triage",
+        "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v1",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 140
+      },
+      {
+        "run_id": "next_codeql_triage_mimo_v2_20261122",
+        "design": "codeql_alert_triage",
+        "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 140
+      },
+      {
+        "run_id": "next_codeql_triage_mimo_v2_text_rule_20261122",
+        "design": "codeql_alert_triage",
+        "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_text_rule",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 140
+      },
+      {
+        "run_id": "next_codeql_triage_mimo_v2_verified_20261122",
+        "design": "codeql_alert_triage",
+        "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_verified",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 140
+      },
+      {
+        "run_id": "next_codeql_triage_mimo_v2_cascade_20261122",
+        "design": "codeql_alert_triage",
+        "path": "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_cascade",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 140
+      },
+      {
+        "run_id": "next_codeql_triage_zero_cost_never_freed_20261122",
+        "design": "codeql_alert_triage",
+        "path": "benchmark/extensions/runs/codeql_alert_triage/zero_cost_never_freed",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 140
+      },
+      {
+        "run_id": "next_codeql_triage_zero_cost_drop_may_cpp_20261122",
+        "design": "codeql_alert_triage",
+        "path": "benchmark/extensions/runs/codeql_alert_triage/zero_cost_drop_may_cpp",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 140
+      },
+      {
+        "run_id": "next_conservative_deepseek_self_20261122",
+        "design": "conservative_verification",
+        "path": "benchmark/extensions/runs/conservative_verification/deepseek_self",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_conservative_deepseek_cross_20261122",
+        "design": "conservative_verification",
+        "path": "benchmark/extensions/runs/conservative_verification/deepseek_cross",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_conservative_mimo_self_20261122",
+        "design": "conservative_verification",
+        "path": "benchmark/extensions/runs/conservative_verification/mimo_self",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_conservative_mimo_cross_20261122",
+        "design": "conservative_verification",
+        "path": "benchmark/extensions/runs/conservative_verification/mimo_cross",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_pair_diff_deepseek_diff_fwd_20261122",
+        "design": "diff_guided_pair",
+        "path": "benchmark/extensions/runs/diff_guided_pair/deepseek_diff_fwd",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 360
+      },
+      {
+        "run_id": "next_pair_diff_deepseek_diff_rev_20261122",
+        "design": "diff_guided_pair",
+        "path": "benchmark/extensions/runs/diff_guided_pair/deepseek_diff_rev",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 360
+      },
+      {
+        "run_id": "next_pair_diff_deepseek_ctrl_fwd_20261122",
+        "design": "diff_guided_pair",
+        "path": "benchmark/extensions/runs/diff_guided_pair/deepseek_ctrl_fwd",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 360
+      },
+      {
+        "run_id": "next_pair_diff_deepseek_ctrl_rev_20261122",
+        "design": "diff_guided_pair",
+        "path": "benchmark/extensions/runs/diff_guided_pair/deepseek_ctrl_rev",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 360
+      },
+      {
+        "run_id": "next_pair_diff_mimo_diff_fwd_20261122",
+        "design": "diff_guided_pair",
+        "path": "benchmark/extensions/runs/diff_guided_pair/mimo_diff_fwd",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 360
+      },
+      {
+        "run_id": "next_pair_diff_mimo_diff_rev_20261122",
+        "design": "diff_guided_pair",
+        "path": "benchmark/extensions/runs/diff_guided_pair/mimo_diff_rev",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 360
+      },
+      {
+        "run_id": "next_pair_diff_mimo_ctrl_fwd_20261122",
+        "design": "diff_guided_pair",
+        "path": "benchmark/extensions/runs/diff_guided_pair/mimo_ctrl_fwd",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 360
+      },
+      {
+        "run_id": "next_pair_diff_mimo_ctrl_rev_20261122",
+        "design": "diff_guided_pair",
+        "path": "benchmark/extensions/runs/diff_guided_pair/mimo_ctrl_rev",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 360
+      },
+      {
+        "run_id": "next_dynamic_coverage_test140_v2_20261122",
+        "design": "coverage_instrumented_dynamic",
+        "path": "benchmark/extensions/runs/coverage_instrumented_dynamic/test140_coverage_v2",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 140
+      },
+      {
+        "run_id": "next_interp_prior_majority_20261122",
+        "design": "interpretable_baseline",
+        "path": "benchmark/extensions/runs/interpretable_baseline/prior_majority",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_interp_length_short_20261122",
+        "design": "interpretable_baseline",
+        "path": "benchmark/extensions/runs/interpretable_baseline/length_short",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_interp_calls_high_20261122",
+        "design": "interpretable_baseline",
+        "path": "benchmark/extensions/runs/interpretable_baseline/calls_high",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_interp_alloc_unbalanced_20261122",
+        "design": "interpretable_baseline",
+        "path": "benchmark/extensions/runs/interpretable_baseline/alloc_unbalanced",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_interp_mem_api_present_20261122",
+        "design": "interpretable_baseline",
+        "path": "benchmark/extensions/runs/interpretable_baseline/mem_api_present",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_interp_alloc_or_mem_20261122",
+        "design": "interpretable_baseline",
+        "path": "benchmark/extensions/runs/interpretable_baseline/alloc_or_mem",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_interp_short_and_alloc_or_mem_20261122",
+        "design": "interpretable_baseline",
+        "path": "benchmark/extensions/runs/interpretable_baseline/short_and_alloc_or_mem",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_interp_lr_unweighted_20261122",
+        "design": "interpretable_baseline",
+        "path": "benchmark/extensions/runs/interpretable_baseline/lr_unweighted",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      },
+      {
+        "run_id": "next_interp_lr_balanced_20261122",
+        "design": "interpretable_baseline",
+        "path": "benchmark/extensions/runs/interpretable_baseline/lr_balanced",
+        "schema_ok": true,
+        "errors": [],
+        "warnings": [],
+        "parent_metrics_ok": true,
+        "parent_metric_mismatches": [],
+        "records": 160
+      }
+    ]
+  },
+  "boundaries": [
+    "不跨设计池化：每个 design 保留自己的单元、分母和主终点。",
+    "不修改 LEADERBOARD.md、final_summary.json、tier_a_* 或 tier_b_*；主表保持冻结。",
+    "CodeQL triage 是 Tier B Juliet test-140；interpretable baseline 是 Tier A SecVulEval test-160；两者不可跨层比较。",
+    "Conservative verifier 是探索性、事后分析；test split 已被第一遍和原验证器看过。",
+    "Coverage dynamic 的 clean 是 inconclusive，不是 TN；operational 视图不是证明。",
+    "Pair diff 的 open 臂是跨设计参考，不是池化臂。",
+    "单次运行、temperature 0；没有 seed 或 run-to-run 方差。"
+  ]
+}

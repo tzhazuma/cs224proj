@@ -1,0 +1,108 @@
+{
+  "leak_raw": false,
+  "leak_attributed": false,
+  "leak_blocks": [],
+  "attributed_blocks": [],
+  "attributed_bytes": 0,
+  "raw_bytes": 0,
+  "leak_kinds": [],
+  "leak_summary": null,
+  "leak_summary_bytes": null,
+  "leak_summary_records": null,
+  "asan_errors": [],
+  "deadly_signal": false,
+  "injection": {
+    "realloc_calls": 0,
+    "realloc_null_calls": 0,
+    "realloc_nonnull_calls": 0,
+    "injected": false,
+    "injected_at_call": null
+  },
+  "mode": "default",
+  "build_variant": "plain",
+  "applicable": true,
+  "returncode": 0,
+  "timed_out": false,
+  "wall_ms": 47,
+  "failure_class": "clean",
+  "decision": "clean",
+  "stdout_sha256": "fa03b7bf6f35bf0a57c6638b3047bc749911eb9f3bf4740d8a32d1be8f0acb7e",
+  "stdout_lines": [
+    "A String",
+    "A String"
+  ],
+  "stderr_path": "cases/d0132_good/run_default/stderr.txt",
+  "stdout_path": "cases/d0132_good/run_default/stdout.txt",
+  "env": {
+    "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=0:exitcode=23",
+    "LSAN_OPTIONS": "exitcode=23:use_stacks=0:use_registers=0",
+    "DYNENH_REALLOC_FAIL_NONNULL": ""
+  },
+  "gcda_files": [
+    "CWE401_Memory_Leak__wchar_t_malloc_01.gcda",
+    "__dynenh_probe_main.gcda"
+  ],
+  "gcov_checks": [
+    {
+      "source": "CWE401_Memory_Leak__wchar_t_malloc_01.c",
+      "returncode": 0,
+      "lines_total": 18,
+      "lines_hit": 18,
+      "lines_total_parsed": 18,
+      "lines_hit_parsed": 18
+    }
+  ],
+  "coverage": {
+    "lines_total": 18,
+    "lines_hit": 18,
+    "line_pct": 1.0,
+    "branches_total": 2,
+    "branches_hit": 1,
+    "branch_pct": 0.5,
+    "files": [
+      {
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_malloc_01.c",
+        "lines_total": 18,
+        "lines_hit": 18,
+        "line_pct": 1.0,
+        "branches_total": 2,
+        "branches_hit": 1,
+        "branch_pct": 0.5,
+        "uncovered_lines": [],
+        "uncovered_branches": 1
+      }
+    ],
+    "uncovered_lines": [],
+    "uncovered_branches": [
+      {
+        "line": 63,
+        "source_block_id": 2,
+        "destination_block_id": 3,
+        "throw": false,
+        "fallthrough": true,
+        "count": 0,
+        "file": "juliet/raw/testcases/CWE401_Memory_Leak/s03/CWE401_Memory_Leak__wchar_t_malloc_01.c"
+      }
+    ],
+    "uncovered_branch_count": 1,
+    "functions": {
+      "goodG2B": 1,
+      "goodB2G": 1,
+      "CWE401_Memory_Leak__wchar_t_malloc_01_good": 1
+    },
+    "dead_code_uncovered": [],
+    "effective_lines_total": 18,
+    "effective_line_pct": 1.0
+  },
+  "coverage_tier": "line_complete",
+  "coverage_tier_effective": "line_complete",
+  "coverage_error": [],
+  "entry_executed": true,
+  "site_coverage": {
+    "allocation_sites_total": 1,
+    "allocation_sites_hit": 1,
+    "release_sites_total": 1,
+    "release_sites_hit": 1,
+    "uncovered_sites": []
+  }
+}

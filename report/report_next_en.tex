@@ -1,0 +1,625 @@
+% !TeX program = xelatex
+\RequirePackage[T1]{fontenc}
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{balance}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\urlstyle{tt}
+\hypersetup{
+  pdfauthor={Yu Zhang},
+  pdftitle={From Five Failure Modes to Falsifiable Improvements: A Follow-up Study of C/C++ Vulnerability Detection, Pair Discrimination, and Dynamic Evidence}
+}
+\renewcommand{\thetable}{\arabic{table}}
+
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=single,
+  rulecolor=\color{black},
+  xleftmargin=0.4em,
+  xrightmargin=0.4em,
+  aboveskip=0.4em,
+  belowskip=0.4em
+}
+
+\newcommand{\best}[1]{\textbf{#1}}
+
+\title{From Five Failure Modes to Falsifiable Improvements:\\
+A Follow-up Study of C/C++ Vulnerability Detection,\\
+Pair Discrimination, and Dynamic Evidence}
+\author{
+\IEEEauthorblockN{Yu Zhang}
+\IEEEauthorblockA{CS224 Course Project\\
+ShanghaiTech University\\
+Shanghai, China\\
+\href{mailto:Zhangyu12026@shanghaitech.edu.cn}{Zhangyu12026@shanghaitech.edu.cn}}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Our previous study compared LLM prompting strategies, static analyzers, and dynamic leak detectors under a shared evaluation contract. Five weaknesses still threatened its conclusions: detection macro-F1 was below trivial baselines; pair accuracy contained length and slot effects; CodeQL produced 23 C++ false positives; a fail-closed verifier removed many true positives; and dynamic \texttt{coverage=1.000} measured verdict coverage rather than code coverage. This paper quantifies each weakness, maps it to 2024--2026 literature, and runs five falsifiable follow-up experiments. Dynamic coverage instrumentation covered all 140 Juliet CWE-401 test units, but 12 of 82 originally ``clean'' units were actually vulnerable; 100\% effective line coverage therefore does not certify leak freedom. A dev-selected length rule reached macro-F1 0.511 on 160 SecVulEval test functions, above all eight LLM runs (0.346--0.422), although its MCC was only 0.094. A diff-guided open-choice pair experiment added 1,440 real records; swap-consistent accuracy was 62.22\% for DeepSeek and 60.56\% for MiMo, not significantly better than length-matched controls after Holm correction. CodeQL alert triage raised macro-F1 from 0.8173 to 0.9857 and removed 23/23 false positives without deleting a true positive, but this was not significantly better than direct LLM classification ($p=0.289$), and the final zero-FP row required a post-hoc field-consistency rule. A conservative three-way verifier retracted only 4 of 236 positive claims, with no detection gain. The only conditional positive result is therefore relative to CodeQL, not relative to a direct LLM. We conclude that the next step is not another prompt leaderboard, but externally executable evidence, new holdouts, and explicit separation of ranking, operating point, and measurement failures.
+\end{abstract}
+
+\begin{IEEEkeywords}
+vulnerability detection, pair discrimination, CodeQL alert triage, dynamic coverage, selective prediction, reproducible evaluation
+\end{IEEEkeywords}
+
+\section{Introduction}
+\label{sec:intro}
+
+The previous report established a two-tier evaluation contract. Tier A uses SecVulEval functions and vulnerable/fixed pairs; Tier B uses Juliet CWE-401 programs. The tiers share schemas, failure classes, coverage/strict views, and cost vectors, but are never pooled or ranked against each other. Its findings were deliberately conservative: detection macro-F1 ranged from 0.35 to 0.42; forced-choice pair accuracy dropped after swapping A/B; dynamic fault injection made 12 previously unobservable bad units observable, but a clean execution was still not a proof of leak freedom.
+
+Those findings left a more basic question unanswered: \emph{where exactly are the methods weak, by how much, and what experiment could change the conclusion?} This paper addresses that question. We do not introduce another large prompt benchmark. Instead, we select five weaknesses, quantify each on the existing frozen data, derive a falsifiable intervention, and report both successful and failed outcomes.
+
+The five weaknesses are:
+\begin{enumerate}
+  \item \textbf{Detection.} DeepSeek direct obtains macro-F1 0.3828 and MCC 0.0414, below the constant-positive macro-F1 0.4444 and below a code-blind length rule.
+  \item \textbf{Pair discrimination.} Single-order forced-choice accuracy is 76.67\%/86.67\%, but swap-consistent accuracy is only 61.67\%/74.44\%, and 130 of 180 vulnerable versions are shorter.
+  \item \textbf{CodeQL.} The test set contains 68 TP, 23 FP, and 2 FN; every FP comes from \texttt{cpp/memory-may-not-be-freed}.
+  \item \textbf{Verification.} Fail-closed verification reduces macro-F1 by 0.070--0.204 and does not preferentially remove false positives.
+  \item \textbf{Dynamic evidence.} No unit has line or branch coverage; the reported \texttt{coverage=1.000} is only the fraction of units with a verdict.
+\end{enumerate}
+
+We run five follow-up experiments: a dynamic coverage gate (G0), an interpretable non-LLM baseline (B1), diff-guided pair discrimination (P1), CodeQL alert triage (C1), and a conservative three-way verifier (V1). The experiments are not presented as five new state-of-the-art methods. They are attempts to distinguish four failure classes: operating-point failure, ranking failure, non-checkable evidence, and measurement failure.
+
+The contributions are:
+\begin{itemize}
+  \item a quantitative decomposition of five weaknesses, separating prior/operating-point effects from ranking effects;
+  \item a mapping from each weakness to directly relevant 2024--2026 work, with explicit limits on which published numbers can be transferred;
+  \item five real experiments, including negative results, stored as immutable runs with prompts, responses, costs, and hashes;
+  \item a next-stage protocol with success thresholds, stopping rules, and a zero-API priority for the two most urgent actions.
+\end{itemize}
+
+The research questions are:
+\begin{description}
+  \item[RQ1] On an 80\%-positive test set, is LLM detection below constant and length baselines, and is the gap caused by operating point or ranking?
+  \item[RQ2] After controlling length direction and slot position, how much pair signal remains, and does a semantic diff improve swap-consistent accuracy?
+  \item[RQ3] Are CodeQL's 23 false positives explainable and filterable, and what are the effect sizes relative to CodeQL and direct LLM classification?
+  \item[RQ4] Can a conservative three-way verifier preserve true positives while correcting false positives?
+  \item[RQ5] Can 100\% line coverage certify a dynamic clean result, and how many good units would a coverage gate abstain on?
+\end{description}
+
+\section{Protocol and Evidence Boundary}
+\label{sec:protocol}
+
+\subsection{Frozen data}
+Table~\ref{tab:data} lists the four frozen datasets. Tier A dev/test have zero overlap in index, project, and function-body MD5. Tier B uses only the 140 Juliet CWE-401 test units. The tiers use different labels, denominators, and costs and are never pooled.
+
+\begin{table}[t]
+\centering
+\caption{Frozen datasets used in this study.}
+\label{tab:data}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrl@{}}
+\toprule
+Dataset & $n$ & Positives & Use \\
+\midrule
+Tier A dev & 40 & 32 & rule/threshold selection \\
+Tier A test & 160 & 128 & detection evaluation \\
+Pair test & 180 pairs & 180 & pair discrimination \\
+Juliet test & 140 & 70 & static/dynamic/triage \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Metrics}
+We report several metrics because a single number hides operating-point effects:
+\begin{itemize}
+  \item \textbf{macro-F1}: mean of positive- and negative-class F1. With 80\% positives it rewards over-prediction.
+  \item \textbf{MCC}: penalizes both FP and FN; it is a co-primary detection endpoint.
+  \item \textbf{DA}: pair accuracy with invalid outputs counted wrong. \textbf{Swap-consistent DA} requires both A/B orders to be correct.
+  \item \textbf{TP deletion}: number of CodeQL true alerts removed by triage; it must be reported with FP removal.
+  \item \textbf{covered-clean}: a clean unit whose own reachable lines were executed. It is an evidence-strength label, not a correctness label.
+\end{itemize}
+
+\subsection{Statistics}
+Paired binary comparisons use exact McNemar tests \cite{mcnemar1947}; Holm correction is applied within pre-declared families \cite{holm1979}; proportion intervals use Wilson intervals \cite{wilson1927}; project-clustered comparisons use 10,000 percentile bootstrap resamples with seed 42 \cite{efron1979}. All intervals and $p$ values come from stored artifacts.
+
+\subsection{Pre-registration status}
+The experiments differ in pre-registration status. B1's rules and thresholds were fixed before test evaluation. G0's gate requirements were defined before execution. P1's conditions, control, endpoint, and Holm family were fixed before execution. C1 is exploratory: v2 was written after observing seven TP deletions in v1, and the final row also uses a post-hoc field-consistency rule. V1 was designed after seeing both the first-pass test results and the old verifier, so it is explicitly marked \texttt{exploratory\_post\_hoc\_test\_seen}.
+
+All runs use a single temperature-0 sample. Costs are computed from configured prices and provider token reports, not invoices. CodeQL compute time is reported separately and is not converted to dollars.
+
+\section{Five Weaknesses: Causes, Literature, and Hypotheses}
+\label{sec:gaps}
+
+\subsection{Detection below constant and length baselines}
+\label{sec:gap-detect}
+
+Table~\ref{tab:detect} places eight LLM runs, two constant rules, representative surface rules, and two logistic regressions on the same 160 test functions. The constant-positive rule reaches macro-F1 0.444. A length rule selected only on dev reaches 0.511. DeepSeek direct reaches 0.383 and its accuracy, 38.75\%, is below the 80\% obtained by always predicting vulnerable.
+
+\begin{table*}[t]
+\centering
+\caption{Detection point estimates on the 160-function Tier A test set.}
+\label{tab:detect}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Method & TP & FP & TN & FN & P & R & macro-F1 & MCC \\
+\midrule
+Always vulnerable & 128 & 32 & 0 & 0 & 0.800 & 1.000 & 0.444 & 0.000 \\
+Always safe & 0 & 0 & 32 & 128 & --- & 0.000 & 0.167 & 0.000 \\
+\texttt{length\_short} (dev median) & 75 & 15 & 17 & 53 & 0.833 & 0.586 & \best{0.511} & 0.094 \\
+\texttt{length\_short} (dev threshold) & 101 & 23 & 9 & 27 & 0.815 & 0.789 & \best{0.533} & 0.067 \\
+\texttt{alloc\_or\_mem} & 32 & 2 & 30 & 96 & 0.941 & 0.250 & 0.387 & \best{0.183} \\
+\texttt{lr\_balanced} & 59 & 20 & 12 & 69 & 0.747 & 0.461 & 0.391 & $-0.131$ \\
+DeepSeek direct & 38 & 8 & 24 & 90 & 0.826 & 0.297 & 0.383 & 0.041 \\
+DeepSeek evidence & 49 & 11 & 21 & 78 & 0.817 & 0.386 & \best{0.422} & 0.035 \\
+MiMo direct & 35 & 7 & 25 & 93 & 0.806 & 0.242 & 0.346 & 0.008 \\
+MiMo context & 38 & 6 & 27 & 90 & 0.861 & 0.252 & 0.365 & \best{0.080} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Five causes explain the gap.
+
+\textbf{(1) Operating-point mismatch.} DeepSeek direct predicts positive on only 46/160 units (28.75\%) while the true positive rate is 80\%. Its precision, 0.826, is only 2.6 percentage points above the base rate. Raising the confidence threshold to 0.3 post hoc raises macro-F1 to 0.528 and accuracy to 73.13\%, but MCC only moves from 0.041 to 0.062. The operating point is repairable; the ranking is not.
+
+\textbf{(2) Confidence barely ranks.} The AUROC of DeepSeek confidence for vulnerability is about 0.540. Threshold and prior changes therefore cannot produce a usable MCC.
+
+\textbf{(3) CWE structure.} Recall is 0.05 for CWE-416 (1/20), 0.125 for CWE-20 (1/8), and zero for CWE-264 and CWE-200. Pattern-like CWEs reach 0.55--0.83. CWE-416 alone accounts for 20/128 positives, making lifetime bugs a major source of misses.
+
+\textbf{(4) Length direction is reversed.} False negatives have median length 971.5 characters; true positives have median 1,967.5. In the shortest quartile, the positive rate is 82.5\%, but DeepSeek accuracy is 25.0\%. The length rule uses ``short $\rightarrow$ vulnerable,'' matching the dataset prior; the LLM behaves in the opposite direction.
+
+\textbf{(5) Label semantics.} The label distinguishes a pre-fix vulnerable version from its post-fix version, not whether a visible defect exists in the function body. Among 90 DeepSeek false negatives, 76.7\% of rationales contain ``no clear,'' ``insufficient,'' or ``unclear.'' Standard reference-count wrappers often depend on callers. The LLM may be locally correct while the task requires taking a side.
+
+\textbf{Literature.} SecVulEval reports statement-level F1 of only 23.83\% for its best model, so low F1 is normal for this benchmark \cite{ahmed2026secvuleval}. PrimeVul shows a 7B model dropping from 68.26\% F1 on BigVul to 3.09\% on a de-leaked split, demonstrating how leakage and distribution shift inflate scores \cite{ding2025primevul}. Top Score on the Wrong Exam shows that word-count features can score highly on function-level benchmarks and that most samples are undecidable without caller context \cite{risse2025topscore}. CORRECT shows the optimistic case: with context-rich pairs, key CWEs can reach 0.7 F1 and 0.8 precision \cite{li2025correct}. CWE-specialized models outperform generalists \cite{alatiq2024specialist}, and identifier-only perturbations flip 26\% of LLM answers \cite{ull2024}.
+
+\textbf{Hypothesis.} The 0.383 result is primarily an operating-point/prior failure, compounded by missing context. A pre-registered calibration experiment should report MCC as the primary endpoint and macro-F1 as co-primary. A gain to MCC $\ge$0.15 and macro-F1 $\ge$0.53 would count as capability improvement; a macro-F1 gain with MCC $\le$0.07 would count only as base-rate exploitation.
+
+\subsection{Pair discrimination: length and slot preferences}
+\label{sec:gap-pair}
+
+Table~\ref{tab:pairbase} restates the previous four conditions. Single-order forced choice appears strong at 76.67\%/86.67\%, but swap-consistent accuracy falls to 61.67\%/74.44\%, and open four-way accuracy is lower still (55.56\%/58.33\%). DeepSeek chooses A 92.22\% of the time when the vulnerable side is A, versus 61.11\% when it is B; reversing slots reverses the preference, producing about a 31-point gap.
+
+\begin{table}[t]
+\centering
+\caption{Pair discrimination before the new intervention (180 pairs).}
+\label{tab:pairbase}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Model & Task & Forward & Reverse & Consistent \\
+\midrule
+DeepSeek & forced & 76.67 & 77.78 & \best{61.67} \\
+DeepSeek & open & 66.11 & 63.89 & \best{55.56} \\
+MiMo & forced & 86.67 & 81.67 & \best{74.44} \\
+MiMo & open & 66.11 & 65.56 & \best{58.33} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A length heuristic that always selects the shorter version reaches 74.44\% in one order and 72.22\% across two orders. In the 10\% length-matched subset, 101 vulnerable versions remain shorter and only 37 longer; the heuristic still reaches 72.92\%. Pair accuracy therefore cannot be interpreted as semantic comparison without length controls.
+
+\textbf{Literature.} Position and formatting biases in LLM judges are well documented \cite{shi2025judges,zhao2026bias}. Selective prediction provides the right framing for abstention \cite{chow1970,geifman2017selective,angelopoulos2021conformal}. The P1 intervention adds a label-free semantic diff and a changes-first rationale, then evaluates both presentation orders. The primary endpoint is swap-consistent open-choice DA. We pre-declare a success line of 60\% for MiMo and 55\% for DeepSeek after length neutralization, with a length-matched control of identical token budget.
+
+\subsection{CodeQL false positives}
+\label{sec:gap-codeql}
+
+On 140 test units, CodeQL obtains 68 TP, 23 FP, 47 TN, and 2 FN. All 23 false positives are C++ good units and all originate from \texttt{cpp/memory-may-not-be-freed}. Their mechanisms are 15 reference/shadowing plus ALLOCA cases (\texttt{\_33}), three global-flag/cross-function delete cases (\texttt{\_22}), three container escapes (\texttt{\_72}), and two wrapper chains (\texttt{\_54}). The never-freed query alone yields 46 TP and no FP; a C-only may-not policy yields 60 TP and no FP.
+
+\textbf{Literature.} IRIS uses LLM reasoning to triage static alerts \cite{li2025iris}. ZeroFalse studies false-positive suppression \cite{iranmanesh2025zerofalse}; recent work specifically analyzes CodeQL false positives \cite{sajadi2026codeqlfp}. The C1 hypothesis is that an ownership/escape explanation can remove the 23 false positives while preserving all 68 true positives, but the comparison must include direct LLM classification: if direct LLM already detects these units, triage is an engineering improvement rather than a new detection capability.
+
+\subsection{Fail-closed verification}
+\label{sec:gap-verify}
+
+The old verifier retracts a positive prediction whenever it cannot obtain a valid sustain. It removes 155/236 positive claims, including 152 schema-valid retractions. Retraction precision is 14.3\%--23.1\%, close to the 18.3\%--19.0\% false-positive base rate among positives. Macro-F1 falls by 0.070--0.204, and verifier confidence has AUROC 0.28--0.46 for separating TP from FP. The problem is not a badly chosen threshold; the verifier has no ranking signal.
+
+\textbf{Literature.} Self-correction can degrade reasoning \cite{huang2024selfcorrect}; retraction and over-correction are distinct failure modes \cite{yang2025retraction,jin2026overcorrection}. The V1 hypothesis is that a three-way output (supported, unsupported, insufficient), with retraction allowed only for a concrete guard or counterexample tied to a valid line, should preserve true positives. It is exploratory because the test set has already been seen.
+
+\subsection{Dynamic coverage}
+\label{sec:gap-dynamic}
+
+The previous dynamic run reports 140/140 verdict coverage, not code coverage. A clean result could mean either that every relevant path was executed without a leak or that the leaking path was never reached. G0 adds GCC coverage instrumentation, executes default, forced-\texttt{realloc}-failure, and no-global-root modes, and classifies clean units as covered-clean, uncovered, or compile-error.
+
+\textbf{Literature.} Coverage adequacy has long been known not to imply correctness \cite{zhu1997coverage}. LeakSanitizer and AddressSanitizer observe execution, not all paths \cite{serebryany2012asan,lsan}. Fault injection and data coverage are needed for conditional allocation failures \cite{wang2024datacoverage}. The G0 gate requires at least 90\% effective line coverage and execution of every free/delete site; otherwise a clean unit is undecidable.
+
+\section{Experiments and Results}
+\label{sec:experiments}
+
+\subsection{G0: dynamic coverage gate}
+
+G0 collected coverage for all 140 Juliet test units with zero compile or coverage errors. After removing six source-declared CWE-561 dead-code lines, effective line coverage was 100\% for all 140 units. Raw line coverage was 99.9\%; branch coverage on unit-owned files was only 52.7\%. Twenty-one units were branch-complete, and every one was bad; no good unit was branch-complete.
+
+The default path produced 58 TP, 0 FP, 70 TN, and 12 FN. The three-mode union produced 70 TP, 0 FP, 70 TN, and 0 FN, matching the archived enhanced run on all 140 units. Of the 82 default clean units, 70 were good and 12 were bad. All 82 had 100\% effective line coverage. Line coverage therefore excludes ``not executed,'' but cannot distinguish ``executed without leak'' from ``executed without reaching the leak.''
+
+The 12 misses split into seven \texttt{malloc\_realloc} units whose NULL branch was never taken and five global-pointer units treated as roots by LSan. Forced realloc failure adds 14 branches (seven bad, seven good) and no lines. Disabling global roots adds no lines or branches but changes root reachability. A line gate has zero corrective effect; a branch gate would abstain on all 70 good units because their defensive error paths are rarely fully covered. The operational 70/0/70/0 row is valid only as the union of three explicit executions.
+
+\begin{table}[t]
+\centering
+\caption{Dynamic coverage evidence on 140 Juliet units.}
+\label{tab:coverage}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+View & TP & FP & TN & FN \\
+\midrule
+Default path & 58 & 0 & 70 & 12 \\
+Realloc-failure mode & 7 & 0 & 7 & 0 \\
+No-global-root mode & 63 & 0 & 70 & 7 \\
+Three-mode union & \best{70} & \best{0} & \best{70} & \best{0} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{B1: interpretable baselines}
+
+The dev-selected length rule reaches macro-F1 0.511 and MCC 0.094 on test, above all eight LLM runs. Its McNemar comparison against DeepSeek direct is 70/40 (Holm $p=0.038$) and against MiMo direct 69/32 (Holm $p=0.002$), but against DeepSeek evidence it is 69/47 (Holm $p=0.203$). All project-clustered bootstrap intervals for $\Delta$macro-F1 cross zero.
+
+The ranking flips under MCC. The majority rule has macro-F1 0.444 but MCC zero. \texttt{alloc\_or\_mem} has macro-F1 0.387 but the highest MCC, 0.183. On a test set with 80\% positives, macro-F1 rewards over-reporting; MCC exposes the lack of balanced discrimination.
+
+Error analysis shows that 76.7\% of DeepSeek false negatives contain ``no clear,'' ``insufficient,'' or ``unclear'' language, versus 7.9\% of true positives. The length rule recovers 62/90 false negatives at the cost of 15 false positives. In the shortest quartile, LLM recall is 0.091; in the longest quartile, LLM macro-F1 is 0.520 while the length rule falls to 0.216. The dataset contains 122/160 functions with no allocation, free, or memory API call, so allocation features cannot serve as a leak detector on Tier A.
+
+\textbf{Interpretation.} The result does not show that length is a good detector. It shows that the LLM has learned a prior opposite to the dataset and that macro-F1 alone rewards a degenerate operating point. The appropriate next step is calibration plus CWE/context stratification, not deploying a length rule.
+
+\subsection{P1: diff-guided, order-balanced pair evaluation}
+
+P1 added 1,440 real records: two models, diff and token-matched control, forward and reverse orders, 180 pairs each. All eight runs completed with 180/180 valid decisions; two outputs contained only extra explanatory keys, so schema-exact validity was 1,438/1,440.
+
+\begin{table}[t]
+\centering
+\caption{Swap-consistent open-choice pair accuracy.}
+\label{tab:pairdiff}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Model & Condition & Forward & Consistent \\
+\midrule
+DeepSeek & diff & 68.33 & \best{62.22} \\
+DeepSeek & control & 68.89 & 60.00 \\
+DeepSeek & open baseline & 66.11 & 55.56 \\
+MiMo & diff & 68.33 & 60.56 \\
+MiMo & control & 66.11 & 62.22 \\
+MiMo & open baseline & 66.11 & 58.33 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Diff minus control is $+2.22$ points for DeepSeek and $-1.67$ for MiMo; Holm $p$ is 1.000 and 0.905. Diff minus the old open prompt is $+6.67$ for DeepSeek (raw $p=0.0428$, Holm 0.0855) and $+2.22$ for MiMo (Holm 1.000). No comparison survives Holm correction.
+
+Diff does not reduce the length shortcut. The model selects the shorter version 75.17\%--81.20\% of the time, no lower than the old open prompt's 73.15\%--80.14\%. On the 44 pairs where the shorter side must be wrong, diff improves by only 2.27 points over control (both models $p=1.0$). On the 10\% length-matched subset, models remain around 67\%, below the 72.9\% length heuristic. A changes-first instruction also introduces a new gate: when the model finds no security-relevant semantic change, it answers ``neither'' on 20/180 DeepSeek and 36/180 MiMo pairs, almost all incorrect.
+
+\textbf{Interpretation.} A semantic diff helps conditional accuracy after the model commits to A or B, but abstention increases enough to cancel the aggregate gain. Diff is not a solution to the length confound.
+
+\subsection{C1: CodeQL alert triage}
+
+C1 classifies each CodeQL alert as a true or false positive using source, query, and ownership/escape reasoning. Only MiMo produced results; DeepSeek was blocked by 402 insufficient balance and 401 expired credentials, and is marked blocked rather than imputed.
+
+\begin{table*}[t]
+\centering
+\caption{CodeQL alert triage on 140 Juliet test units (MiMo).}
+\label{tab:triage}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Method & TP & FP & TN & FN & P & R & macro-F1 & MCC \\
+\midrule
+CodeQL & 68 & 23 & 47 & 2 & 0.7473 & 0.9714 & 0.8173 & 0.6739 \\
+Direct LLM & 69 & 5 & 65 & 1 & 0.9324 & 0.9857 & 0.9571 & 0.9158 \\
+Triage v1 & 61 & 5 & 65 & 9 & 0.9242 & 0.8714 & 0.8999 & 0.8013 \\
+Triage v2 & 68 & 3 & 67 & 2 & 0.9577 & 0.9714 & 0.9643 & 0.9287 \\
+V2 + consistency review & \best{68} & \best{0} & \best{70} & \best{2} & \best{1.0000} & \best{0.9714} & \best{0.9857} & \best{0.9718} \\
+Cascade with direct & 70 & 2 & 68 & 0 & 0.9722 & 1.0000 & \best{0.9857} & \best{0.9718} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Triage v1 removed 18 false positives but also deleted seven true positives, all \texttt{malloc\_realloc} units. V2 removed 20 false positives and no true positives. The remaining three false positives were \texttt{\_22} units whose rationale said all allocations were released while the structured field still said true positive. A second review or a zero-cost text-consistency rule flips those three, yielding 68/0/70/2.
+
+The final row is a large improvement over CodeQL: $\Delta$macro-F1 $+0.1684$, 95\% CI $[+0.1084,+0.2349]$, $p<10^{-6}$. Against direct LLM, however, the gain is only $+0.0286$ with CI $[-0.0072,+0.0714]$ and $p=0.289$. The 23/23 false-positive removal can also be reproduced by a zero-cost rule that discards C++ may-not-fre-freed alerts: 60 TP, 0 FP, 70 TN, 10 FN, macro-F1 0.9282. The LLM adds recall over this rule but not a statistically clean advantage over direct classification.
+
+\textbf{Cost.} Direct costs \$0.00302; triage v2 costs \$0.03054; optional verification costs \$0.01223. The full pipeline costs about \$0.00024 per unit. CodeQL itself requires 6,061.8 seconds for the 140 units, about 43.3 seconds per unit, versus roughly 0.12 seconds for Clang. The triage benefit must therefore be weighed against static-analysis compute.
+
+\subsection{V1: conservative three-way verification}
+
+The conservative verifier retracts only when it finds an explicit guard or counterexample with a valid line. Supported, unsupported, and insufficient are distinct; invalid or failed calls preserve the original prediction.
+
+\begin{table}[t]
+\centering
+\caption{Conservative verifier on first-pass positive claims.}
+\label{tab:verifier}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Arm & Requests & Retracted & TP/FP & $\Delta$macro-F1 \\
+\midrule
+DeepSeek self & 60 & 1 & 1/0 & $-0.0052$ \\
+DeepSeek by MiMo & 60 & 0 & 0/0 & 0.0000 \\
+MiMo self & 58 & 0 & 0/0 & 0.0000 \\
+MiMo by DeepSeek & 58 & 3 & 2/1 & $-0.0028$ \\
+\midrule
+Total & 236 & 4 & 3/1 & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Only 4/236 claims are retracted. Retraction precision is 25.0\%, not significantly above the false-positive base rate. Macro-F1 changes by zero to $-0.0052$, and same-budget random or low-confidence baselines are statistically indistinguishable. Two mechanically grounded counterexamples are semantically wrong: one describes a triggering input as a counterexample, another treats a \texttt{memset} as a guard. Line-number grounding is necessary but not sufficient.
+
+The correct interpretation is a negative result for LLM self-verification on this task. The three-way output reduces harm relative to fail-closed retraction, but it does not improve detection. A real verifier needs external execution or data-flow dominance checks.
+
+\section{Detailed Failure Mechanisms}
+\label{sec:mechanisms}
+
+\subsection{CodeQL false-positive taxonomy}
+
+Table~\ref{tab:fptaxonomy} expands the 23 false positives. The largest class is \texttt{\_33}, where the vulnerable value is freed through a reference alias or a shadowed variable. CodeQL follows the query's may-not-freed abstraction and does not model the concrete alias, so the alert is a false positive. The second class uses a global flag to select one of two cleanup branches; without whole-program constant propagation the query cannot prove that one branch always frees. The third class stores pointers in a container; the release occurs in a helper that consumes the container. The fourth class traverses five wrapper layers and exceeds the query's default interprocedural depth.
+
+\begin{table}[t]
+\centering
+\caption{Mechanisms of the 23 CodeQL false positives.}
+\label{tab:fptaxonomy}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrl@{}}
+\toprule
+Family & Count & Query & Mechanism \\
+\midrule
+\texttt{\_33} & 15 & may-not-freed & reference alias / shadowing \\
+\texttt{\_22} & 3 & may-not-freed & global branch selects free \\
+\texttt{\_72} & 3 & may-not-freed & container escape \\
+\texttt{\_54} & 2 & may-not-freed & five-layer wrapper \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The taxonomy explains both the success and the fragility of triage. V1 removed 18 false positives but also seven \texttt{malloc\_realloc} true positives: those units have a conditional allocation-failure path, and the model confused ``the normal path frees'' with ``all paths free.'' V2 added an explicit all-paths requirement and removed 20 false positives with zero true-positive deletion. The remaining three \texttt{\_22} cases were not reasoning failures: the rationale correctly said the alerts were false, but the structured label still said true positive. A field-consistency rule fixed them. This distinction matters: the final zero-FP row is an engineering composition, not evidence that a single prompt solved ownership reasoning.
+
+\subsection{Pair abstention and conditional accuracy}
+
+Table~\ref{tab:pairdetail} separates aggregate accuracy, abstention, and accuracy after committing to A or B. Diff-guided prompting improves conditional accuracy for both models: DeepSeek gains 7.97--11.81 points and MiMo gains 8.70--10.29 points over the shorter-side heuristic. However, diff also increases abstention to 20.00--24.44\%, versus 17.22--22.22\% for the old open prompt. The aggregate DA gain disappears because ``neither'' is counted as an error. This is not a formatting artifact: the changes-first instruction asks the model to list security-relevant semantic changes, and when none are found the model often abstains. The control prompt, which includes the same changes-first instruction with length-matched placeholder text, shows the same gate, so the gate is caused by the instruction rather than by the diff content.
+
+\begin{table*}[t]
+\centering
+\caption{Pair accuracy, abstention, and conditional accuracy (180 pairs).}
+\label{tab:pairdetail}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+Model & Condition & Forward DA & Reverse DA & Consistent DA & Abstention & Shorter chosen \\
+\midrule
+DeepSeek & diff & 68.33 & 70.56 & 62.22 & 20.00--23.33 & 77.08--80.43 \\
+DeepSeek & control & 68.89 & 69.44 & 60.00 & 18.89--19.44 & 75.17--80.82 \\
+DeepSeek & open & 66.11 & 63.89 & 55.56 & 17.22--21.11 & 73.15--76.06 \\
+MiMo & diff & 68.33 & 66.67 & 60.56 & 23.33--24.44 & 78.26--80.88 \\
+MiMo & control & 66.11 & 69.44 & 62.22 & 20.00--26.11 & 77.78--81.20 \\
+MiMo & open & 66.11 & 65.56 & 58.33 & 21.67--22.22 & 76.43--80.14 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The result rules out a simple claim that semantic diffs reduce length bias. The model still selects the shorter version in 75--81\% of pairs, and on the 44 pairs where the shorter side must be wrong, diff improves over control by only 2.27 points with $p=1.0$. A diff is useful as an explanation device, not as a length-neutral decision rule.
+
+\subsection{Detection error stratification}
+
+Table~\ref{tab:strata} reports the detection gap by CWE and length. The LLM performs best on pattern-like memory-safety CWEs and poorly on lifetime and contract CWEs. The shortest quartile has an 82.5\% positive rate but only 9.1\% LLM recall. The longest quartile is the reverse: the LLM reaches macro-F1 0.520 while the length rule falls to 0.216. This interaction explains why a single global threshold cannot repair both ends of the distribution. It also explains why adding more context or a generic chain-of-thought prompt has limited value: the missing information is caller behavior, object lifetime, and ownership, not more prose about the visible function.
+
+\begin{table}[t]
+\centering
+\caption{Detection error stratification on Tier A test.}
+\label{tab:strata}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Stratum & $n$ & Positive rate & LLM recall \\
+\midrule
+CWE-416 & 20 & 1.00 & 0.05 \\
+CWE-20 & 8 & 1.00 & 0.125 \\
+CWE-264/200 & 10 & 1.00 & 0.00 \\
+CWE-190 & 6 & 1.00 & 0.83 \\
+CWE-125 & 13 & 1.00 & 0.62 \\
+Length Q1 (shortest) & 40 & 0.825 & 0.091 \\
+Length Q4 (longest) & 40 & 0.775 & 0.52 (macro-F1) \\
+No alloc/free API & 122 & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Why coverage gates are difficult}
+
+The coverage experiment suggests a general rule for leak benchmarks: a gate should be defined over \emph{relevant} control flow, not all lines or all branches. Generic branch coverage penalizes good units because defensive code contains many error paths that a normal input never executes. In this dataset, all 21 branch-complete units are bad, and no good unit is branch-complete. A branch gate would therefore abstain on all 70 good units, destroying specificity. Conversely, line coverage is too weak: all 12 false-clean bad units have 100\% effective line coverage. The useful gate is a leak-relevant branch set: allocation failure branches, ownership-transfer branches, and branches that free or overwrite the last pointer to a block. Building that set requires a lightweight points-to analysis or manual annotation; raw gcov is not enough.
+
+\section{Costs and Engineering Trade-offs}
+\label{sec:cost}
+
+Table~\ref{tab:cost} summarizes the API and compute costs of the follow-up experiments. Detection is cheap relative to static analysis when CodeQL database creation is included. Triage adds about ten times the direct classification cost but removes 23 false positives; however, a zero-cost rule that discards C++ may-not-freed alerts achieves the same zero-FP point with lower recall. The engineering decision therefore depends on whether the deployment values recall or triage effort.
+
+\begin{table}[t]
+\centering
+\caption{Cost summary for the follow-up experiments.}
+\label{tab:cost}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Component & Cost / time & Basis \\
+\midrule
+Direct LLM (140) & \$0.00302 & API tokens \\
+Triage v2 (140) & \$0.03054 & API tokens \\
+Optional verify (91) & \$0.01223 & API tokens \\
+Full triage pipeline & \$0.04579 & API tokens \\
+CodeQL (140 units) & 6,061.8 s & local compute \\
+Clang (140 units) & 16.50 s & local compute \\
+Pair diff (1,440) & \$1.15687 & API tokens \\
+Conservative verifier (236) & \$0.15176 & API tokens \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The pair experiment is the most expensive API component because each request contains two full functions and a diff. It produces no statistically significant gain. This is a useful cost-effectiveness result: the most expensive prompt is not the most informative one. The CodeQL triage pipeline is cheaper than a single pair run and produces the only positive signal, but its advantage over direct LLM classification is not significant.
+
+\section{Implications for Benchmark Design}
+\label{sec:benchmark}
+
+The experiments support five design rules.
+
+\textbf{Rule 1: report a ranking metric and an operating-point metric.} Macro-F1 alone rewards over-prediction on an 80\%-positive set. MCC exposes the near-zero ranking signal. A benchmark that reports only accuracy or F1 can rank a constant classifier above a real detector.
+
+\textbf{Rule 2: report abstention separately from errors.} Open-choice pair accuracy counts both/neither as wrong. This is correct for a forced deployment, but it hides whether a model is uncertain or simply wrong. A benchmark should report DA, abstention, and conditional DA.
+
+\textbf{Rule 3: control length and position.} A pair benchmark must run both A/B orders and report swap-consistent accuracy. If length direction is imbalanced, the benchmark must include a length-only baseline and a length-matched subset. Otherwise, a 76\% score can be produced without reading either function.
+
+\textbf{Rule 4: distinguish tool alerts from model predictions.} CodeQL returns a may-leak claim; an LLM triage returns a judgment about that claim. These are different tasks. A triage benchmark must include the base detector's P/R/F1, TP deletion, and a direct LLM baseline. Otherwise, a triage gain is confounded with the detector's recall.
+
+\textbf{Rule 5: require executable evidence for verification claims.} A verifier that says ``this guard prevents the leak'' should produce a guard location, a path argument, and preferably an executable harness. Without execution, the verifier is another language model opinion. The conservative experiment shows that mechanical grounding is not sufficient: two counterexamples had valid line numbers but incorrect semantics.
+
+These rules are intentionally conservative. They do not assume that LLMs are useless; they specify the minimum controls needed before a claim about LLM improvement is credible.
+
+\section{Why the Interventions Succeeded or Failed}
+\label{sec:discussion}
+
+Four mechanisms recur across experiments.
+
+\textbf{(1) Operating point is not ranking.} Detection improves under a lower threshold, but MCC stays near zero. Any claim of detection improvement must survive both a calibration change and a ranking test.
+
+\textbf{(2) Forced choices hide abstention.} Pair-joint forces exactly one vulnerable side and eliminates the both-safe output that caused low split-side DA. The high number is partly a task effect. Open-choice restores abstention, and swap-consistent accuracy reveals the remaining signal. Diff adds conditional accuracy but also adds a new abstention gate.
+
+\textbf{(3) Measurement labels are not evidence labels.} Verdict coverage, line coverage, branch coverage, and allocation-site coverage each answer a different question. None certifies leak freedom. G0 shows that 100\% line coverage can coexist with 12 false-clean vulnerable units.
+
+\textbf{(4) LLM judgment lacks an independent oracle.} Triage works best when the alert itself supplies a concrete static claim and the model explains ownership. Verification fails when the model must decide whether its own earlier claim is supported. The former is evidence adjudication; the latter is self-grading.
+
+\section{Limitations and Threats to Validity}
+\label{sec:threats}
+
+\begin{itemize}
+  \item \textbf{Single run.} Every API experiment uses one temperature-0 sample. There is no seed variance or service-side confidence interval.
+  \item \textbf{Test reuse.} C1 and V1 were designed after earlier test results. They are exploratory and not independent confirmation. P1 and G0 are stronger but still single-split.
+  \item \textbf{Small dev set.} Tier A dev has only 40 functions and eight negatives. Rule selection is unstable; the length rule exceeds the majority baseline by only 0.006 macro-F1 on dev.
+  \item \textbf{Label semantics.} SecVulEval labels vulnerable/fixed versions, not visible defects. Some false negatives may be genuinely undecidable from the function body.
+  \item \textbf{Synthetic Juliet.} Juliet is templated and CWE-specific. The 23 CodeQL false positives are C++ may-not-fre-freed patterns and do not estimate real-project precision.
+  \item \textbf{Coverage scope.} G0 executes one input per unit and forces only the first non-NULL realloc to fail. It does not cover the input space or all allocation-failure schedules.
+  \item \textbf{Cost basis.} API costs use list-price token accounting, not invoices. CodeQL compute is not monetized.
+  \item \textbf{Model availability.} DeepSeek was unavailable for C1. MiMo-only results are never extrapolated to DeepSeek.
+\end{itemize}
+
+\section{Experimental Configuration Details}
+\label{sec:config}
+
+Table~\ref{tab:config} records the exact configuration boundaries. All experiments use frozen data and content-addressed prompts. No experiment resamples the test set or selects examples from test.
+
+\begin{table*}[t]
+\centering
+\caption{Experiment configuration and evidence boundaries.}
+\label{tab:config}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{1.3cm}p{2.7cm}p{4.0cm}p{4.7cm}@{}}
+\toprule
+ID & Input & Intervention & Primary endpoint / boundary \\
+\midrule
+G0 & 140 Juliet units & GCC coverage; default, realloc-fail, no-global-root & Effective line/branch coverage; clean classified as covered-clean or uncovered; no fuzzing \\
+B1 & 40 dev + 160 test & Dev-selected length, call, alloc/free, memory-API rules; standard-library logistic regression & macro-F1 and MCC; test used once; dev has only eight negatives \\
+P1 & 180 frozen pairs & Label-free semantic diff; token-matched control; open A/B/both/neither; both orders & Swap-consistent DA; length-only baseline; abstention; 1,440 records \\
+C1 & 140 Juliet units + CodeQL alerts & Ownership/escape triage v1, v2, optional review; direct LLM control & CodeQL-relative and direct-relative macro-F1; TP deletion; 23 FP mechanisms \\
+V1 & 236 positive claims & Three-way supported/unsupported/insufficient; retract only with concrete guard/counterexample & TP preservation, FP correction, macro-F1, MCC; post-hoc test-seen \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Input isolation}
+
+CodeQL triage prompts contain the cleaned source, the query name, the alert location, and the CodeQL message. They do not contain unit IDs, group IDs, CWE labels, paths, or the ground-truth label. The direct control uses exactly the same cleaned source as the previous Juliet LLM runs, and the prompt hash matches on all 140 units. Pair prompts contain two rendered functions and, for the diff condition, a unified diff computed from the two bodies. The A/B to vulnerable/fixed mapping exists only in a private position map and never in a request. The verifier prompt contains only the source and the first-pass claim: evidence lines and mechanism. It does not receive the first-pass confidence or the final label.
+
+\subsection{Validation and recovery}
+
+Every API runner stores the request body, response body, usage, latency, configuration fingerprint, and cache key. A resume operation rejects a mismatched dataset hash or prompt version. Invalid JSON is recorded as invalid rather than silently repaired. Schema-exact validity is reported separately from decision validity. For pair diff, two outputs had extra explanatory keys; they were accepted as decisions but the report discloses schema-exact 1,438/1,440. For triage, two raw outputs required a documented clarification parse; both are listed in the audit. For the verifier, three failures (two schema-invalid, one HTTP 429 after retries) retained the original prediction.
+
+\subsection{Statistical families}
+
+Detection comparisons use exact McNemar on per-unit correctness. Pair comparisons use exact McNemar on per-pair swap-consistent correctness and project-clustered bootstrap for DA differences. CodeQL triage uses McNemar on per-unit correctness and reports both CodeQL-relative and direct-relative effects. Verifier comparisons use McNemar on strict correctness and a hypergeometric test for whether retractions are enriched for false positives. Holm correction is applied within each pre-declared family; no correction is applied across unrelated experiments.
+
+\subsection{Reproduction environment}
+
+All code executes in WSL Ubuntu with Python 3.14, GCC 15.3, Clang 22.1.8, CodeQL 2.27.4, and Tectonic 0.17.0 for the reports. CodeQL databases are built from the same frozen unit sources and compile flags as the static baseline. Coverage uses GCC gcov because Clang coverage plus forced realloc failure plus LSan hung in a pilot; this failure is recorded rather than hidden. API requests use the OpenCode-compatible endpoint; the endpoint and model are stored per run. DeepSeek was unavailable for triage because the provider returned 402 insufficient balance and 401 expired credentials, so the DeepSeek triage row is marked blocked and is absent from every table.
+
+\subsection{What would falsify the conclusions}
+
+The CodeQL triage conclusion would be weakened if a new holdout shows no difference from direct LLM, if the zero-cost C++ query filter matches the full pipeline, or if the field-consistency rule fails on unseen \texttt{\_22} cases. The pair conclusion would change if a pre-registered length-neutral set produces a diff gain that survives Holm and exceeds the length baseline. The coverage conclusion would change if a leak-relevant branch gate retains good specificity while removing the 12 false-clean units. The detection conclusion would change if calibration plus CWE context raises MCC above 0.15 on a new split. None of these tests has yet been run.
+
+\section{Next Steps}
+\label{sec:next}
+
+The results imply a clear priority order.
+
+\textbf{P0: zero-API corrections.}
+(1) Recompute all detection tables with macro-F1 and MCC, adding constant and length baselines. (2) Replace dynamic ``clean'' with covered-clean, uncovered, and compile-error; never report verdict coverage as code coverage. (3) Add the schema-recovery and field-consistency analyses to the main artifact. These require no model calls and remove the largest misinterpretation risks.
+
+\textbf{P1: new holdout for the only positive signal.}
+CodeQL triage should be replicated on a new Juliet or real-project holdout. The primary endpoint is macro-F1 difference from direct LLM, with TP deletion and zero-cost query filtering reported separately. Success requires a positive lower confidence bound, not only a point estimate.
+
+\textbf{P2: length-neutral pair evaluation.}
+Construct a pre-registered length-neutral pair set by padding whitespace or comments without changing semantics, balance the direction of length, and run both orders. Report swap-consistent DA and abstention. Without this, no pair prompt should claim semantic improvement.
+
+\textbf{P3: executable verification.}
+For any verifier retraction, generate a minimal harness and execute ASan/UBSan or a targeted test. A retraction is valid only when execution demonstrates the claimed guard or counterexample. This converts self-grading into an external oracle.
+
+\textbf{P4: CWE and context routing.}
+CWE-416 and CWE-20 have near-zero recall while pattern-like CWEs perform better. The next detection experiment should stratify by CWE and supply caller/ownership context, with a pre-registered MCC threshold.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+This follow-up study converted five vague weaknesses into measured failure modes and falsifiable experiments. Dynamic coverage showed that line coverage cannot certify leak freedom. Interpretable baselines showed that the LLM is below a trivial length prior on point estimates and that macro-F1 hides the failure. Diff-guided pair prompting did not survive Holm correction and did not reduce the length shortcut. CodeQL triage produced the strongest conditional result, but it was not significantly better than direct LLM classification and its zero-FP endpoint required a post-hoc consistency rule. Conservative verification avoided mass true-positive deletion but found almost nothing to correct.
+
+The broader lesson is methodological. Before adding another prompt or model, the field should separate operating-point effects from ranking effects, force length and position controls in pair tasks, and replace self-reported evidence with executable evidence. The next iteration should be judged by whether it survives a new holdout with an external oracle, not by whether it produces a better-looking single number.
+
+\balance
+\bibliographystyle{IEEEtran}
+\bibliography{references_next}
+
+\appendices
+\section{Reproduction Map}
+\begin{table}[h]
+\centering
+\caption{Primary artifacts for each experiment.}
+\label{tab:artifacts}
+\footnotesize
+\begin{tabular}{@{}ll@{}}
+\toprule
+Experiment & Primary artifact \\
+\midrule
+G0 coverage & \texttt{dynamic\_coverage/runs/test140\_coverage\_v1} \\
+B1 baseline & \texttt{interpretable\_baseline/results/main\_20261122c} \\
+P1 pair diff & \texttt{pair\_diff/results} \\
+C1 triage & \texttt{codeql\_triage/runs/test140\_mimo\_xiaomi\_v2} \\
+V1 verifier & \texttt{verifier\_conservative/analysis} \\
+Rationale & \texttt{research/next\_iteration\_rationale.md} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All commands run in WSL. API keys are read from the process environment or the local OpenCode provider configuration and are never written to run artifacts. Every run stores prompts, responses, usage, costs, hashes, and configuration fingerprints. The benchmark import is intentionally separate from the main leaderboard because these are design variants with different tasks and denominators.
+
+\section{Honesty Checklist}
+\begin{itemize}
+  \item CodeQL triage is reported as strong versus CodeQL and non-significant versus direct LLM.
+  \item The zero-FP CodeQL row is labeled as requiring a post-hoc consistency rule; v2 alone is 68/3/67/2.
+  \item Pair diff is reported as non-significant after Holm and as failing to reduce the length shortcut.
+  \item Conservative verification is reported as a negative result, not as successful self-correction.
+  \item Line coverage is not equated with leak freedom; branch-complete is not equated with clean.
+  \item The length baseline is a diagnostic, not a deployable detector.
+\end{itemize}
+
+\end{document}

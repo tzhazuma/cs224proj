@@ -1,5 +1,5 @@
 {
-  "registry_version": "2026-11-14.3",
+  "registry_version": "2026-11-22.1",
   "description": "Machine-readable registry of extension designs. Each design reuses a parent benchmark task (pair_detection, detection, leak_detection) and adds a design-specific block under prediction.extensions. Parent tasks, status words and core metric arithmetic are inherited from benchmark/PROTOCOL.md and benchmark/tools/bench_common.py.",
   "designs": [
     {
@@ -306,6 +306,220 @@
         "benchmark/extensions/runs/hybrid_dynamic_enhanced/mimo"
       ],
       "notes": "LLM receives sanitized code plus enhanced dynamic evidence (three modes). Two models x 140 units, one run each; real source results imported. Compare to frozen hybrid_v2 direct/combined and the 140/140 tool only as descriptive baselines; never pool with dynamic_enhanced tool metrics."
+    },
+    {
+      "design_id": "codeql_alert_triage",
+      "title": "LLM triage of CodeQL CWE-401 alerts (direct / triage / verifier / cascade / zero-cost rules)",
+      "parent_task": "leak_detection",
+      "tiers": [
+        "B"
+      ],
+      "tracks": [
+        "juliet_cwe401"
+      ],
+      "families": [
+        "llm",
+        "hybrid",
+        "static"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "case_variant",
+      "aggregation_unit": "case_family",
+      "canonical_task": "leak_detection",
+      "canonical_unit_id": "juliet:<case_id>:<bad|good>",
+      "extension_block": "task_design",
+      "primary_metric": "macro_f1",
+      "key_secondary_metrics": [
+        "mcc",
+        "confusion",
+        "delta_macro_f1_vs_direct",
+        "mcnemar_vs_direct",
+        "coverage",
+        "cost_per_unit"
+      ],
+      "comparison_family": "EXT-ALERT-TRIAGE",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "result_imported",
+      "notes": "Real MiMo v2 test-140 run plus its direct replication, v1 triage, text-consistency rule, grounded verifier, cascade, and two zero-cost rules. Conditions are separate runs and are never pooled. The verified triage equals the text rule on this split (0 discordant); verified vs direct is not significant. DeepSeek is blocked (402/401) and is not imputed.",
+      "imported_runs": [
+        "benchmark/extensions/runs/codeql_alert_triage/mimo_direct_v2",
+        "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v1",
+        "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2",
+        "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_text_rule",
+        "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_verified",
+        "benchmark/extensions/runs/codeql_alert_triage/mimo_triage_v2_cascade",
+        "benchmark/extensions/runs/codeql_alert_triage/zero_cost_never_freed",
+        "benchmark/extensions/runs/codeql_alert_triage/zero_cost_drop_may_cpp"
+      ]
+    },
+    {
+      "design_id": "conservative_verification",
+      "title": "Conservative three-way verification of first-pass positive claims",
+      "parent_task": "detection",
+      "tiers": [
+        "A"
+      ],
+      "tracks": [
+        "secvuleval"
+      ],
+      "families": [
+        "hybrid"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "function",
+      "aggregation_unit": "project",
+      "canonical_task": "detection",
+      "canonical_unit_id": "secvul:det:<idx>",
+      "extension_block": "task_design",
+      "primary_metric": "macro_f1",
+      "key_secondary_metrics": [
+        "delta_macro_f1",
+        "retract_count",
+        "retraction_precision",
+        "tp_loss",
+        "fp_correction",
+        "mcc"
+      ],
+      "comparison_family": "EXT-CONSERVATIVE-VERIFY",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "result_imported_exploratory",
+      "notes": "Four arms (2 claim models x self/cross verifier), 160 units each. Only 4/236 verifier requests retract (TP 3 / FP 1); macro-F1 does not rise and MCC rises only on mimo_cross with a CI crossing zero. Exploratory and post hoc: the frozen test split was already used by the first pass and the original verifier. Keep separate from evidence_retraction (different decision rule and fail-open semantics).",
+      "imported_runs": [
+        "benchmark/extensions/runs/conservative_verification/deepseek_self",
+        "benchmark/extensions/runs/conservative_verification/deepseek_cross",
+        "benchmark/extensions/runs/conservative_verification/mimo_self",
+        "benchmark/extensions/runs/conservative_verification/mimo_cross"
+      ]
+    },
+    {
+      "design_id": "diff_guided_pair",
+      "title": "Diff-guided pair discrimination with changes-first and a length-matched control",
+      "parent_task": "pair_detection",
+      "tiers": [
+        "A"
+      ],
+      "tracks": [
+        "secvuleval"
+      ],
+      "families": [
+        "llm"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "pair_side",
+      "aggregation_unit": "pair_id",
+      "canonical_task": "pair_detection",
+      "canonical_unit_id": "secvul:pair:<pair_id>:<vulnerable|fixed>",
+      "extension_block": "pair_design",
+      "primary_metric": "pair_da",
+      "key_secondary_metrics": [
+        "order_consensus_pair_da",
+        "committed_da",
+        "abstention_rate",
+        "position_bias",
+        "length_audit",
+        "delta_vs_ctrl"
+      ],
+      "comparison_family": "EXT-PAIR-DIFF",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "result_imported",
+      "notes": "2 models x {diff, length-matched ctrl} x {fwd, rev} = 8 runs, 180 pairs each. The open-choice arm is reused read-only from open_choice_pair and is a cross-design descriptive reference, never pooled. No diff advantage survives Holm; the length shortcut remains.",
+      "imported_runs": [
+        "benchmark/extensions/runs/diff_guided_pair/deepseek_diff_fwd",
+        "benchmark/extensions/runs/diff_guided_pair/deepseek_diff_rev",
+        "benchmark/extensions/runs/diff_guided_pair/deepseek_ctrl_fwd",
+        "benchmark/extensions/runs/diff_guided_pair/deepseek_ctrl_rev",
+        "benchmark/extensions/runs/diff_guided_pair/mimo_diff_fwd",
+        "benchmark/extensions/runs/diff_guided_pair/mimo_diff_rev",
+        "benchmark/extensions/runs/diff_guided_pair/mimo_ctrl_fwd",
+        "benchmark/extensions/runs/diff_guided_pair/mimo_ctrl_rev"
+      ]
+    },
+    {
+      "design_id": "coverage_instrumented_dynamic",
+      "title": "Line/branch coverage instrumented dynamic leak analysis",
+      "parent_task": "leak_detection",
+      "tiers": [
+        "B"
+      ],
+      "tracks": [
+        "juliet_cwe401"
+      ],
+      "families": [
+        "dynamic"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "case_variant",
+      "aggregation_unit": "case_family",
+      "canonical_task": "leak_detection",
+      "canonical_unit_id": "juliet:<case_id>:<bad|good>",
+      "extension_block": "task_design",
+      "primary_metric": "branch_complete_rate",
+      "key_secondary_metrics": [
+        "line_coverage",
+        "clean_inconclusive_rate",
+        "operational_macro_f1",
+        "latent_units_explained"
+      ],
+      "comparison_family": "EXT-COVERAGE-DYNAMIC",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "result_imported",
+      "notes": "One test-140 run with gcc --coverage and gcov JSON. Default mode is 58 leak / 82 clean; only 21 units are branch-complete and all 21 are bad. No clean unit is branch-complete, so clean is imported as inconclusive, never TN. Line coverage cannot prove clean.",
+      "imported_runs": [
+        "benchmark/extensions/runs/coverage_instrumented_dynamic/test140_coverage_v2"
+      ]
+    },
+    {
+      "design_id": "interpretable_baseline",
+      "title": "Interpretable non-LLM lexical baselines on Tier A detection",
+      "parent_task": "detection",
+      "tiers": [
+        "A"
+      ],
+      "tracks": [
+        "secvuleval"
+      ],
+      "families": [
+        "static"
+      ],
+      "run_mode": "single_run",
+      "unit_kind": "function",
+      "aggregation_unit": "project",
+      "canonical_task": "detection",
+      "canonical_unit_id": "secvul:det:<idx>",
+      "extension_block": "task_design",
+      "primary_metric": "macro_f1",
+      "key_secondary_metrics": [
+        "mcc",
+        "balanced_accuracy",
+        "predicted_positive_rate",
+        "mcnemar_vs_llm",
+        "delta_vs_majority"
+      ],
+      "comparison_family": "EXT-INTERPRETABLE-BASELINE",
+      "required_run_roles": [
+        "single"
+      ],
+      "status": "result_imported",
+      "notes": "Nine pre-registered lexical rules / logistic regressions on test-160, dev-selected where applicable. family=static means non-LLM lexical analysis, not a static analyzer. The length rule beats all 8 LLM runs on macro-F1 but not on MCC; majority-class also beats all LLM on macro-F1. Never pool with LLM runs.",
+      "imported_runs": [
+        "benchmark/extensions/runs/interpretable_baseline/prior_majority",
+        "benchmark/extensions/runs/interpretable_baseline/length_short",
+        "benchmark/extensions/runs/interpretable_baseline/calls_high",
+        "benchmark/extensions/runs/interpretable_baseline/alloc_unbalanced",
+        "benchmark/extensions/runs/interpretable_baseline/mem_api_present",
+        "benchmark/extensions/runs/interpretable_baseline/alloc_or_mem",
+        "benchmark/extensions/runs/interpretable_baseline/short_and_alloc_or_mem",
+        "benchmark/extensions/runs/interpretable_baseline/lr_unweighted",
+        "benchmark/extensions/runs/interpretable_baseline/lr_balanced"
+      ]
     }
   ]
 }

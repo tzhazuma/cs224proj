@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:22.661+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 2.294475890998001,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"d3ac22d7-e39c-4dd2-ae92-13dc943ff284_2xzujmg528bxvgoow0_f356d9a979aa43a5b85d2d0ebfd8ad3a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": false, \\\"final_alert_verdict\\\": \\\"false_positive\\\", \\\"release_gap\\\": \\\"none\\\", \\\"reason\\\": \\\"calloc in sym_2 is freed via the shadowed alias in its inner scope; ALLOCA is stack storage. No heap allocation reaches exit unreleased.\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344442,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":71,\"prompt_tokens\":843,\"total_tokens\":914,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:20.367+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "4ad5472d721064e572264b26b80876b5fcdae225e95fb6dd45c048a2abd4cb0a"
+  },
+  "cache_key": "4ad5472d721064e572264b26b80876b5fcdae225e95fb6dd45c048a2abd4cb0a",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": false, \"final_alert_verdict\": \"false_positive\", \"release_gap\": \"none\", \"reason\": \"calloc in sym_2 is freed via the shadowed alias in its inner scope; ALLOCA is stack storage. No heap allocation reaches exit unreleased.\", \"confidence\": 0.95}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 71,
+    "cost_usd": 0.00013790000000000002,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 843
+  },
+  "created_at": "2026-11-22T10:47:22.661+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.95,
+    "final_alert_verdict": "false_positive",
+    "final_leak_present": false,
+    "reason": "calloc in sym_2 is freed via the shadowed alias in its inner scope; ALLOCA is stack storage. No heap allocation reaches exit unreleased.",
+    "release_gap": "none"
+  },
+  "prompt_sha256": "b447a1c98dc0030754e0eeda1107c6f97f5e035e25bd6092a7e53400837d818e",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "214b39d9731b295ba77232fdc0a4fd749e7bfecb6e43cf6cb426540b10730b9b",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 1,
+      "cpp/memory-never-freed": 0
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "good",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__int64_t_calloc_33__good",
+    "variant": "33",
+    "y_true": 0
+  },
+  "unit_id": "CWE401_Memory_Leak__int64_t_calloc_33__good",
+  "usage": {
+    "completion_tokens": 71,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 843,
+    "prompt_tokens_details": null,
+    "total_tokens": 914
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 2.2945210590005445
+}

@@ -1,0 +1,73 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "ended_at": "2026-11-22T10:47:51.433+00:00",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "http_status": 200,
+      "latency_seconds": 2.9290775789995678,
+      "outcome": "ok",
+      "raw_body": "{\"id\":\"5c29132c-ba63-464d-b971-5779417284b6_2y2x5hg528dg385f5s_a2aa852849374f34a1d9c77cdc2b827a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"final_leak_present\\\": false, \\\"final_alert_verdict\\\": \\\"false_positive\\\", \\\"release_gap\\\": \\\"none\\\", \\\"reason\\\": \\\"sym_5's new wchar_t[100] is passed to sym_4, which deletes dataVector[2], the same pointer. Released on all paths; sym_2 uses stack storage.\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null}}],\"created\":1795344471,\"model\":\"mimo-v2.6-flash\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":81,\"prompt_tokens\":981,\"total_tokens\":1062,\"completion_tokens_details\":{\"reasoning_tokens\":0},\"prompt_tokens_details\":null}}",
+      "started_at": "2026-11-22T10:47:48.504+00:00"
+    }
+  ],
+  "cache": {
+    "hit": false,
+    "key": "407439661f7d60d82db57fb8e408cab2436332b8acf13f48901745d2d0ec8cbf"
+  },
+  "cache_key": "407439661f7d60d82db57fb8e408cab2436332b8acf13f48901745d2d0ec8cbf",
+  "cache_schema_version": 1,
+  "content": "{\"final_leak_present\": false, \"final_alert_verdict\": \"false_positive\", \"release_gap\": \"none\", \"reason\": \"sym_5's new wchar_t[100] is passed to sym_4, which deletes dataVector[2], the same pointer. Released on all paths; sym_2 uses stack storage.\", \"confidence\": 0.95}",
+  "cost": {
+    "basis": "configured_list_price_not_invoice",
+    "cached_input_price_usd_per_1m": 0.0028,
+    "cached_prompt_tokens": 0,
+    "completion_tokens": 81,
+    "cost_usd": 0.00016002,
+    "input_price_usd_per_1m": 0.14,
+    "output_price_usd_per_1m": 0.28,
+    "prompt_tokens": 981
+  },
+  "created_at": "2026-11-22T10:47:51.433+00:00",
+  "error": null,
+  "http_status": 200,
+  "parsed": {
+    "confidence": 0.95,
+    "final_alert_verdict": "false_positive",
+    "final_leak_present": false,
+    "reason": "sym_5's new wchar_t[100] is passed to sym_4, which deletes dataVector[2], the same pointer. Released on all paths; sym_2 uses stack storage.",
+    "release_gap": "none"
+  },
+  "prompt_sha256": "dafb153fa2511d38aa10316b451952ae9e35f6b9c059f32c72505a0530501d46",
+  "prompt_version": "codeql-triage-verify-2026-11-22.1",
+  "request_fingerprint": "e1f85f8a54efc5f5f50ab194c293fa65717b399bccabf2100f31625ab09c8dc1",
+  "status": "ok",
+  "unit": {
+    "codeql_by_query": {
+      "cpp/memory-may-not-be-freed": 1,
+      "cpp/memory-never-freed": 0
+    },
+    "codeql_is_alert": true,
+    "codeql_status": "ok",
+    "label": "good",
+    "language": "cpp",
+    "unit_id": "CWE401_Memory_Leak__new_array_wchar_t_72__good",
+    "variant": "72",
+    "y_true": 0
+  },
+  "unit_id": "CWE401_Memory_Leak__new_array_wchar_t_72__good",
+  "usage": {
+    "completion_tokens": 81,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 981,
+    "prompt_tokens_details": null,
+    "total_tokens": 1062
+  },
+  "valid": true,
+  "validation_error": null,
+  "wall_seconds": 2.929125508002471
+}
