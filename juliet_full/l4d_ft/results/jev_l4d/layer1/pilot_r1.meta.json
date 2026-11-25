@@ -1,0 +1,129 @@
+{
+ "segments": [
+  {
+   "start_utc": "2026-11-25T03:12:37Z",
+   "end_utc": "2026-11-25T03:12:57Z",
+   "asked": 143,
+   "calls": 143,
+   "ok": 143,
+   "failed": 0,
+   "input_tokens": 89124,
+   "output_tokens": 2860,
+   "cost": 0.0037432079999999996,
+   "models_seen": {
+    "jev-1.14.0": 143
+   },
+   "aborted": null,
+   "lane_spend_after": 0.003743208,
+   "ledger_jev_after": 1.950704826
+  }
+ ],
+ "method": "jev_l4d",
+ "model": "jev-latest",
+ "models_returned": {
+  "jev-1.14.0": 143
+ },
+ "layer": "layer1",
+ "set": "dev",
+ "run_id": "pilot_r1",
+ "pilot": true,
+ "pilot_units": [
+  "CWE401_Memory_Leak__char_malloc_65__bad",
+  "CWE401_Memory_Leak__char_realloc_41__bad",
+  "CWE401_Memory_Leak__char_realloc_65__bad",
+  "CWE401_Memory_Leak__char_realloc_68__good",
+  "CWE401_Memory_Leak__int64_t_calloc_04__bad",
+  "CWE401_Memory_Leak__int64_t_calloc_31__bad",
+  "CWE401_Memory_Leak__int64_t_malloc_10__good",
+  "CWE401_Memory_Leak__int64_t_realloc_04__bad",
+  "CWE401_Memory_Leak__int64_t_realloc_65__good",
+  "CWE401_Memory_Leak__int_calloc_17__good",
+  "CWE401_Memory_Leak__int_calloc_31__bad",
+  "CWE401_Memory_Leak__malloc_realloc_char_04__good",
+  "CWE401_Memory_Leak__malloc_realloc_int64_t_18__good",
+  "CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_17__bad",
+  "CWE401_Memory_Leak__malloc_realloc_twoIntsStruct_18__bad",
+  "CWE401_Memory_Leak__new_array_char_18__good",
+  "CWE401_Memory_Leak__new_array_int_73__bad",
+  "CWE401_Memory_Leak__new_array_struct_twoIntsStruct_65__bad",
+  "CWE401_Memory_Leak__new_char_68__bad",
+  "CWE401_Memory_Leak__new_int64_t_10__good",
+  "CWE401_Memory_Leak__new_int_41__bad",
+  "CWE401_Memory_Leak__new_twoIntsStruct_31__good",
+  "CWE401_Memory_Leak__new_wchar_t_04__good",
+  "CWE401_Memory_Leak__new_wchar_t_68__bad",
+  "CWE401_Memory_Leak__strdup_char_10__good",
+  "CWE401_Memory_Leak__strdup_char_68__good",
+  "CWE401_Memory_Leak__strdup_wchar_t_10__bad",
+  "CWE401_Memory_Leak__strdup_wchar_t_65__bad",
+  "CWE401_Memory_Leak__strdup_wchar_t_73__good",
+  "CWE401_Memory_Leak__struct_twoIntsStruct_realloc_18__bad",
+  "CWE401_Memory_Leak__struct_twoIntsStruct_realloc_41__good",
+  "CWE401_Memory_Leak__struct_twoIntsStruct_realloc_73__good",
+  "CWE401_Memory_Leak__twoIntsStruct_calloc_73__bad",
+  "CWE401_Memory_Leak__twoIntsStruct_realloc_18__bad",
+  "CWE401_Memory_Leak__wchar_t_calloc_18__good",
+  "CWE401_Memory_Leak__wchar_t_calloc_31__good",
+  "CWE401_Memory_Leak__wchar_t_malloc_65__bad",
+  "CWE401_Memory_Leak__wchar_t_malloc_73__good",
+  "CWE401_Memory_Leak__wchar_t_realloc_41__bad",
+  "CWE401_Memory_Leak__wchar_t_realloc_73__good"
+ ],
+ "n_questions": 143,
+ "n_answered": 143,
+ "complete": true,
+ "pruning": "l4d_ft/prune.py prune() (rules-read questions only)",
+ "request_template": {
+  "model": "jev-latest",
+  "state": "{state}",
+  "questions": {
+   "answer": {
+    "type": "noul",
+    "instructions": "{question}",
+    "criteria": {
+     "true": "The answer to the question is Yes.",
+     "false": "The answer to the question is No."
+    }
+   }
+  }
+ },
+ "criteria": {
+  "true": "The answer to the question is Yes.",
+  "false": "The answer to the question is No."
+ },
+ "question_name": "answer",
+ "p_yes": "noul probability of the single question 'answer' (POST /systemone)",
+ "client": {
+  "provider": "jev",
+  "base_url": "https://api.typesafe.ai/v1",
+  "model": "jev-latest",
+  "headers": [],
+  "retry": {
+   "max_attempts": 5,
+   "base_seconds": 2.0,
+   "cap_seconds": 60.0,
+   "timeout_seconds": 180.0
+  }
+ },
+ "hashes": {
+  "l4d_templates_sha256": "316429b266c0258383724c8c9129e2ea17946a9013d72cb61b267261ef827516",
+  "l4d_templates_py_sha256": "678d7c743c63b3e8d96005def26f10a2c0b3f9fef48dccc09189635ae76a56f1",
+  "l4d_questions_py_sha256": "f6a826f8cb2ff5e1d7646ac6c7c80ac6b516dbab025f8796a2143037b835005a",
+  "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+  "rules_l4d_dl_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+  "prune_py_sha256": "79a12d540ff5e417017f5b5f5fd637e5566c2ea10bcb8e5521358ec6e6a22c6b",
+  "script_sha256": "d4bbd85e5ea8c14487751fbfd1a15ab317d902309bd200a6df52fc780af6d139",
+  "llmlane_clients_py_sha256": "4216f7d8605f754d1bf87a76e9e41c7b86ecdf159ccbd268612fd261c10b2748",
+  "llmlane_prompts_py_sha256": "13d6af10f0b250a8cee7cb2031922d81002c0fddae4e4e183e20acfebae992ea",
+  "questions_layer1_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+  "questions_layer3_sha256": "0264524d9a6d9898f351a2bc4c6f323b4f89f87636db9c1b3a0ddea17e5ae8f6"
+ },
+ "frozen_sha256": null,
+ "host": "barton-OptiPlex-5000",
+ "concurrency": 8,
+ "usd_per_m_input": 0.042,
+ "cost_usd_total": 0.00374321,
+ "input_tokens_total": 89124,
+ "raw_log": "l4d_ft/results/jev_l4d/raw_logs/layer1/pilot_r1.jsonl",
+ "latency_note": "latency_s = dell wall time per request incl. retries (bulk, concurrency > 1: includes client-side queueing at the API); use the lat300_c1 run for latency"
+}

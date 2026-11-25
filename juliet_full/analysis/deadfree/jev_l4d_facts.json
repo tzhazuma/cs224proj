@@ -1,0 +1,151 @@
+{
+ "n_questions_pruned": 15619,
+ "n_questions_with_gold": 12081,
+ "lora_tau_per_fold": {
+  "0": 0.817574,
+  "2": 0.5,
+  "1": 0.5
+ },
+ "jev_tau_secondary": 0.268941,
+ "by_qtype": {
+  "exec_all": {
+   "n": 4858,
+   "n_gold_yes": 1362,
+   "jev_l4d @0.5": {
+    "acc": 0.9753,
+    "fp": 1,
+    "fn": 119
+   },
+   "jev_l4d @dev \u03c4 0.268941": {
+    "acc": 0.9835,
+    "fp": 13,
+    "fn": 67
+   },
+   "intern_l4d @0.5": {
+    "acc": 0.7839,
+    "fp": 946,
+    "fn": 104
+   },
+   "lora_l4d_opt (per-fold \u03c4)": {
+    "acc": 0.8308,
+    "fp": 530,
+    "fn": 292
+   }
+  },
+  "exec_any": {
+   "n": 2791,
+   "n_gold_yes": 2776,
+   "jev_l4d @0.5": {
+    "acc": 0.9964,
+    "fp": 0,
+    "fn": 10
+   },
+   "jev_l4d @dev \u03c4 0.268941": {
+    "acc": 0.9993,
+    "fp": 2,
+    "fn": 0
+   },
+   "intern_l4d @0.5": {
+    "acc": 0.986,
+    "fp": 15,
+    "fn": 24
+   },
+   "lora_l4d_opt (per-fold \u03c4)": {
+    "acc": 0.9746,
+    "fp": 4,
+    "fn": 67
+   }
+  },
+  "heap": {
+   "n": 2267,
+   "n_gold_yes": 1845,
+   "jev_l4d @0.5": {
+    "acc": 1.0,
+    "fp": 0,
+    "fn": 0
+   },
+   "jev_l4d @dev \u03c4 0.268941": {
+    "acc": 1.0,
+    "fp": 0,
+    "fn": 0
+   },
+   "intern_l4d @0.5": {
+    "acc": 0.9996,
+    "fp": 0,
+    "fn": 1
+   },
+   "lora_l4d_opt (per-fold \u03c4)": {
+    "acc": 1.0,
+    "fp": 0,
+    "fn": 0
+   }
+  },
+  "realloc_safe": {
+   "n": 523,
+   "n_gold_yes": 439,
+   "jev_l4d @0.5": {
+    "acc": 0.2161,
+    "fp": 0,
+    "fn": 410
+   },
+   "jev_l4d @dev \u03c4 0.268941": {
+    "acc": 0.7094,
+    "fp": 84,
+    "fn": 68
+   },
+   "intern_l4d @0.5": {
+    "acc": 0.1453,
+    "fp": 32,
+    "fn": 415
+   },
+   "lora_l4d_opt (per-fold \u03c4)": {
+    "acc": 0.9235,
+    "fp": 15,
+    "fn": 25
+   }
+  },
+  "rel": {
+   "n": 1642,
+   "n_gold_yes": 1181,
+   "jev_l4d @0.5": {
+    "acc": 0.8508,
+    "fp": 177,
+    "fn": 68
+   },
+   "jev_l4d @dev \u03c4 0.268941": {
+    "acc": 0.7972,
+    "fp": 294,
+    "fn": 39
+   },
+   "intern_l4d @0.5": {
+    "acc": 0.7186,
+    "fp": 182,
+    "fn": 280
+   },
+   "lora_l4d_opt (per-fold \u03c4)": {
+    "acc": 0.9068,
+    "fp": 136,
+    "fn": 17
+   }
+  }
+ },
+ "overall": {
+  "jev_l4d @0.5": 0.935,
+  "jev_l4d @dev \u03c4 0.268941": 0.9531,
+  "intern_l4d @0.5": 0.8345,
+  "lora_l4d_opt (per-fold \u03c4)": 0.9101
+ },
+ "questions_per_unit": {
+  "units": 2656,
+  "mean": 5.881,
+  "median": 6.0,
+  "max": 36
+ },
+ "jev_tokens": {
+  "input_total": 11536307,
+  "input_per_question_mean": 738.6,
+  "input_per_question_median": 723,
+  "output_total": 312380,
+  "cost_usd": 0.484525
+ }
+}

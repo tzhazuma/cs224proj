@@ -70,11 +70,52 @@
     0.0292,
     0.0635
    ]
+  },
+  {
+   "a": "jev_l4d",
+   "b": "jev_L3",
+   "label": "Jev L4-D @0.5 − Jev L3 @0.5",
+   "delta": -0.0417,
+   "delta_ci": [
+    -0.0715,
+    -0.013
+   ]
+  },
+  {
+   "a": "jev_l4d",
+   "b": "lora_l4d_opt",
+   "label": "Jev L4-D @0.5 − LoRA L4-D (opt.)",
+   "delta": 0.0806,
+   "delta_ci": [
+    0.0468,
+    0.1111
+   ]
+  },
+  {
+   "a": "jev_l4d",
+   "b": "deepseek_L4",
+   "label": "Jev L4-D @0.5 − DeepSeek L4",
+   "delta": 0.0069,
+   "delta_ci": [
+    -0.0282,
+    0.0387
+   ]
+  },
+  {
+   "a": "jev_l4d",
+   "b": "jev_L1",
+   "label": "Jev L4-D @0.5 − Jev L1 @0.5",
+   "delta": -0.0387,
+   "delta_ci": [
+    -0.0694,
+    -0.0095
+   ]
   }
  ],
  "notes": [
   "intern_l4d: l4d_ft/results/intern_l4d/FROZEN listed the layer1-dev τ 0.182426 as primary; the parent switched the primary to τ = 0.5 after seeing the eval results, for consistency with Intern-Decision L1–L3 (calibrated default 0.5 primary, dev threshold secondary); the switch favours the baseline (.799 vs .373).",
-  "intern_l4d_devtau failure: with the low dev τ every exec/release question is answered Yes (Intern's calibrated p_yes for exec_all/exec_any/rel lie in ~0.45–0.65), so \"the release executes on every path\" is accepted for dead frees and leak recall collapses to .037; a threshold tuned on Debiased (no dead frees) does not transfer to DeadFree."
+  "intern_l4d_devtau failure: with the low dev τ every exec/release question is answered Yes (Intern's calibrated p_yes for exec_all/exec_any/rel lie in ~0.45–0.65), so \"the release executes on every path\" is accepted for dead frees and leak recall collapses to .037; a threshold tuned on Debiased (no dead frees) does not transfer to DeadFree.",
+  "jev_l4d: primary τ = 0.5 fixed by the parent (2026-11-24 19:05) before any Jev L4-D call; dev τ 0.268941 (layer1 dev, run_decide_l4d.py select rule) is secondary. Same pruned questions as intern_l4d / lora_l4d_opt, one noul question per request, neutral criteria not refined after the 40-unit pilot (l4d_ft/results/jev_l4d/FROZEN; analysis/deadfree/REPORT_jev_l4d.md)."
  ],
  "methods": [
   {
@@ -628,6 +669,85 @@
    "gap_closed_ds_l4_ci": [
     1.037,
     1.215
+   ]
+  },
+  {
+   "key": "jev_l4d",
+   "group": "cloud-decision",
+   "model": "jev-latest (jev-1.14.0)",
+   "strategy": "L4D",
+   "label": "Jev L4-D @0.5",
+   "source": "l4d_ft/results/jev_l4d/layer3/eval_r1_units.jsonl",
+   "role": "primary",
+   "status": "ok",
+   "n": 2656,
+   "n_pred_rows_eval": 2656,
+   "missing": 0,
+   "extra_rows": 0,
+   "invalid": 0,
+   "tp": 1321,
+   "fp": 238,
+   "tn": 1090,
+   "fn": 7,
+   "precision_leak": 0.8473,
+   "recall_leak": 0.9947,
+   "f1_leak": 0.9151,
+   "macro_f1": 0.9071,
+   "macro_f1_ci": [
+    0.8747,
+    0.9347
+   ],
+   "by_flow": {
+    "01": {
+     "n": 84,
+     "macro_f1": 0.9043,
+     "fp": 7,
+     "fn": 1
+    },
+    "02-22": {
+     "n": 1176,
+     "macro_f1": 0.8668,
+     "fp": 154,
+     "fn": 0
+    },
+    "31-45": {
+     "n": 420,
+     "macro_f1": 0.9209,
+     "fp": 33,
+     "fn": 0
+    },
+    "51-68": {
+     "n": 624,
+     "macro_f1": 0.9487,
+     "fp": 26,
+     "fn": 6
+    },
+    "71-84": {
+     "n": 352,
+     "macro_f1": 0.9487,
+     "fp": 18,
+     "fn": 0
+    }
+   },
+   "delta_vs_ds_l1": 0.0439,
+   "delta_vs_ds_l1_ci": [
+    0.0149,
+    0.0713
+   ],
+   "gap_closed_ds_l1": 1.133,
+   "gap_closed_ds_l1_ci": [
+    1.042,
+    1.23
+   ],
+   "delta_vs_ds_l4": 0.0069,
+   "delta_vs_ds_l4_ci": [
+    -0.0282,
+    0.0387
+   ],
+   "gap_closed_ds_l4": 1.019,
+   "gap_closed_ds_l4_ci": [
+    0.925,
+    1.108
    ]
   },
   {
@@ -1576,6 +1696,85 @@
    "gap_closed_ds_l4_ci": [
     -0.572,
     -0.314
+   ]
+  },
+  {
+   "key": "jev_l4d_devtau",
+   "group": "cloud-decision",
+   "model": "jev-latest (jev-1.14.0)",
+   "strategy": "L4D",
+   "label": "Jev L4-D (dev τ 0.27)",
+   "source": "l4d_ft/results/jev_l4d/layer3/eval_r1_devtau_units.jsonl",
+   "role": "secondary",
+   "status": "ok",
+   "n": 2656,
+   "n_pred_rows_eval": 2656,
+   "missing": 0,
+   "extra_rows": 0,
+   "invalid": 0,
+   "tp": 1249,
+   "fp": 70,
+   "tn": 1258,
+   "fn": 79,
+   "precision_leak": 0.9469,
+   "recall_leak": 0.9405,
+   "f1_leak": 0.9437,
+   "macro_f1": 0.9439,
+   "macro_f1_ci": [
+    0.9181,
+    0.9633
+   ],
+   "by_flow": {
+    "01": {
+     "n": 84,
+     "macro_f1": 0.9161,
+     "fp": 0,
+     "fn": 7
+    },
+    "02-22": {
+     "n": 1176,
+     "macro_f1": 0.8971,
+     "fp": 58,
+     "fn": 63
+    },
+    "31-45": {
+     "n": 420,
+     "macro_f1": 0.9738,
+     "fp": 11,
+     "fn": 0
+    },
+    "51-68": {
+     "n": 624,
+     "macro_f1": 0.9984,
+     "fp": 1,
+     "fn": 0
+    },
+    "71-84": {
+     "n": 352,
+     "macro_f1": 0.9744,
+     "fp": 0,
+     "fn": 9
+    }
+   },
+   "delta_vs_ds_l1": 0.0807,
+   "delta_vs_ds_l1_ci": [
+    0.065,
+    0.0956
+   ],
+   "gap_closed_ds_l1": 1.244,
+   "gap_closed_ds_l1_ci": [
+    1.19,
+    1.305
+   ],
+   "delta_vs_ds_l4": 0.0437,
+   "delta_vs_ds_l4_ci": [
+    0.0113,
+    0.0699
+   ],
+   "gap_closed_ds_l4": 1.119,
+   "gap_closed_ds_l4_ci": [
+    1.03,
+    1.199
    ]
   },
   {
@@ -2848,19 +3047,22 @@
    "Qwen gen.": "qwen_L1",
    "Intern-Decision": "intern_L1",
    "read-out": "readout_L1",
-   "our FT": "lora_L1"
+   "our FT": "lora_L1",
+   "Jev (cloud)": "jev_L1"
   },
   "L3": {
    "Qwen gen.": "qwen_L3",
    "Intern-Decision": "intern_L3",
    "read-out": "readout_L3",
-   "our FT": "lora_L3"
+   "our FT": "lora_L3",
+   "Jev (cloud)": "jev_L3"
   },
   "L4 / L4-D": {
    "Qwen gen.": "qwen_L4",
    "Intern-Decision": "intern_l4d",
    "read-out": "readout_l4d",
-   "our FT": "lora_l4d_opt"
+   "our FT": "lora_l4d_opt",
+   "Jev (cloud)": "jev_l4d"
   }
  }
 }

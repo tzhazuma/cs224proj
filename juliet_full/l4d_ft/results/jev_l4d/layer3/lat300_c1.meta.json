@@ -1,0 +1,130 @@
+{
+ "method": "jev_l4d",
+ "model": "jev-latest",
+ "model_returned": "jev-1.14.0",
+ "strategy": "L4D",
+ "layer": "layer3",
+ "subset": "latency300",
+ "run_id": "lat300_c1",
+ "n_units": 300,
+ "n_ok": 300,
+ "aborted": null,
+ "unit_concurrency": 1,
+ "question_concurrency": "one thread per question of the unit (all questions of a unit in flight)",
+ "tau": 0.5,
+ "n_units_without_model_call": 0,
+ "client_host": "barton-OptiPlex-5000",
+ "client": {
+  "provider": "jev",
+  "base_url": "https://api.typesafe.ai/v1",
+  "model": "jev-latest",
+  "headers": [],
+  "retry": {
+   "max_attempts": 5,
+   "base_seconds": 2.0,
+   "cap_seconds": 60.0,
+   "timeout_seconds": 180.0
+  }
+ },
+ "start_utc": "2026-11-25T03:53:39Z",
+ "end_utc": "2026-11-25T03:58:57Z",
+ "loadavg_start": [
+  1.59228515625,
+  1.40869140625,
+  1.32275390625
+ ],
+ "loadavg_end": [
+  1.35791015625,
+  1.2021484375,
+  1.236328125
+ ],
+ "latency_lock": {
+  "path": "/tmp/cs224_latency.lock",
+  "held": true,
+  "start_utc": "2026-11-25T03:53:39Z"
+ },
+ "e2e_s": {
+  "median": 0.9665172919922043,
+  "p90": 1.2182264569069963,
+  "mean": 1.0514609712658178,
+  "max": 2.3892134799971245
+ },
+ "sequential_s": {
+  "median": 5.487128351480351,
+  "p90": 10.860344409913527,
+  "mean": 5.806429663868621,
+  "max": 41.60947254704661
+ },
+ "e2e_no_parse_s": {
+  "median": 0.963793976479792,
+  "p90": 1.217473268299364,
+  "mean": 1.0497358564424213,
+  "max": 2.38796043000184
+ },
+ "parse_prune_s": {
+  "median": 0.0018061215087072924,
+  "p90": 0.0029745828040177004,
+  "mean": 0.001725114823396628,
+  "max": 0.007839627010980621
+ },
+ "http_s": {
+  "median": 0.963707651491859,
+  "p90": 1.2174335844960302,
+  "mean": 1.0496771559670257,
+  "max": 2.387882418988738
+ },
+ "derive_s": {
+  "median": 6.898700667079538e-05,
+  "p90": 9.321110555902124e-05,
+  "mean": 5.87004753955019e-05,
+  "max": 0.0001837079762481153
+ },
+ "per_call_s": {
+  "median": 0.9307817090011667,
+  "p90": 1.1148869553930127,
+  "mean": 0.9788610199949122,
+  "max": 2.386495520011522
+ },
+ "questions_per_unit": {
+  "median": 6.0,
+  "p90": 10.0,
+  "mean": 5.93,
+  "max": 31
+ },
+ "max_abs_dp_vs_eval_r1": 0.16000000000000003,
+ "n_units_compared_dp": 300,
+ "verdict_flips_vs_eval_r1": [
+  "CWE401_Memory_Leak__int64_t_malloc_61__bad",
+  "CWE401_Memory_Leak__malloc_realloc_int64_t_05__good",
+  "CWE401_Memory_Leak__malloc_realloc_int64_t_09__good",
+  "CWE401_Memory_Leak__twoIntsStruct_malloc_61__bad",
+  "CWE401_Memory_Leak__malloc_realloc_struct_twoIntsStruct_07__good"
+ ],
+ "accuracy_vs_truth": 0.9,
+ "calls": {
+  "calls": 1780,
+  "ok": 1780,
+  "failed": 0,
+  "input_tokens": 1311427,
+  "output_tokens": 35600,
+  "cost": 0.05507993400000001
+ },
+ "models_seen": {
+  "jev-1.14.0": 1780
+ },
+ "hashes": {
+  "l4d_templates_sha256": "316429b266c0258383724c8c9129e2ea17946a9013d72cb61b267261ef827516",
+  "l4d_templates_py_sha256": "678d7c743c63b3e8d96005def26f10a2c0b3f9fef48dccc09189635ae76a56f1",
+  "l4d_questions_py_sha256": "f6a826f8cb2ff5e1d7646ac6c7c80ac6b516dbab025f8796a2143037b835005a",
+  "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+  "rules_l4d_dl_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+  "prune_py_sha256": "79a12d540ff5e417017f5b5f5fd637e5566c2ea10bcb8e5521358ec6e6a22c6b",
+  "script_sha256": "d4bbd85e5ea8c14487751fbfd1a15ab317d902309bd200a6df52fc780af6d139",
+  "llmlane_clients_py_sha256": "4216f7d8605f754d1bf87a76e9e41c7b86ecdf159ccbd268612fd261c10b2748",
+  "llmlane_prompts_py_sha256": "13d6af10f0b250a8cee7cb2031922d81002c0fddae4e4e183e20acfebae992ea",
+  "questions_layer1_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+  "questions_layer3_sha256": "0264524d9a6d9898f351a2bc4c6f323b4f89f87636db9c1b3a0ddea17e5ae8f6"
+ },
+ "frozen_sha256": "9b09853256c113b86366978913768c7dbcf7a2a0e0d32ad9d717053be3d633ae",
+ "note": "e2e (primary) = live sites+questions (tree-sitter, dell) + prune + the unit's Jev calls sent concurrently (one thread per question) + derive (dell); sequential_s (secondary) = parse/prune + sum of the per-call latencies + derive (Intern-Decision L4-D was measured sequentially); warm-up call excluded; latency includes retries"
+}

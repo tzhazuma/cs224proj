@@ -85,6 +85,13 @@ SPECS += [
      FALLBACK, ["l4d_ft/results/intern_l4d/layer3/lat300_c1.jsonl"], "l4d"),
     ("Intern-Decision L4-D (kernel, secondary)", "intern_l4d", "Intern-Decision-4B", "L4D", "local-decision", GPU1,
      KERNEL, ["l4d_ft/results/intern_l4d/layer3/lat300_c1_kernel.jsonl"], "l4d"),
+    # Jev L4-D: primary = the questions of a unit sent concurrently; secondary = parse/prune + sum of per-call
+    # latencies + derive (sequential, the way Intern-Decision L4-D was measured); both from the same run file
+    ("Jev L4-D", "jev_l4d", "jev-latest", "L4D", "cloud-decision", "Jev API (cloud); client dell",
+     "questions of a unit concurrent", ["l4d_ft/results/jev_l4d/layer3/lat300_c1.jsonl"], "l4d_api"),
+    ("Jev L4-D (sequential, secondary)", "jev_l4d", "jev-latest", "L4D", "cloud-decision",
+     "Jev API (cloud); client dell", "sum of per-call latencies", ["l4d_ft/results/jev_l4d/layer3/lat300_c1.jsonl"],
+     "l4d_api"),
 ]
 # LoRA rows (l4d-train lane runs): primary = fallback conv (the prediction configuration), "(kernel)" = secondary
 for suffix, label, kern in (("fallback", "", FALLBACK), ("kernel", " (kernel, secondary)", KERNEL)):
@@ -165,6 +172,16 @@ def build_row(spec, clang: dict | None) -> dict:
         e2e = model_s
         if meta.get("gpu_note"):
             notes.append(f"gpu_note: {meta['gpu_note']}")
+    elif kind == "l4d_api":
+        ex = [r["extra"] for r in ok]
+        for key in ("parse_prune_s", "http_s", "max_call_s", "sum_call_s", "derive_s", "n_questions"):
+            components[key] = comp([e[key] for e in ex])
+        if "sequential" in method:
+            e2e = [e["sequential_s"] for e in ex]
+            notes.append("parse/prune + sum of per-call latencies + derive")
+        else:
+            e2e = model_s
+            notes.append("questions of a unit sent concurrently (one thread per question)")
     else:
         e2e = model_s
     if qkey == "codeql":

@@ -1,0 +1,61 @@
+{
+ "method": "jev_l4d",
+ "model": "jev-latest",
+ "model_returned": "jev-1.14.0",
+ "tau": 0.5,
+ "tau_role": "primary, fixed 0.5 before any Jev L4-D call (parent 2026-11-24 19:05)",
+ "tau_secondary": 0.268941,
+ "tau_secondary_rule": "max layer1-dev unit macro-F1 over TAU_GRID (derive.evaluate_unit on the pruned questions); ties -> tau closest to 0.5 (= run_decide_l4d.py select rule)",
+ "dev_macro_f1_tau05": 0.9452917771883289,
+ "dev_macro_f1_tau_secondary": 0.9818166790643854,
+ "dev_n_units": 660,
+ "dev_n_questions_pruned": 1916,
+ "dev_answers": "l4d_ft/results/jev_l4d/layer1/dev_r1.jsonl",
+ "dev_answers_sha256": "e75cc206d9f26d3a39a83e55fd375bf864e38121134a413ab223fcc3413f1778",
+ "select_tau_sha256": "9a42949bb5b5575e7b3df27e9cd4d90564a7d4ccff8dfdadf4a6951c7a347510",
+ "request_template": {
+  "model": "jev-latest",
+  "state": "{state}",
+  "questions": {
+   "answer": {
+    "type": "noul",
+    "instructions": "{question}",
+    "criteria": {
+     "true": "The answer to the question is Yes.",
+     "false": "The answer to the question is No."
+    }
+   }
+  }
+ },
+ "question_name": "answer",
+ "criteria": {
+  "true": "The answer to the question is Yes.",
+  "false": "The answer to the question is No."
+ },
+ "client": {
+  "provider": "jev",
+  "base_url": "https://api.typesafe.ai/v1",
+  "model": "jev-latest",
+  "headers": [],
+  "retry": {
+   "max_attempts": 5,
+   "base_seconds": 2.0,
+   "cap_seconds": 60.0,
+   "timeout_seconds": 180.0
+  }
+ },
+ "hashes": {
+  "l4d_templates_sha256": "316429b266c0258383724c8c9129e2ea17946a9013d72cb61b267261ef827516",
+  "l4d_templates_py_sha256": "678d7c743c63b3e8d96005def26f10a2c0b3f9fef48dccc09189635ae76a56f1",
+  "l4d_questions_py_sha256": "f6a826f8cb2ff5e1d7646ac6c7c80ac6b516dbab025f8796a2143037b835005a",
+  "derive_py_sha256": "f3a0e6344b7c0d7d49eb72993f1fe53b4eea819600b6a670feddbc46c71265b7",
+  "rules_l4d_dl_sha256": "ca2d6380230812ea92726aca0666fe3b4ae83dff9659d1d3764c3e1d01e714ec",
+  "prune_py_sha256": "79a12d540ff5e417017f5b5f5fd637e5566c2ea10bcb8e5521358ec6e6a22c6b",
+  "script_sha256": "d4bbd85e5ea8c14487751fbfd1a15ab317d902309bd200a6df52fc780af6d139",
+  "llmlane_clients_py_sha256": "4216f7d8605f754d1bf87a76e9e41c7b86ecdf159ccbd268612fd261c10b2748",
+  "llmlane_prompts_py_sha256": "13d6af10f0b250a8cee7cb2031922d81002c0fddae4e4e183e20acfebae992ea",
+  "questions_layer1_sha256": "510e38b126aa90627023c6d43cb45d2ef3a27a8004747d6238f037f1e7d1de30",
+  "questions_layer3_sha256": "0264524d9a6d9898f351a2bc4c6f323b4f89f87636db9c1b3a0ddea17e5ae8f6"
+ },
+ "frozen_utc": "2026-11-25T03:18:13Z"
+}

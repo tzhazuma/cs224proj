@@ -42,6 +42,7 @@ METHODS = [
     ("jev_L1", "cloud-decision", "jev-latest (jev-1.14.0)", "L1", "Jev L1 @0.5", "llm/results/jev/layer3/l3_eval_L1_r1.jsonl", "primary"),
     ("jev_L2", "cloud-decision", "jev-latest (jev-1.14.0)", "L2", "Jev L2 @0.5", "llm/results/jev/layer3/l3_eval_L2_r1.jsonl", "primary"),
     ("jev_L3", "cloud-decision", "jev-latest (jev-1.14.0)", "L3", "Jev L3 @0.5", "llm/results/jev/layer3/l3_eval_L3_r1.jsonl", "primary"),
+    ("jev_l4d", "cloud-decision", "jev-latest (jev-1.14.0)", "L4D", "Jev L4-D @0.5", "l4d_ft/results/jev_l4d/layer3/eval_r1_units.jsonl", "primary"),
     ("qwen_L1", "local-LLM", "qwen3.5-4b", "L1", "Qwen3.5-4B L1 (gen.)", "llm/results/qwen3_5_4b/layer3/l3_eval_L1_r1.jsonl", "primary"),
     ("qwen_L2", "local-LLM", "qwen3.5-4b", "L2", "Qwen3.5-4B L2 (gen.)", "llm/results/qwen3_5_4b/layer3/l3_eval_L2_r1.jsonl", "primary"),
     ("qwen_L3", "local-LLM", "qwen3.5-4b", "L3", "Qwen3.5-4B L3 (gen.)", "llm/results/qwen3_5_4b/layer3/l3_eval_L3_r1.jsonl", "primary"),
@@ -54,6 +55,7 @@ METHODS = [
     ("intern_th2_L2", "local-decision", "Intern-Decision-4B", "L2", "Intern-Decision L2 (dev thr.)", "gpu/results/intern_decision_th2/layer3/l3_eval_L2_r1.jsonl", "secondary"),
     ("intern_th2_L3", "local-decision", "Intern-Decision-4B", "L3", "Intern-Decision L3 (dev thr.)", "gpu/results/intern_decision_th2/layer3/l3_eval_L3_r1.jsonl", "secondary"),
     ("intern_l4d_devtau", "local-decision", "Intern-Decision-4B", "L4D", "Intern-Decision L4-D (dev τ 0.18)", "l4d_ft/results/intern_l4d/layer3/eval_r1_units.jsonl", "secondary"),
+    ("jev_l4d_devtau", "cloud-decision", "jev-latest (jev-1.14.0)", "L4D", "Jev L4-D (dev τ 0.27)", "l4d_ft/results/jev_l4d/layer3/eval_r1_devtau_units.jsonl", "secondary"),
     ("readout_l4d", "local-decision", "qwen3.5-4b (base read-out)", "L4D", "Qwen3.5-4B read-out L4-D (pre-FT)", "l4d_ft/results/qwen_readout_l4d/layer3/eval_r1_units.jsonl", "primary"),
     ("readout_L1", "local-decision", "qwen3.5-4b (base read-out)", "L1", "Qwen3.5-4B read-out L1 (pre-FT)", "decision_ft/results/qwen_readout_zeroshot/layer3/L1_v1.jsonl", "backup"),
     ("readout_L3", "local-decision", "qwen3.5-4b (base read-out)", "L3", "Qwen3.5-4B read-out L3 (pre-FT)", "decision_ft/results/qwen_readout_zeroshot/layer3/L3_v1.jsonl", "backup"),
@@ -74,14 +76,18 @@ METHODS = [
 
 # strategy x fine-tuning sub-table: row -> column -> method key
 STRATEGY_FT = {
-    "L1": {"Qwen gen.": "qwen_L1", "Intern-Decision": "intern_L1", "read-out": "readout_L1", "our FT": "lora_L1"},
-    "L3": {"Qwen gen.": "qwen_L3", "Intern-Decision": "intern_L3", "read-out": "readout_L3", "our FT": "lora_L3"},
-    "L4 / L4-D": {"Qwen gen.": "qwen_L4", "Intern-Decision": "intern_l4d", "read-out": "readout_l4d", "our FT": "lora_l4d_opt"},
+    "L1": {"Qwen gen.": "qwen_L1", "Intern-Decision": "intern_L1", "read-out": "readout_L1", "our FT": "lora_L1",
+           "Jev (cloud)": "jev_L1"},
+    "L3": {"Qwen gen.": "qwen_L3", "Intern-Decision": "intern_L3", "read-out": "readout_L3", "our FT": "lora_L3",
+           "Jev (cloud)": "jev_L3"},
+    "L4 / L4-D": {"Qwen gen.": "qwen_L4", "Intern-Decision": "intern_l4d", "read-out": "readout_l4d", "our FT": "lora_l4d_opt",
+                  "Jev (cloud)": "jev_l4d"},
 }
 
 # expected macro-F1 values given by the parent (cross-check, ±0.0015)
 # extra paired family-cluster bootstrap deltas (a − b), same resamples as all other CIs
-PAIRED_DELTAS = [("lora_l4d_opt", "intern_l4d"), ("intern_l4d", "readout_l4d")]
+PAIRED_DELTAS = [("lora_l4d_opt", "intern_l4d"), ("intern_l4d", "readout_l4d"),
+                 ("jev_l4d", "jev_L3"), ("jev_l4d", "lora_l4d_opt"), ("jev_l4d", "deepseek_L4"), ("jev_l4d", "jev_L1")]
 NOTES = [
     "intern_l4d: l4d_ft/results/intern_l4d/FROZEN listed the layer1-dev τ 0.182426 as primary; the parent switched "
     "the primary to τ = 0.5 after seeing the eval results, for consistency with Intern-Decision L1–L3 (calibrated "
@@ -90,6 +96,10 @@ NOTES = [
     "p_yes for exec_all/exec_any/rel lie in ~0.45–0.65), so \"the release executes on every path\" is accepted for "
     "dead frees and leak recall collapses to .037; a threshold tuned on Debiased (no dead frees) does not transfer "
     "to DeadFree.",
+    "jev_l4d: primary τ = 0.5 fixed by the parent (2026-11-24 19:05) before any Jev L4-D call; dev τ 0.268941 "
+    "(layer1 dev, run_decide_l4d.py select rule) is secondary. Same pruned questions as intern_l4d / lora_l4d_opt, "
+    "one noul question per request, neutral criteria not refined after the 40-unit pilot "
+    "(l4d_ft/results/jev_l4d/FROZEN; analysis/deadfree/REPORT_jev_l4d.md).",
 ]
 CROSS_CHECK = {"deepseek_L1": 0.863, "deepseek_L4": 0.900, "jev_L3": 0.949, "qwen_L1": 0.533,
                "lora_l4d": 0.826, "vulnllmr": 0.471}
@@ -294,6 +304,8 @@ def write_md(out: dict, results: dict) -> None:
           "Qwen gen. = Qwen3.5-4B generative (untuned); Intern-Decision = untuned decision model @0.5 "
           "(also L4-D; dev-τ value in brackets); read-out = Qwen3.5-4B base Yes/No read-out (pre-FT; L1/L3 are backup-only); "
           "our FT = Qwen3.5-4B + LoRA (L1/L3 unit-label FT; L4-D fact FT, opt. inference).", "",
+          "Jev (cloud) = Jev (TypeSafe System One, jev-latest) @0.5, cloud decision-model reference, not an FT variant "
+          "(L4-D: same pruned questions, one noul question per request; dev-τ value in brackets).", "",
           "| strategy | " + " | ".join(next(iter(STRATEGY_FT.values()))) + " |",
           "|---|" + "---|" * len(next(iter(STRATEGY_FT.values())))]
     for srow, cols in STRATEGY_FT.items():
@@ -303,6 +315,8 @@ def write_md(out: dict, results: dict) -> None:
             cells.append("pending" if m["status"] != "ok" else f"{f3(m['macro_f1'])}{fci(m['macro_f1_ci'])}")
             if k == "intern_l4d" and results["intern_l4d_devtau"]["status"] == "ok":
                 cells[-1] += f" (dev τ 0.18: {f3(results['intern_l4d_devtau']['macro_f1'])})"
+            if k == "jev_l4d" and m["status"] == "ok" and results["jev_l4d_devtau"]["status"] == "ok":
+                cells[-1] += f" (dev τ 0.27: {f3(results['jev_l4d_devtau']['macro_f1'])})"
         L.append(f"| {srow} | " + " | ".join(cells) + " |")
     L += ["", "## Paired differences (family-cluster bootstrap, same resamples)", ""]
     for pd in out["paired_deltas"]:
