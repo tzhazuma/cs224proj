@@ -32,6 +32,7 @@
 - 速度目标：L4-D（优化版）比 DeepSeek API 快即可（不再要求 ≤ 0.36 s）。所有单并发延迟都在 DeadFree latency300 上重测（L3 含 Clang 分析时间，L4/L4-D 含解析与 Datalog 推导时间）。
 - Pareto（横轴单并发延迟、对数；纵轴 DeadFree macro-F1）画入静态工具（灰色）和动态参考；方案 A（混合事实）用户未要求，不做。
 - 第 4.2 节预注册的 near-LLM 标准（≥ 参考 − 0.02）照实报告为未达到（DeadFree −.037 vs DeepSeek L1）。
+**两条主线【已定，2026-11-24 19:05，用户决定】**：结果按生成式主线（Qwen3.5-4B 生成 L1–L4 本地；DeepSeek L1–L4 云端）与 decision 主线（Qwen 直接读出 L1/L3/L4-D、Intern-Decision L1–L3 与 L4-D、我们的 LoRA L1/L3/L4-D 本地；Jev L1–L3 与 L4-D 云端）分开呈现；读出与微调模型不做 L2（理由：微调已见约 1,800 个带标签单元，L2 提示长 2.4 倍）。补跑 Jev L4-D（DeadFree eval 全集）：主阈值 τ=0.5 事先固定（19:05，任何 Jev L4-D 调用之前），第 ① 层 dev 选的阈值为次要结果；每个问题单独请求；延迟在 DeadFree latency300 单并发测，单元内问题并发发送为主口径、逐题累加为次要口径。slides 中引用的数据集、工具、模型、论文与课程讲义在当页脚注标出（来源仅限 report/final_en/references.bib 或官方网址），不另设参考文献页。
 **主比较轴**【已定，2026-11-23 修改】：模型类型，即生成式 LLM（DeepSeek、Qwen3.5-4B）与 decision model（LoRA、Intern-Decision、Jev）的对比（课程指南允许以模型为主轴）。提示策略 L1–L4 / L4-D 是次要轴，传统程序分析方法是基线。原主轴（提示策略 L1–L4）作废。
 
 | RQ | 问题 | 主要证据 |
