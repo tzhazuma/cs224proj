@@ -6,49 +6,42 @@
 %   CWE401 sources (goodG2B / goodB2G helpers, see sections/2_methods "Debiased" frame);
 %   probes: grep and static void = data/build/probes.json (eval set), Clang SA = registry run on layer "original"
 \begin{frame}[fragile]{Original Juliet CWE-401: synthetic, templated, gameable}
-  \slidecite{\bib{sardjuliet13}; \bib{black2018juliet13}; \bib{mitrecwe401}; \bib{clangsa}}
-  \begin{columns}[T]
-    \begin{column}{0.50\textwidth}
-\begin{lstlisting}[style=unit]
-void CWE401_..._bad() {   // leaks
-    data = malloc(100); ... }
-(*\hlc{static void}*) goodG2B() {  // stack, no heap
-    data = ALLOCA(100); ... }
-(*\hlc{static void}*) goodB2G() {  // heap + free
-    data = malloc(100); ... (*\hlc{free(data);}*) }
-void ..._good() { goodG2B(); goodB2G(); }
+  \vspace{2pt}
+\begin{lstlisting}[style=unitbig]
+void bad()            {data = malloc(100);}             // leak
+(*\hlc{static void}*) goodG2B() {data = ALLOCA(100);}             // no heap
+(*\hlc{static void}*) goodB2G() {data = malloc(100); (*\hlc{free(data);}*)} // freed
 \end{lstlisting}
-      {\scriptsize One test case: a bad function + good helpers.\par}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \footnotesize
-      \begin{itemize}\setlength{\itemsep}{1pt}
-        \item NIST SARD Juliet C/C++ v1.3: \res{x}{juliet_cases} CWE-401 test cases
-        \item \res{x}{juliet_families} families = allocation call $\times$ data type (\code{malloc}, \code{new[]}, \code{strdup}, \code{realloc}, \dots)
-        \item \res{x}{juliet_variants} flow variants: constant \code{if}s, loops, globals, calls, cross-file
-        \item 1 bad + 1 good unit per case: \res{x}{juliet_units} units
+  \vspace{10pt}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \begin{itemize}
+        \item Juliet C/C++ v1.3\sref{sardjuliet13,black2018juliet13}: \res{x}{juliet_cases} CWE-401\sref{mitrecwe401} cases
+        \item \res{x}{juliet_families} families $\times$ \res{x}{juliet_variants} flow variants
+        \item 1 bad + 1 good unit: \res{x}{juliet_units} units
       \end{itemize}
     \end{column}
+    \begin{column}{0.50\textwidth}
+      \centering
+      \begin{tabular}{@{}lr@{}}
+        \toprule
+        One-line cue & macro-F1 \\
+        \midrule
+        no \code{free} $\Rightarrow$ leak & \res{df-x}{probe_grep_v0_original} \\
+        \code{static void} $\Rightarrow$ good & \res{x}{probe_static_void_original} \\
+        \midrule
+        \textcolor{NeutDraw}{Clang SA\sref{clangsa} (reference)} & \textcolor{NeutDraw}{\res{clang_sa-original}{macro}} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
   \end{columns}
-  \vspace{-4pt}
+  \vspace{14pt}
   \centering
-  {\footnotesize\renewcommand{\arraystretch}{1.0}
-  \begin{tabular}{@{}lll@{}}
-    \toprule
-    Cue & Why it works on Original & macro-F1 \\
-    \midrule
-    \code{free}/\code{delete} token present? & the fix in B2G \emph{is} a \code{free} & \res{df-x}{probe_grep_v0_original} \\
-    \code{static void} present? & only good helpers are \code{static} & \res{x}{probe_static_void_original} \\
-    \bottomrule
-  \end{tabular}\par}
-  \vspace{2pt}
-  {\footnotesize A real analysis (Clang SA) scores only \res{clang_sa-original}{macro}, and an LLM can read the same cues.\\
-  $\Rightarrow$ \textbf{Debiased} removes the structure cue, \textbf{DeadFree} the \code{free}-token cue.\par}
+  $\Rightarrow$ \textbf{Debiased} removes the structure cue, \textbf{DeadFree} the \code{free}-token cue.
 \end{frame}
 
 % ------------------------------------------------------------------------------
 \begin{frame}{Debiased: good units now look like bad units}
-  \slidecite{\bib{germano2025biased}; \bib{risse2024limits}}
   \centering
   \begin{tikzpicture}[node distance=4mm and 10mm,
       codebox/.style={box, align=left, font=\ttfamily\scriptsize, inner sep=3pt}]
@@ -67,7 +60,7 @@ void ..._good() { goodG2B(); goodB2G(); }
   \end{tikzpicture}
   \vspace{6pt}
   \begin{itemize}
-    \item One entry function; wrapper and \code{static} removed
+    \item One entry function; wrapper and \code{static} removed (the bias of Germano et al.\sref{germano2025biased})
     \item Good unit is either G2B (no heap) or B2G (malloc + free)
     \item Bad units unchanged; same shape and length
   \end{itemize}
@@ -110,7 +103,6 @@ if (sym_7 != 5) { printLine("..."); }
 %   always-"leak" on balanced labels: F1(leak) = 2/3, F1(no leak) = 0 -> macro-F1 1/3; bootstrap B and clusters:
 %   juliet_full/analysis/deadfree/deadfree_quality.json "bootstrap" (B=2000, clusters=family)
 \begin{frame}{We test on unseen flow variants}
-  \slidecite{\bib{risse2025topscore}}
   \centering
   \begin{tikzpicture}[x=0.071mm, y=1mm]
     % widths proportional to groups: dev 330, fold0 472, fold1 424, fold2 432 (total 1,658)
@@ -130,7 +122,7 @@ if (sym_7 != 5) { printLine("..."); }
     \item Split by Juliet flow variant, not by unit
     \item Fine-tuning: train on two folds, predict the third
     \item Macro-F1 = mean of the F1 on ``leak'' and the F1 on ``no leak''; always answering ``leak'' scores 0.33
-    \item 95\,\% CI: resample the \res{x}{boot_families} families \res{x}{boot_B}$\times$. Units of one family are near-copies, so resampling units would make the CI too narrow
+    \item 95\,\% CI: bootstrap\sref{efron1979} over the \res{x}{boot_families} families, \res{x}{boot_B} resamples. Units of one family are near-copies, so resampling units would make the CI too narrow
     \item Speed: median latency per unit, one request at a time
   \end{itemize}
 \end{frame}
@@ -139,7 +131,6 @@ if (sym_7 != 5) { printLine("..."); }
 % src: generative output example = presentation/demo/recordings/stage_final_v2.json results.bad.ds_l1.extra.content;
 %   decision thresholds: deadfree_quality.md (Jev @0.5, Intern-Decision @0.5 primary; LoRA tau from dev, juliet_full/l4d/README.md)
 \begin{frame}{L1--L3: ask for the verdict, with more or less help}
-  \slidecite{\bib{clangsa}; \bib{deepseekdocs}; \bib{qwen35card}; \bib{nie2025vulnllmr}; \bib{typesafe2026jev}; \bib{zhu2026interndecision}; \bib{zhang2026anyjev}}
   \centering
   \renewcommand{\arraystretch}{1.05}
   \begin{tabular}{@{}lll@{}}
@@ -148,7 +139,7 @@ if (sym_7 != 5) { printLine("..."); }
     \midrule
     \textbf{L1} direct & unit code & leak? \\
     \textbf{L2} few-shot & + fixed dev examples & leak? \\
-    \textbf{L3} analysis-guided & + Clang SA warnings as evidence & leak? \\
+    \textbf{L3} analysis-guided & + Clang SA\sref{clangsa} warnings as evidence & leak? \\
     \bottomrule
   \end{tabular}
   \vspace{10pt}
@@ -157,13 +148,13 @@ if (sym_7 != 5) { printLine("..."); }
       \textbf{Generative} model: output = text\\
       {\small writes an answer that we parse:\\
       {\scriptsize\code{\{"label": "vulnerable",}\\\code{\ "confidence": 0.99\}}}\\
-      DeepSeek, Qwen3.5-4B, VulnLLM-R}
+      DeepSeek, Qwen3.5-4B\sref{qwen35card}, VulnLLM-R\sref{nie2025vulnllmr}}
     \end{column}
     \begin{column}{0.47\textwidth}
       \textbf{Decision} model: output = no text\\
-      {\small one forward pass; read P(Yes) vs P(No) at the answer position;
+      {\small one forward pass; read P(Yes) vs P(No) at the answer position\sref{zhang2026anyjev};
       \alert{leak if P(Yes) $\geq\tau$}\\
-      Jev, Intern-Decision-4B, ours}
+      Jev, Intern-Decision-4B\sref{zhu2026interndecision}, ours}
     \end{column}
   \end{columns}
   \vfill
@@ -175,14 +166,13 @@ if (sym_7 != 5) { printLine("..."); }
 %   site kinds = juliet_full/l4d/parse_sites.py docstring (alloc / realloc / release / stmt, tree-sitter),
 %   question templates juliet_full/l4d/templates.py
 \begin{frame}{L4 and L4-D: the model supplies facts, Datalog decides}
-  \slidecite{\bib{jordan2016souffle}; \bib{url-treesitter}; \bib{wang2026nesa}; \bib{wang2024llmdfa}}
   \centering
   \begin{tikzpicture}[node distance=3mm and 5mm]
     % L4
     \node[box] (c1) {unit\\code};
     \node[warn, right=of c1] (llm) {LLM\\{\scriptsize generates}};
     \node[data, right=10mm of llm, font=\scriptsize, align=left] (f1) {\texttt{alloc free assign}\\\texttt{call dead(line)} \dots};
-    \node[hero, right=of f1] (dl1) {Datalog engine\\{\scriptsize (Souffl\'e, \texttt{leak.dl})}};
+    \node[hero, right=of f1] (dl1) {Datalog engine\\{\scriptsize (Souffl\'e\sref{jordan2016souffle}, \texttt{leak.dl})}};
     \node[box, right=of dl1] (o1) {leak?};
     \node[lbl, left=1mm of c1, font=\small\bfseries, text=Ink] {L4};
     \draw[arr] (c1) -- (llm); \draw[arr] (llm) -- node[lbl, above] {JSON} (f1); \draw[arr] (f1) -- (dl1); \draw[arr] (dl1) -- (o1);
@@ -208,13 +198,13 @@ if (sym_7 != 5) { printLine("..."); }
     \code{realloc\_safe(r)} & If \code{realloc} at $r$ fails, is the old block still released? \\
   \end{tabular}\par}
   \vfill
-  {\scriptsize $^*$Site = a statement with an allocation (\code{malloc}, \code{calloc}, \code{strdup}, \code{new}), a \code{realloc}, or a release (\code{free}, \code{delete}), found by a tree-sitter parser; other guarded statements are ``plain'' sites.\par}
+  {\scriptsize $^*$Site: allocation (\code{malloc}, \code{calloc}, \code{strdup}, \code{new}), \code{realloc} or release (\code{free}, \code{delete}), found with tree-sitter\sref{url-treesitter}; other guarded statements are ``plain''.
+  Related LLM + analysis work: NESA\sref{wang2026nesa}, LLMDFA\sref{wang2024llmdfa}.\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
 % src: juliet_full/l4d/l4d.dl (rules v1, verbatim modulo the unit argument)
 \begin{frame}[fragile]{Three rules turn the answers into a verdict}
-  \slidecite{\bib{jordan2016souffle}; \bib{cs224-l17}}
   \begin{columns}[c]
     \begin{column}{0.56\textwidth}
 \begin{lstlisting}[style=dl]
@@ -235,7 +225,7 @@ unit_leak :- leak(_).
   \end{columns}
   \vspace{8pt}
   {\small Facts: \code{heap}, \code{exec\_any}, \code{exec\_all}, \code{rel}, \code{realloc\_safe} from the model;
-  site lists (\code{realloc}) from the parser. Run by the Datalog engine Souffl\'e; a Python twin agrees on every unit.\par}
+  site lists (\code{realloc}) from the parser. Run by the Datalog engine Souffl\'e\sref{jordan2016souffle}; a Python twin agrees on every unit.\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -248,12 +238,11 @@ unit_leak :- leak(_).
 %   Lecture 1 "Introduction" (sound / complete); Lecture 18 "Soundiness": "Virtually all published whole-program
 %     analyses are unsound when applied to real programming languages".
 \begin{frame}{The design follows the course's program-analysis ideas}
-  \slidecite{\bib{cs224-l1}; \bib{cs224-l3}; \bib{cs224-l10}; \bib{cs224-l17}; \bib{cs224-l18}}
   \small
   \renewcommand{\arraystretch}{1.15}
   \begin{tabular}{@{}p{0.36\linewidth}p{0.58\linewidth}@{}}
     \toprule
-    L4-D element & Course idea (lecture) \\
+    L4-D element & Course idea (CS224 lecture) \\
     \midrule
     one fact set per \code{malloc}/\code{new} site & allocation-site abstraction (L10 Pointer Analysis) \\
     \code{exec\_any} / \code{exec\_all} & may vs must analysis, cf.\ reaching definitions vs available expressions (L3--4 Data Flow Analysis) \\
@@ -272,7 +261,6 @@ unit_leak :- leak(_).
 %   kept/dropped = prune.py needed(); demo counts \res{x}{demo_l4d_*} <- presentation/demo/recordings/stage_final_v2.json
 %   results.<case>.l4d.extra.{n_asked,n_questions}
 \begin{frame}{Asking only what the rules read halves the questions}
-  \slidecite{\bib{cs224-l10}}
   \begin{columns}[c]
     \begin{column}{0.30\textwidth}
       \centering
@@ -343,11 +331,10 @@ unit_leak :- leak(_).
 % src: juliet_full/l4d/README.md (training contract), juliet_full/l4d_ft/PROGRESS.md (~68 min/fold, 2x RTX 3090 DDP),
 %   decision_ft lane report (LoRA r16, 32.5 M trainable = 0.70 %)
 \begin{frame}{Fine-tuning: one recipe, different labels per strategy}
-  \slidecite{\bib{qwen35card}; \bib{hu2022lora}; \bib{zhao2026cyberjev}; \bib{url-gcov}}
   \centering
   \begin{tikzpicture}[node distance=4mm and 12mm]
     \node[box, align=center] (in) {prompt\\{\scriptsize L1 / L3 / L4-D question}};
-    \node[hero, right=of in, align=center] (m) {Qwen3.5-4B\\+ LoRA};
+    \node[hero, right=of in, align=center] (m) {Qwen3.5-4B\sref{qwen35card}\\+ LoRA\sref{hu2022lora}};
     \node[data, right=of m, align=center] (s) {$s=\ell_{\text{Yes}}-\ell_{\text{No}}$};
     \draw[arr] (in) -- (m); \draw[arr] (m) -- node[lbl, above] {1 pass} (s);
   \end{tikzpicture}
@@ -363,10 +350,10 @@ unit_leak :- leak(_).
     L4-D & fact label from \textbf{dynamic analysis} & CE balanced per (question type, label) \\
     \bottomrule
   \end{tabular}
-  \vspace{4pt}
+  \vspace{2pt}
   \begin{itemize}\small
-    \item LoRA r16, $\alpha$32 on all LM linear layers: 32.5\,M weights (0.70\,\%); head from tied Yes/No rows
-    \item Fact labels: gcov coverage, alloc/free trace, \code{realloc} failure injection; rules frozen
+    \item LoRA r16, $\alpha$32 on all LM linear layers: 32.5\,M weights (0.70\,\%); head from tied Yes/No rows\sref{zhao2026cyberjev}
+    \item Fact labels: gcov\sref{url-gcov} coverage, alloc/free trace, \code{realloc} failure injection; rules frozen
     \item 3-fold CV by flow variant; dev picks checkpoint and $\tau$; $\approx$68\,min/fold on 2$\times$ RTX 3090; L2 not trained
   \end{itemize}
 \end{frame}

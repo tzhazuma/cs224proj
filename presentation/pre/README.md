@@ -10,6 +10,8 @@ make            # = make figures + make pdf  -> main.pdf
 make figures    # re-score every result file and re-render figures/*.pdf and the generated figures/*.tex
 make pdf        # latexmk -xelatex into build/, copies build/main.pdf to main.pdf
 make check      # errors / overfull boxes / missing fonts in build/main.log
+                # + tools/check_citations.py: every footer source has a superscript on the same page and vice
+                #   versa, numbers 1..k in order of first mention, footer at most two lines
 make pngs       # page previews in build/pages/ (pdftoppm -r 50)
 make clean
 ```
@@ -60,6 +62,13 @@ oblique face. matplotlib registers the same Fira Sans files directly.
 | `.gitignore` | ignores `build/` |
 
 The deck has 57 pages: title, 4 section dividers, 23 numbered frames, the standout and 28 backup pages (incl. the generated result-file list). See `REPORT_v4.md` for the frame list.
+
+## Citations
+
+Cite a source at its mention with `\sref{key}` or `\sref{key1,key2}` (keys = `report/final_en/references.bib` keys
+or `url-*`; short forms in `sources.tex`). Numbers restart on every frame in order of first mention; the footer lists
+the numbered entries. Tables: superscript on the row/column name; figures: in the caption line. Use `†`/`*` only for
+non-citation notes. Course lectures, DeepSeek and Jev are not cited (user, 2026-11-24). An unknown key stops the build.
 
 ## How the numbers are made
 

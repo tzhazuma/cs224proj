@@ -1,5 +1,51 @@
 # REPORT v4: slides "Near-Cloud Quality on a Local Device?"
 
+## v4.4 update (2026-11-24 ~20:15 PST, parent 19:45 / 19:50 / 20:08)
+
+Build: `make && make check && make pngs` clean ("clean: no errors, overfull boxes or missing fonts";
+"citations: ok (30 pages with sources, 85 footer entries, every entry has a superscript)"). main.pdf **61 pages**
+(24 numbered main frames unchanged; backup +3: two-track tables, all-labels Pareto, Jev L4-D).
+
+Changed frames
+- Main 5 "Original Juliet CWE-401: synthetic, templated, gameable": one frame, lighter. Full-width three-line
+  listing (`lstdefinestyle{unitbig}`, \small) with aligned comments (leak / no heap / freed); three bullets (1,658
+  cases; 42 families × 48 variants; 1 bad + 1 good = 3,316 units); table with the two one-line cues (.935, 1.000) and a
+  grey Clang SA reference row (.822); one closing line. Dropped vs v4.3: the "why" column of the cue table and the
+  goodB2G body lines. No split, timing unchanged (0:40).
+- Main 18 is now a FIGURE `figures/df_tracks.pdf` ("Facts lift every local decision model; the 4B generator cannot
+  write them"): two panels (generative L1–L4 | decision L1, L2, L3, L4-D), same y-range, one line per model, cloud
+  dashed + hollow, local solid, ours = green star + thick line, missing L2 joined by a thin dotted segment, best
+  point per model annotated, shared legend below. Two take-away lines + one caption line. The generated tables moved
+  to backup "Backup: two tracks × four strategies, all numbers".
+- Main 20 Pareto: title "Clang SA dominates every local LM; FT L4-D is the most accurate of them". Front now over
+  model-based AND static methods (dynamic stays a reference line):
+  **grep (.333, 1 µs) → Cppcheck (.492, 9 ms) → Clang SA (.855, 18 ms) → DeepSeek L3 (.875, 810 ms) → Jev L1 (.946,
+  912 ms) → Jev L3 (.949, 923 ms)**; no local LM is on the front. Plot sized for slide scale ≈1 (fonts ≈9 pt), legend
+  outside right, budget shading dropped (dotted lines + small labels), labels only for front, ours, static tools and
+  each model's best strategy, hand-placed (`PARETO_LABEL_AT`) without overlaps; one-line caption, long text in
+  notes §20. Backup "DeadFree Pareto, every point labelled" (`figures/df_pareto_full.pdf`).
+- Main 21: bullet "Same facts, cloud decision model: Jev L4-D .907 (+0.081 vs FT L4-D); Jev L3 .949"; CI header
+  cites the bootstrap.
+- Backup "Jev L4-D, the cloud decision model on the same facts" (new): τ 0.5 pre-specified (.907 [.875, .935], P
+  .847, R .995, gap 113 %) and **dev-chosen τ 0.27** (.944, backup only); paired vs DeepSeek L4 +.007 [−.028, +.039]
+  n.s., vs Jev L3 −.042, vs FT L4-D +.081; exec_all accuracy .975 vs .831 (FT); realloc_safe FPs; latency 967 ms
+  with concurrent questions. Hand-typed fact accuracies carry `% src: REPORT_jev_l4d.md`.
+- Backup two-track caption no longer says "Jev L4-D = cloud ceiling" (it is not: Jev L3 is higher).
+- Citations everywhere: `\sref{key}` superscript at the first mention, per-frame numbered footer (6.5 pt, at most two
+  lines, `\smash`ed above the page number). `tools/check_citations.py` (run by `make check`) reads
+  `build/main.sref` (B = superscript, F = footer entry, H = footer height, per page) and fails if the sets differ,
+  a number maps to two keys, numbers are not 1..k in first-mention order, a footer is taller than two lines
+  (19 pt), or a section still uses `\slidecite`. Removed citations: CS224 lectures (lecture names stay as plain
+  text on the course-ideas slide), DeepSeek (deepseekdocs, deepseek2026v4), Jev (typesafe2026jev). Short forms in
+  `sources.tex` shortened (the tool name is at the mention).
+- Frame-level sources dropped because the name appears only inside a generated table/macro (no place for a
+  superscript): Clang SA on main 22 (demo) and backup demo; Qwen/Intern/LoRA on backup "strategy × local model";
+  Qwen/Intern/Clang SA on backup "by flow category"; Soufflé on backup "L4 v3 rules"; vLLM on backup method matrix and
+  Debiased latency. Each is still cited on other frames. Main 20 Pareto has no citations (short caption).
+
+Data (Jev L4-D landed, JEV_L4D_READY 20:01): jev_l4d .907 [.875, .935], latency .967 s (questions of a unit sent
+concurrently; local L4-D is sequential); jev_l4d_devtau .944 (secondary). Nothing pending in main.pdf.
+
 ## v4.3 update (2026-11-24 ~19:30 PST, user review fixes 1–10)
 - Build: `make && make check && make pngs` clean; main.pdf 58 pages (24 numbered main frames + backup); no undefined
   `\res`, no "??" citation key in the PDF text.

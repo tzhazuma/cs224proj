@@ -8,9 +8,10 @@ All numbers on the slides come from `figures/numbers.tex`, written by `make figu
 (DeadFree quality: `juliet_full/analysis/deadfree/deadfree_quality.json`; DeadFree latency:
 `juliet_full/analysis/deadfree/latency_deadfree.csv`, primary rows). **Read numbers off the slide, not off these
 notes**: the values quoted below are the build of 2026-11-24 ~10:30 PST (quality and latency final; the Qwen
-read-out L4-D latency was not measured and shows as "not measured"; v4.3 adds the two-track results and Jev L4-D,
-which shows as grey "pending" until its run lands and `make` is re-run). Sources (datasets, tools, models, papers,
-lectures) are in a tiny footnote on each slide, from `report/final_en/references.bib` or official URLs. From the dataset slide on, every model
+read-out L4-D latency was not measured and shows as "not measured"; v4.3 adds the two-track results; v4.4 (~20:10)
+adds Jev L4-D, final: .907 at τ 0.5, 967 ms). Sources (datasets, tools, models, papers) are numbered superscripts at
+the mention with a numbered footer per slide (`\sref`, short forms in `sources.tex` from
+`report/final_en/references.bib` or official URLs); course lectures, DeepSeek and Jev are named without a citation. From the dataset slide on, every model
 comparison is on **DeadFree** (eval set, 2,656 units, 39 flow variants never used for prompts, τ or checkpoints).
 
 Main line in one sentence: **the strategy does most of the work — an untuned local decision model answering
@@ -79,12 +80,13 @@ the cloud — for us one RTX 3090 with 24 GB."
   close to the cloud do we get and how fast. Task is one unit → leak / no leak, judged on DeadFree.
 
 ## 5. Original Juliet CWE-401 (0:40)
-- What the data looks like: NIST SARD Juliet C/C++ 1.3, 1,658 CWE-401 test cases, 42 families (allocation call ×
-  data type), 48 flow variants; one bad + one good unit per case = 3,316 units.
-- Point at the listing: the bad function leaks; the good helpers are `static void`, goodG2B uses the stack
-  (ALLOCA, no heap), goodB2G frees. Two cues follow: the free token (grep .935) and the `static` structure (1.000).
-- Clang SA, a real analysis, scores only .822 here, and an LLM can read the same cues. Debiased removes the
-  structure cue, DeadFree the free-token cue.
+- What the data looks like (bullets): NIST SARD Juliet C/C++ 1.3, 1,658 CWE-401 cases, 42 families (allocation call
+  × data type) × 48 flow variants; one bad + one good unit per case = 3,316 units.
+- Point at the three-line listing: bad leaks; the goods are `static void`; goodG2B uses the stack (ALLOCA, no heap),
+  goodB2G frees. The table: two one-line cues — "no free ⇒ leak" .935, "static void ⇒ good" 1.000 — and Clang SA,
+  a real analysis, only .822 (grey reference row).
+- Closing line: Debiased removes the structure cue, DeadFree the free-token cue. (Slide 3 already made the "gamed"
+  point; do not repeat it here, just show where the cues come from.)
 
 ## 6. Debiased (0:35)
 - One entry function per unit, wrapper and `static` removed. Each good unit is either G2B (no heap) or B2G
@@ -169,17 +171,21 @@ the cloud — for us one RTX 3090 with 24 GB."
   P(Yes) vs P(No) instead of letting it write) — exactly our LoRA's starting point. Static and dynamic tools are
   references, not competitors. Sources are in the footnote of each slide.
 
-## 18. Two tracks × four strategies (0:45)
-- Two tracks. Generative: the model writes text and we parse it (Qwen3.5-4B local, DeepSeek cloud; L1–L4).
-  Decision: one forward pass, read P(Yes) vs P(No) (Qwen read-out, Intern-Decision, ours, Jev; L1, L2, L3, L4-D).
-- (a) The strong cloud generative model gains from writing facts + Datalog: DeepSeek L4 .900 is its best. The 4B
-  model writes facts poorly: Qwen gen. L4 .706 < its L3 .760.
-- (b) L4-D is the best strategy of every local decision model: read-out .351/.334 → .752, Intern .664 (best
-  prompt) → .799, ours .826.
-- (c) Same Qwen weights: asking the facts (read-out L4-D .752) beats writing them (gen. L4 .706).
-- Jev L4-D is the cloud ceiling of the decision track (read the cell off the slide; it was run last). Do not claim
-  more than the cell shows.
-- "–": no L2 for read-out and FT — FT already saw ≈1,800 labelled units, and the L2 prompt is 2.4× longer.
+## 18. Facts lift every local decision model (figure) (0:45)
+- Two panels, same y-axis. Left: generative (writes text; Qwen3.5-4B local, DeepSeek cloud; L1–L4). Right:
+  decision (one forward pass, P(Yes) vs P(No); Qwen read-out, Intern-Decision, ours, Jev; L1, L2, L3, L4-D).
+  Dashed hollow = cloud, solid = local, green star = ours. Each model's best point carries its value.
+- Decision panel: L4-D is the best strategy for every LOCAL decision model — read-out .351/.334 → .752, Intern
+  .664 (best prompt) → .799, ours .372 (L1) → .826. The cloud decision model is already strong at L1–L3 (Jev L3
+  .949); with the same facts Jev L4-D (τ 0.5, pre-specified) is .907: ≈ DeepSeek L4 (+.007 [−.028, +.039], n.s.)
+  but below Jev L3 (−.042 [−.071, −.013]).
+- Generative panel: DeepSeek gains from writing facts + Datalog (L4 .900 is its best); the 4B model writes them
+  poorly (L4 .706 < L3 .760).
+- If asked (not on the slide): same Qwen weights — asking the facts (read-out L4-D .752) beats writing them (gen.
+  L4 .706). Jev answers the path question well (exec_all fact accuracy .975 vs .831 for our LoRA); most of its 238
+  false leaks contain a wrong realloc_safe answer (a gold-convention case, `realloc(NULL)` + exit).
+- Dotted segment: no L2 for read-out and FT — FT already saw ≈1,800 labelled units, and the L2 prompt is 2.4×
+  longer. All numbers: backup "two tracks, all numbers".
 
 ## 19. Fine-tuning, strategy by strategy — key slide (1:00)
 - Same Qwen3.5-4B weights before (read-out) and after LoRA. L1 .351 → .372, L3 .334 → .639, L4-D .752 → .826.
@@ -191,27 +197,29 @@ the cloud — for us one RTX 3090 with 24 GB."
   L4-D (paired bootstrap). Small, but the CI excludes zero.
 - "The strategy does most of the work; fine-tuning on facts adds a little; fine-tuning on verdicts hurts."
 
-## 20. Pareto (0:50)
-- x = median latency at concurrency 1 (log), y = DeadFree macro-F1 with CI. Marker shape = track (circle
-  generative, diamond decision), colour = cloud (orange) / local (blue); our FT L4-D is the green star. Static tools
-  grey squares; dynamic analysis dashed as an upper reference (it runs the code with chosen inputs).
-- FT L4-D is the most accurate local model (.826 at 472 ms) and it dominates untuned Intern L4-D (.799 at
-  658 ms). Cloud points are higher at 0.81–1.01 s. The model-based front runs FT L1 → Intern L1 → FT L3 →
-  Intern L3 → Qwen L3 → FT L4-D → DeepSeek → Jev: cheaper local points are faster but much worse.
-- The arrow: asking all questions (1.006 s) vs only those the rules read (472 ms), same verdicts.
-- Grey squares: Clang SA (.855, 18 ms) is above every local model and faster; Infer .815 at 256 ms; CodeQL
-  .766 at 7.4 s. grep sits at the left edge (1 µs, off-scale). Dynamic analysis: ASan/LSan .948 at 135 ms and
-  Dynamic-enhanced 1.0 at 1.17 s, but they need to build and run the code with inputs.
-- If the plot still says "pending: Jev L4-D", its run had not finished at build time.
+## 20. Pareto: Clang SA dominates every local LM (0:50)
+- x = median latency per DeadFree unit at concurrency 1 (log), y = DeadFree macro-F1 with CI. Shape = track
+  (circle generative, diamond decision), colour = cloud (orange) / local (blue); green star = our FT L4-D (opt.).
+  Grey squares = static tools; dashed lines = dynamic analysis as an upper reference (it runs the code with chosen
+  inputs; not part of the front). Small unlabelled markers are the other strategies; all labels are in backup.
+- The front now covers model-based AND static methods: grep (.333, 1 µs) → Cppcheck (.492, 9 ms) → Clang SA (.855,
+  18 ms) → DeepSeek L3 (.875, 810 ms) → Jev L1 (.946, 912 ms) → Jev L3 (.949, 923 ms).
+- Clang SA is above every local LM and faster, so no local LM is on the front. FT L4-D (.826 at 472 ms) is the most
+  accurate local LM and dominates untuned Intern L4-D (.799 at 658 ms); the cloud is higher at 0.81–1.01 s.
+- Other grey squares: Infer .815 at 256 ms, CodeQL .766 at 7.4 s. Dynamic: ASan/LSan .948 at 135 ms,
+  Dynamic-enhanced 1.0 at 1.17 s, both need a build, a run and the right inputs.
+- Jev L4-D (.907 at 967 ms) is the orange diamond just below Jev L1; its questions are sent concurrently, the local
+  L4-D asks them one by one.
 
 ## 21. Gap and criterion (0:35)
 - Gap measured from untuned Qwen L1 (.533) to the cloud model. Untuned Intern L4-D: −.064 vs DeepSeek L1, 81 %
   of the gap. FT L4-D: −.037 [−.055, −.017], 89 %; vs DeepSeek L4 −.074, 80 %.
-- Pre-registered criterion (before L4-D ran): near if ≥ reference − 0.02. **Not met.** Decision-track cloud
-  ceiling: Jev L3 .949 and Jev L4-D (read off the slide).
+- Pre-registered criterion (before L4-D ran): near if ≥ reference − 0.02. **Not met.**
 - Latency: FT L4-D 472 ms, Intern L4-D 658 ms, DeepSeek L1 895 ms — FT L4-D is 1.9× faster (DeadFree
   numbers; the ≈7× of the Debiased backup was single-prompt LoRA L1 vs DeepSeek and does not apply here).
-  Local is faster, but not by an order of magnitude at concurrency 1.
+- Same facts, cloud decision model: Jev L4-D .907, +.081 [+.047, +.111] over FT L4-D; Jev L3 .949 stays the
+  decision-track ceiling. The fact interface is not the bottleneck for a strong model; our 4B model's fact answers
+  are (see slide 14: exec_all).
 
 ## 22. Live demo (1:45)
 - Unit `CWE401_Memory_Leak__strdup_char_01`: bad, good twin, and the DeadFree bad version with `if(sym_61 > 4)
@@ -248,9 +256,18 @@ a path-sensitive analyzer does. A natural next step is to feed Clang's path fact
 
 **Is L4-D really near-cloud?**
 No, and we say so. Δ vs DeepSeek L1 is −.037 [−.055, −.017]; the pre-registered threshold was −.02 on the point
-estimate. It closes ≈89 % of the gap to DeepSeek L1 and ≈80 % to DeepSeek L4. Jev is far ahead (.949). Most of that
+estimate. It closes ≈89 % of the gap to DeepSeek L1 and ≈80 % to DeepSeek L4. Jev is far ahead (.949); even with
+our exact fact questions and rules Jev L4-D reaches .907 (+.081 over FT L4-D), so the remaining gap is the quality
+of the 4B model's fact answers (mainly exec_all), not the L4-D interface. Most of that
 comes from the strategy: untuned Intern with L4-D already closes ≈81 %. Fact fine-tuning is the only fine-tuning
 that helps on DeadFree, by +.027 [+.003, +.054].
+
+**Jev L4-D is below Jev L3 — does that sink L4-D?**
+For a strong cloud decision model the whole-unit question is already good (L3 .949); L4-D at the pre-specified
+τ 0.5 gives .907 (−.042 [−.071, −.013]), ≈ DeepSeek L4. Its errors are false leaks (238 FP, 7 FN), mostly from
+wrong realloc_safe answers in vacuous `realloc(NULL)` + exit cases (a gold convention our LoRA learned). With the
+dev-chosen τ 0.27 it reaches .944 (backup only; τ 0.5 was fixed before any call). L4-D's value is for the local
+models: it is the best strategy for every one of them.
 
 **Was the Intern L4-D threshold chosen fairly?**
 No — and in the baseline's favour. The frozen dev τ (0.18, tuned on Debiased) makes Intern answer Yes to every

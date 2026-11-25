@@ -371,7 +371,7 @@ def plot_prf1(results: list[dict], name: str, exclude: frozenset = frozenset(),
 
 
 def label_points(ax, points: list[tuple[float, float, str, str, bool]],
-                 obstacles: list[tuple[float, float, float]] = ()) -> None:
+                 obstacles: list[tuple[float, float, float]] = (), fontsize: float | None = None) -> None:
     """points = (x, y, text, color, optional).  Each label takes the first free slot around its point; an optional
     label (reference methods) is dropped when no slot is free.  obstacles = extra unlabelled markers (x, y, radius in
     points) that labels must avoid."""
@@ -382,11 +382,13 @@ def label_points(ax, points: list[tuple[float, float, str, str, bool]],
 
     boxes = [(*(pt(x, y) - 5), *(pt(x, y) + 5)) for x, y, *_ in points]
     boxes += [(*(pt(x, y) - r), *(pt(x, y) + r)) for x, y, r in obstacles]
-    slots = [(6, 1, "left"), (-6, 1, "right"), (6, -10, "left"), (-6, -10, "right"), (0, 7, "center"),
-             (0, -16, "center"), (6, 9, "left"), (-6, 9, "right")]
+    lift = (fontsize or 8) + 2
+    slots = [(6, 1, "left"), (-6, 1, "right"), (6, -lift, "left"), (-6, -lift, "right"), (0, 7, "center"),
+             (0, -lift - 6, "center"), (6, lift, "left"), (-6, lift, "right")]
     for x, y, text, color, optional in sorted(points, key=lambda p: (p[4], -p[1])):
         px, py = pt(x, y)
-        w, h = (4.0 if optional else 4.6) * len(text), 9.0
+        fs = fontsize or (7 if optional else 8)
+        w, h = 0.57 * fs * len(text), fs + 1.5
         for dx, dy, ha in slots:
             x0 = {"left": px + dx, "right": px + dx - w, "center": px - w / 2}[ha]
             box = (x0, py + dy, x0 + w, py + dy + h)
@@ -396,7 +398,7 @@ def label_points(ax, points: list[tuple[float, float, str, str, bool]],
             if optional:
                 continue
         boxes.append(box)
-        ax.annotate(text, (x, y), xytext=(dx, dy), textcoords="offset points", fontsize=7 if optional else 8,
+        ax.annotate(text, (x, y), xytext=(dx, dy), textcoords="offset points", fontsize=fs,
                     color=color, ha=ha, va="bottom")
 
 
@@ -995,26 +997,51 @@ def plot_df_before_after(df: dict, meta: dict) -> None:
     save(fig, "df_before_after.pdf")
 
 
-def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
-    """Results (d): DeadFree macro-F1 vs concurrency-1 latency (log).  Front over the model-based methods; static
-    analyzers grey; dynamic analysis as a reference line.  Methods whose latency is still pending sit in a grey strip
-    at the right edge at their (known) macro-F1."""
-    fig, ax = plt.subplots(figsize=(6.7, 3.1), layout="constrained")
+def df_pareto_front(df: dict, cfg: dict) -> list[str]:
+    """Keys on the quality/latency Pareto front over model-based AND static methods (dynamic analysis is a reference,
+    not a competitor).  A point is on the front when no faster point has at least its macro-F1."""
+    exclude = set(cfg["pareto_exclude"])
+    cand = sorted(((m["lat"], -m["macro_f1"], k) for k, m in df.items()
+                   if k not in exclude and m.get("role") == "primary" and m["macro_f1"] is not None
+                   and m["lat"] is not None and df_kind(m) != "dynamic"))
+    front, best = [], -1.0
+    for lat, neg_f1, k in cand:
+        if -neg_f1 > best:
+            front.append(k)
+            best = -neg_f1
+    return front
+
+
+def plot_df_pareto(df: dict, cfg: dict, full: bool = False) -> list[str]:
+    """Results (d): DeadFree macro-F1 vs concurrency-1 latency (log).  Front over model-based and static methods;
+    static analyzers grey squares; dynamic analysis as reference lines.  Main version (df_pareto.pdf): labels only
+    the front, ours and each model's best strategy, fonts >= 9 pt at slide size.  full=True (df_pareto_full.pdf,
+    backup): every point labelled."""
+    fs = 8 if full else 9.5
+    fig, ax = plt.subplots(figsize=(6.7, 3.1) if full else (5.7, 2.3), layout="constrained")  # main: slide scale ~1 (text width 5.5 in)
     xmin, xmax, xend, strip = 0.005, 30.0, 200.0, 80.0
-    shade_budgets(ax, xmin, y=1.0)
+    for hi, name in BUDGETS:  # deployment budgets as light dotted lines (no shading)
+        ax.axvline(hi, color=GREY, lw=0.6, ls=":", zorder=0)
+        ax.text(hi / 1.08, 1.045, name, ha="right", va="bottom", fontsize=fs - 1.5, color=GREY)
     strip_artists = [ax.axvspan(xmax, xend, color=LIGHT, zorder=0, lw=0),
                      ax.text(strip, 1.0, "latency\npending", ha="center", va="bottom", fontsize=7, color=GREY,
                              transform=ax.get_xaxis_transform())]
-    pts, front_pts, pending, obstacles = [], [], [], []
+    pts, pending, obstacles = [], [], []
+    cloud_pts: dict[str, list] = {}
     exclude = set(cfg["pareto_exclude"])
-    # cloud services: one label per service (at its best strategy), the legend names the rest
-    cloud_label = {}
-    for kind, name in (("deepseek", "DeepSeek"), ("jev", "Jev")):
-        ks = [k for k, m in df.items() if k not in exclude and m.get("role") == "primary" and m["macro_f1"] is not None
-              and m["lat"] is not None and df_kind(m) == kind]
-        if ks:
-            strategies = sorted(df[k]["strategy"].replace("L4D", "L4-D") for k in ks)
-            cloud_label[max(ks, key=lambda k: df[k]["macro_f1"])] = f"{name} {strategies[0]}–{strategies[-1]}"
+    front = df_pareto_front(df, cfg)
+    # main version: label each model's best strategy (per kind), the front and ours
+    best_of_kind: dict[str, str] = {}
+    for k, m in df.items():
+        if k in exclude or m["macro_f1"] is None or m.get("role") != "primary" or m["lat"] is None:
+            continue
+        kind = df_kind(m)
+        if kind in ("static", "dynamic"):
+            continue
+        if kind not in best_of_kind or m["macro_f1"] > df[best_of_kind[kind]]["macro_f1"]:
+            best_of_kind[kind] = k
+    static = {k for k, m in df.items() if m.get("role") == "primary" and df_kind(m) == "static"}  # one point per tool
+    labelled = set(front) | set(best_of_kind.values()) | {"lora_l4d_opt"} | static
     for key, m in df.items():
         if key in exclude or m["macro_f1"] is None or m.get("role") != "primary":
             continue
@@ -1024,9 +1051,9 @@ def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
         y = m["macro_f1"]
         if kind == "dynamic":
             ax.axhline(y, color=GREY, ls="--", lw=0.8, zorder=1)
-            ax.text(xmin * 1.15, y + 0.004, f"{m['short']} {short(y)}", fontsize=7, color=GREY, va="bottom")
+            ax.text(xmin * 1.15, y + 0.004, f"{m['short']} {short(y)}", fontsize=fs - 1.5, color=GREY, va="bottom")
             if m["lat"] is not None:
-                ax.scatter(m["lat"], y, s=36, marker=marker, color=color, zorder=3, edgecolors="white", linewidths=0.5)
+                ax.scatter(m["lat"], y, s=30, marker=marker, color=color, zorder=3, edgecolors="white", linewidths=0.5)
             continue
         if m["lat"] is None:
             pending.append(m["short"])
@@ -1034,32 +1061,48 @@ def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
             continue
         x = max(m["lat"], xmin * 1.2)
         hero = key == "lora_l4d_opt"
-        if m.get("macro_f1_ci") and kind != "static":
+        show = full or key in labelled
+        if full and m.get("macro_f1_ci") and kind != "static":
             ax.plot([x, x], m["macro_f1_ci"], color=color, lw=0.8, zorder=2)
-        ax.scatter(x, y, s=170 if hero else 40, marker="*" if hero else marker, color=GREEN if hero else color,
-                   zorder=4, edgecolors=INK if hero else "white", linewidths=0.6)
+        size = 190 if hero else (42 if show else 22)
+        ax.scatter(x, y, s=size, marker="*" if hero else marker, color=GREEN if hero else color,
+                   zorder=4, edgecolors=INK if hero else "white", linewidths=0.6, alpha=1.0 if show else 0.75)
         obstacles.append((x, y, 8 if hero else 5))
-        if kind in ("deepseek", "jev"):
-            if key in cloud_label:
-                pts.append((x, y, cloud_label[key], color, False))
-        else:
+        if show:
             off_scale = " (1 µs, off-scale)" if m["lat"] < xmin else ""
-            pts.append((x, y, m["short"] + off_scale, GREEN if hero else color, kind == "static"))
-        if kind != "static":
-            front_pts.append((x, y))
-    full, opt = df.get("lora_l4d") or {}, df.get("lora_l4d_opt") or {}
-    if full.get("lat") and opt.get("lat"):  # speed-up from asking only the facts the rules read
-        ax.scatter(full["lat"], full["macro_f1"], s=30, marker="D", facecolors="white", edgecolors=GREEN, zorder=3)
-        pts.append((full["lat"], full["macro_f1"], "all questions", GREEN, True))
-        ax.annotate("", (opt["lat"], opt["macro_f1"]), (full["lat"], full["macro_f1"]),
+            text = m["short"].replace("L4D", "L4-D") + off_scale
+            if hero and not full:  # short label, placed in the empty area left of the diamonds with a leader line
+                text = "FT L4-D (opt.)"
+            if kind in ("deepseek", "jev"):  # one label per cloud service, arrows to its labelled points
+                cloud_pts.setdefault(kind, []).append((x, y, m["strategy"].replace("L4D", "L4-D")))
+            elif full:
+                pts.append((x, y, text, GREEN if hero else color, False))
+            elif key in PARETO_LABEL_AT:
+                dx, dy, ha = PARETO_LABEL_AT[key]
+                ax.annotate(text, (x, y), xytext=(dx, dy), textcoords="offset points", fontsize=fs, ha=ha,
+                            va="center", color=GREEN if hero else color,
+                            fontweight="semibold" if hero else "normal",
+                            arrowprops=dict(arrowstyle="-", color=GREEN, lw=0.6, shrinkA=1, shrinkB=6) if hero else None)
+            else:
+                pts.append((x, y, text, GREEN if hero else color, False))
+    full_q, opt = df.get("lora_l4d") or {}, df.get("lora_l4d_opt") or {}
+    if full and full_q.get("lat") and opt.get("lat"):  # speed-up from asking only the facts the rules read
+        ax.scatter(full_q["lat"], full_q["macro_f1"], s=30, marker="D", facecolors="white", edgecolors=GREEN, zorder=3)
+        pts.append((full_q["lat"], full_q["macro_f1"], "all questions", GREEN, True))
+        ax.annotate("", (opt["lat"], opt["macro_f1"]), (full_q["lat"], full_q["macro_f1"]),
                     arrowprops=dict(arrowstyle="-|>", color=GREEN, lw=0.8))
-    front, best = [], -1.0
-    for x, y in sorted(front_pts):
-        if y > best:
-            front.append((x, y))
-            best = y
+    for kind, (tx, ty) in (("jev", (2.0, 0.972)), ("deepseek", (2.0, 0.875))):
+        if kind in cloud_pts:  # text right of the cloud cluster, thin arrows to each labelled point
+            name = {"jev": "Jev", "deepseek": "DeepSeek"}[kind]
+            label = f"{name} " + ", ".join(sorted(st for *_, st in cloud_pts[kind]))
+            for n, (x, y, _) in enumerate(cloud_pts[kind]):
+                ax.annotate(label if n == 0 else "", (x, y), xytext=(tx, ty), fontsize=fs, color=VERMIL,
+                            ha="left", va="center", arrowprops=dict(arrowstyle="-", color=VERMIL, lw=0.6,
+                                                                    shrinkA=2, shrinkB=4))
+    fx = [max(df[k]["lat"], xmin * 1.2) for k in front]
+    fy = [df[k]["macro_f1"] for k in front]
     if len(front) > 1:
-        ax.step([p[0] for p in front], [p[1] for p in front], where="post", color=INK, lw=0.9, alpha=0.55, zorder=1)
+        ax.step(fx + [xmax], fy + [fy[-1]], where="post", color=INK, lw=1.1, alpha=0.6, zorder=1)
     ax.set_xscale("log")
     if pending:
         ax.set_xlim(xmin, xend)
@@ -1068,26 +1111,112 @@ def plot_df_pareto(df: dict, cfg: dict) -> list[str]:
             a.remove()
         ax.set_xlim(xmin, xmax)
     ax.set_xticks([0.01, 0.1, 1, 10], ["0.01", "0.1", "1", "10"])
-    ax.set_ylim(0.3, 1.04)
-    label_points(ax, pts, obstacles)
-    ax.set_xlabel("median latency per DeadFree unit at concurrency 1 (s, log)")
-    ax.set_ylabel("DeadFree macro-F1 (95% CI)")
+    ax.tick_params(labelsize=fs)
+    ax.set_ylim(0.3, 1.09)
+    label_points(ax, pts, obstacles, fontsize=fs)
+    ax.set_xlabel("median latency per DeadFree unit, concurrency 1 (s, log)", fontsize=fs)
+    ax.set_ylabel("DeadFree macro-F1", fontsize=fs)
     missing = [cfg["short"].get(k, k) for k in cfg.get("expected", []) if df_f1(df, k) is None]
     if missing:  # announced runs without a quality row yet: grey note, filled by the next `make`
         ax.text(0.99, 0.03, "pending: " + ", ".join(missing), transform=ax.transAxes, ha="right", va="bottom",
-                fontsize=7.5, color=GREY, style="italic")
+                fontsize=fs - 1, color=GREY, style="italic")
     handles = [Line2D([], [], marker="o", color=VERMIL, ls="", ms=6, label="generative, cloud"),
                Line2D([], [], marker="o", color=BLUE, ls="", ms=6, label="generative, local"),
                Line2D([], [], marker="D", color=VERMIL, ls="", ms=5.5, label="decision, cloud"),
                Line2D([], [], marker="D", color=BLUE, ls="", ms=5.5, label="decision, local"),
-               Line2D([], [], marker="*", color=GREEN, markeredgecolor=INK, ms=11, ls="", label="ours: FT L4-D (opt.)"),
+               Line2D([], [], marker="*", color=GREEN, markeredgecolor=INK, ms=11, ls="", label="ours: FT L4-D"),
                Line2D([], [], marker="s", color=GREY, ls="", ms=5.5, label="static analyzer"),
-               Line2D([], [], marker="X", color=GREY, ls="--", lw=0.8, label="dynamic (reference)"),
-               Line2D([], [], color=INK, alpha=0.55, lw=0.9, label="front (model-based)")]
-    ax.legend(handles=handles, loc="center left", bbox_to_anchor=(1.01, 0.5), frameon=False, fontsize=9.5,
-              labelspacing=0.7, handletextpad=0.4)
-    save(fig, "df_pareto.pdf")
+               Line2D([], [], marker="X", color=GREY, ls="--", lw=0.8, label="dynamic (ref.)"),
+               Line2D([], [], color=INK, alpha=0.6, lw=1.1, label="Pareto front")]
+    ax.legend(handles=handles, loc="center left", bbox_to_anchor=(1.01, 0.5), frameon=False,
+              fontsize=9.5 if not full else 8.5, labelspacing=0.5, handletextpad=0.4)
+    save(fig, "df_pareto_full.pdf" if full else "df_pareto.pdf")
+    if not full:
+        print("pareto front:", " -> ".join(f"{df[k]['short']} ({short(df[k]['macro_f1'])}, {fmt_s(df[k]['lat'])})"
+                                         for k in front))
     return pending
+
+
+# main Pareto: hand-placed labels (offset points, ha) where the front line or the cloud cluster would cross them
+PARETO_LABEL_AT = {"grep_v0": (16, 3, "left"), "cppcheck": (5, -9, "left"), "clang_sa": (6, -10, "left"),
+                   "lora_l4d_opt": (-60, -20, "right"), "infer": (-7, 0, "right"), "codeql": (0, -12, "center"), "intern_l4d": (8, -4, "left"), "qwen_L3": (0, -13, "center"),
+                   "vulnllmr": (-8, 0, "right")}
+
+
+DF_TRACK_LINE = {  # results (b) figure: colour by where it runs (as in the Pareto), shade per local model
+    "Qwen3.5-4B": (BLUE, "o"), "DeepSeek (cloud)": (VERMIL, "o"),
+    "Qwen read-out": (SKY, "D"), "Intern-Decision": (BLUE, "D"), "ours (LoRA)": (GREEN, "*"), "Jev (cloud)": (VERMIL, "D"),
+}
+
+
+def plot_df_tracks(df: dict, cfg: dict) -> None:
+    """Results (b) as a figure: two panels (generative / decision), x = strategy, y = DeadFree macro-F1 (same range),
+    one line per model.  Cloud dashed + hollow markers, local solid, ours = green star + thick line.  A strategy not
+    run (None) has no marker; its neighbours are joined by a thin dotted segment.  A key without a quality row yet
+    (jev_l4d while it runs) is a grey hollow marker labelled "pending" until the next `make`.  Each model's best
+    point carries its value.  Sized for the slide at scale ~1 (5.6 in wide); one legend below both panels."""
+    tracks = cfg["tracks"]
+    fig, axes = plt.subplots(1, 2, figsize=(5.6, 2.0), sharey=True,
+                             gridspec_kw={"width_ratios": [1, 1]})
+    handles = []
+    for ax, (track, spec) in zip(axes, tracks.items()):
+        cols = spec["columns"]
+        best_labels = []
+        column_values: dict[int, list[float]] = {}
+        for name, where, keys in spec["rows"]:
+            color, marker = DF_TRACK_LINE[name]
+            cloud, hero = where == "cloud", name.startswith("ours")
+            vals = [df_f1(df, k) for k in keys]
+            xs = [i for i, v in enumerate(vals) if v is not None]
+            ys = [vals[i] for i in xs]
+            for i in xs:
+                column_values.setdefault(i, []).append(vals[i])
+            ls = "--" if cloud else "-"
+            lw = 2.4 if hero else 1.4
+            for a, b in zip(xs, xs[1:]):  # dotted where a strategy in between was not run
+                ax.plot([a, b], [vals[a], vals[b]], color=color, lw=lw if b == a + 1 else 0.9,
+                        ls=ls if b == a + 1 else ":", zorder=3 if hero else 2)
+            ms = 13 if hero else 6.5
+            ax.plot(xs, ys, ls="", marker=marker, ms=ms, color=color, zorder=4 if hero else 3,
+                    markerfacecolor="white" if cloud else color, markeredgecolor=INK if hero else color,
+                    markeredgewidth=0.6 if hero else 1.3)
+            for i, k in enumerate(keys):  # announced but not yet scored (e.g. jev_l4d): grey hollow, "pending"
+                if k is not None and vals[i] is None:
+                    ax.plot([i], [0.97], ls="", marker=marker, ms=6.5, markerfacecolor="white", markeredgecolor=GREY)
+                    ax.text(i, 0.995, "pending", ha="center", va="bottom", fontsize=8, color=GREY, style="italic")
+            if ys:
+                b = max(range(len(ys)), key=lambda t: ys[t])
+                best_labels.append([xs[b], ys[b], ys[b], short(ys[b]), VERMIL if cloud else color, hero])
+            handles.append(Line2D([], [], color=color, ls=ls, lw=lw, marker=marker, ms=ms * 0.7,
+                                  markerfacecolor="white" if cloud else color,
+                                  markeredgecolor=INK if hero else color, label=name))
+        # best value right of its point; labels in one column are pushed apart (min gap in data units)
+        for col in {b[0] for b in best_labels}:
+            group = sorted((b for b in best_labels if b[0] == col), key=lambda b: b[1])
+            for lo, hi in zip(group, group[1:]):
+                hi[2] = max(hi[2], lo[2] + 0.075)
+            shift = sum(b[1] - b[2] for b in group) / len(group)  # re-centre the pushed group on its points
+            for b in group:
+                b[2] += shift
+        for x, y, ty, text, color, hero in best_labels:
+            alone = sum(b[0] == x for b in best_labels) == 1
+            crowded_above = any(y < v < y + 0.15 for v in column_values.get(x, []))  # another line just above
+            above = (x, y + (-0.075 if crowded_above else 0.075))
+            ax.annotate(text, (x, y), xytext=above if alone else (x + 0.16, ty), textcoords="data",
+                        ha="center" if alone else "left", va="center", fontsize=9, color=color,
+                        fontweight="semibold" if hero else "normal")
+        ax.set_xticks(range(len(cols)), cols, fontsize=9.5)
+        ax.set_xlim(-0.3, len(cols) - 0.35)
+        ax.set_ylim(0.3, 1.04)
+        ax.set_yticks([0.3, 0.5, 0.7, 0.9], [".3", ".5", ".7", ".9"], fontsize=9)
+        ax.grid(axis="y", color=LIGHT, lw=0.6, zorder=0)
+        ax.set_title({"generative": "Generative: writes text", "decision": "Decision: reads P(Yes) vs P(No)"}[track],
+                     fontsize=10, loc="left")
+    fig.subplots_adjust(left=0.1, right=0.99, top=0.88, bottom=0.36, wspace=0.08)
+    fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.53, 0.0), ncol=3, fontsize=8.5, frameon=False, handlelength=2.0,
+               borderpad=0.1, labelspacing=0.25, handletextpad=0.5, columnspacing=1.6)
+    axes[0].set_ylabel("DeadFree macro-F1", fontsize=9.5)
+    save(fig, "df_tracks.pdf")
 
 
 def read_fact_attribution() -> dict[str, dict[str, tuple[float, int, int]]]:
@@ -1548,6 +1677,8 @@ def main() -> None:
     attr = read_fact_attribution()
     pending["df_intro_time"] = plot_df_intro_time(df, cfg)
     pending["df_pareto"] = plot_df_pareto(df, cfg)
+    plot_df_pareto(df, cfg, full=True)
+    plot_df_tracks(df, cfg)
     plot_df_intro_quality(df, cfg)
     write_df_tracks(df, cfg)
     plot_df_before_after(df, df_meta)

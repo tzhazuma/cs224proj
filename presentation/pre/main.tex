@@ -48,22 +48,54 @@
 \newcommand{\cmark}{\textcolor{OIgreen}{\ding{51}}}
 \newcommand{\xmark}{\textcolor{OIvermil}{\ding{55}}}
 \newcommand{\code}[1]{\texttt{\small #1}}
-% Per-slide sources (user 2026-11-24 19:05): \slidecite{...} inside a frame prints a tiny grey line in the frame
-% footer, left of the page number (smashed, so the layout does not move). Entries come only from
-% report/final_en/references.bib or official URLs; reset at every frame.
-\newcommand{\slidecites}{}
-\newcommand{\slidecite}[1]{\gdef\slidecites{#1}}
-\BeforeBeginEnvironment{frame}{\gdef\slidecites{}}
-\setbeamertemplate{frame footer}{\smash{\parbox[t]{0.88\textwidth}{\raggedright\fontsize{5.5}{6.5}\selectfont
-  \textcolor{NeutDraw}{\slidecites}}}}
+% Numbered per-frame citations (user 2026-11-24 19:05 / 19:45). \sref{key} or \sref{key1,key2} prints a superscript
+% number at the mention and registers the key for this frame; the frame footer lists "n short-form" (short forms:
+% sources.tex, keys = report/final_en/references.bib keys or url-/cs224- entries). Numbering restarts on every
+% frame, in order of first mention. An unknown key is a LaTeX error. Every printed superscript and every footer
+% entry writes "B|F <page> <n> <key>" to build/main.sref (non-immediate \write, so only material that is really
+% shipped counts); tools/check_citations.py (make check) fails when the two sets differ on any page.
+\makeatletter
+\newwrite\sref@out
+\AtBeginDocument{\immediate\openout\sref@out=\jobname.sref}
+\newcount\sref@gen
+\newcount\sref@n
+\newcommand{\sref@foot}{}
+\newcommand{\sref@reset}{\global\advance\sref@gen\@ne\global\sref@n\z@\gdef\sref@foot{}}
+\newcommand{\sref@one}[1]{%
+  \edef\sref@key{#1}%
+  \ifcsname bib-\sref@key\endcsname\else\errmessage{sref: unknown source key '\sref@key' (add it to sources.tex)}\fi
+  \ifcsname sref@\the\sref@gen @\sref@key\endcsname\else
+    \global\advance\sref@n\@ne
+    \expandafter\xdef\csname sref@\the\sref@gen @\sref@key\endcsname{\the\sref@n}%
+    \xdef\sref@foot{\unexpanded\expandafter{\sref@foot}\noexpand\sref@entry{\the\sref@n}{\sref@key}}%
+  \fi
+  \edef\sref@num{\csname sref@\the\sref@gen @\sref@key\endcsname}%
+  \sref@num
+  \edef\sref@do{\write\sref@out{B \noexpand\thepage\space\sref@num\space\sref@key}}\sref@do}
+\newcommand{\sref}[1]{\textsuperscript{\def\sref@sep{}\@for\sref@k:=#1\do{\sref@sep\sref@one{\sref@k}\def\sref@sep{,}}}}
+\newcommand{\sref@entry}[2]{\mbox{\textsuperscript{#1}\,\bib{#2}}\hspace{0.9em plus 0.3em}%
+  \write\sref@out{F \thepage\space#1\space#2}}
+\BeforeBeginEnvironment{frame}{\sref@reset}
+% footer: grey 6.5 pt, up to two lines below the body, left of the page number; reset after printing
+% (the box height goes to main.sref as "H <page> <pt>"; check_citations.py fails above two lines)
+\newsavebox{\sref@box}
+\setbeamertemplate{frame footer}{%
+  \ifx\sref@foot\@empty\else
+    \sbox{\sref@box}{\parbox[t]{0.88\textwidth}{\raggedright\fontsize{6.5}{7.4}\selectfont\color{NeutDraw}\sref@foot}}%
+    \edef\sref@do{\write\sref@out{H \noexpand\thepage\space\strip@pt\dimexpr\ht\sref@box+\dp\sref@box\relax}}\sref@do
+    \smash{\usebox{\sref@box}}%
+  \fi
+  \sref@reset}
+\makeatother
 \input{figures/numbers.tex} % \res{<key>-<layer>}{metric} (registry), \res{df-<key>}{metric} (DeadFree); "pending" when missing
-\input{sources.tex} % \bib{<references.bib key>} short forms for \slidecite
+\input{sources.tex} % \bib{<references.bib key>} short forms for \sref
 
 \lstdefinestyle{unit}{language=C++, basicstyle=\ttfamily\scriptsize, keywordstyle=\color{OIblue}\bfseries,
   commentstyle=\color{NeutDraw}, stringstyle=\color{DataDraw}, columns=fullflexible, keepspaces=true,
   showstringspaces=false, frame=single, rulecolor=\color{NeutDraw!40}, backgroundcolor=\color{NeutFill},
   framesep=2pt, xleftmargin=3pt, xrightmargin=3pt, aboveskip=2pt, belowskip=2pt,
   escapeinside={(*}{*)}, morekeywords={printLine, ALLOCA}}
+\lstdefinestyle{unitbig}{style=unit, basicstyle=\ttfamily\small}
 % highlighted span inside a `unit` listing: (*\hlc{static void}*) -- escaped, so keyword colours do not apply
 \newcommand{\hlc}[1]{\textcolor{OIvermil}{\bfseries #1}}
 \lstdefinestyle{dl}{basicstyle=\ttfamily\scriptsize, columns=fullflexible, keepspaces=true,

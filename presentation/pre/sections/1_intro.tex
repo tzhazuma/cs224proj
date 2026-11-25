@@ -4,25 +4,25 @@
 % src: figures/df_intro_time.pdf <- juliet_full/analysis/deadfree/latency_deadfree.csv (median_s, latency300 DeadFree
 %   units, concurrency 1, role=primary rows); final as of 2026-11-24 10:12 PST.
 \begin{frame}{Leak checks must fit a developer's time budget}
-  \slidecite{\bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{qwen35card}; \bib{zhu2026interndecision}}
   \centering
   \includegraphics[width=\linewidth,height=0.60\textheight,keepaspectratio]{figures/df_intro_time.pdf}\\[4pt]
   \begin{tabular}{@{}ccc@{}}
     IDE: $<$\,0.1\,s & \quad pre-commit: $<$\,1\,s & \quad CI: $<$\,10\,s \\
   \end{tabular}
   \vfill
-  {\scriptsize Cloud: DeepSeek V4.1 Flash API, Jev decision API (network round-trip). Local: one RTX 3090 (24\,GB).
-  Median per DeadFree unit, one request at a time, same client.\par}
+  {\scriptsize Cloud: DeepSeek V4.1 Flash API, Jev decision API (network round-trip).
+  Local: Qwen3.5-4B\sref{qwen35card}, Intern-Decision-4B\sref{zhu2026interndecision}, ours, on one RTX 3090 (24\,GB).
+  Median per DeadFree unit, one request at a time.\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
 % src: figures/df_intro_quality.pdf <- juliet_full/analysis/deadfree/deadfree_quality.json (macro_f1, eval 2,656 units)
 \begin{frame}{On DeadFree, cloud models are far ahead of local ones}
-  \slidecite{\bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{qwen35card}; \bib{zhu2026interndecision}; \bib{nie2025vulnllmr}}
   \centering
   \includegraphics[width=\linewidth,height=0.60\textheight,keepaspectratio]{figures/df_intro_quality.pdf}\\[4pt]
-  {\small Cloud \res{df-deepseek_L1}{macro}--\res{df-jev_L3}{macro};
-  best untuned local prompt (L1--L4): Qwen L3 \res{df-qwen_L3}{macro}; VulnLLM-R-7B (vulnerability-tuned): \res{df-vulnllmr}{macro}\par}
+  {\small Cloud (DeepSeek, Jev) \res{df-deepseek_L1}{macro}--\res{df-jev_L3}{macro};
+  best untuned local prompt (L1--L4): Qwen\sref{qwen35card} L3 \res{df-qwen_L3}{macro};
+  Intern-Decision\sref{zhu2026interndecision} L3 \res{df-intern_L3}{macro}; VulnLLM-R-7B\sref{nie2025vulnllmr}: \res{df-vulnllmr}{macro}\par}
   \vfill
   {\scriptsize DeadFree: Juliet CWE-401 units with a \code{free} that never runs (method section). Macro-F1, leak = positive class.\par}
 \end{frame}
@@ -30,7 +30,6 @@
 % ------------------------------------------------------------------------------
 % src: figures/hook_original.pdf <- juliet_full/data/build/probes.json (static void) and registry runs on layer "original"
 \begin{frame}{Original Juliet can be gamed: a one-line rule beats Clang SA}
-  \slidecite{\bib{sardjuliet13}; \bib{clangsa}; \bib{germano2025biased}}
   \begin{columns}[c]
     \begin{column}{0.57\textwidth}
       \includegraphics[width=\linewidth]{figures/hook_original.pdf}
@@ -39,14 +38,14 @@
       \begin{itemize}
         \item ``no \code{free}/\code{delete} $\Rightarrow$ leak'': \res{grep-original}{macro}
         \item ``has \code{static void} $\Rightarrow$ good'': \res{x}{probe_static_void_original}
-        \item Clang SA: \res{clang_sa-original}{macro}
+        \item Clang SA\sref{clangsa}: \res{clang_sa-original}{macro}
       \end{itemize}
       \vspace{6pt}
       \alert{Templates reveal the label.}
     \end{column}
   \end{columns}
   \vfill
-  {\scriptsize Template shortcuts: Germano et al.\ (ICAART'25); Risse \& B\"ohme (USENIX Sec'24).\par}
+  {\scriptsize Template and dataset shortcuts were reported before: Germano et al.\sref{germano2025biased}; Risse \& B\"ohme\sref{risse2024limits,risse2025topscore}.\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------

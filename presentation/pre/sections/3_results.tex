@@ -5,7 +5,6 @@
 %   Clang SA from the registry runs (\res{clang_sa-<layer>}, \res{df-clang_sa}); G2B cue (ALLOCA / new):
 %   juliet_full/lane_reports/2026-11-23_data_stage3.md:52
 \begin{frame}{DeadFree removes the label shortcuts; one cue is left in G2B goods}
-  \slidecite{\bib{clangsa}}
   \centering
   \renewcommand{\arraystretch}{1.15}
   \begin{tabular}{@{}lccc@{}}
@@ -18,7 +17,7 @@
     \quad AUROC, B2G goods & \res{df-x}{probe_bow_auroc_B2G_original} & \res{df-x}{probe_bow_auroc_B2G_layer1} & \res{df-x}{probe_bow_auroc_B2G_layer3} \\
     \quad AUROC, G2B goods & \res{df-x}{probe_bow_auroc_G2B_original} & \res{df-x}{probe_bow_auroc_G2B_layer1} & \textcolor{OIvermil}{\res{df-x}{probe_bow_auroc_G2B_layer3}} \\
     \midrule
-    \textcolor{NeutDraw}{Clang SA (reference)} & \textcolor{NeutDraw}{\res{clang_sa-original}{macro}} & \textcolor{NeutDraw}{\res{clang_sa-layer1}{macro}} & \textcolor{NeutDraw}{\res{df-clang_sa}{macro}} \\
+    \textcolor{NeutDraw}{Clang SA\sref{clangsa} (reference)} & \textcolor{NeutDraw}{\res{clang_sa-original}{macro}} & \textcolor{NeutDraw}{\res{clang_sa-layer1}{macro}} & \textcolor{NeutDraw}{\res{df-clang_sa}{macro}} \\
     \bottomrule
   \end{tabular}
   \vspace{8pt}
@@ -30,7 +29,6 @@
 
 % ------------------------------------------------------------------------------
 \begin{frame}{Two cloud services, three local models, one fine-tuned model}
-  \slidecite{\bib{deepseekdocs}; \bib{deepseek2026v4}; \bib{typesafe2026jev}; \bib{qwen35card}; \bib{zhu2026interndecision}; \bib{nie2025vulnllmr}; \bib{hu2022lora}; \bib{clangsa}; \bib{inferpulse}; \bib{codeqldocs}; \bib{lsan}}
   \centering
   \footnotesize
   \renewcommand{\arraystretch}{1.05}
@@ -41,14 +39,14 @@
     DeepSeek V4.1 Flash & cloud API & generative & cloud reference (L1--L4) \\
     Jev (TypeSafe) & cloud API & decision & cloud reference (L1--L3, L4-D) \\
     \midrule
-    Qwen3.5-4B & RTX 3090 & generative & LLM baseline \\
+    Qwen3.5-4B\sref{qwen35card} & RTX 3090 & generative & LLM baseline \\
     Qwen read-out & RTX 3090 & decision (untuned) & starting point of our LoRA \\
-    Intern-Decision-4B & RTX 3090 & decision & untuned decision baseline \\
-    VulnLLM-R-7B & RTX 3090 & generative & vulnerability-tuned, published \\
-    \textbf{ours}: Qwen3.5-4B + LoRA & RTX 3090 & decision & fine-tuned per strategy \\
+    Intern-Decision-4B\sref{zhu2026interndecision} & RTX 3090 & decision & untuned decision baseline \\
+    VulnLLM-R-7B\sref{nie2025vulnllmr} & RTX 3090 & generative & vulnerability-tuned, published \\
+    \textbf{ours}: Qwen3.5-4B + LoRA\sref{hu2022lora} & RTX 3090 & decision & fine-tuned per strategy \\
     \midrule
-    \textcolor{NeutDraw}{Clang SA, Infer, CodeQL, \dots} & \textcolor{NeutDraw}{CPU} & \textcolor{NeutDraw}{static} & \textcolor{NeutDraw}{tool reference} \\
-    \textcolor{NeutDraw}{ASan/LSan, coverage + trace} & \textcolor{NeutDraw}{CPU} & \textcolor{NeutDraw}{dynamic} & \textcolor{NeutDraw}{runs the code} \\
+    \textcolor{NeutDraw}{Clang SA\sref{clangsa}, Infer\sref{inferpulse}, CodeQL\sref{codeqldocs}, \dots} & \textcolor{NeutDraw}{CPU} & \textcolor{NeutDraw}{static} & \textcolor{NeutDraw}{tool reference} \\
+    \textcolor{NeutDraw}{ASan\sref{serebryany2012asan}/LSan\sref{lsan}, coverage + trace} & \textcolor{NeutDraw}{CPU} & \textcolor{NeutDraw}{dynamic} & \textcolor{NeutDraw}{runs the code} \\
     \bottomrule
   \end{tabular}
   \vfill
@@ -56,31 +54,20 @@
 \end{frame}
 
 % ------------------------------------------------------------------------------
-% src: figures/df_track_generative.tex, figures/df_track_decision.tex <- juliet_full/analysis/deadfree/deadfree_quality.json
-%   (methods.json deadfree.tracks; bold = best cell per row, computed); jev_l4d prints "pending" until its row exists.
+% src: figures/df_tracks.pdf <- juliet_full/analysis/deadfree/deadfree_quality.json (methods.json deadfree.tracks;
+%   best point per model annotated, legend gain = best - L1, computed); jev_l4d drawn as grey "pending" until its row exists.
 %   No L2 for read-out / FT: decided PLAN.md:35 (user, 2026-11-24 19:05: FT saw ~1,800 labelled units, L2 prompt 2.4x longer);
-%   training units per fold 1,712-1,808: PLAN.md:110.
-\begin{frame}{Two tracks $\times$ four strategies (DeadFree)}
-  \slidecite{\bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{qwen35card}; \bib{zhu2026interndecision}; \bib{hu2022lora}}
-  \begin{columns}[T]
-    \begin{column}{0.47\textwidth}
-      {\small\textbf{Generative}: writes text, we parse it}\\[1pt]
-      {\footnotesize\setlength{\tabcolsep}{3.5pt}\input{figures/df_track_generative.tex}}
-    \end{column}
-    \begin{column}{0.51\textwidth}
-      {\small\textbf{Decision}: one pass, read P(Yes) vs P(No)}\\[1pt]
-      {\footnotesize\setlength{\tabcolsep}{3.5pt}\input{figures/df_track_decision.tex}}
-    \end{column}
-  \end{columns}
-  \footnotesize
+%   training units per fold 1,712-1,808: PLAN.md:110. Full tables: backup "two tracks, all numbers".
+\begin{frame}{Facts lift every local decision model; the 4B generator cannot write them}
+  \centering
+  \includegraphics[width=\linewidth,height=0.72\textheight,keepaspectratio]{figures/df_tracks.pdf}\\[-6pt]
+  \raggedright\footnotesize
   \begin{itemize}
-    \item Cloud generative gains from writing facts (DeepSeek L4 \res{df-deepseek_L4}{macro}); the 4B model writes them poorly (L4 \res{df-qwen_L4}{macro} < L3 \res{df-qwen_L3}{macro})
-    \item L4-D is the best strategy of every local decision model
-    \item Same Qwen weights: \emph{asking} the facts (read-out L4-D \res{df-readout_l4d}{macro}) beats \emph{writing} them (gen.\ L4 \res{df-qwen_L4}{macro})
+    \item Decision: L4-D is best for every \emph{local} model (ours \res{df-lora_L1}{macro} $\to$ \textbf{\res{df-lora_l4d_opt}{macro}}); Jev is strong at L1--L3
+    \item Generative: facts help DeepSeek (L4 \res{df-deepseek_L4}{macro}), not Qwen3.5-4B\sref{qwen35card} (L4 \res{df-qwen_L4}{macro} $<$ L3 \res{df-qwen_L3}{macro})
   \end{itemize}
   \vfill
-  {\scriptsize Macro-F1; bold = best per row. Jev L4-D = cloud ceiling of the decision track.\\
-  $^\dagger$Not run: FT already saw $\approx$1,800 labelled units; the L2 prompt is 2.4$\times$ longer.\par}
+  {\scriptsize Dashed = cloud; star = ours (LoRA\sref{hu2022lora}). Dotted: L2 not run for read-out and FT (FT saw $\approx$1,800 labelled units).\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -88,29 +75,27 @@
 %   after: lora_L1, lora_L3, lora_l4d_opt; marks: Intern-Decision, Qwen gen.); paired delta: deadfree_quality.json
 %   paired_deltas; Debiased LoRA L1: registry lora_L1 layer1 (figures/numbers.tex \res{lora_L1-layer1})
 \begin{frame}{FT: unit labels stay below the baselines, fact labels beat them}
-  \slidecite{\bib{qwen35card}; \bib{hu2022lora}; \bib{zhu2026interndecision}; \bib{efron1979}}
   \centering
   \includegraphics[width=\linewidth,height=0.46\textheight,keepaspectratio]{figures/df_before_after.pdf}\\[0pt]
   \raggedright\footnotesize
   \begin{itemize}
     \item L1/L3 learn \emph{unit labels} $\to$ the shortcut ``a \code{free} means no leak'': FT L1 scores \res{lora_L1-layer1}{macro} on Debiased, \alert{\res{df-lora_L1}{macro}} on DeadFree (leak recall \res{df-lora_L1}{r})
     \item L4-D learns \emph{fact labels} from dynamic analysis $\to$ transfers: \res{df-readout_l4d}{macro} $\to$ \textbf{\res{df-lora_l4d_opt}{macro}};
-    vs untuned Intern L4-D \res{df-x}{pd_lora_l4d_opt__intern_l4d} \res{df-x}{pd_lora_l4d_opt__intern_l4d_ci}
+    vs untuned Intern\sref{zhu2026interndecision} L4-D \res{df-x}{pd_lora_l4d_opt__intern_l4d} \res{df-x}{pd_lora_l4d_opt__intern_l4d_ci}
   \end{itemize}
   \vfill
-  {\scriptsize Same Qwen3.5-4B weights before (read-out) and after (LoRA). Intern-Decision at $\tau=0.5$. $\Delta$ CI: paired family-cluster bootstrap.\par}
+  {\scriptsize Same Qwen3.5-4B\sref{qwen35card} weights before (read-out) and after (LoRA\sref{hu2022lora}). Intern-Decision at $\tau=0.5$. $\Delta$ CI: paired family-cluster bootstrap\sref{efron1979}.\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
 % src: figures/df_pareto.pdf <- deadfree_quality.json (macro_f1) x latency_deadfree.csv (median_s, log axis);
-%   front over model-based methods; static tools grey; dynamic analysis dashed reference
-\begin{frame}{FT L4-D is the most accurate local model, still below the cloud}
-  \slidecite{\bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{zhu2026interndecision}; \bib{nie2025vulnllmr}; \bib{clangsa}; \bib{inferpulse}; \bib{codeqldocs}; \bib{cppcheck}; \bib{serebryany2012asan}}
+%   front over model-based AND static methods (make_figures.py df_pareto_front; printed by `make`); dynamic = reference.
+%   Front 2026-11-24: grep -> Cppcheck -> Clang SA -> DeepSeek L3 -> Jev L1 -> Jev L3. All-labels version: backup.
+\begin{frame}{Clang SA dominates every local LM; FT L4-D is the most accurate of them}
   \centering
-  \includegraphics[width=\linewidth,height=0.70\textheight,keepaspectratio]{figures/df_pareto.pdf}
+  \includegraphics[width=\linewidth,height=0.84\textheight,keepaspectratio]{figures/df_pareto.pdf}
   \vfill
-  {\scriptsize x: median latency per DeadFree unit, concurrency 1 (log); y: macro-F1 with 95\,\% CI.
-  Shape = track, colour = cloud / local; grey: static tools; dashed: dynamic analysis (reference).\par}
+  {\scriptsize Front over model-based and static methods; dynamic analysis = reference. Small markers: other strategies (all labels in backup).\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -118,13 +103,12 @@
 %   gap_closed_ds_l4(_ci); family-cluster bootstrap. Criterion pre-registered PLAN.md:224-226 (2026-11-23 22:30 PST,
 %   before L4-D ran): near if macro-F1 point estimate >= reference - 0.02; reported as not met PLAN.md:34.
 \begin{frame}{L4-D closes \res{df-intern_l4d}{gap1} of the gap untuned, \res{df-lora_l4d_opt}{gap1} fine-tuned; not near-cloud}
-  \slidecite{\bib{deepseekdocs}; \bib{typesafe2026jev}; \bib{efron1979}}
   \centering
   \renewcommand{\arraystretch}{1.2}
   {\small
   \begin{tabular}{@{}llcc@{}}
     \toprule
-    & vs & $\Delta$ macro-F1 [95\,\% CI] & gap closed \\
+    & vs & $\Delta$ macro-F1 [95\,\% CI\sref{efron1979}] & gap closed \\
     \midrule
     Intern L4-D (untuned) & DeepSeek L1 (\res{df-deepseek_L1}{macro}) & \res{df-intern_l4d}{d1} \res{df-intern_l4d}{d1ci} & \res{df-intern_l4d}{gap1} \\
     \textbf{FT L4-D (opt.)} & DeepSeek L1 (\res{df-deepseek_L1}{macro}) & \res{df-lora_l4d_opt}{d1} \res{df-lora_l4d_opt}{d1ci} & \textbf{\res{df-lora_l4d_opt}{gap1}} \\
@@ -136,7 +120,7 @@
     \item Gap measured from untuned Qwen L1 (\res{df-qwen_L1}{macro}) to the cloud model
     \item Criterion: $\geq$ reference $- 0.02$. \alert{Not met}: \res{df-lora_l4d_opt}{d1} vs DeepSeek L1
     \item Median latency: FT L4-D \res{df-lora_l4d_opt}{lat}, Intern L4-D \res{df-intern_l4d}{lat}, DeepSeek L1 \res{df-deepseek_L1}{lat} (FT L4-D \res{df-x}{speedup_ds_l1}$\times$ faster)
-    \item Decision-track cloud ceiling: Jev L3 \res{df-jev_L3}{macro}, Jev L4-D \res{df-jev_l4d}{macro}
+    \item Same facts, cloud decision model: Jev L4-D \res{df-jev_l4d}{macro} (\res{df-x}{pd_jev_l4d__lora_l4d_opt} vs FT L4-D); Jev L3 \res{df-jev_L3}{macro}
   \end{itemize}
 \end{frame}
 
@@ -146,7 +130,6 @@
 %   exec_all(free at line 20) p_yes 1.8e-07: juliet_full/l4d_ft/results/lora_l4d/layer3/eval_r1.jsonl
 %   qid layer3/CWE401_Memory_Leak__strdup_char_01__bad/exec_all/s02
 \begin{frame}[fragile]{Live: one dead free fools grep and the old LoRA, not L4-D}
-  \slidecite{\bib{clangsa}; \bib{deepseekdocs}; \bib{typesafe2026jev}}
   \begin{columns}[T]
     \begin{column}{0.50\textwidth}
       {\small Bad unit \texttt{strdup\_char\_01}, DeadFree version:\par}

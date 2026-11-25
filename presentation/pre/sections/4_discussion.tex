@@ -4,9 +4,8 @@
 % src: deadfree_quality.json (macro_f1; lora_l4d_opt / intern_l4d delta/gap; paired_deltas); fact attribution
 %   juliet_full/analysis/l4d_peek/fact_error_attribution.out.txt
 \begin{frame}{Take-aways: the strategy does most of the work}
-  \slidecite{\bib{sardjuliet13}}
   \begin{enumerate}
-    \item \textbf{Check the benchmark first.} On Original Juliet, grep scores \res{df-x}{probe_grep_v0_original}; on DeadFree \res{df-x}{probe_grep_v0_layer3}.
+    \item \textbf{Check the benchmark first.} On Original Juliet\sref{sardjuliet13}, grep scores \res{df-x}{probe_grep_v0_original}; on DeadFree \res{df-x}{probe_grep_v0_layer3}.
     \item \textbf{Facts + Datalog do most of the work.} Untuned Intern L4-D: \res{df-intern_l4d}{macro}, \res{df-intern_l4d}{gap1} of the gap.
     \item \textbf{Unit labels teach shortcuts.} FT L1: Debiased \res{lora_L1-layer1}{macro}, DeadFree \res{df-lora_L1}{macro} (below untuned Qwen gen.\ and Intern L1).
     \item \textbf{Fact labels add a little.} FT L4-D \res{df-lora_l4d_opt}{macro} (\res{df-x}{pd_lora_l4d_opt__intern_l4d} vs Intern), \res{df-lora_l4d_opt}{gap1} of the gap.
@@ -19,9 +18,8 @@
 % src: Clang SA DeadFree quality deadfree_quality.json clang_sa (macro, delta_vs_ds_l1); latency latency_deadfree.csv;
 %   Intern L4-D threshold switch: deadfree_quality.json notes[0]
 \begin{frame}{Limitations}
-  \slidecite{\bib{clangsa}}
   \begin{itemize}
-    \item \textbf{Clang SA is as good and faster}: \res{df-clang_sa}{macro} at \res{df-clang_sa}{lat}, no GPU. Path-sensitive analysis still matters
+    \item \textbf{Clang SA\sref{clangsa} beats every local LM}: \res{df-clang_sa}{macro} at \res{df-clang_sa}{lat}, no GPU. Path-sensitive analysis still matters
     \item \textbf{Synthetic data}: Juliet is public and templated; constant-guard dead frees are one kind of edit
     \item \textbf{Post-hoc pruning}: chosen after the full run; verdicts identical, approved 2026-11-24
     \item \textbf{$\tau$ and checkpoints}: dev is near-saturated, so selection is weakly informed

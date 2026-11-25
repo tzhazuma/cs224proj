@@ -21,9 +21,10 @@ pngs: pdf
 	rm -rf build/pages && mkdir -p build/pages
 	pdftoppm -r 50 -png main.pdf build/pages/p
 
-# errors, overfull boxes and missing references in the last build log
+# errors, overfull boxes and missing references in the last build log; numbered citations (superscript <-> footer)
 check:
 	@grep -nE "^!|Overfull|Undefined control|undefined references|Could not find" build/main.log || echo "clean: no errors, overfull boxes or missing fonts"
+	@$(PYTHON) tools/check_citations.py
 
 clean:
 	latexmk -C -outdir=build main.tex
