@@ -233,3 +233,18 @@ VulnLLM-R-7B 8.0465 s. Pending, drawn grey / printed *pending*:
 - If Intern L4-D beats FT L4-D, the titles of slides 17–19 ("best local result") must be revised by hand.
 - Pruning is post-hoc (user-approved 2026-11-24) and labelled as such; residual G2B cue (ALLOCA/new) stated.
 - Main-frame count 23 (+ title, standout); within the ≤ ~25 budget; timing table in `notes.md` sums to 17:00.
+
+## v4.5 update (2026-11-24, parent 21:20 + 21:30)
+
+- Slide 18: back to grouped bars (figures/make_figures.py `plot_df_tracks`, `DF_STRATEGY_COLOR`): two panels with a shared
+  0–1 y axis, groups = models, colour = strategy (L1→L3 light→dark blue, L4/L4-D orange), cloud hatched + "(cloud)",
+  ours green/bold, missing L2 = "–†", 3-digit value on every bar (7.5 pt, rotated), one legend.
+- Wording: "near-cloud" = only the pre-registered test (≥ DeepSeek L1 − 0.02); positive claim = "closes X of the gap"
+  + speed-up. Slide 21 title "Not yet near-cloud: L4-D closes 66 % of the gap untuned, 89 % fine-tuned"; grey Clang SA
+  row (−.008 [−.066, +.043], 97 %) + bullet "a static analyzer, not an LM, meets the near-cloud test". Standout:
+  "Not yet: L4-D closes 89 % of the gap, 1.9× faster than the cloud." Backup title "on Debiased, the unit-label LoRA
+  passed the near-cloud test". notes.md + README ("Wording and comparison rules (v4.5)") updated.
+- Vertical vs horizontal comparison (user rule): slide 19 retitled "Same Qwen3.5-4B: unit-label FT < untuned
+  generator < fact-label FT", Intern line removed, paired FT − read-out deltas per strategy from paired_deltas
+  (L1 +.021 n.s., L3 +.304, L4-D +.074) and +.067 over gen. L3; slide 21 first row = Qwen read-out L4-D (66 %);
+  take-aways 2/3/4 use read-out (+.401) and FT (+.074) only; model table role of Intern "side-by-side decision baseline".

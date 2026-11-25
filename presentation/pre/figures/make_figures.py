@@ -958,9 +958,12 @@ def write_df_tracks(df: dict, cfg: dict) -> None:
 
 def plot_df_before_after(df: dict, meta: dict) -> None:
     """Results (c): decision track, same Qwen3.5-4B weights before (read-out) vs after LoRA fine-tuning, per strategy
-    (strategy_x_ft).  Reference marks: Intern-Decision (untuned decision baseline), Qwen gen. (LLM baseline)."""
+    (strategy_x_ft).  Reference mark: Qwen gen. (same weights, generative format).  Intern-Decision is a different
+    model (horizontal comparison only) and is deliberately not drawn here.  The FT - read-out label is the paired
+    family-cluster bootstrap delta from deadfree_quality.json paired_deltas ("n.s." when its CI contains 0)."""
+    pdelta = {(d["a"], d["b"]): d for d in meta.get("paired_deltas", [])}
     rows = [(s.replace("L4 / L4-D", "L4-D"), c) for s, c in (meta.get("strategy_x_ft") or {}).items()]
-    fig, ax = plt.subplots(figsize=(5.4, 2.0), layout="constrained")
+    fig, ax = plt.subplots(figsize=(5.5, 1.75), layout="constrained")
     width = 0.3
     for j, (strategy, cells) in enumerate(rows):
         for x, key, kind in ((j - width / 2 - 0.02, cells["read-out"], "readout"), (j + width / 2 + 0.02, cells["our FT"], "lora")):
@@ -973,16 +976,16 @@ def plot_df_before_after(df: dict, meta: dict) -> None:
             ax.bar(x, v, width, color=DF_STYLE[kind][0], alpha=0.95 if kind == "lora" else 0.6,
                    edgecolor=INK if kind == "lora" else "none", lw=0.7)
             ax.text(x, v + 0.015, short(v), ha="center", va="bottom", fontsize=9, color=INK)
-        for name, ls in (("Intern-Decision", "--"), ("Qwen gen.", ":")):
-            v = df_f1(df, cells[name])
-            if v is not None:
-                kind = "intern" if name == "Intern-Decision" else "qwen"
-                ax.plot([j - 0.42, j + 0.42], [v, v], color=DF_STYLE[kind][0], ls=ls, lw=1.6, zorder=3)
-        pre, post = df_f1(df, cells["read-out"]), df_f1(df, cells["our FT"])
-        if pre is not None and post is not None:
-            d = post - pre
-            ax.text(j, 0.98, "FT \u2212 read-out\n" + signed(d).replace("0.", "."), ha="center", va="bottom", linespacing=1.0,
-                    fontsize=9, color=GREEN if d > 0 else VERMIL, fontweight="semibold")
+        v = df_f1(df, cells["Qwen gen."])
+        if v is not None:
+            ax.plot([j - 0.42, j + 0.42], [v, v], color=DF_STYLE["qwen"][0], ls=":", lw=1.6, zorder=3)
+        pd = pdelta.get((cells["our FT"], cells["read-out"]))
+        if pd is not None:
+            d, (lo, hi) = pd["delta"], pd["delta_ci"]
+            ns = lo <= 0 <= hi
+            ax.text(j, 0.98, "FT \u2212 read-out\n" + signed(d).replace("0.", ".") + (" (n.s.)" if ns else ""),
+                    ha="center", va="bottom", linespacing=1.0, fontsize=9,
+                    color=GREY if ns else GREEN if d > 0 else VERMIL, fontweight="normal" if ns else "semibold")
     ax.set_xticks(range(len(rows)), [f"{s}\n" + ("fact labels" if s == "L4-D" else "unit labels") for s, _ in rows],
                   fontsize=9)
     ax.set_xlim(-0.55, len(rows) - 0.45)
@@ -991,8 +994,7 @@ def plot_df_before_after(df: dict, meta: dict) -> None:
     ax.set_ylabel("DeadFree macro-F1", fontsize=9)
     handles = [Patch(color=DF_STYLE["readout"][0], alpha=0.6, label="before: Qwen read-out\n(untuned, same weights)"),
                Patch(facecolor=DF_STYLE["lora"][0], edgecolor=INK, label="after: + LoRA (ours)"),
-               Line2D([], [], color=DF_STYLE["intern"][0], ls="--", lw=1.6, label="Intern-Decision\n(untuned decision)"),
-               Line2D([], [], color=DF_STYLE["qwen"][0], ls=":", lw=1.6, label="Qwen gen.\n(LLM baseline)")]
+               Line2D([], [], color=DF_STYLE["qwen"][0], ls=":", lw=1.6, label="Qwen gen.\n(untuned, same weights)")]
     ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, 1.0), frameon=False, fontsize=8, labelspacing=0.8)
     save(fig, "df_before_after.pdf")
 
@@ -1143,79 +1145,63 @@ PARETO_LABEL_AT = {"grep_v0": (16, 3, "left"), "cppcheck": (5, -9, "left"), "cla
                    "vulnllmr": (-8, 0, "right")}
 
 
-DF_TRACK_LINE = {  # results (b) figure: colour by where it runs (as in the Pareto), shade per local model
-    "Qwen3.5-4B": (BLUE, "o"), "DeepSeek (cloud)": (VERMIL, "o"),
-    "Qwen read-out": (SKY, "D"), "Intern-Decision": (BLUE, "D"), "ours (LoRA)": (GREEN, "*"), "Jev (cloud)": (VERMIL, "D"),
-}
+# results (b) bars: colour = strategy, shared by both panels (L1 -> L3 light-to-dark, L4 / L4-D accent)
+DF_STRATEGY_COLOR = {"L1": "#B9D3E9", "L2": "#6FA6D2", "L3": "#1F5F96", "L4": ORANGE, "L4-D": ORANGE}
 
 
 def plot_df_tracks(df: dict, cfg: dict) -> None:
-    """Results (b) as a figure: two panels (generative / decision), x = strategy, y = DeadFree macro-F1 (same range),
-    one line per model.  Cloud dashed + hollow markers, local solid, ours = green star + thick line.  A strategy not
-    run (None) has no marker; its neighbours are joined by a thin dotted segment.  A key without a quality row yet
-    (jev_l4d while it runs) is a grey hollow marker labelled "pending" until the next `make`.  Each model's best
-    point carries its value.  Sized for the slide at scale ~1 (5.6 in wide); one legend below both panels."""
+    """Results (b) as grouped bars: two panels (generative / decision), shared y axis from 0, one group per model,
+    one bar per strategy (colour = strategy, same in both panels).  Cloud groups are hatched; the "ours" group label
+    is green and bold.  A strategy not run (None) leaves an empty slot marked "–†"; a key without a quality row yet
+    (jev_l4d while it ran) is an empty grey outline marked "pending" until the next `make`.  Every bar carries its
+    value (3-digit style).  Sized for the slide at scale ~1 (5.6 in wide); one strategy legend below both panels."""
     tracks = cfg["tracks"]
-    fig, axes = plt.subplots(1, 2, figsize=(5.6, 2.0), sharey=True,
-                             gridspec_kw={"width_ratios": [1, 1]})
-    handles = []
+    widths = [len(spec["rows"]) * (len(spec["columns"]) + 1) for spec in tracks.values()]
+    fig, axes = plt.subplots(1, 2, figsize=(5.6, 2.1), sharey=True, gridspec_kw={"width_ratios": widths})
+    bw = 0.8  # bar width; a group of n strategies spans n slots plus one slot of gap
     for ax, (track, spec) in zip(axes, tracks.items()):
         cols = spec["columns"]
-        best_labels = []
-        column_values: dict[int, list[float]] = {}
-        for name, where, keys in spec["rows"]:
-            color, marker = DF_TRACK_LINE[name]
+        n = len(cols)
+        centres, names = [], []
+        for g, (name, where, keys) in enumerate(spec["rows"]):
             cloud, hero = where == "cloud", name.startswith("ours")
-            vals = [df_f1(df, k) for k in keys]
-            xs = [i for i, v in enumerate(vals) if v is not None]
-            ys = [vals[i] for i in xs]
-            for i in xs:
-                column_values.setdefault(i, []).append(vals[i])
-            ls = "--" if cloud else "-"
-            lw = 2.4 if hero else 1.4
-            for a, b in zip(xs, xs[1:]):  # dotted where a strategy in between was not run
-                ax.plot([a, b], [vals[a], vals[b]], color=color, lw=lw if b == a + 1 else 0.9,
-                        ls=ls if b == a + 1 else ":", zorder=3 if hero else 2)
-            ms = 13 if hero else 6.5
-            ax.plot(xs, ys, ls="", marker=marker, ms=ms, color=color, zorder=4 if hero else 3,
-                    markerfacecolor="white" if cloud else color, markeredgecolor=INK if hero else color,
-                    markeredgewidth=0.6 if hero else 1.3)
-            for i, k in enumerate(keys):  # announced but not yet scored (e.g. jev_l4d): grey hollow, "pending"
-                if k is not None and vals[i] is None:
-                    ax.plot([i], [0.97], ls="", marker=marker, ms=6.5, markerfacecolor="white", markeredgecolor=GREY)
-                    ax.text(i, 0.995, "pending", ha="center", va="bottom", fontsize=8, color=GREY, style="italic")
-            if ys:
-                b = max(range(len(ys)), key=lambda t: ys[t])
-                best_labels.append([xs[b], ys[b], ys[b], short(ys[b]), VERMIL if cloud else color, hero])
-            handles.append(Line2D([], [], color=color, ls=ls, lw=lw, marker=marker, ms=ms * 0.7,
-                                  markerfacecolor="white" if cloud else color,
-                                  markeredgecolor=INK if hero else color, label=name))
-        # best value right of its point; labels in one column are pushed apart (min gap in data units)
-        for col in {b[0] for b in best_labels}:
-            group = sorted((b for b in best_labels if b[0] == col), key=lambda b: b[1])
-            for lo, hi in zip(group, group[1:]):
-                hi[2] = max(hi[2], lo[2] + 0.075)
-            shift = sum(b[1] - b[2] for b in group) / len(group)  # re-centre the pushed group on its points
-            for b in group:
-                b[2] += shift
-        for x, y, ty, text, color, hero in best_labels:
-            alone = sum(b[0] == x for b in best_labels) == 1
-            crowded_above = any(y < v < y + 0.15 for v in column_values.get(x, []))  # another line just above
-            above = (x, y + (-0.075 if crowded_above else 0.075))
-            ax.annotate(text, (x, y), xytext=above if alone else (x + 0.16, ty), textcoords="data",
-                        ha="center" if alone else "left", va="center", fontsize=9, color=color,
-                        fontweight="semibold" if hero else "normal")
-        ax.set_xticks(range(len(cols)), cols, fontsize=9.5)
-        ax.set_xlim(-0.3, len(cols) - 0.35)
-        ax.set_ylim(0.3, 1.04)
-        ax.set_yticks([0.3, 0.5, 0.7, 0.9], [".3", ".5", ".7", ".9"], fontsize=9)
+            base = g * (n + 1)
+            for i, (col, k) in enumerate(zip(cols, keys)):
+                x, v = base + i, df_f1(df, k)
+                if k is None:  # strategy not run for this model
+                    ax.text(x, 0.02, "–†", ha="center", va="bottom", fontsize=7.5, color=GREY)
+                elif v is None:  # announced but not yet scored
+                    ax.bar(x, 0.95, bw, facecolor="none", edgecolor=GREY, lw=0.7, ls="--", zorder=2)
+                    ax.text(x, 0.5, "pending", ha="center", va="center", rotation=90, fontsize=7, color=GREY)
+                else:
+                    ax.bar(x, v, bw, color=DF_STRATEGY_COLOR[col], zorder=2,
+                           hatch="////" if cloud else None, edgecolor="white" if cloud else "none", lw=0)
+                    ax.text(x, v + 0.015, short(v), ha="center", va="bottom", rotation=90, fontsize=7.5,
+                            color=GREEN if hero else INK, fontweight="semibold" if hero else "normal")
+            centres.append(base + (n - 1) / 2)
+            names.append(name.replace(" (cloud)", "\n(cloud)").replace("Intern-Decision", "Intern-\nDecision")
+                         .replace("Qwen read-out", "Qwen\nread-out").replace("ours (LoRA)", "ours\n(LoRA)"))
+        ax.set_xticks(centres, names, fontsize=8.5)
+        ax.tick_params(axis="x", length=0)
+        for tick, (name, _, _) in zip(ax.get_xticklabels(), spec["rows"]):
+            if name.startswith("ours"):
+                tick.set_color(GREEN)
+                tick.set_fontweight("bold")
+        ax.set_xlim(-0.75, len(spec["rows"]) * (n + 1) - 1.25)
+        ax.set_ylim(0, 1.2)
+        ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0], ["0", ".25", ".5", ".75", "1"], fontsize=8.5)
         ax.grid(axis="y", color=LIGHT, lw=0.6, zorder=0)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
         ax.set_title({"generative": "Generative: writes text", "decision": "Decision: reads P(Yes) vs P(No)"}[track],
-                     fontsize=10, loc="left")
-    fig.subplots_adjust(left=0.1, right=0.99, top=0.88, bottom=0.36, wspace=0.08)
-    fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.53, 0.0), ncol=3, fontsize=8.5, frameon=False, handlelength=2.0,
-               borderpad=0.1, labelspacing=0.25, handletextpad=0.5, columnspacing=1.6)
-    axes[0].set_ylabel("DeadFree macro-F1", fontsize=9.5)
+                     fontsize=9.5, loc="left")
+    handles = [Patch(color=DF_STRATEGY_COLOR[c], label=c) for c in ("L1", "L2", "L3")]
+    handles.append(Patch(color=DF_STRATEGY_COLOR["L4"], label="L4 / L4-D"))
+    handles.append(Patch(facecolor=GREY, hatch="////", edgecolor="white", lw=0, label="cloud"))
+    fig.subplots_adjust(left=0.085, right=0.995, top=0.9, bottom=0.31, wspace=0.05)
+    fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.54, 0.0), ncol=5, fontsize=8.5, frameon=False,
+               handlelength=1.4, borderpad=0.1, handletextpad=0.4, columnspacing=1.4)
+    axes[0].set_ylabel("DeadFree macro-F1", fontsize=9)
     save(fig, "df_tracks.pdf")
 
 

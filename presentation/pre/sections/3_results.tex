@@ -41,7 +41,7 @@
     \midrule
     Qwen3.5-4B\sref{qwen35card} & RTX 3090 & generative & LLM baseline \\
     Qwen read-out & RTX 3090 & decision (untuned) & starting point of our LoRA \\
-    Intern-Decision-4B\sref{zhu2026interndecision} & RTX 3090 & decision & untuned decision baseline \\
+    Intern-Decision-4B\sref{zhu2026interndecision} & RTX 3090 & decision & side-by-side decision baseline \\
     VulnLLM-R-7B\sref{nie2025vulnllmr} & RTX 3090 & generative & vulnerability-tuned, published \\
     \textbf{ours}: Qwen3.5-4B + LoRA\sref{hu2022lora} & RTX 3090 & decision & fine-tuned per strategy \\
     \midrule
@@ -55,36 +55,37 @@
 
 % ------------------------------------------------------------------------------
 % src: figures/df_tracks.pdf <- juliet_full/analysis/deadfree/deadfree_quality.json (methods.json deadfree.tracks;
-%   best point per model annotated, legend gain = best - L1, computed); jev_l4d drawn as grey "pending" until its row exists.
+%   grouped bars: group = model, colour = strategy, cloud hatched, value on every bar); jev_l4d drawn as grey "pending" until its row exists.
 %   No L2 for read-out / FT: decided PLAN.md:35 (user, 2026-11-24 19:05: FT saw ~1,800 labelled units, L2 prompt 2.4x longer);
 %   training units per fold 1,712-1,808: PLAN.md:110. Full tables: backup "two tracks, all numbers".
 \begin{frame}{Facts lift every local decision model; the 4B generator cannot write them}
   \centering
-  \includegraphics[width=\linewidth,height=0.72\textheight,keepaspectratio]{figures/df_tracks.pdf}\\[-6pt]
+  \includegraphics[width=\linewidth,height=0.66\textheight,keepaspectratio]{figures/df_tracks.pdf}\\[-9pt]
   \raggedright\footnotesize
   \begin{itemize}
     \item Decision: L4-D is best for every \emph{local} model (ours \res{df-lora_L1}{macro} $\to$ \textbf{\res{df-lora_l4d_opt}{macro}}); Jev is strong at L1--L3
     \item Generative: facts help DeepSeek (L4 \res{df-deepseek_L4}{macro}), not Qwen3.5-4B\sref{qwen35card} (L4 \res{df-qwen_L4}{macro} $<$ L3 \res{df-qwen_L3}{macro})
   \end{itemize}
   \vfill
-  {\scriptsize Dashed = cloud; star = ours (LoRA\sref{hu2022lora}). Dotted: L2 not run for read-out and FT (FT saw $\approx$1,800 labelled units).\par}
+  {\scriptsize Hatched = cloud; ours = LoRA\sref{hu2022lora} on Qwen3.5-4B. \textsuperscript{\dag}L2 not run for read-out and FT (FT saw $\approx$1,800 labelled units).\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
 % src: figures/df_before_after.pdf <- deadfree_quality.json strategy_x_ft (before: read-out = untuned Qwen3.5-4B weights;
-%   after: lora_L1, lora_L3, lora_l4d_opt; marks: Intern-Decision, Qwen gen.); paired delta: deadfree_quality.json
-%   paired_deltas; Debiased LoRA L1: registry lora_L1 layer1 (figures/numbers.tex \res{lora_L1-layer1})
-\begin{frame}{FT: unit labels stay below the baselines, fact labels beat them}
+%   after: lora_L1, lora_L3, lora_l4d_opt; mark: Qwen gen. = same weights, generative); paired deltas FT - read-out and
+%   FT L4-D - Qwen gen. L3: deadfree_quality.json paired_deltas; Debiased LoRA L1: registry lora_L1 layer1.
+%   Vertical comparison only (same Qwen3.5-4B weights); Intern-Decision is a horizontal baseline and is not used here (user rule v4.5).
+\begin{frame}{Same Qwen3.5-4B: unit-label FT < untuned generator < fact-label FT}
   \centering
-  \includegraphics[width=\linewidth,height=0.46\textheight,keepaspectratio]{figures/df_before_after.pdf}\\[0pt]
+  \includegraphics[width=\linewidth,height=0.49\textheight,keepaspectratio]{figures/df_before_after.pdf}\\[0pt]
   \raggedright\footnotesize
   \begin{itemize}
     \item L1/L3 learn \emph{unit labels} $\to$ the shortcut ``a \code{free} means no leak'': FT L1 scores \res{lora_L1-layer1}{macro} on Debiased, \alert{\res{df-lora_L1}{macro}} on DeadFree (leak recall \res{df-lora_L1}{r})
-    \item L4-D learns \emph{fact labels} from dynamic analysis $\to$ transfers: \res{df-readout_l4d}{macro} $\to$ \textbf{\res{df-lora_l4d_opt}{macro}};
-    vs untuned Intern\sref{zhu2026interndecision} L4-D \res{df-x}{pd_lora_l4d_opt__intern_l4d} \res{df-x}{pd_lora_l4d_opt__intern_l4d_ci}
+    \item L4-D learns \emph{fact labels} from dynamic analysis $\to$ transfers: \res{df-readout_l4d}{macro} $\to$ \textbf{\res{df-lora_l4d_opt}{macro}} (\res{df-x}{pd_lora_l4d_opt__readout_l4d} \res{df-x}{pd_lora_l4d_opt__readout_l4d_ci});
+    \res{df-x}{pd_lora_l4d_opt__qwen_L3} \res{df-x}{pd_lora_l4d_opt__qwen_L3_ci} over the best untuned form (gen.\ L3)
   \end{itemize}
   \vfill
-  {\scriptsize Same Qwen3.5-4B\sref{qwen35card} weights before (read-out) and after (LoRA\sref{hu2022lora}). Intern-Decision at $\tau=0.5$. $\Delta$ CI: paired family-cluster bootstrap\sref{efron1979}.\par}
+  {\scriptsize Same Qwen3.5-4B\sref{qwen35card} weights before (read-out) and after (LoRA\sref{hu2022lora}). $\Delta$ [CI]: paired bootstrap\sref{efron1979}; n.s.: CI contains 0.\par}
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -99,27 +100,29 @@
 \end{frame}
 
 % ------------------------------------------------------------------------------
-% src: deadfree_quality.json lora_l4d_opt / intern_l4d / clang_sa / jev_L3 / jev_l4d (pending until JEV_L4D_READY): delta_vs_ds_l1(_ci), gap_closed_ds_l1(_ci), delta_vs_ds_l4(_ci),
+% src: deadfree_quality.json lora_l4d_opt / readout_l4d (untuned, same Qwen3.5-4B weights) / clang_sa / jev_L3 / jev_l4d: delta_vs_ds_l1(_ci), gap_closed_ds_l1(_ci), delta_vs_ds_l4(_ci),
 %   gap_closed_ds_l4(_ci); family-cluster bootstrap. Criterion pre-registered PLAN.md:224-226 (2026-11-23 22:30 PST,
 %   before L4-D ran): near if macro-F1 point estimate >= reference - 0.02; reported as not met PLAN.md:34.
-\begin{frame}{L4-D closes \res{df-intern_l4d}{gap1} of the gap untuned, \res{df-lora_l4d_opt}{gap1} fine-tuned; not near-cloud}
+%   Wording rule (v4.5): "near-cloud" = only this yes/no test; positive claim = "closes X of the gap" + speed-up.
+\begin{frame}{Not yet near-cloud: L4-D closes \res{df-readout_l4d}{gap1} of the gap untuned, \res{df-lora_l4d_opt}{gap1} fine-tuned}
   \centering
-  \renewcommand{\arraystretch}{1.2}
+  \renewcommand{\arraystretch}{1.1}
   {\small
   \begin{tabular}{@{}llcc@{}}
     \toprule
     & vs & $\Delta$ macro-F1 [95\,\% CI\sref{efron1979}] & gap closed \\
     \midrule
-    Intern L4-D (untuned) & DeepSeek L1 (\res{df-deepseek_L1}{macro}) & \res{df-intern_l4d}{d1} \res{df-intern_l4d}{d1ci} & \res{df-intern_l4d}{gap1} \\
+    Read-out L4-D (untuned) & DeepSeek L1 (\res{df-deepseek_L1}{macro}) & \res{df-readout_l4d}{d1} \res{df-readout_l4d}{d1ci} & \res{df-readout_l4d}{gap1} \\
     \textbf{FT L4-D (opt.)} & DeepSeek L1 (\res{df-deepseek_L1}{macro}) & \res{df-lora_l4d_opt}{d1} \res{df-lora_l4d_opt}{d1ci} & \textbf{\res{df-lora_l4d_opt}{gap1}} \\
     \textbf{FT L4-D (opt.)} & DeepSeek L4 (\res{df-deepseek_L4}{macro}) & \res{df-lora_l4d_opt}{d4} \res{df-lora_l4d_opt}{d4ci} & \res{df-lora_l4d_opt}{gap4} \\
+    \midrule
+    \color{NeutDraw}Clang SA\sref{clangsa} (static) & \color{NeutDraw}DeepSeek L1 (\res{df-deepseek_L1}{macro}) & \color{NeutDraw}\res{df-clang_sa}{d1} \res{df-clang_sa}{d1ci} & \color{NeutDraw}\res{df-clang_sa}{gap1} \\
     \bottomrule
   \end{tabular}}\par
-  \vspace{8pt}
-  \begin{itemize}
-    \item Gap measured from untuned Qwen L1 (\res{df-qwen_L1}{macro}) to the cloud model
-    \item Criterion: $\geq$ reference $- 0.02$. \alert{Not met}: \res{df-lora_l4d_opt}{d1} vs DeepSeek L1
-    \item Median latency: FT L4-D \res{df-lora_l4d_opt}{lat}, Intern L4-D \res{df-intern_l4d}{lat}, DeepSeek L1 \res{df-deepseek_L1}{lat} (FT L4-D \res{df-x}{speedup_ds_l1}$\times$ faster)
+  \vspace{4pt}
+  \begin{itemize}\small
+    \item Near-cloud test (pre-registered): macro-F1 $\geq$ DeepSeek L1 $- 0.02$. FT L4-D: \alert{not yet near-cloud} (\res{df-lora_l4d_opt}{d1}); no local LM passes. Clang SA: \res{df-clang_sa}{d1}, so a static analyzer, not an LM, meets the near-cloud test
+    \item Gap = untuned Qwen L1 (\res{df-qwen_L1}{macro}) $\to$ cloud model; read-out = same Qwen weights, untuned. Median latency FT L4-D \res{df-lora_l4d_opt}{lat} vs DeepSeek L1 \res{df-deepseek_L1}{lat}: \res{df-x}{speedup_ds_l1}$\times$ faster
     \item Same facts, cloud decision model: Jev L4-D \res{df-jev_l4d}{macro} (\res{df-x}{pd_jev_l4d__lora_l4d_opt} vs FT L4-D); Jev L3 \res{df-jev_L3}{macro}
   \end{itemize}
 \end{frame}

@@ -70,6 +70,16 @@ or `url-*`; short forms in `sources.tex`). Numbers restart on every frame in ord
 the numbered entries. Tables: superscript on the row/column name; figures: in the caption line. Use `†`/`*` only for
 non-citation notes. Course lectures, DeepSeek and Jev are not cited (user, 2026-11-24). An unknown key stops the build.
 
+## Wording and comparison rules (v4.5)
+
+- "near-cloud" names only the pre-registered yes/no test: DeadFree macro-F1 ≥ DeepSeek L1 − 0.02 (point estimate).
+  FT L4-D is "not yet near-cloud"; Clang SA (a static analyzer, not an LM) passes it.
+- The positive claim is always quantitative: "closes X of the local–cloud gap" (gap = untuned Qwen L1 → DeepSeek
+  L1) plus the speed-up vs DeepSeek L1. Do not use "close" alone as an adjective.
+- Our fine-tuned model is compared vertically with the same Qwen3.5-4B weights (read-out = decision format, Qwen
+  gen. = generative format) to show strategy and fine-tuning gains. Intern-Decision is a horizontal baseline only
+  (model table, slide 18 decision panel, Pareto, backup), never used to explain our gains.
+
 ## How the numbers are made
 
 - **v4 DeadFree numbers** (main slides): quality from `juliet_full/analysis/deadfree/deadfree_quality.json`

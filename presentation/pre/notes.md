@@ -15,9 +15,13 @@ the mention with a numbered footer per slide (`\sref`, short forms in `sources.t
 comparison is on **DeadFree** (eval set, 2,656 units, 39 flow variants never used for prompts, τ or checkpoints).
 
 Main line in one sentence: **the strategy does most of the work — an untuned local decision model answering
-program-analysis fact questions, with Datalog deciding (L4-D), already closes ~81 % of the gap to the cloud on
-DeadFree; fine-tuning on those facts adds +.027 (→ 89 %), fine-tuning on unit labels makes it worse — and it is
-still not near-cloud by our own pre-registered criterion.**
+the same untuned Qwen3.5-4B, asked program-analysis fact questions with Datalog deciding (L4-D), goes from .351
+(L1) to .752 (+.401) and closes 66 % of the local–cloud gap on DeadFree; fine-tuning on those facts adds +.074
+(→ .826, 89 % of the gap, 1.9× faster than DeepSeek L1); fine-tuning on unit labels does not help — and it is not yet near-cloud by our own pre-registered test.**
+
+Wording rule (v4.5): "near-cloud" names only the pre-registered yes/no test (macro-F1 ≥ DeepSeek L1 − 0.02 on
+DeadFree). The positive claim is always quantitative: "closes X of the local–cloud gap" (gap = untuned Qwen L1 →
+DeepSeek L1) plus the speed-up vs DeepSeek L1. Never say "close" as an adjective.
 
 | # | Section | Slide (assertion title) | Time | Running |
 |---|---------|-------------------------|------|---------|
@@ -40,9 +44,9 @@ still not near-cloud by our own pre-registered criterion.**
 | 16 | Results | DeadFree removes the label shortcuts; one cue is left in G2B goods | 0:35 | 10:35 |
 | 17 | Results | Two cloud services, three local models, one fine-tuned model | 0:15 | 10:50 |
 | 18 | Results | Two tracks × four strategies (DeadFree) | 0:45 | 11:35 |
-| 19 | Results | **FT: unit labels stay below the baselines, fact labels beat them** (key slide) | 1:00 | 12:35 |
+| 19 | Results | **Same Qwen3.5-4B: unit-label FT < untuned generator < fact-label FT** (key slide) | 1:00 | 12:35 |
 | 20 | Results | FT L4-D is the most accurate local model, still below the cloud (Pareto) | 0:50 | 13:25 |
-| 21 | Results | L4-D closes 81 % of the gap untuned, 89 % fine-tuned; not near-cloud | 0:35 | 14:00 |
+| 21 | Results | Not yet near-cloud: L4-D closes 66 % of the gap untuned, 89 % fine-tuned | 0:35 | 14:00 |
 | 22 | Results | Live: one dead free fools grep and the old LoRA, not L4-D | 1:45 | 15:45 |
 | 23 | Discussion | Take-aways: the strategy does most of the work | 0:35 | 16:20 |
 | 24 | Discussion | Limitations | 0:30 | 16:50 |
@@ -77,7 +81,7 @@ the cloud — for us one RTX 3090 with 24 GB."
 
 ## 4. The question (0:30)
 - Three sub-questions: which strategy helps a local model most, does fine-tuning help and on which labels, how
-  close to the cloud do we get and how fast. Task is one unit → leak / no leak, judged on DeadFree.
+  close to the cloud do we get and how fast (a question; the answer is a number, slide 21). Task is one unit → leak / no leak, judged on DeadFree.
 
 ## 5. Original Juliet CWE-401 (0:40)
 - What the data looks like (bullets): NIST SARD Juliet C/C++ 1.3, 1,658 CWE-401 cases, 42 families (allocation call
@@ -174,7 +178,8 @@ the cloud — for us one RTX 3090 with 24 GB."
 ## 18. Facts lift every local decision model (figure) (0:45)
 - Two panels, same y-axis. Left: generative (writes text; Qwen3.5-4B local, DeepSeek cloud; L1–L4). Right:
   decision (one forward pass, P(Yes) vs P(No); Qwen read-out, Intern-Decision, ours, Jev; L1, L2, L3, L4-D).
-  Dashed hollow = cloud, solid = local, green star = ours. Each model's best point carries its value.
+  Bars grouped by model, colour = strategy (light → dark blue L1 → L3, orange L4 / L4-D), hatched = cloud,
+  green bold = ours. Every bar carries its value; "–†" = strategy not run.
 - Decision panel: L4-D is the best strategy for every LOCAL decision model — read-out .351/.334 → .752, Intern
   .664 (best prompt) → .799, ours .372 (L1) → .826. The cloud decision model is already strong at L1–L3 (Jev L3
   .949); with the same facts Jev L4-D (τ 0.5, pre-specified) is .907: ≈ DeepSeek L4 (+.007 [−.028, +.039], n.s.)
@@ -184,17 +189,19 @@ the cloud — for us one RTX 3090 with 24 GB."
 - If asked (not on the slide): same Qwen weights — asking the facts (read-out L4-D .752) beats writing them (gen.
   L4 .706). Jev answers the path question well (exec_all fact accuracy .975 vs .831 for our LoRA); most of its 238
   false leaks contain a wrong realloc_safe answer (a gold-convention case, `realloc(NULL)` + exit).
-- Dotted segment: no L2 for read-out and FT — FT already saw ≈1,800 labelled units, and the L2 prompt is 2.4×
+- "–†" slot: no L2 for read-out and FT — FT already saw ≈1,800 labelled units, and the L2 prompt is 2.4×
   longer. All numbers: backup "two tracks, all numbers".
 
 ## 19. Fine-tuning, strategy by strategy — key slide (1:00)
-- Same Qwen3.5-4B weights before (read-out) and after LoRA. L1 .351 → .372, L3 .334 → .639, L4-D .752 → .826.
-  The dashed line is untuned Intern-Decision, the dotted line Qwen generative (same weights, writing).
+- Vertical comparison only: the same Qwen3.5-4B weights before (read-out) and after LoRA, plus the dotted line =
+  the same weights untuned in generative format. Intern-Decision is another model and is NOT used to explain our
+  gains (it appears side by side on slides 17, 18, 20). Paired Δ FT − read-out: L1 +.021 [−.007, +.054] (n.s.),
+  L3 +.304 [+.280, +.331], L4-D +.074 [+.053, +.097].
 - What FT trains on decides what it learns. L1/L3 learn unit labels: the shortcut "a free means no leak". FT L1
-  scored .984 on Debiased and .372 on DeadFree, leak recall .041 — below untuned Qwen gen. (.533) and Intern
-  (.584).
-- L4-D learns fact labels from dynamic analysis; that transfers: .826, +.027 [+.003, +.054] over untuned Intern
-  L4-D (paired bootstrap). Small, but the CI excludes zero.
+  scored .984 on Debiased and .372 on DeadFree, leak recall .041; FT L1 .372 and FT L3 .639 both stay below the
+  untuned generator (gen. L1 .533, L3 .760).
+- L4-D learns fact labels from dynamic analysis; that transfers: .752 → .826, and FT L4-D beats every untuned Qwen
+  form, +.067 [+.039, +.099] over the best one (gen. L3 .760).
 - "The strategy does most of the work; fine-tuning on facts adds a little; fine-tuning on verdicts hurts."
 
 ## 20. Pareto: Clang SA dominates every local LM (0:50)
@@ -205,17 +212,20 @@ the cloud — for us one RTX 3090 with 24 GB."
 - The front now covers model-based AND static methods: grep (.333, 1 µs) → Cppcheck (.492, 9 ms) → Clang SA (.855,
   18 ms) → DeepSeek L3 (.875, 810 ms) → Jev L1 (.946, 912 ms) → Jev L3 (.949, 923 ms).
 - Clang SA is above every local LM and faster, so no local LM is on the front. FT L4-D (.826 at 472 ms) is the most
-  accurate local LM and dominates untuned Intern L4-D (.799 at 658 ms); the cloud is higher at 0.81–1.01 s.
+  accurate local LM; side by side it also dominates untuned Intern L4-D (.799 at 658 ms); the cloud is higher at 0.81–1.01 s.
 - Other grey squares: Infer .815 at 256 ms, CodeQL .766 at 7.4 s. Dynamic: ASan/LSan .948 at 135 ms,
   Dynamic-enhanced 1.0 at 1.17 s, both need a build, a run and the right inputs.
 - Jev L4-D (.907 at 967 ms) is the orange diamond just below Jev L1; its questions are sent concurrently; our FT L4-D batches a
   unit's questions in one forward pass, Intern-Decision L4-D asks them one by one.
 
 ## 21. Gap and criterion (0:35)
-- Gap measured from untuned Qwen L1 (.533) to the cloud model. Untuned Intern L4-D: −.064 vs DeepSeek L1, 81 %
-  of the gap. FT L4-D: −.037 [−.055, −.017], 89 %; vs DeepSeek L4 −.074, 80 %.
-- Pre-registered criterion (before L4-D ran): near if ≥ reference − 0.02. **Not met.**
-- Latency: FT L4-D 472 ms, Intern L4-D 658 ms, DeepSeek L1 895 ms — FT L4-D is 1.9× faster (DeadFree
+- Title percentages: read-out L4-D (same untuned weights) 66 %, FT L4-D 89 %.
+- Gap = untuned Qwen L1 (.533) → cloud model. Same untuned weights with L4-D (read-out): −.111 [−.127, −.095] vs
+  DeepSeek L1, closes 66 % of the gap. FT L4-D: −.037 [−.055, −.017], closes 89 %; vs DeepSeek L4 −.074, 80 %.
+- Near-cloud test, pre-registered before L4-D ran: macro-F1 ≥ DeepSeek L1 − 0.02. FT L4-D: **not yet near-cloud**;
+  no local LM passes. Grey row: Clang SA, −.008 [−.066, +.043], closes 97 % — a static analyzer, not an LM, meets
+  the near-cloud test (its CI is wide; the test is on the point estimate).
+- Latency: FT L4-D 472 ms vs DeepSeek L1 895 ms — FT L4-D is 1.9× faster (DeadFree
   numbers; the ≈7× of the Debiased backup was single-prompt LoRA L1 vs DeepSeek and does not apply here).
 - Same facts, cloud decision model: Jev L4-D .907, +.081 [+.047, +.111] over FT L4-D; Jev L3 .949 stays the
   decision-track ceiling. The fact interface is not the bottleneck for a strong model; our 4B model's fact answers
@@ -230,8 +240,9 @@ the cloud — for us one RTX 3090 with 24 GB."
 - Fallback: `demo.py --replay recordings/<file>` or the mp4.
 
 ## 23. Take-aways (0:35)
-1. Check the benchmark first. 2. Facts + Datalog do most of the work (untuned Intern L4-D, 81 % of the gap).
-3. Unit labels teach shortcuts. 4. Fact labels add a little (+.027, 89 %). 5. Ask only what the rules read.
+1. Check the benchmark first. 2. Facts + Datalog do most of the work (same untuned Qwen: L1 .351 → L4-D .752,
++.401, 66 % of the gap). 3. Unit labels teach shortcuts. 4. Fine-tuning on facts adds a little more (+.074 → .826,
+89 % of the gap, 1.9× faster than DeepSeek L1). 5. Ask only what the rules read.
 6. The remaining gap is path feasibility.
 
 ## 24. Limitations (0:30)
@@ -241,8 +252,8 @@ the cloud — for us one RTX 3090 with 24 GB."
   baseline (the frozen dev τ 0.18 gives .373). Say this out loud.
 
 ## 25. Take-home (0:10)
-"Close — about 89 % of the gap — but not yet near-cloud. Program-analysis facts do most of the work; fine-tune on
-facts, not on verdicts."
+"Not yet: L4-D closes 89 % of the gap, 1.9× faster than the cloud. Program-analysis facts do most of the work;
+fine-tune on facts, not on verdicts."
 
 ## Q&A prep
 
@@ -255,12 +266,11 @@ a path-sensitive analyzer does. A natural next step is to feed Clang's path fact
 `exec_all`).
 
 **Is L4-D really near-cloud?**
-No, and we say so. Δ vs DeepSeek L1 is −.037 [−.055, −.017]; the pre-registered threshold was −.02 on the point
-estimate. It closes ≈89 % of the gap to DeepSeek L1 and ≈80 % to DeepSeek L4. Jev is far ahead (.949); even with
+Not yet, and we say so. Δ vs DeepSeek L1 is −.037 [−.055, −.017]; the pre-registered threshold was −.02 on the
+point estimate. The only local method that passes is Clang SA (−.008), which is not an LM. FT L4-D closes 89 % of the gap to DeepSeek L1 and ≈80 % to DeepSeek L4. Jev is far ahead (.949); even with
 our exact fact questions and rules Jev L4-D reaches .907 (+.081 over FT L4-D), so the remaining gap is the quality
-of the 4B model's fact answers (mainly exec_all), not the L4-D interface. Most of that
-comes from the strategy: untuned Intern with L4-D already closes ≈81 %. Fact fine-tuning is the only fine-tuning
-that helps on DeadFree, by +.027 [+.003, +.054].
+of the 4B model's fact answers (mainly exec_all), not the L4-D interface. Most of the 89 % comes from the
+strategy: the same untuned weights with L4-D already close 66 %. Fact fine-tuning adds +.074 [+.053, +.097].
 
 **Jev L4-D is below Jev L3 — does that sink L4-D?**
 For a strong cloud decision model the whole-unit question is already good (L3 .949); L4-D at the pre-specified
@@ -276,8 +286,9 @@ primary was switched to τ = 0.5 after seeing eval, to match Intern L1–L3 (cal
 keeps its dev-chosen τ. Backup slide "Intern-Decision L4-D and its threshold".
 
 **If the strategy does most of the work, why fine-tune at all?**
-+.027 is significant (paired CI excludes 0) and it is the step from 81 % to 89 % of the gap, with τ chosen on dev
-rather than after eval. But the honest headline is the strategy.
+On the same weights, +.074 [+.053, +.097] (read-out L4-D .752 → .826), the step from 66 % to 89 % of the gap, and
+it is the only fine-tuning that beats every untuned Qwen form (+.067 over gen. L3). Unit-label FT does not
+(L1 +.021 n.s.; FT L1/L3 stay below the untuned generator). But the honest headline is the strategy (+.401).
 
 **Is DeadFree fair?**
 Labels do not change and are re-checked by compiling and running every unit. Dead frees appear in both labels, so

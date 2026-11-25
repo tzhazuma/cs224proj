@@ -1,14 +1,14 @@
 \section{Discussion}
 
 % ------------------------------------------------------------------------------
-% src: deadfree_quality.json (macro_f1; lora_l4d_opt / intern_l4d delta/gap; paired_deltas); fact attribution
+% src: deadfree_quality.json (macro_f1; readout_L1 / readout_l4d / lora_l4d_opt gap; paired_deltas); fact attribution
 %   juliet_full/analysis/l4d_peek/fact_error_attribution.out.txt
 \begin{frame}{Take-aways: the strategy does most of the work}
   \begin{enumerate}
     \item \textbf{Check the benchmark first.} On Original Juliet\sref{sardjuliet13}, grep scores \res{df-x}{probe_grep_v0_original}; on DeadFree \res{df-x}{probe_grep_v0_layer3}.
-    \item \textbf{Facts + Datalog do most of the work.} Untuned Intern L4-D: \res{df-intern_l4d}{macro}, \res{df-intern_l4d}{gap1} of the gap.
-    \item \textbf{Unit labels teach shortcuts.} FT L1: Debiased \res{lora_L1-layer1}{macro}, DeadFree \res{df-lora_L1}{macro} (below untuned Qwen gen.\ and Intern L1).
-    \item \textbf{Fact labels add a little.} FT L4-D \res{df-lora_l4d_opt}{macro} (\res{df-x}{pd_lora_l4d_opt__intern_l4d} vs Intern), \res{df-lora_l4d_opt}{gap1} of the gap.
+    \item \textbf{Facts + Datalog do most of the work.} Same untuned Qwen: L1 \res{df-readout_L1}{macro} $\to$ L4-D \res{df-readout_l4d}{macro} (\res{df-x}{pd_readout_l4d__readout_L1}), \res{df-readout_l4d}{gap1} of the gap.
+    \item \textbf{Unit labels teach shortcuts.} FT L1: Debiased \res{lora_L1-layer1}{macro}, DeadFree \res{df-lora_L1}{macro} (below untuned Qwen gen.\ L1 \res{df-qwen_L1}{macro}).
+    \item \textbf{Fine-tuning on facts adds a little more.} \res{df-x}{pd_lora_l4d_opt__readout_l4d} $\to$ \res{df-lora_l4d_opt}{macro}, \res{df-lora_l4d_opt}{gap1} of the gap, \res{df-x}{speedup_ds_l1}$\times$ faster than DeepSeek L1.
     \item \textbf{Ask only what the rules read.} \res{df-x}{q_full_layer3} $\to$ \res{df-x}{q_pruned_layer3} questions, same verdicts.
     \item \textbf{Remaining gap = path feasibility.} Correct \code{exec\_all} alone gives \res{df-x}{attr_layer3_exec_all}.
   \end{enumerate}
@@ -31,7 +31,7 @@
 % ------------------------------------------------------------------------------
 \begin{frame}[standout]
   Near-cloud quality on a local device?\\[6pt]
-  \textbf{Close (\res{df-lora_l4d_opt}{gap1} of the gap), not yet near-cloud.}\\[14pt]
+  \textbf{Not yet: L4-D closes \res{df-lora_l4d_opt}{gap1} of the gap,\\ \res{df-x}{speedup_ds_l1}$\times$ faster than the cloud.}\\[14pt]
   {\normalsize Program-analysis facts do most of the work;\\ fine-tune on facts, not on verdicts.}\\[18pt]
   Questions?
 \end{frame}
