@@ -1,0 +1,622 @@
+{
+ "eval_set": "layer3 (DeadFree) eval",
+ "n_units": 2656,
+ "units_file": "data/build/layer3.jsonl",
+ "fx": {
+  "usd_per_cny": 0.15005,
+  "source_url": "https://api.frankfurter.app/latest?from=CNY&to=USD",
+  "source": "Frankfurter API = ECB euro foreign exchange reference rates (cross rate CNY->USD), ECB date 2026-11-24",
+  "date": "2026-11-25",
+  "cross_check": "https://open.er-api.com/v6/latest/CNY gave 0.149742 (updated 2026-11-25 00:02 UTC); difference 0.2 %"
+ },
+ "gpu_prices": {
+  "rental_usd_per_h": 0.5,
+  "rental_source": "https://www.runpod.io/pricing (RTX 3090, 24 GB VRAM: Secure Cloud $0.50/h on-demand = used here; Community Cloud $0.22/h = sensitivity). Page HTML: data-secure=\"0.5\" data-community=\"0.22\".",
+  "rental_date": "2026-11-25",
+  "rental_community_usd_per_h": 0.22,
+  "power_w": 350,
+  "power_source": "https://www.nvidia.com/en-us/geforce/graphics-cards/30-series/rtx-3090-3090ti/ (Founders Edition specs: Graphics Card Power (W) RTX 3090 = 350)",
+  "electricity_cny_per_kwh": 0.791,
+  "electricity_usd_per_kwh": 0.11869,
+  "electricity_source": "https://www.globalpetrolprices.com/China/electricity_prices/ (China, business tariff CNY 0.791/kWh, collected March 2026, incl. distribution, transmission, taxes), converted at fx.usd_per_cny",
+  "electricity_date": "2026-11-25",
+  "electricity_usd_per_gpu_h": 0.04154,
+  "electricity_us_commercial_usd_per_kwh": 0.1427,
+  "electricity_us_source": "https://www.eia.gov/electricity/monthly/epm_table_grapher.php?t=epmt_5_6_a (EIA Table 5.6.A, U.S. Total commercial, September 2026: 14.27 cents/kWh) - sensitivity only",
+  "electricity_note": "lower bound: board power at full 350 W for the GPU-seconds only; excludes host CPU/PSU losses, idle time and the hardware purchase",
+  "amortized": "not included: no readable public RTX 3090 street-price page was found with our tools (bestvaluegpu.com returned 403; the Tom's Hardware price tracker no longer lists the 3090)"
+ },
+ "methods": [
+  {
+   "key": "deepseek_L1",
+   "label": "DeepSeek L1",
+   "where": "cloud",
+   "track": "generative",
+   "macro_f1": 0.8632,
+   "macro_f1_ci": [
+    0.8407,
+    0.8809
+   ],
+   "latency_s": 0.8948,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "usd_per_1k": 0.065409,
+   "native_currency": "CNY",
+   "native_per_1k": 0.435918,
+   "native_total": 1.157797,
+   "usd_total": 0.173727,
+   "cny_per_1k_peak": 0.871835,
+   "cny_per_1k_offpeak": 0.435918,
+   "usd_per_1k_peak": 0.130819,
+   "usd_per_1k_offpeak": 0.065409,
+   "tokens_per_unit": {
+    "input": 564.9,
+    "input_cached": 198.7,
+    "input_uncached": 366.2,
+    "output": 16.4
+   },
+   "peak_share_of_calls": 0.0,
+   "n_calls": 2656,
+   "coverage": {
+    "ok": true,
+    "n_calls": 2656,
+    "n_units": 2656,
+    "duplicates": 0,
+    "missing": 0,
+    "non_ok_calls": 0,
+    "check": "unit_id set == layer3 eval units, each exactly once"
+   },
+   "recompute_rel_diff_vs_billed": 0.0,
+   "basis": "llm/ledger.jsonl kind=call provider=deepseek layer=layer3 strategy=L1 run_id in ['l3_apirest_L1_r1', 'l3_n25_L1_r1', 'l3_rest_L1_r1']; sum(cost)/2656*1000",
+   "cache_hit_share_of_input": 0.3518
+  },
+  {
+   "key": "deepseek_L2",
+   "label": "DeepSeek L2",
+   "where": "cloud",
+   "track": "generative",
+   "macro_f1": 0.873,
+   "macro_f1_ci": [
+    0.8471,
+    0.8944
+   ],
+   "latency_s": 0.85975,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "usd_per_1k": 0.064014,
+   "native_currency": "CNY",
+   "native_per_1k": 0.426619,
+   "native_total": 1.1331,
+   "usd_total": 0.170022,
+   "cny_per_1k_peak": 0.853238,
+   "cny_per_1k_offpeak": 0.426619,
+   "usd_per_1k_peak": 0.128028,
+   "usd_per_1k_offpeak": 0.064014,
+   "tokens_per_unit": {
+    "input": 1233.9,
+    "input_cached": 890.9,
+    "input_uncached": 343.0,
+    "output": 16.4
+   },
+   "peak_share_of_calls": 0.0,
+   "n_calls": 2656,
+   "coverage": {
+    "ok": true,
+    "n_calls": 2656,
+    "n_units": 2656,
+    "duplicates": 0,
+    "missing": 0,
+    "non_ok_calls": 0,
+    "check": "unit_id set == layer3 eval units, each exactly once"
+   },
+   "recompute_rel_diff_vs_billed": 0.0,
+   "basis": "llm/ledger.jsonl kind=call provider=deepseek layer=layer3 strategy=L2 run_id in ['l3_apirest_L2_r1', 'l3_n25_L2_r1', 'l3_rest_L2_r1']; sum(cost)/2656*1000",
+   "cache_hit_share_of_input": 0.722
+  },
+  {
+   "key": "deepseek_L3",
+   "label": "DeepSeek L3",
+   "where": "cloud",
+   "track": "generative",
+   "macro_f1": 0.8749,
+   "macro_f1_ci": [
+    0.8589,
+    0.8896
+   ],
+   "latency_s": 0.8101,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "usd_per_1k": 0.041964,
+   "native_currency": "CNY",
+   "native_per_1k": 0.279664,
+   "native_total": 0.742787,
+   "usd_total": 0.111455,
+   "cny_per_1k_peak": 0.559327,
+   "cny_per_1k_offpeak": 0.279664,
+   "usd_per_1k_peak": 0.083927,
+   "usd_per_1k_offpeak": 0.041964,
+   "tokens_per_unit": {
+    "input": 616.4,
+    "input_cached": 410.7,
+    "input_uncached": 205.8,
+    "output": 16.4
+   },
+   "peak_share_of_calls": 0.0,
+   "n_calls": 2656,
+   "coverage": {
+    "ok": true,
+    "n_calls": 2656,
+    "n_units": 2656,
+    "duplicates": 0,
+    "missing": 0,
+    "non_ok_calls": 0,
+    "check": "unit_id set == layer3 eval units, each exactly once"
+   },
+   "recompute_rel_diff_vs_billed": 0.0,
+   "basis": "llm/ledger.jsonl kind=call provider=deepseek layer=layer3 strategy=L3 run_id in ['l3_apirest_L3_r1', 'l3_n25_L3_r1', 'l3_rest_L3_r1']; sum(cost)/2656*1000",
+   "cache_hit_share_of_input": 0.6662
+  },
+  {
+   "key": "deepseek_L4",
+   "label": "DeepSeek L4",
+   "where": "cloud",
+   "track": "generative",
+   "macro_f1": 0.9002,
+   "macro_f1_ci": [
+    0.8871,
+    0.9125
+   ],
+   "latency_s": 1.00755,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "usd_per_1k": 0.109756,
+   "native_currency": "CNY",
+   "native_per_1k": 0.731466,
+   "native_total": 1.942774,
+   "usd_total": 0.291513,
+   "cny_per_1k_peak": 1.462932,
+   "cny_per_1k_offpeak": 0.731466,
+   "usd_per_1k_peak": 0.219513,
+   "usd_per_1k_offpeak": 0.109756,
+   "tokens_per_unit": {
+    "input": 1229.8,
+    "input_cached": 839.1,
+    "input_uncached": 390.7,
+    "output": 81.0
+   },
+   "peak_share_of_calls": 0.0,
+   "n_calls": 2656,
+   "coverage": {
+    "ok": true,
+    "n_calls": 2656,
+    "n_units": 2656,
+    "duplicates": 0,
+    "missing": 0,
+    "non_ok_calls": 0,
+    "check": "unit_id set == layer3 eval units, each exactly once"
+   },
+   "recompute_rel_diff_vs_billed": 0.0,
+   "basis": "llm/ledger.jsonl kind=call provider=deepseek layer=layer3 strategy=L4 run_id in ['l3_n25_L4_r1', 'l3_rest75_L4_r1']; sum(cost)/2656*1000",
+   "cache_hit_share_of_input": 0.6823
+  },
+  {
+   "key": "jev_L1",
+   "label": "Jev L1 @0.5",
+   "where": "cloud",
+   "track": "decision",
+   "macro_f1": 0.9458,
+   "macro_f1_ci": [
+    0.9153,
+    0.9678
+   ],
+   "latency_s": 0.91155,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "usd_per_1k": 0.036399,
+   "native_currency": "USD",
+   "native_per_1k": 0.036399,
+   "native_total": 0.096675,
+   "usd_total": 0.096675,
+   "tokens_per_unit": {
+    "input": 866.6,
+    "input_cached": null,
+    "output": 21.0
+   },
+   "peak_share_of_calls": null,
+   "n_calls": 2656,
+   "coverage": {
+    "ok": true,
+    "n_calls": 2656,
+    "n_units": 2656,
+    "duplicates": 0,
+    "missing": 0,
+    "non_ok_calls": 0,
+    "check": "unit_id set == layer3 eval units, each exactly once"
+   },
+   "recompute_rel_diff_vs_billed": 0.0,
+   "basis": "llm/ledger.jsonl kind=call provider=jev layer=layer3 strategy=L1 run_id in ['l3_eval_L1_r1']; sum(cost)/2656*1000",
+   "calls_per_unit": 1.0
+  },
+  {
+   "key": "jev_L2",
+   "label": "Jev L2 @0.5",
+   "where": "cloud",
+   "track": "decision",
+   "macro_f1": 0.9424,
+   "macro_f1_ci": [
+    0.912,
+    0.9648
+   ],
+   "latency_s": 0.95575,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "usd_per_1k": 0.066009,
+   "native_currency": "USD",
+   "native_per_1k": 0.066009,
+   "native_total": 0.175319,
+   "usd_total": 0.175319,
+   "tokens_per_unit": {
+    "input": 1571.6,
+    "input_cached": null,
+    "output": 21.0
+   },
+   "peak_share_of_calls": null,
+   "n_calls": 2656,
+   "coverage": {
+    "ok": true,
+    "n_calls": 2656,
+    "n_units": 2656,
+    "duplicates": 0,
+    "missing": 0,
+    "non_ok_calls": 0,
+    "check": "unit_id set == layer3 eval units, each exactly once"
+   },
+   "recompute_rel_diff_vs_billed": 0.0,
+   "basis": "llm/ledger.jsonl kind=call provider=jev layer=layer3 strategy=L2 run_id in ['l3_eval_L2_r1']; sum(cost)/2656*1000",
+   "calls_per_unit": 1.0
+  },
+  {
+   "key": "jev_L3",
+   "label": "Jev L3 @0.5",
+   "where": "cloud",
+   "track": "decision",
+   "macro_f1": 0.9488,
+   "macro_f1_ci": [
+    0.9184,
+    0.9701
+   ],
+   "latency_s": 0.9227,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "usd_per_1k": 0.038623,
+   "native_currency": "USD",
+   "native_per_1k": 0.038623,
+   "native_total": 0.102582,
+   "usd_total": 0.102582,
+   "tokens_per_unit": {
+    "input": 919.6,
+    "input_cached": null,
+    "output": 21.0
+   },
+   "peak_share_of_calls": null,
+   "n_calls": 2656,
+   "coverage": {
+    "ok": true,
+    "n_calls": 2656,
+    "n_units": 2656,
+    "duplicates": 0,
+    "missing": 0,
+    "non_ok_calls": 0,
+    "check": "unit_id set == layer3 eval units, each exactly once"
+   },
+   "recompute_rel_diff_vs_billed": 0.0,
+   "basis": "llm/ledger.jsonl kind=call provider=jev layer=layer3 strategy=L3 run_id in ['l3_eval_L3_r1']; sum(cost)/2656*1000",
+   "calls_per_unit": 1.0
+  },
+  {
+   "key": "jev_l4d",
+   "label": "Jev L4-D @0.5",
+   "where": "cloud",
+   "track": "decision",
+   "macro_f1": 0.9071,
+   "macro_f1_ci": [
+    0.8747,
+    0.9347
+   ],
+   "latency_s": 0.966517,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "usd_per_1k": 0.182427,
+   "native_currency": "USD",
+   "native_per_1k": 0.182427,
+   "native_total": 0.484525,
+   "usd_total": 0.484525,
+   "tokens_per_unit": {
+    "input": 4343.5,
+    "input_cached": null,
+    "output": 117.6
+   },
+   "peak_share_of_calls": null,
+   "n_calls": 15619,
+   "coverage": {
+    "ok": true,
+    "n_calls": 15619,
+    "n_units_with_calls": 2656,
+    "n_units_without_kept_question": 0,
+    "duplicate_qids": 0,
+    "non_ok_calls": 0,
+    "check": "qid unique; per-unit call count == n_questions_kept of l4d_ft/results/jev_l4d/layer3/eval_r1_units.jsonl"
+   },
+   "recompute_rel_diff_vs_billed": 0.0,
+   "basis": "llm/ledger.jsonl kind=call provider=jev layer=layer3 strategy=L4D run_id in ['eval_r1']; sum(cost)/2656*1000",
+   "calls_per_unit": 5.881
+  },
+  {
+   "key": "lora_l4d_opt",
+   "label": "LoRA L4-D (opt.)",
+   "where": "local",
+   "track": "decision",
+   "secondary": false,
+   "macro_f1": 0.8264,
+   "macro_f1_ci": [
+    0.8094,
+    0.8421
+   ],
+   "latency_s": 0.471705,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "gpu_s_per_unit_c1": 0.5077,
+   "gpu_s_per_unit_batch": 0.5064,
+   "usd_per_1k": 0.070329,
+   "usd_per_1k_batch_rental": 0.070329,
+   "usd_per_1k_c1_rental": 0.070509,
+   "usd_per_1k_batch_rental_community": 0.030945,
+   "usd_per_1k_electricity": 0.005843,
+   "usd_per_1k_c1_electricity": 0.005858,
+   "basis": "c1: mean extra.server_forward_s of l4d_ft/results/lora_l4d_opt/layer3/lat300_c1_fallback.jsonl (n=300, fallback kernel = prediction config). batch: per unit: unit_forward_s x n_questions_kept / unit_n_questions, summed, / 2,656 over l4d_ft/build/remote_results/lora_l4d/layer3/eval_r1_fold0.jsonl, l4d_ft/build/remote_results/lora_l4d/layer3/eval_r1_fold1.jsonl, l4d_ft/build/remote_results/lora_l4d/layer3/eval_r1_fold2.jsonl; kept counts from l4d_ft/results/lora_l4d_opt/layer3/eval_r1_units.jsonl"
+  },
+  {
+   "key": "lora_L1",
+   "label": "LoRA L1 (unit-label FT)",
+   "where": "local",
+   "track": "decision",
+   "secondary": true,
+   "macro_f1": 0.3718,
+   "macro_f1_ci": [
+    0.3463,
+    0.4027
+   ],
+   "latency_s": 0.119552,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "gpu_s_per_unit_c1": 0.1032,
+   "gpu_s_per_unit_batch": 0.1131,
+   "usd_per_1k": 0.015706,
+   "usd_per_1k_batch_rental": 0.015706,
+   "usd_per_1k_c1_rental": 0.01434,
+   "usd_per_1k_batch_rental_community": 0.006911,
+   "usd_per_1k_electricity": 0.001305,
+   "usd_per_1k_c1_electricity": 0.001191,
+   "basis": "c1: mean extra.server_forward_s of l4d_ft/results/kernel/decision_ft/fallback/layer3/latency300_L1_v1.jsonl (n=300). batch: mean latency_s (server-side time per unit at batch size 1, one RTX 3090; meta latency_note) of decision_ft/results/decision_ft/layer3/L1_cv_v1.jsonl"
+  },
+  {
+   "key": "lora_L3",
+   "label": "LoRA L3 (unit-label FT)",
+   "where": "local",
+   "track": "decision",
+   "secondary": true,
+   "macro_f1": 0.6386,
+   "macro_f1_ci": [
+    0.6145,
+    0.6652
+   ],
+   "latency_s": 0.143332,
+   "latency_basis": "c1 e2e median, latency_deadfree.csv",
+   "gpu_s_per_unit_c1": 0.1146,
+   "gpu_s_per_unit_batch": 0.122,
+   "usd_per_1k": 0.016947,
+   "usd_per_1k_batch_rental": 0.016947,
+   "usd_per_1k_c1_rental": 0.015914,
+   "usd_per_1k_batch_rental_community": 0.007456,
+   "usd_per_1k_electricity": 0.001408,
+   "usd_per_1k_c1_electricity": 0.001322,
+   "basis": "c1: mean extra.server_forward_s of l4d_ft/results/kernel/decision_ft/fallback/layer3/latency300_L3_v1.jsonl (n=300). batch: mean latency_s (server-side time per unit at batch size 1, one RTX 3090; meta latency_note) of decision_ft/results/decision_ft/layer3/L3_cv_v1.jsonl"
+  }
+ ],
+ "l4d_batch_detail": {
+  "files": [
+   "l4d_ft/build/remote_results/lora_l4d/layer3/eval_r1_fold0.jsonl",
+   "l4d_ft/build/remote_results/lora_l4d/layer3/eval_r1_fold1.jsonl",
+   "l4d_ft/build/remote_results/lora_l4d/layer3/eval_r1_fold2.jsonl"
+  ],
+  "opt_counts": "l4d_ft/results/lora_l4d_opt/layer3/eval_r1_units.jsonl",
+  "n_units": 2656,
+  "n_questions_full": 37376,
+  "n_questions_kept": 15619,
+  "gpu_s_per_unit_full": 1.2043684671428867,
+  "gpu_s_per_unit_opt_scaled": 0.5063657384413174,
+  "method": "per unit: unit_forward_s x n_questions_kept / unit_n_questions, summed, / 2,656",
+  "lat300_check": {
+   "n_units": 300,
+   "forward_ratio_opt_over_full": 0.4313,
+   "question_ratio_opt_over_full": 0.423,
+   "gpu_s_per_unit_opt_by_forward_ratio": 0.5195,
+   "files": [
+    "l4d_ft/results/lora_l4d_opt/layer3/lat300_c1_fallback.jsonl",
+    "l4d_ft/results/lora_l4d/layer3/lat300_c1_fallback.jsonl"
+   ]
+  },
+  "wall_s_eval_runs_incl_model_load": {
+   "eval_r1_fold0.jsonl": 1075.0,
+   "eval_r1_fold1.jsonl": 1202.0,
+   "eval_r1_fold2.jsonl": 922.0
+  }
+ },
+ "one_off": {
+  "train_gpu_h_one_model": 2.327,
+  "train_gpu_h_cv_total": 6.809,
+  "train_folds": [
+   {
+    "file": "l4d_ft/build/status/fold0.json",
+    "fold": "fold0",
+    "world_size": 2,
+    "wall_s": 4189.0,
+    "train_s": 3844,
+    "gpu_h": 2.327
+   },
+   {
+    "file": "l4d_ft/build/status/fold1.json",
+    "fold": "fold1",
+    "world_size": 2,
+    "wall_s": 3998.0,
+    "train_s": 3664,
+    "gpu_h": 2.221
+   },
+   {
+    "file": "l4d_ft/build/status/fold2.json",
+    "fold": "fold2",
+    "world_size": 2,
+    "wall_s": 4070.0,
+    "train_s": 3737,
+    "gpu_h": 2.261
+   }
+  ],
+  "usd_rental_one_model": 1.1636,
+  "usd_rental_cv_total": 3.4047,
+  "labeling_cpu_h": 0.1391,
+  "labeling_wall_s": "done 3316 units in 63s -> /home/barton/Documents/projects/cs224/cs224proj/juliet_full/l4d/build/gold_layer1.jsonl",
+  "usd_rental_labeling": 0.06953,
+  "usd_one_off_total_used_for_break_even": 1.2331,
+  "notes": [
+   "one model = the largest of the three folds (fold0, 2 GPUs DDP): GPU-h = (finished_utc - started_utc) x world_size from l4d_ft/build/status/fold<k>.json; includes model load and 4 dev evals per fold. Pure train_s x 2 would be lower (train_s field).",
+   "A real deployment model trained on all three folds' data would see ~1.5x the questions; not measured.",
+   "Not counted: smoke/speed tests, dev re-selection runs, the layer1/placebo/original eval predictions, the old-LoRA (decision_ft) training, engineering time.",
+   "labelling = sum of per-unit `seconds` in l4d/build/gold_layer1.jsonl (dynamic gold: compile + traced runs + fault injection, dell i5-12500 CPU, 8 threads; per-unit wall time inside a worker thread, so ~CPU-thread time). Priced at the GPU rental rate as a deliberate upper bound. layer3 gold is eval-only and not part of the deployment cost."
+  ]
+ },
+ "break_even_units": {
+  "deepseek_L1": "never",
+  "deepseek_L4": 31277,
+  "jev_L3": "never",
+  "jev_l4d": 11001
+ },
+ "break_even_basis": "ours = one_off.usd_one_off_total_used_for_break_even + N x lora_l4d_opt batch rental per unit; cloud = N x billed per unit; N = ceil(one_off / (cloud - ours)); 'never' when ours per unit >= cloud per unit",
+ "break_even_sensitivity": {
+  "c1_rental": {
+   "deepseek_L1": "never",
+   "deepseek_L4": 31421,
+   "jev_L3": "never",
+   "jev_l4d": 11019
+  },
+  "community_rental_batch": {
+   "deepseek_L1": 15744,
+   "deepseek_L4": 6885,
+   "jev_L3": 70668,
+   "jev_l4d": 3582
+  },
+  "owned_electricity_only": {
+   "deepseek_L1": 1720,
+   "deepseek_L4": 986,
+   "jev_L3": 3126,
+   "jev_l4d": 581
+  },
+  "deepseek_all_offpeak": {
+   "deepseek_L1": "never",
+   "deepseek_L4": 31277
+  },
+  "deepseek_all_peak": {
+   "deepseek_L1": 20386,
+   "deepseek_L4": 8266
+  }
+ },
+ "side_runs_not_in_per_1k": [
+  {
+   "provider": "deepseek",
+   "strategy": "L1",
+   "run_id": "lat300_c1_L1",
+   "currency": "CNY",
+   "n_calls": 300,
+   "n_units": 300,
+   "billed_total": 0.077365,
+   "billed_per_1k_units": 0.257882
+  },
+  {
+   "provider": "deepseek",
+   "strategy": "L2",
+   "run_id": "lat300_c1_L2",
+   "currency": "CNY",
+   "n_calls": 300,
+   "n_units": 300,
+   "billed_total": 0.081971,
+   "billed_per_1k_units": 0.273235
+  },
+  {
+   "provider": "deepseek",
+   "strategy": "L3",
+   "run_id": "lat300_c1_L3",
+   "currency": "CNY",
+   "n_calls": 300,
+   "n_units": 300,
+   "billed_total": 0.08014,
+   "billed_per_1k_units": 0.267133
+  },
+  {
+   "provider": "deepseek",
+   "strategy": "L4",
+   "run_id": "lat300_c1_L4",
+   "currency": "CNY",
+   "n_calls": 300,
+   "n_units": 300,
+   "billed_total": 0.158985,
+   "billed_per_1k_units": 0.529949
+  },
+  {
+   "provider": "jev",
+   "strategy": "L1",
+   "run_id": "lat300_c1_L1",
+   "currency": "USD",
+   "n_calls": 300,
+   "n_units": 300,
+   "billed_total": 0.010895,
+   "billed_per_1k_units": 0.036318
+  },
+  {
+   "provider": "jev",
+   "strategy": "L2",
+   "run_id": "lat300_c1_L2",
+   "currency": "USD",
+   "n_calls": 300,
+   "n_units": 300,
+   "billed_total": 0.019778,
+   "billed_per_1k_units": 0.065928
+  },
+  {
+   "provider": "jev",
+   "strategy": "L3",
+   "run_id": "lat300_c1_L3",
+   "currency": "USD",
+   "n_calls": 300,
+   "n_units": 300,
+   "billed_total": 0.011559,
+   "billed_per_1k_units": 0.03853
+  },
+  {
+   "provider": "jev",
+   "strategy": "L4D",
+   "run_id": "lat300_c1",
+   "currency": "USD",
+   "n_calls": 1780,
+   "n_units": 300,
+   "billed_total": 0.05508,
+   "billed_per_1k_units": 0.1836
+  },
+  {
+   "provider": "jev",
+   "strategy": "L4D",
+   "run_id": "lat_smoke",
+   "currency": "USD",
+   "n_calls": 19,
+   "n_units": 3,
+   "billed_total": 0.000486,
+   "billed_per_1k_units": 0.162148
+  }
+ ],
+ "notes": [
+  "Cloud = what we were billed, with DeepSeek prefix caching and off-peak scheduling (peak gate in llm/llmlane/pricing.py); Jev bills input tokens only (output free).",
+  "Local = GPU time only; excludes engineering time, the host machine, storage, idle GPU time between requests, and hardware purchase (rental rate already includes it implicitly).",
+  "Local batch for L4-D (opt.) is an estimate: the stored eval predictions asked the FULL question set; each unit's forward time is scaled by its kept/full question ratio (42 % kept). The latency300 pruned-vs-full forward ratio is given as a cross-check in l4d_batch_detail.lat300_check.",
+  "Local units are processed one unit per forward batch (as in eval and latency300). Batching several units per forward would lower GPU-s per unit; not measured.",
+  "Old LoRA L1/L3 rows are secondary (much lower macro-F1).",
+  "macro_f1 from deadfree_quality.json; latency_s = c1 e2e median from latency_deadfree.csv (primary rows)."
+ ]
+}
