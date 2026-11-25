@@ -31,29 +31,31 @@ DeepSeek L1) plus the speed-up vs DeepSeek L1. Never say "close" as an adjective
 | 3 | Intro | Original Juliet can be gamed: a one-line rule beats Clang SA | 0:35 | 2:25 |
 | 4 | Intro | Question: near-cloud quality on a local device? | 0:30 | 2:55 |
 | 5 | Methods | Original Juliet CWE-401: synthetic, templated, gameable | 0:40 | 3:35 |
-| 6 | Methods | Debiased: good units now look like bad units | 0:35 | 4:10 |
-| 7 | Methods | DeadFree adds a free that never runs | 0:45 | 4:55 |
-| 8 | Methods | We test on unseen flow variants | 0:20 | 5:15 |
-| 9 | Methods | L1–L3: ask for the verdict, with more or less help | 0:30 | 5:45 |
-| 10 | Methods | L4 and L4-D: the model supplies facts, Datalog decides | 0:50 | 6:35 |
-| 11 | Methods | Three rules turn the answers into a verdict | 0:40 | 7:15 |
-| 12 | Methods | The design follows the course's program-analysis ideas | 0:45 | 8:00 |
-| 13 | Methods | Asking only what the rules read halves the questions | 0:40 | 8:40 |
-| 14 | Methods | Which wrong facts cost the most? Fix one fact type at a time | 0:40 | 9:20 |
-| 15 | Methods | Fine-tuning: one recipe, different labels per strategy | 0:40 | 10:00 |
-| 16 | Results | DeadFree removes the label shortcuts; one cue is left in G2B goods | 0:35 | 10:35 |
-| 17 | Results | Two cloud services, three local models, one fine-tuned model | 0:15 | 10:50 |
-| 18 | Results | Two tracks × four strategies (DeadFree) | 0:45 | 11:35 |
-| 19 | Results | **Same Qwen3.5-4B: unit-label FT < untuned generator < fact-label FT** (key slide) | 1:00 | 12:35 |
-| 20 | Results | FT L4-D is the most accurate local model, still below the cloud (Pareto) | 0:50 | 13:25 |
-| 21 | Results | Not yet near-cloud: L4-D closes 66 % of the gap untuned, 89 % fine-tuned | 0:35 | 14:00 |
-| 22 | Results | Live: one dead free fools grep and the old LoRA, not L4-D | 1:45 | 15:45 |
-| 23 | Discussion | Take-aways: the strategy does most of the work | 0:35 | 16:20 |
-| 24 | Discussion | Limitations | 0:30 | 16:50 |
-| 25 | Discussion | Near-cloud quality on a local device? (+ Questions) | 0:10 | 17:00 |
+| 6 | Methods | Debiased: good units now look like bad units | 0:30 | 4:05 |
+| 7 | Methods | DeadFree adds a free that never runs | 0:45 | 4:50 |
+| 8 | Methods | We test on unseen flow variants | 0:20 | 5:10 |
+| 9 | Methods | L1–L3: ask for the verdict, with more or less help | 0:30 | 5:40 |
+| 10 | Methods | L4 and L4-D: the model supplies facts, Datalog decides | 0:50 | 6:30 |
+| 11 | Methods | Three rules turn the answers into a verdict | 0:40 | 7:10 |
+| 12 | Methods | The design follows the course's program-analysis ideas | 0:45 | 7:55 |
+| 13 | Methods | Asking only what the rules read halves the questions | 0:40 | 8:35 |
+| 14 | Methods | Which wrong facts cost the most? Fix one fact type at a time | 0:40 | 9:15 |
+| 15 | Methods | Fine-tuning: one recipe, different labels per strategy | 0:40 | 9:55 |
+| 16 | Results | DeadFree removes the label shortcuts; one cue is left in G2B goods | 0:35 | 10:30 |
+| 17 | Results | Two cloud services, three local models, one fine-tuned model | 0:15 | 10:45 |
+| 18 | Results | Facts lift every local decision model; the 4B generator cannot write them | 0:40 | 11:25 |
+| 19 | Results | **Same Qwen3.5-4B: unit-label FT < untuned generator < fact-label FT** (key slide) | 0:55 | 12:20 |
+| 20 | Results | Clang SA dominates every local LM; FT L4-D is the most accurate of them (Pareto) | 0:40 | 13:00 |
+| 21 | Results | Cost: rented GPU ≈ DeepSeek L1; owned GPU pays only electricity | 0:40 | 13:40 |
+| 22 | Results | Not yet near-cloud: L4-D closes 66 % of the gap untuned, 89 % fine-tuned | 0:35 | 14:15 |
+| 23 | Results | Live: one dead free fools grep and the old LoRA, not L4-D | 1:30 | 15:45 |
+| 24 | Discussion | Take-aways: the strategy does most of the work | 0:35 | 16:20 |
+| 25 | Discussion | Limitations | 0:25 | 16:45 |
+| 26 | Discussion | Team and division of labor | 0:05 | 16:50 |
+| 27 | Discussion | Near-cloud quality on a local device? (+ Questions) | 0:10 | 17:00 |
 
 If time runs short: cut slides 8 and 17 to one sentence each, and slide 12 to the first two rows. Never cut
-slides 18, 19, 20, 21 or the demo (22). If the demo fails, show the backup slide "demo, all detectors on the stage unit".
+slides 18, 19, 20, 22 or the demo (23); slide 21 (cost) can shrink to its take-away line. If the demo fails, show the backup slide "demo, all detectors on the stage unit".
 
 ## 0. Title (0:20)
 "We ask whether a model on one consumer GPU can match cloud quality for C/C++ memory-leak detection. Cloud here
@@ -81,7 +83,7 @@ the cloud — for us one RTX 3090 with 24 GB."
 
 ## 4. The question (0:30)
 - Three sub-questions: which strategy helps a local model most, does fine-tuning help and on which labels, how
-  close to the cloud do we get and how fast (a question; the answer is a number, slide 21). Task is one unit → leak / no leak, judged on DeadFree.
+  close to the cloud do we get and how fast (a question; the answer is a number, slide 22). Task is one unit → leak / no leak, judged on DeadFree.
 
 ## 5. Original Juliet CWE-401 (0:40)
 - What the data looks like (bullets): NIST SARD Juliet C/C++ 1.3, 1,658 CWE-401 cases, 42 families (allocation call
@@ -92,7 +94,7 @@ the cloud — for us one RTX 3090 with 24 GB."
 - Closing line: Debiased removes the structure cue, DeadFree the free-token cue. (Slide 3 already made the "gamed"
   point; do not repeat it here, just show where the cues come from.)
 
-## 6. Debiased (0:35)
+## 6. Debiased (0:30)
 - One entry function per unit, wrapper and `static` removed. Each good unit is either G2B (no heap) or B2G
   (malloc + free). Bad units unchanged. Shape and length no longer reveal the label.
 
@@ -175,7 +177,7 @@ the cloud — for us one RTX 3090 with 24 GB."
   P(Yes) vs P(No) instead of letting it write) — exactly our LoRA's starting point. Static and dynamic tools are
   references, not competitors. Sources are in the footnote of each slide.
 
-## 18. Facts lift every local decision model (figure) (0:45)
+## 18. Facts lift every local decision model (figure) (0:40)
 - Two panels, same y-axis. Left: generative (writes text; Qwen3.5-4B local, DeepSeek cloud; L1–L4). Right:
   decision (one forward pass, P(Yes) vs P(No); Qwen read-out, Intern-Decision, ours, Jev; L1, L2, L3, L4-D).
   Bars grouped by model, colour = strategy (light → dark blue L1 → L3, orange L4 / L4-D), hatched = cloud,
@@ -192,7 +194,7 @@ the cloud — for us one RTX 3090 with 24 GB."
 - "–†" slot: no L2 for read-out and FT — FT already saw ≈1,800 labelled units, and the L2 prompt is 2.4×
   longer. All numbers: backup "two tracks, all numbers".
 
-## 19. Fine-tuning, strategy by strategy — key slide (1:00)
+## 19. Fine-tuning, strategy by strategy — key slide (0:55)
 - Vertical comparison only: the same Qwen3.5-4B weights before (read-out) and after LoRA, plus the dotted line =
   the same weights untuned in generative format. Intern-Decision is another model and is NOT used to explain our
   gains (it appears side by side on slides 17, 18, 20). Paired Δ FT − read-out: L1 +.021 [−.007, +.054] (n.s.),
@@ -204,7 +206,7 @@ the cloud — for us one RTX 3090 with 24 GB."
   form, +.067 [+.039, +.099] over the best one (gen. L3 .760).
 - "The strategy does most of the work; fine-tuning on facts adds a little; fine-tuning on verdicts hurts."
 
-## 20. Pareto: Clang SA dominates every local LM (0:50)
+## 20. Pareto: Clang SA dominates every local LM (0:40)
 - x = median latency per DeadFree unit at concurrency 1 (log), y = DeadFree macro-F1 with CI. Shape = track
   (circle generative, diamond decision), colour = cloud (orange) / local (blue); green star = our FT L4-D (opt.).
   Grey squares = static tools; dashed lines = dynamic analysis as an upper reference (it runs the code with chosen
@@ -218,7 +220,20 @@ the cloud — for us one RTX 3090 with 24 GB."
 - Jev L4-D (.907 at 967 ms) is the orange diamond just below Jev L1; its questions are sent concurrently; our FT L4-D batches a
   unit's questions in one forward pass, Intern-Decision L4-D asks them one by one.
 
-## 21. Gap and criterion (0:35)
+## 21. Cost per 1,000 units (0:40)
+- Same DeadFree run, priced per 1,000 units. Cloud rows are what we were billed (DeepSeek off-peak with prefix
+  cache; at peak it would be 2×, DeepSeek L1 $0.131). Ours on a rented RTX 3090 (RunPod Secure, $0.50/h): $0.070 —
+  about the same as DeepSeek L1 ($0.065), more than Jev L3 ($0.039), less than DeepSeek L4 ($0.110) and Jev L4-D
+  ($0.182, ≈5.9 calls per unit).
+- On a GPU we already own, only electricity counts: 350 W × China business tariff = $0.006 per 1,000 units. That is
+  a lower bound: no hardware, host or idle time.
+- One-off: one training run 2.3 GPU-h ≈ $1.16 rented, plus 0.14 CPU-h of dynamic labelling. Break-even at the
+  rental price: ≈11k units vs Jev L4-D, ≈31k vs DeepSeek L4; never vs DeepSeek L1 or Jev L3, which are cheaper per
+  unit.
+- Say: "Cost is not where local wins. Local wins on latency, 1.9× faster than DeepSeek L1, and on keeping the code
+  on-premise." Price sources and the community-cloud sensitivity are in backup "cost details".
+
+## 22. Gap and criterion (0:35)
 - Title percentages: read-out L4-D (same untuned weights) 66 %, FT L4-D 89 %.
 - Gap = untuned Qwen L1 (.533) → cloud model. Same untuned weights with L4-D (read-out): −.111 [−.127, −.095] vs
   DeepSeek L1, closes 66 % of the gap. FT L4-D: −.037 [−.055, −.017], closes 89 %; vs DeepSeek L4 −.074, 80 %.
@@ -231,7 +246,7 @@ the cloud — for us one RTX 3090 with 24 GB."
   decision-track ceiling. The fact interface is not the bottleneck for a strong model; our 4B model's fact answers
   are (see slide 14: exec_all).
 
-## 22. Live demo (1:45)
+## 23. Live demo (1:30)
 - Unit `CWE401_Memory_Leak__strdup_char_01`: bad, good twin, and the DeadFree bad version with `if(sym_61 > 4)
   { free(data); }` — the free never runs.
 - grep and the old unit-label LoRA (L1 and L3) flip to "no leak". Clang SA, DeepSeek, Jev and FT L4-D stay
@@ -239,23 +254,33 @@ the cloud — for us one RTX 3090 with 24 GB."
 - If the L4-D row is marked *, it comes from the frozen eval run, not the live recording — say so.
 - Fallback: `demo.py --replay recordings/<file>` or the mp4.
 
-## 23. Take-aways (0:35)
+## 24. Take-aways (0:35)
 1. Check the benchmark first. 2. Facts + Datalog do most of the work (same untuned Qwen: L1 .351 → L4-D .752,
 +.401, 66 % of the gap). 3. Unit labels teach shortcuts. 4. Fine-tuning on facts adds a little more (+.074 → .826,
 89 % of the gap, 1.9× faster than DeepSeek L1). 5. Ask only what the rules read.
 6. The remaining gap is path feasibility.
 
-## 24. Limitations (0:30)
+## 25. Limitations (0:25)
 - Clang SA is as good (.855) and faster (18 ms vs 472 ms), without a GPU: path-sensitive analysis still matters.
 - Synthetic data; post-hoc pruning; τ and checkpoints chosen on a near-saturated dev set; one local device.
 - Intern L4-D threshold: τ = 0.5 (as for Intern L1–L3) was set as primary after seeing eval; it favours the
   baseline (the frozen dev τ 0.18 gives .373). Say this out loud.
 
-## 25. Take-home (0:10)
+## 26. Team and division of labor (0:05)
+One sentence: who did what (table on the slide); then go to the closing slide.
+
+## 27. Take-home (0:10)
 "Not yet: L4-D closes 89 % of the gap, 1.9× faster than the cloud. Program-analysis facts do most of the work;
 fine-tune on facts, not on verdicts."
 
 ## Q&A prep
+
+**Is local cheaper?**
+Not per unit at rental prices. On DeadFree, FT L4-D on a rented RTX 3090 costs $0.070 per 1,000 units, about
+DeepSeek L1 ($0.065, billed off-peak with caching) and more than Jev L3 ($0.039); it is cheaper than DeepSeek L4
+($0.110) and Jev L4-D ($0.182), so it breaks even after ≈31k and ≈11k units given the $1.23 one-off (training +
+labelling). On a GPU you already own, electricity is $0.006 per 1,000 units, but that excludes the hardware. The
+real reasons to run locally are latency (472 ms vs 895 ms, 1.9×) and that the code never leaves the machine.
 
 **Why not just use Clang SA?**
 On DeadFree Clang SA scores .855, slightly above FT L4-D (.826), and it runs on a CPU in milliseconds. We say this on

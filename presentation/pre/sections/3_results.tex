@@ -100,6 +100,42 @@
 \end{frame}
 
 % ------------------------------------------------------------------------------
+% src: juliet_full/analysis/deadfree/cost_deadfree.json (make_figures.py deadfree_cost_numbers -> \res{df-<key>}{usd1k|
+%   usd1k_elec|usd1k_peak}, \res{df-x}{cost_*}); details cost_deadfree.md, REPORT_cost.md. Cloud = billed (DeepSeek
+%   off-peak + prefix cache, 0 % calls at peak); local = GPU-s x RunPod Secure Cloud $0.50/h (batch basis);
+%   owned = 350 W x China business tariff, GPU-seconds only. Break-even = one-off + N x ours < N x cloud;
+%   "never" = cost_deadfree.json break_even_units deepseek_L1 / jev_L3 == "never" (ours per unit >= cloud per unit).
+%   Community $0.22/h and c1 basis: backup "Cost details" only (parent decision v4.6).
+\begin{frame}{Cost: rented GPU $\approx$ DeepSeek L1; owned GPU pays only electricity}
+  \centering
+  \renewcommand{\arraystretch}{0.95}
+  {\footnotesize
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    DeadFree, per 1,000 units & macro-F1 & median latency & \$\,/\,1k units \\
+    \midrule
+    DeepSeek L1* & \res{df-deepseek_L1}{macro} & \res{df-deepseek_L1}{lat} & \$\res{df-deepseek_L1}{usd1k} \\
+    DeepSeek L4* & \res{df-deepseek_L4}{macro} & \res{df-deepseek_L4}{lat} & \$\res{df-deepseek_L4}{usd1k} \\
+    Jev L3 (best cloud) & \res{df-jev_L3}{macro} & \res{df-jev_L3}{lat} & \$\res{df-jev_L3}{usd1k} \\
+    Jev L4-D (our strategy) & \res{df-jev_l4d}{macro} & \res{df-jev_l4d}{lat} & \$\res{df-jev_l4d}{usd1k} \\
+    \midrule
+    \textbf{FT L4-D (ours), rented 3090} & \textbf{\res{df-lora_l4d_opt}{macro}} & \textbf{\res{df-lora_l4d_opt}{lat}} & \textbf{\$\res{df-lora_l4d_opt}{usd1k}} \\
+    \textbf{FT L4-D (ours), owned 3090}$^\dagger$ & \textbf{\res{df-lora_l4d_opt}{macro}} & \textbf{\res{df-lora_l4d_opt}{lat}} & \textbf{\$\res{df-lora_l4d_opt}{usd1k_elec}} \\
+    \bottomrule
+  \end{tabular}\par}
+  {\scriptsize\color{NeutDraw} *billed off-peak, prefix cache; at peak \res{df-x}{cost_peak_ratio}$\times$ (L1 \$\res{df-deepseek_L1}{usd1k_peak}).
+  $^\dagger$electricity only (\res{df-x}{cost_power_w}\,W): lower bound, excludes hardware.\par}
+  \vspace{-2pt}
+  \raggedright
+  \begin{itemize}\footnotesize
+    \item One-off: training one model \res{df-x}{cost_train_gpuh}\,GPU-h $\approx$ \$\res{df-x}{cost_train_usd} rented, plus \res{df-x}{cost_label_cpuh}\,CPU-h dynamic labelling
+    \item Break-even (rented): $\approx$\res{df-x}{cost_bek_rent_jev_l4d} units vs Jev L4-D, $\approx$\res{df-x}{cost_bek_rent_deepseek_L4} vs DeepSeek L4; never vs DeepSeek L1, Jev L3
+    \item \alert{Cost is not where local wins; latency (\res{df-x}{speedup_ds_l1}$\times$) and keeping code on-premise are.}
+  \end{itemize}
+  {\fontsize{7}{8}\selectfont\color{NeutDraw} Prices accessed \res{df-x}{cost_date}: RunPod, NVIDIA spec (\res{df-x}{cost_power_w}\,W), GlobalPetrolPrices (China business tariff), ECB \res{df-x}{cost_fx} USD/CNY.\par}
+\end{frame}
+
+% ------------------------------------------------------------------------------
 % src: deadfree_quality.json lora_l4d_opt / readout_l4d (untuned, same Qwen3.5-4B weights) / clang_sa / jev_L3 / jev_l4d: delta_vs_ds_l1(_ci), gap_closed_ds_l1(_ci), delta_vs_ds_l4(_ci),
 %   gap_closed_ds_l4(_ci); family-cluster bootstrap. Criterion pre-registered PLAN.md:224-226 (2026-11-23 22:30 PST,
 %   before L4-D ran): near if macro-F1 point estimate >= reference - 0.02; reported as not met PLAN.md:34.

@@ -248,3 +248,33 @@ VulnLLM-R-7B 8.0465 s. Pending, drawn grey / printed *pending*:
   generator < fact-label FT", Intern line removed, paired FT − read-out deltas per strategy from paired_deltas
   (L1 +.021 n.s., L3 +.304, L4-D +.074) and +.067 over gen. L3; slide 21 first row = Qwen read-out L4-D (66 %);
   take-aways 2/3/4 use read-out (+.401) and FT (+.074) only; model table role of Intern "side-by-side decision baseline".
+
+## v4.6 update (2026-11-24, parent: cost slide)
+
+- New main slide 21 (PDF p25), between Pareto (slide 20, p24) and gap (slide 22, p26): "Cost: rented GPU ≈
+  DeepSeek L1; owned GPU pays only electricity". Table (DeadFree, per 1,000 units; macro-F1 / median latency / $):
+  DeepSeek L1* .863 / 895 ms / $0.065; DeepSeek L4* .900 / 1.01 s / $0.110; Jev L3 (best cloud) .949 / 923 ms /
+  $0.039; Jev L4-D (our strategy) .907 / 967 ms / $0.182; — FT L4-D (ours), rented 3090 .826 / 472 ms / $0.070;
+  FT L4-D (ours), owned 3090† .826 / 472 ms / $0.006. *billed off-peak with prefix cache; at peak 2× (L1 $0.131).
+  †electricity only (350 W): lower bound, excludes hardware. Bullets: one-off 2.3 GPU-h ≈ $1.16 + 0.14 CPU-h
+  labelling; break-even (rented) ≈11k units vs Jev L4-D, ≈31k vs DeepSeek L4, never vs DeepSeek L1 / Jev L3;
+  "Cost is not where local wins; latency (1.9×) and keeping code on-premise are." Plain grey source line in the
+  body (7 pt, no \sref): RunPod, NVIDIA spec, GlobalPetrolPrices, ECB rate, accessed 2026-11-25.
+- New backup frame "Backup: cost details (DeadFree, USD per 1,000 units)" (p54, after the old API-cost backup):
+  all cloud rows (DeepSeek L1–L4 billed + peak, Jev L1–L3 + L4-D with calls per unit), FT L4-D rented batch / c1,
+  Community $0.22/h, owned electricity, FT L1/L3 secondary; break-even table Secure / Community / electricity +
+  DeepSeek-all-peak line; caveats (fold0 training incl. load + dev evals, all-data model ≈1.5× questions not
+  measured, GPU time scaled full → pruned questions 0.506 s vs measured c1 0.508 s, exclusions). Old API-cost
+  backup bullet "Local inference: no API cost" now points to it.
+- Numbers: `figures/make_figures.py deadfree_cost_numbers(cost)` reads `juliet_full/analysis/deadfree/cost_deadfree.json`
+  (`methods.json` deadfree.cost) → \res{df-<key>}{usd1k|usd1k_peak|usd1k_c1|usd1k_comm|usd1k_elec|gpus|gpus_c1|calls}
+  and \res{df-x}{cost_*} (prices, one-off, cost_be_<scenario>_<key>, cost_bek_* in k, cost_peak_ratio). Added only;
+  an assertion stops the build if a cost macro would overwrite an existing df- macro; all pre-existing lines of
+  figures/numbers.tex are byte-identical (diff: 0 removed lines).
+- Parent's "Team and division of labor" frame kept unchanged (slide 26). Main frames now 26 numbered + standout;
+  deck 64 pages. Pareto and gap slide bodies pixel-identical to before (only page counter / progress bar differ).
+- notes.md: §21 cost (0:40), Q&A "Is local cheaper?", §26 team (0:05); timing table renumbered 21→27 and kept at
+  17:00 by trimming slide 6 (−5 s), 18 (−5), 19 (−5), 20 (−10), demo (−15), limitations (−5). Timing-table titles of
+  slides 18 and 20 corrected to the current slide titles.
+- Risks: break-even "never" is the JSON's literal value; the local $ is GPU time only on one unit per forward pass;
+  rented price ≈ DeepSeek L1 holds only for the off-peak, cached DeepSeek bill.

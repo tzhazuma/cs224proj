@@ -430,7 +430,61 @@ freed(o) :- free(v, f, l), reach(f), !dead(l),
         \item Total: \textyen\res{x}{cost_deepseek} and \$\res{x}{cost_jev}
         \item Per 1k units: DeepSeek L1 \textyen0.397, Jev L1 \$0.0345
         \item L4-D fine-tuning: $\approx$68\,min per fold on 2$\times$ RTX 3090 ($\approx$2.3\,GPU-h)
-        \item Local inference: no API cost
+        \item Local inference: no API cost; GPU cost on DeadFree: next frame
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+% src: juliet_full/analysis/deadfree/cost_deadfree.json (methods[*].usd_per_1k*, gpu_s_per_unit_*, calls_per_unit,
+%   one_off, break_even_units, break_even_sensitivity, l4d_batch_detail) via make_figures.py deadfree_cost_numbers.
+%   "~1.5x the questions" for an all-data model: cost_deadfree.json one_off.notes[1] (not measured).
+\begin{frame}{Backup: cost details (DeadFree, USD per 1,000 units)}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      {\scriptsize\renewcommand{\arraystretch}{0.95}\setlength{\tabcolsep}{4pt}
+      \begin{tabular}{@{}lccl@{}}
+        \toprule
+        Method & macro-F1 & \$/1k & note \\
+        \midrule
+        DeepSeek L1 & \res{df-deepseek_L1}{macro} & \res{df-deepseek_L1}{usd1k} & peak \res{df-deepseek_L1}{usd1k_peak} \\
+        DeepSeek L2 & \res{df-deepseek_L2}{macro} & \res{df-deepseek_L2}{usd1k} & peak \res{df-deepseek_L2}{usd1k_peak} \\
+        DeepSeek L3 & \res{df-deepseek_L3}{macro} & \res{df-deepseek_L3}{usd1k} & peak \res{df-deepseek_L3}{usd1k_peak} \\
+        DeepSeek L4 & \res{df-deepseek_L4}{macro} & \res{df-deepseek_L4}{usd1k} & peak \res{df-deepseek_L4}{usd1k_peak} \\
+        Jev L1 & \res{df-jev_L1}{macro} & \res{df-jev_L1}{usd1k} & \res{df-jev_L1}{calls} call \\
+        Jev L2 & \res{df-jev_L2}{macro} & \res{df-jev_L2}{usd1k} & \res{df-jev_L2}{calls} call \\
+        Jev L3 & \res{df-jev_L3}{macro} & \res{df-jev_L3}{usd1k} & \res{df-jev_L3}{calls} call \\
+        Jev L4-D & \res{df-jev_l4d}{macro} & \res{df-jev_l4d}{usd1k} & \res{df-jev_l4d}{calls} calls \\
+        \midrule
+        \textbf{FT L4-D} rented, batch & \res{df-lora_l4d_opt}{macro} & \textbf{\res{df-lora_l4d_opt}{usd1k}} & \res{df-lora_l4d_opt}{gpus} GPU-s \\
+        \textbf{FT L4-D} rented, c1 & & \res{df-lora_l4d_opt}{usd1k_c1} & \res{df-lora_l4d_opt}{gpus_c1} GPU-s \\
+        \textbf{FT L4-D} Community & & \res{df-lora_l4d_opt}{usd1k_comm} & sensitivity \\
+        \textbf{FT L4-D} owned & & \res{df-lora_l4d_opt}{usd1k_elec} & electricity \\
+        \color{NeutDraw}FT L1 (secondary) & \color{NeutDraw}\res{df-lora_L1}{macro} & \color{NeutDraw}\res{df-lora_L1}{usd1k} & \color{NeutDraw}elec.\ \res{df-lora_L1}{usd1k_elec} \\
+        \color{NeutDraw}FT L3 (secondary) & \color{NeutDraw}\res{df-lora_L3}{macro} & \color{NeutDraw}\res{df-lora_L3}{usd1k} & \color{NeutDraw}elec.\ \res{df-lora_L3}{usd1k_elec} \\
+        \bottomrule
+      \end{tabular}\par}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      {\scriptsize Break-even units; one-off \$\res{df-x}{cost_oneoff_usd}; RunPod Secure \$\res{df-x}{cost_rent_h}/h, Community \$\res{df-x}{cost_comm_h}/h\par\vspace{2pt}
+      \renewcommand{\arraystretch}{0.95}
+      \begin{tabular}{@{}lccc@{}}
+        \toprule
+        vs & Secure & Comm. & elec. \\
+        \midrule
+        DeepSeek L1 & \res{df-x}{cost_be_rent_deepseek_L1} & \res{df-x}{cost_be_community_rental_batch_deepseek_L1} & \res{df-x}{cost_be_owned_electricity_only_deepseek_L1} \\
+        DeepSeek L4 & \res{df-x}{cost_be_rent_deepseek_L4} & \res{df-x}{cost_be_community_rental_batch_deepseek_L4} & \res{df-x}{cost_be_owned_electricity_only_deepseek_L4} \\
+        Jev L3 & \res{df-x}{cost_be_rent_jev_L3} & \res{df-x}{cost_be_community_rental_batch_jev_L3} & \res{df-x}{cost_be_owned_electricity_only_jev_L3} \\
+        Jev L4-D & \res{df-x}{cost_be_rent_jev_l4d} & \res{df-x}{cost_be_community_rental_batch_jev_l4d} & \res{df-x}{cost_be_owned_electricity_only_jev_l4d} \\
+        \bottomrule
+      \end{tabular}\par
+      \vspace{2pt}
+      DeepSeek all at peak (Secure): L1 \res{df-x}{cost_be_deepseek_all_peak_deepseek_L1}, L4 \res{df-x}{cost_be_deepseek_all_peak_deepseek_L4}.\par}
+      \begin{itemize}\scriptsize
+        \item Training = fold0: \res{df-x}{cost_train_gpuh}\,GPU-h incl.\ load + dev evals (3 folds \res{df-x}{cost_cv_gpuh}\,GPU-h); all-data model: $\approx$1.5$\times$ questions, not measured
+        \item GPU time scaled full $\to$ pruned questions: \res{df-lora_l4d_opt}{gpus}\,s/unit; measured c1 \res{df-lora_l4d_opt}{gpus_c1}\,s
+        \item Excluded: engineering, host, idle GPU, hardware (owned = lower bound)
       \end{itemize}
     \end{column}
   \end{columns}

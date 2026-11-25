@@ -1361,6 +1361,53 @@ def f3(v) -> str:
     return "--" if v is None else f"{v:.3f}"
 
 
+def deadfree_cost_numbers(cost: dict) -> dict[str, dict[str, str]]:
+    """Cost slide (DeadFree, per 1,000 units, USD without the $ sign) from analysis/deadfree/cost_deadfree.json.
+    \\res{df-<key>}{usd1k}: billed (cloud) / RunPod Secure rental, batch basis (local); usd1k_peak (DeepSeek, all calls
+    at peak); usd1k_c1, usd1k_comm (community rental), usd1k_elec (owned GPU, electricity only), gpus (GPU-s per unit,
+    batch), gpus_c1, calls (calls per unit).  \\res{df-x}{cost_*}: prices, one-off cost, break-even units
+    (cost_be_<scenario>_<key>, "never" when ours per unit >= cloud per unit; cost_bek_* rounded to k)."""
+    out: dict[str, dict[str, str]] = {}
+    for m in cost.get("methods", []):
+        cells = {"usd1k": f"{m['usd_per_1k']:.3f}"}
+        for field, name in (("usd_per_1k_peak", "usd1k_peak"), ("usd_per_1k_c1_rental", "usd1k_c1"),
+                            ("usd_per_1k_batch_rental_community", "usd1k_comm"),
+                            ("usd_per_1k_electricity", "usd1k_elec")):
+            if m.get(field) is not None:
+                cells[name] = f"{m[field]:.3f}"
+        for field, name in (("gpu_s_per_unit_batch", "gpus"), ("gpu_s_per_unit_c1", "gpus_c1")):
+            if m.get(field) is not None:
+                cells[name] = f"{m[field]:.3f}"
+        if m.get("calls_per_unit") is not None:
+            cells["calls"] = f"{m['calls_per_unit']:.1f}"
+        out[f"df-{m['key']}"] = cells
+    g, one = cost["gpu_prices"], cost["one_off"]
+    batch = cost.get("l4d_batch_detail", {})
+    x = {"cost_rent_h": f"{g['rental_usd_per_h']:.2f}", "cost_comm_h": f"{g['rental_community_usd_per_h']:.2f}",
+         "cost_power_w": str(g["power_w"]), "cost_elec_cny_kwh": f"{g['electricity_cny_per_kwh']:.3f}",
+         "cost_elec_usd_kwh": f"{g['electricity_usd_per_kwh']:.3f}",
+         "cost_elec_gpuh": f"{g['electricity_usd_per_gpu_h']:.3f}", "cost_fx": f"{cost['fx']['usd_per_cny']:.3f}",
+         "cost_date": cost["fx"]["date"], "cost_units": f"{cost['n_units']:,}",
+         "cost_train_gpuh": f"{one['train_gpu_h_one_model']:.1f}", "cost_train_usd": f"{one['usd_rental_one_model']:.2f}",
+         "cost_cv_gpuh": f"{one['train_gpu_h_cv_total']:.1f}", "cost_cv_usd": f"{one['usd_rental_cv_total']:.2f}",
+         "cost_label_cpuh": f"{one['labeling_cpu_h']:.2f}", "cost_label_usd": f"{one['usd_rental_labeling']:.2f}",
+         "cost_oneoff_usd": f"{one['usd_one_off_total_used_for_break_even']:.2f}"}
+    if batch:
+        x.update(cost_q_kept=f"{batch['n_questions_kept']:,}", cost_q_full=f"{batch['n_questions_full']:,}",
+                 cost_q_kept_pct=f"{100 * batch['n_questions_kept'] / batch['n_questions_full']:.0f}\\,\\%",
+                 cost_gpus_full=f"{batch['gpu_s_per_unit_full']:.3f}")
+    ds = next((m for m in cost.get("methods", []) if m["key"] == "deepseek_L1"), None)
+    if ds and ds.get("usd_per_1k_peak"):
+        x["cost_peak_ratio"] = f"{ds['usd_per_1k_peak'] / ds['usd_per_1k']:.0f}"
+    scenarios = {"rent": cost.get("break_even_units", {}), **cost.get("break_even_sensitivity", {})}
+    for scen, units in scenarios.items():
+        for key, n in units.items():
+            x[f"cost_be_{scen}_{key}"] = n if isinstance(n, str) else f"{n:,}"
+            x[f"cost_bek_{scen}_{key}"] = n if isinstance(n, str) else f"{round(n / 1000):,}k"
+    out["df-x"] = x
+    return out
+
+
 def signed(v) -> str:
     return "--" if v is None else ("$-$" if v < -0.0005 else "+" if v > 0.0005 else "$\\pm$") + f"{abs(v):.3f}"
 
@@ -1673,7 +1720,14 @@ def main() -> None:
     write_df_by_flow(df)
     extra = {**write_demo_table(), **write_cost_table(), **unmerged_flips(results), **probe_numbers(),
              **juliet_numbers(df_meta)}
-    write_numbers(results, extra, deadfree_numbers(df, attr, df_meta))
+    deadfree = deadfree_numbers(df, attr, df_meta)
+    cost_path = JULIET_FULL / cfg["cost"]
+    if cost_path.exists():
+        for name, cells in deadfree_cost_numbers(json.loads(cost_path.read_text())).items():
+            clash = set(cells) & set(deadfree.get(name, {}))
+            assert not clash, f"cost macros would overwrite df-{name}: {sorted(clash)}"
+            deadfree.setdefault(name, {}).update(cells)
+    write_numbers(results, extra, deadfree)
     write_original_table(results)
     write_repeat_table(registry)
     write_latency_table(latency, results)
