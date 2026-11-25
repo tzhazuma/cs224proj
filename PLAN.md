@@ -11,7 +11,7 @@
 | 日期 | 交付物 | 要求（课程指南） |
 |---|---|---|
 | 2026-11-26（周四） | Presentation | 15–20 分钟：问题、数据、方法、初步结果 |
-| 约 2026-12-24（以课程通知为准） | Final project report | ≥10 页，IEEE conference 格式（`\documentclass[conference]{IEEEtran}`），**英文**；作者信息沿用 `proposal/proposal_en.tex`；不写分工【已定】 |
+| 约 2026-12-24（以课程通知为准） | Final project report | ≥10 页，IEEE conference 格式（`\documentclass[conference]{IEEEtran}`），**英文**；作者信息沿用 `proposal/proposal_en.tex`；不写分工【已定】；slides 有分工页【已定，2026-11-24 21:50，用户指定】 |
 
 已有 proposal（SecVulEval 方向）改题不是问题，以 pre 效果为准【已定】。
 
