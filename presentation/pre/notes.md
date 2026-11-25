@@ -25,39 +25,40 @@ DeepSeek L1) plus the speed-up vs DeepSeek L1. Never say "close" as an adjective
 
 | # | Section | Slide (assertion title) | Time | Running |
 |---|---------|-------------------------|------|---------|
-| 0 | — | Title | 0:20 | 0:20 |
-| 1 | Intro | Leak checks must fit a developer's time budget | 0:45 | 1:05 |
-| 2 | Intro | On DeadFree, cloud models are far ahead of local ones | 0:45 | 1:50 |
-| 3 | Intro | Original Juliet can be gamed: a one-line rule beats Clang SA | 0:35 | 2:25 |
-| 4 | Intro | Question: near-cloud quality on a local device? | 0:30 | 2:55 |
-| 5 | Methods | Original Juliet CWE-401: synthetic, templated, gameable | 0:40 | 3:35 |
-| 6 | Methods | Debiased: good units now look like bad units | 0:30 | 4:05 |
-| 7 | Methods | DeadFree adds a free that never runs | 0:45 | 4:50 |
-| 8 | Methods | We test on unseen flow variants | 0:20 | 5:10 |
-| 9 | Methods | L1–L3: ask for the verdict, with more or less help | 0:30 | 5:40 |
-| 10 | Methods | L4 and L4-D: the model supplies facts, Datalog decides | 0:50 | 6:30 |
-| 11 | Methods | Three rules turn the answers into a verdict | 0:40 | 7:10 |
-| 12 | Methods | The design follows the course's program-analysis ideas | 0:45 | 7:55 |
-| 13 | Methods | Asking only what the rules read halves the questions | 0:40 | 8:35 |
-| 14 | Methods | Which wrong facts cost the most? Fix one fact type at a time | 0:40 | 9:15 |
-| 15 | Methods | Fine-tuning: one recipe, different labels per strategy | 0:40 | 9:55 |
-| 16 | Results | DeadFree removes the label shortcuts; one cue is left in G2B goods | 0:35 | 10:30 |
-| 17 | Results | Two cloud services, three local models, one fine-tuned model | 0:15 | 10:45 |
-| 18 | Results | Facts lift every local decision model; the 4B generator cannot write them | 0:40 | 11:25 |
-| 19 | Results | **Same Qwen3.5-4B: unit-label FT < untuned generator < fact-label FT** (key slide) | 0:55 | 12:20 |
-| 20 | Results | Clang SA dominates every local LM; FT L4-D is the most accurate of them (Pareto) | 0:40 | 13:00 |
-| 21 | Results | Cost: rented GPU ≈ DeepSeek L1; owned GPU pays only electricity | 0:40 | 13:40 |
-| 22 | Results | Not yet near-cloud: L4-D closes 66 % of the gap untuned, 89 % fine-tuned | 0:35 | 14:15 |
-| 23 | Results | Live: one dead free fools grep and the old LoRA, not L4-D | 1:30 | 15:45 |
-| 24 | Discussion | Take-aways: the strategy does most of the work | 0:35 | 16:20 |
-| 25 | Discussion | Limitations | 0:25 | 16:45 |
-| 26 | Discussion | Team and division of labor | 0:05 | 16:50 |
-| 27 | Discussion | Near-cloud quality on a local device? (+ Questions) | 0:10 | 17:00 |
+| 0 | — | Title | 0:15 | 0:15 |
+| 1 | Intro | Leak checks must fit a developer's time budget | 0:45 | 1:00 |
+| 2 | Intro | On DeadFree, cloud models are far ahead of local ones | 0:45 | 1:45 |
+| 3 | Intro | Original Juliet can be gamed: a one-line rule beats Clang SA | 0:35 | 2:20 |
+| 4 | Intro | Question: near-cloud quality on a local device? | 0:30 | 2:50 |
+| 5 | Methods | Original Juliet CWE-401: synthetic, templated, gameable | 0:40 | 3:30 |
+| 6 | Methods | Debiased: good units now look like bad units | 0:30 | 4:00 |
+| 7 | Methods | DeadFree adds a free that never runs | 0:45 | 4:45 |
+| 8 | Methods | We test on unseen flow variants | 0:15 | 5:00 |
+| 9 | Methods | L1–L3: ask for the verdict, with more or less help | 0:30 | 5:30 |
+| 10 | Methods | L4 and L4-D: the model supplies facts, Datalog decides | 0:50 | 6:20 |
+| 11 | Methods | Three rules turn the answers into a verdict | 0:40 | 7:00 |
+| 12 | Methods | The design follows the course's program-analysis ideas | 0:45 | 7:45 |
+| 13 | Methods | Asking only what the rules read halves the questions | 0:40 | 8:25 |
+| 14 | Methods | Which wrong facts cost the most? Fix one fact type at a time | 0:40 | 9:05 |
+| 15 | Methods | Fine-tuning: one recipe, different labels per strategy | 0:40 | 9:45 |
+| 16 | Results | DeadFree removes the label shortcuts; one cue is left in G2B goods | 0:35 | 10:20 |
+| 17 | Results | Two cloud services, three local models, one fine-tuned model | 0:10 | 10:30 |
+| 18 | Results | Facts lift every local decision model; the 4B generator cannot write them | 0:40 | 11:10 |
+| 19 | Results | **Same Qwen3.5-4B: unit-label FT < untuned generator < fact-label FT** (key slide) | 0:55 | 12:05 |
+| 20 | Results | Clang SA dominates every local LM; FT L4-D is the most accurate of them (Pareto) | 0:40 | 12:45 |
+| 21 | Results | Cost: rented GPU ≈ DeepSeek L1; owned GPU pays only electricity | 0:40 | 13:25 |
+| 22 | Results | Not yet near-cloud: L4-D closes 66 % of the gap untuned, 89 % fine-tuned | 0:30 | 13:55 |
+| 23 | Results | Live: one dead free fools grep and the old LoRA, not L4-D | 1:30 | 15:25 |
+| 24 | Discussion | Privacy: a local model sends no code; a cloud model sends every unit | 0:30 | 15:55 |
+| 25 | Discussion | Take-aways: the strategy does most of the work | 0:30 | 16:25 |
+| 26 | Discussion | Limitations | 0:20 | 16:45 |
+| 27 | Discussion | Team and division of labor | 0:05 | 16:50 |
+| 28 | Discussion | Near-cloud quality on a local device? (+ Questions) | 0:10 | 17:00 |
 
 If time runs short: cut slides 8 and 17 to one sentence each, and slide 12 to the first two rows. Never cut
-slides 18, 19, 20, 22 or the demo (23); slide 21 (cost) can shrink to its take-away line. If the demo fails, show the backup slide "demo, all detectors on the stage unit".
+slides 18, 19, 20, 22 or the demo (23); slide 21 (cost) can shrink to its take-away line; slide 24 (privacy) can shrink to its orange line. If the demo fails, show the backup slide "demo, all detectors on the stage unit".
 
-## 0. Title (0:20)
+## 0. Title (0:15)
 "We ask whether a model on one consumer GPU can match cloud quality for C/C++ memory-leak detection. Cloud here
 means two APIs: DeepSeek V4.1 Flash, a generative LLM, and Jev, a decision-model API. Local means anything not in
 the cloud — for us one RTX 3090 with 24 GB."
@@ -105,7 +106,7 @@ the cloud — for us one RTX 3090 with 24 GB."
   Placebo, the dead free — not the extra branch — fooled it.
 - All 3,316 units per layer compile with gcc and clang and the labels were re-checked by running them (backup).
 
-## 8. Split (0:20)
+## 8. Split (0:15)
 - Split by flow variant, not by unit: 9 dev variants (prompts, decision thresholds, checkpoints frozen there), 39
   eval variants in three folds. Fine-tuned models train on two folds and predict the third.
 - Metric: macro-F1 = mean of the F1 for "leak" and for "no leak" (always-leak scores .33). 95 % CIs resample the 42
@@ -171,7 +172,7 @@ the cloud — for us one RTX 3090 with 24 GB."
   of malloc. B2G goods are not (.609).
 - Clang SA is the reference row. **From here on, everything is on DeadFree only.**
 
-## 17. Models (0:15)
+## 17. Models (0:10)
 - Two cloud references, three local models (Qwen3.5-4B generative, Intern-Decision-4B decision, VulnLLM-R-7B),
   and ours. Define **Qwen read-out**: the untuned Qwen3.5-4B used as a decision model (same yes/no question, read
   P(Yes) vs P(No) instead of letting it write) — exactly our LoRA's starting point. Static and dynamic tools are
@@ -233,7 +234,7 @@ the cloud — for us one RTX 3090 with 24 GB."
 - Say: "Cost is not where local wins. Local wins on latency, 1.9× faster than DeepSeek L1, and on keeping the code
   on-premise." Price sources and the community-cloud sensitivity are in backup "cost details".
 
-## 22. Gap and criterion (0:35)
+## 22. Gap and criterion (0:30)
 - Title percentages: read-out L4-D (same untuned weights) 66 %, FT L4-D 89 %.
 - Gap = untuned Qwen L1 (.533) → cloud model. Same untuned weights with L4-D (read-out): −.111 [−.127, −.095] vs
   DeepSeek L1, closes 66 % of the gap. FT L4-D: −.037 [−.055, −.017], closes 89 %; vs DeepSeek L4 −.074, 80 %.
@@ -254,26 +255,42 @@ the cloud — for us one RTX 3090 with 24 GB."
 - If the L4-D row is marked *, it comes from the frozen eval run, not the live recording — say so.
 - Fallback: `demo.py --replay recordings/<file>` or the mp4.
 
-## 24. Take-aways (0:35)
+## 24. Privacy (0:30)
+- Structural, not measured: a local model (FT L4-D on our 3090, or Clang SA) reads the code where it lives; a cloud
+  model only works if every unit is sent to the provider. For leak detection the code under analysis is, by
+  definition, possibly vulnerable and unpatched — sending it out discloses it before the fix.
+- Retention and use of what we send are set by the provider's terms, not by us; offline / air-gapped use is
+  impossible; the model behind an alias can change on the provider side (we asked for jev-latest and got 1.14.0).
+- Our own count (ledger, all dev+eval+demo calls): 91,503 requests, ≈84 M input tokens of code and prompts to
+  DeepSeek (27,747) and Jev (63,756).
+- Line to say: "For proprietary or unpatched code, privacy is the strongest reason to stay local: FT L4-D reaches
+  .826 with zero bytes of code leaving the device." Do not claim any provider misuses data.
+
+## 25. Take-aways (0:30)
 1. Check the benchmark first. 2. Facts + Datalog do most of the work (same untuned Qwen: L1 .351 → L4-D .752,
 +.401, 66 % of the gap). 3. Unit labels teach shortcuts. 4. Fine-tuning on facts adds a little more (+.074 → .826,
 89 % of the gap, 1.9× faster than DeepSeek L1). 5. Ask only what the rules read.
 6. The remaining gap is path feasibility.
 
-## 25. Limitations (0:25)
+## 26. Limitations (0:20)
 - Clang SA is as good (.855) and faster (18 ms vs 472 ms), without a GPU: path-sensitive analysis still matters.
 - Synthetic data; post-hoc pruning; τ and checkpoints chosen on a near-saturated dev set; one local device.
 - Intern L4-D threshold: τ = 0.5 (as for Intern L1–L3) was set as primary after seeing eval; it favours the
   baseline (the frozen dev τ 0.18 gives .373). Say this out loud.
 
-## 26. Team and division of labor (0:05)
+## 27. Team and division of labor (0:05)
 One sentence: who did what (table on the slide); then go to the closing slide.
 
-## 27. Take-home (0:10)
+## 28. Take-home (0:10)
 "Not yet: L4-D closes 89 % of the gap, 1.9× faster than the cloud. Program-analysis facts do most of the work;
 fine-tune on facts, not on verdicts."
 
 ## Q&A prep
+
+**Is the privacy claim measured?**
+No — it holds by construction: a cloud request has to contain the code, a local forward pass does not send anything.
+What we measured is how much we sent (91,503 requests, ≈84 M input tokens). We make no claim about how a provider
+stores or uses data; the point is that it is their policy, not ours.
 
 **Is local cheaper?**
 Not per unit at rental prices. On DeadFree, FT L4-D on a rented RTX 3090 costs $0.070 per 1,000 units, about

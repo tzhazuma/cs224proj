@@ -1,6 +1,34 @@
 \section{Discussion}
 
 % ------------------------------------------------------------------------------
+% src: user request 2026-11-24 22:10 (privacy of local vs cloud). Request/token counts: all kind=="call" rows of
+%   juliet_full/llm/ledger.jsonl (dev+eval+demo, 2026-11-24 22:10): DeepSeek 27,747 calls, usage.prompt_tokens 23,629,792;
+%   Jev 63,756 calls, usage.input_tokens 60,491,662 -> 91,503 requests, 84.1 M input tokens.
+%   alias example: requested jev-latest, API returned jev-1.14.0 (juliet_full/l4d_ft/results/jev_l4d FROZEN); deepseek-flash = V4.1-Flash-1017.
+\begin{frame}{Privacy: a local model sends no code; a cloud model sends every unit}
+  \centering\small
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    & \textbf{Local} (FT L4-D, Clang SA) & \textbf{Cloud} (DeepSeek, Jev) \\
+    \midrule
+    Code under analysis      & stays on your machine         & sent with every request \\
+    Unpatched vulnerabilities & never leave before the fix   & reach a third party before the fix \\
+    Retention and use        & under your control            & set by the provider's terms \\
+    Offline / air-gapped     & works                         & does not work \\
+    Model version            & frozen, hash-checked          & alias resolved by the provider \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.4em}
+  \raggedright
+  \begin{itemize}
+    \item This project alone sent \textbf{91,503 requests} and \textbf{$\approx$84\,M input tokens} of code and prompts to two cloud providers
+    \item \alert{For proprietary or unpatched code, privacy is the strongest reason to stay local: FT L4-D reaches \res{df-lora_l4d_opt}{macro} with zero bytes of code leaving the device}
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
 % src: deadfree_quality.json (macro_f1; readout_L1 / readout_l4d / lora_l4d_opt gap; paired_deltas); fact attribution
 %   juliet_full/analysis/l4d_peek/fact_error_attribution.out.txt
 \begin{frame}{Take-aways: the strategy does most of the work}
